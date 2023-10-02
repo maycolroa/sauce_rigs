@@ -188,6 +188,20 @@ class InspectionItemsQualificationAreaLocation extends Model
         return $query;
     }
 
+    public function scopeInItems($query, $items, $typeSearch = 'IN')
+    {
+        if (COUNT($items) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.item_id', $items);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.item_id', $items);
+        }
+
+        return $query;
+    }
+
     public function scopeInLevelRisk($query, $levels, $typeSearch = 'IN')
     {
         if (COUNT($levels) > 0)

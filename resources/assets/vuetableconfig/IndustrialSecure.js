@@ -859,6 +859,26 @@ export default [
     }
 },
 {
+    name: 'dangerousconditions-inspections-report-gestion',
+    fields: [
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/reportGestion',
+        filterColumns: true,
+        configNameFilter: 'dangerousconditions-inspections-report-gestion'
+    }
+},
+{
     name: 'dangerousconditions-inspections-report-type-2',
     fields: [
         { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
@@ -1950,7 +1970,7 @@ export default [
                     routePush: { name: 'industrialsecure-accidentswork-investigation' },
                     id: 'id',
                 },
-                permission: 'accidentsWork_u'
+                permission: 'accidentsWork_investigation'
             },
             {
                 name: 'pdfSendMail',

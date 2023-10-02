@@ -919,6 +919,19 @@ class InspectionController extends Controller
       }
     }
 
+    public function multiselectItems()
+    {
+        $items = Inspection::selectRaw(
+          "GROUP_CONCAT(sau_ph_inspection_section_items.id) as ids,
+          sau_ph_inspection_section_items.description as name")
+        ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+        ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+        ->groupBy('sau_ph_inspection_section_items.description')
+        ->pluck('ids', 'name');
+
+      return $this->multiSelectFormat($items);
+    }
+
     public function multiselectThemes()
     {
         $themes = Inspection::selectRaw(

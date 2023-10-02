@@ -338,6 +338,8 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::post('themes', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectThemes');
 
+        Route::post('phItems', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectItems');
+
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
           Route::post('interestsCompany', 'LegalAspects\LegalMatrix\InterestController@multiselectCompany');
@@ -605,6 +607,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/exportQualify', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@exportQualify');
         Route::post('inspection/report', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@data');
         Route::post('inspection/reportType2', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@dataType2');
+        Route::post('inspection/reportGestion', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@dataGestion');
         Route::post('inspection/report/getTotals', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotals');
         Route::post('inspection/report/getTotalsType2', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotalsType2');
         Route::post('inspection/exportReport', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@export');

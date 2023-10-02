@@ -3,7 +3,7 @@
     <header-module
       title="INSPECCIONES"
       subtitle="REPORTE DE INSPECCIONES PLANEADAS"
-      url="dangerousconditions-inspections"
+      url="dangerousconditions-inspection-report-menu"
     />
 
     <div class="col-md">

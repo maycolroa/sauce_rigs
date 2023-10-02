@@ -545,6 +545,22 @@ export default [{
 					import('@/views/IndustrialSecure/dangerousConditions/inspections/report')
 				}
       ]),
+      ...middleware({ 'check-permission': 'ph_inspections_report_view' }, [
+				{
+					name: 'dangerousconditions-inspection-report-menu',
+					path: 'dangerousconditions/inspection/report/menu',
+					component: () =>
+					import('@/views/IndustrialSecure/dangerousConditions/inspections/indexReports')
+				}
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_report_view' }, [
+				{
+					name: 'dangerousconditions-inspection-report-gestion',
+					path: 'dangerousconditions/inspection/report/gestion',
+					component: () =>
+					import('@/views/IndustrialSecure/dangerousConditions/inspections/reportGestion')
+				}
+      ]),
       ...middleware({ 'check-permission': 'ph_reports_r' }, [
 				{
           name: 'dangerousconditions-reports',

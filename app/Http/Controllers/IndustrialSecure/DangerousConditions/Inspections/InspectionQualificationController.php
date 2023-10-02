@@ -125,7 +125,6 @@ class InspectionQualificationController extends Controller
     {
         try
         {
-            \Log::info($id);
             return $this->respondHttp200([
                 'data' => $this->getInformationInspection($id),
             ]);

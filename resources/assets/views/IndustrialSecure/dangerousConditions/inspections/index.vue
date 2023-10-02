@@ -11,7 +11,7 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements">
             <b-btn v-if="auth.can['ph_inspections_c']" :to="{name:'dangerousconditions-inspections-create'}" variant="primary">Crear Formato Inspección</b-btn>
-            <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'dangerousconditions-inspection-report'}" variant="primary">Ver Informes</b-btn>
+            <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'dangerousconditions-inspection-report-menu'}" variant="primary">Ver Informes</b-btn>
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" href="/templates/inspectionsimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <div class="card-title-elements" v-if="auth.can['users_c']">

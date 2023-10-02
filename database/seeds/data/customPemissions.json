@@ -400,6 +400,10 @@
                     {
                         "name": "accidentsWork_d",
                         "display_name": "Investigación de accidentes e incidentes de trabajo - eliminar"
+                    },
+                    {
+                        "name": "accidentsWork_investigation",
+                        "display_name": "Investigación de accidentes e incidentes de trabajo - investigacion del evento"
                     }
                 ]
             },

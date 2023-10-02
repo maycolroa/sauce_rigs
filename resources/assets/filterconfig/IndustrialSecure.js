@@ -696,4 +696,62 @@ export default [
         }
       ]
     },
+    {
+      name: 'dangerousconditions-inspections-report-gestion',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/industrialSecurity/inspections',
+          key: 'inspections',
+          type: 'select',
+          label: 'Nombres'
+        },
+        /*{
+          url: '/selects/themes',
+          key: 'themes',
+          type: 'select',
+          label: 'Temas',
+        },*/
+        {
+          url: '/selects/phItems',
+          key: 'items',
+          type: 'select',
+          label: 'Items',
+        },
+        {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Usuario Calificador'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha',
+        }
+      ]
+    },
 ];

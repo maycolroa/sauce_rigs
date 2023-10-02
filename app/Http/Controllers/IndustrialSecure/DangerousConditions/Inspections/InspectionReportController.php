@@ -675,4 +675,116 @@ class InspectionReportController extends Controller
   
       return $this->multiSelectFormat(collect($select));
     }
+
+    public function dataGestion(Request $request)
+    {
+      $module_id = Module::where('name', 'dangerousConditions')->first()->id;
+
+      $consultas = InspectionItemsQualificationAreaLocation::select(
+        'sau_ph_inspections.name AS name',
+        'sau_ph_inspection_sections.name AS section',
+        'sau_ph_inspection_section_items.description AS item',
+        'sau_employees_regionals.name AS regional',
+        'sau_employees_headquarters.name AS headquarter',
+        'sau_employees_processes.name AS process',
+        'sau_employees_areas.name AS area',
+        'sau_ph_inspection_items_qualification_area_location.qualification_date AS qualification_date',
+        'sau_ph_qualifications_inspections.description AS qualification',
+        DB::raw("IF(sau_action_plans_activities.id, 'SI', 'NO') AS tiene_plan_action"),
+        'sau_users.name AS qualificator'
+      )
+      ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+      ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+      ->join('sau_ph_inspections', function ($join) 
+      {
+        $join->on("sau_ph_inspections.company_id", DB::raw($this->company));
+        //$join->on("sau_ph_inspections.type_id", DB::raw(1));
+        $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
+      })
+      ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+      ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+      ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
+      ->leftJoin('sau_employees_headquarters','sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+      ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+      ->leftJoin('sau_employees_areas','sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+      ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+      {
+        $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+        $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+        $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+      })
+      ->leftJoin('sau_action_plans_activities', function ($join) 
+      {
+        $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
+        $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+      })
+      ->where('sau_ph_inspections.company_id', $this->company)
+      ->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'qualificator', 'section', 'item', 'sau_ph_qualifications_inspections.description','sau_action_plans_activities.id')
+      ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
+
+        $url = "/industrialsecure/dangerousconditions/inspection/reportGestion";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["qualifiers"]))
+              $consultas->inQualifiers($this->getValuesForMultiselect($filters["qualifiers"]), $filters['filtersType']['qualifiers']);
+
+            if (isset($filters["regionals"]))
+              $consultas->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+            if (isset($filters["headquarters"]))
+              $consultas->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+            if (isset($filters["processes"]))
+              $consultas->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            
+            if (isset($filters["areas"]))
+              $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            if (isset($filters["inspections"]))
+              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
+
+            /*if (isset($filters["themes"]))
+              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 'sau_ph_inspection_sections');*/
+
+            if (isset($filters["items"]))
+              $consultas->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
+
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+              array_push($dates, $this->formatDateToSave($dates_request[0]));
+              array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+            else
+            {
+              $now = Carbon::now();
+              $last = Carbon::now()->subMonth(1);
+
+              array_push($dates, $last->format('Y-m-d'));
+              array_push($dates, $now->format('Y-m-d'));
+            }
+                
+            $consultas->betweenDate($dates);
+        }
+        else
+        {
+          $now = Carbon::now();
+          $last = Carbon::now()->subMonth(1);
+          $dates = [];
+
+          array_push($dates, $last->format('Y-m-d'));
+          array_push($dates, $now->format('Y-m-d'));
+              
+          $consultas->betweenDate($dates);
+        }
+
+        return Vuetable::of($consultas)
+          ->make();  
+    }
 }
