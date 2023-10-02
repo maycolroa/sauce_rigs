@@ -1,0 +1,925 @@
+[
+    {
+        "section_name": "CONDICIÓN AMBIENTAL PELIGROSA",
+        "categories": [
+            {
+                "category_name": "Defecto en los agentes de la lesión",
+                "items": [
+                    {
+                        "item_name" : "Elaborado con materiales inadecuados."
+                    },
+                    {
+                        "item_name" : "Romo, embotado."
+                    },
+                    {
+                        "item_name" : "Impropiamente construido o ensamblado."
+                    },
+                    {
+                        "item_name" : "Impropiamente diseñado (herramientas, puestos de trabajo, objetos)"
+                    },
+                    {
+                        "item_name" : "Áspero, tosco."
+                    },
+                    {
+                        "item_name" : "Agudo cortante."
+                    },
+                    {
+                        "item_name" : "Resbaloso"
+                    },
+                    {
+                        "item_name" : "Piso defectuoso"
+                    },
+                    {
+                        "item_name" : "Desgastado cuarteado"
+                    },
+                    {
+                        "item_name" : "Falla eléctrica o mecánica"
+                    },
+                    {
+                        "item_name" : "Persona agresiva, estado mental alterado"
+                    },
+                    {
+                        "item_name" : "Otros defectos no especificados"
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgos de la ropa o vestuario",
+                "items": [
+                    {
+                        "item_name" : "Carencia del equipo de protección personal"
+                    },
+                    {
+                        "item_name" : "Ropa impropia o inadecuada."
+                    },
+                    {
+                        "item_name" : "Factores de riesgos de la ropa o vestuario no especificados"
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgos ambientales",
+                "items": [
+                    {
+                        "item_name" : "Ventilación inadecuada"
+                    },
+                    {
+                        "item_name" : "Ruido de impacto"
+                    },
+                    {
+                        "item_name" : "Iluminación inadecuada (poca luz, brillo...)"
+                    },
+                    {
+                        "item_name" : "Sin protección contra radiaciones."
+                    },
+                    {
+                        "item_name" : "Protección inadecuada contra radiaciones"
+                    },
+                    {
+                        "item_name" : "Factores de riesgos ambientales no especificados."
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgo de la circulación de personas y vehículos",
+                "items": [
+                    {
+                        "item_name" : "Insuficiente espacio de trabajo"
+                    },
+                    {
+                        "item_name" : "Espacio inadecuado en pasillos, salidas, etc."
+                    },
+                    {
+                        "item_name" : "Espacio libre inadecuado"
+                    },
+                    {
+                        "item_name" : "Control inadecuado del tránsito (velocidad, señalizaciones"
+                    },
+                    {
+                        "item_name" : "Factores de riesgo de circulación no especificados."
+                    }
+                ]
+            },
+            {
+                "category_name": "Métodos o procedimientos peligrosos (aceptados por la supervisión)",
+                "items": [
+                    {
+                        "item_name" : "Uso de materiales o equipos peligrosos"
+                    },
+                    {
+                        "item_name" : "Uso de métodos peligrosos."
+                    },
+                    {
+                        "item_name" : "Uso de herramienta o equipo inadecuado o impropio (no defectuoso)"
+                    },
+                    {
+                        "item_name" : "Ayuda inadecuada para levantar objetos pesados."
+                    },
+                    {
+                        "item_name" : "Falta de elementos o equipos necesarios para desarrollar la tarea (escaleras, andamios, herramientas)"
+                    },
+                    {
+                        "item_name" : "Métodos o procedimientos peligrosos no especificados."
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgos de colocación o emplazamiento",
+                "items": [
+                    {
+                        "item_name" : "Madera o bultos impropiamente apilados. (manera de apilar)"
+                    },
+                    {
+                        "item_name" : "Objetos impropiamente colocados. (posición ocupada)"
+                    },
+                    {
+                        "item_name" : "Objetos peligrosos en vías de circulación (cortopunzantes, clavos y puntillas en sobrantes de madera)"
+                    },
+                    {
+                        "item_name" : "Inadecuadamente asegurados contra movimientos inconvenientes."
+                    },
+                    {
+                        "item_name" : "Factores de riesgos de colocación no especificados"
+                    }
+                ]
+            },
+            {
+                "category_name": "Máquinas, equipos u objetos inadecuadamente protegidos",
+                "items": [
+                    {
+                        "item_name" : "Máquinas o equipos sin protección (en los sistemas de transmisión de fuerza o en el punto de operación)."
+                    },
+                    {
+                        "item_name" : "Máquinas o equipos inadecuadamente protegidos."
+                    },
+                    {
+                        "item_name" : "Sin conexión a tierra (eléctrica)"
+                    },
+                    {
+                        "item_name" : "Sin aislamiento eléctrico."
+                    },
+                    {
+                        "item_name" : "Conexiones, interruptores, etc, descubiertos. (eléctricos)"
+                    },
+                    {
+                        "item_name" : "Materiales sin rótulo o inadecuadamente rotulado."
+                    },
+                    {
+                        "item_name" : "Inadecuadamente protegido no especificado"
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgos ambientales en trabajos exteriores, distintos a los riesgos públicos",
+                "items": [
+                    {
+                        "item_name" : "Predios o locales defectuosos de extraños."
+                    },
+                    {
+                        "item_name" : "Materiales o equipos defectuosos de extraños."
+                    },
+                    {
+                        "item_name" : "Otros riesgos asociados con la propiedad u operaciones de extraños."
+                    },
+                    {
+                        "item_name" : "Riesgos naturales (en operaciones a campo abierto)"
+                    },
+                    {
+                        "item_name" : "Factores de riesgo en ambientes exteriores  no especificados."
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgo públicos (del tránsito y transporte)",
+                "items": [
+                    {
+                        "item_name" : "Riesgos del transporte público (pasajero en transporte público)"
+                    },
+                    {
+                        "item_name" : "Riesgos del tránsito (en calles, caminos y vías públicas)"
+                    },
+                    {
+                        "item_name" : "Otros factores de riesgo público no especificados"
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgo públicos (delincuencia)",
+                "items": [
+                    {
+                        "item_name" : "Atracos a vehículos de la empresa"
+                    },
+                    {
+                        "item_name" : "Atracos a mensajeros, vigilantes, cobradores..."
+                    },
+                    {
+                        "item_name" : "Factores de riesgo de delincuencia no especificados"
+                    }
+                ]
+            },
+            {
+                "category_name": "Factores de riesgo del deporte y otros no especificados",
+                "items": [
+                    {
+                        "item_name" : "Factores de riesgo del deporte."
+                    },
+                    {
+                        "item_name" : "Condición indeterminada"
+                    },
+                    {
+                        "item_name" : "No existe condición peligrosa"
+                    },
+                    {
+                        "item_name" : "Condiciones peligrosas no especificadas."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "section_name": "ACTOS INSEGUROS",
+        "categories": [
+            {
+                "category_name": "Limpieza, lubricación, ajuste o reparación de equipo móvil, eléctrico o de presión.",
+                "items": [
+                    {
+                        "item_name" : "Limpiar o lubricar equipo en movimiento"
+                    },
+                    {
+                        "item_name" : "Realizar reparaciones en equipo bajo presión."
+                    },
+                    {
+                        "item_name" : "Limpiar, lubricar, ajustar, etc, equipo en movimiento."
+                    },
+                    {
+                        "item_name" : "Soldar recipientes o equipos, sin eliminar previamente vapores, gases y sustancias químicas peligrosas..."
+                    },
+                    {
+                        "item_name" : "Reparar recipientes o equipos, sin eliminar previamente vapores, gases y sustancias químicas peligrosas..."
+                    },
+                    {
+                        "item_name" : "Trabajar en equipos cargados eléctricamente (motores, generadores, líneas)"
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    }
+                ]
+            },
+            {
+                "category_name": "Omitir el uso de equipos de protección o ayudas mecánicas y atuendos personales.",
+                "items": [
+                    {
+                        "item_name" : "Omitir el uso del equipo de protección personal disponible"
+                    },
+                    {
+                        "item_name" : "Omitir el uso de las ayudas mecánicas disponibles"
+                    },
+                    {
+                        "item_name" : "No informar oportunamente sobre el estado y disponibilidad de los equipos en general."
+                    },
+                    {
+                        "item_name" : "Omitir el uso de ropa segura (usar zapatos de tacón alto, pelo suelto, anillos, relojes)"
+                    },
+                    {
+                        "item_name" : "Omitir el uso de equipos no especificado."
+                    }
+                ]
+            },
+            {
+                "category_name": "No asegurar, advertir o coordinar acciones",
+                "items": [
+                    {
+                        "item_name" : "No cerrar, bloquear o asegurar los vehículos, interruptores, válvulas, prensas, herramientas, equipos y máquinas contra movimientos inesperados (flujo de corriente eléctrica, vapor, etc.)"
+                    },
+                    {
+                        "item_name" : "No cerrar, detener o desconectar el equipo que no esté en uso."
+                    },
+                    {
+                        "item_name" : "Omitir la colocación de avisos, señales o tarjetas de prevención."
+                    },
+                    {
+                        "item_name" : "Soltar o mover pesos, etc, sin dar el aviso o advertencia adecuado"
+                    },
+                    {
+                        "item_name" : "Iniciar o parar vehículos, equipos o máquinas sin dar el aviso adecuado."
+                    },
+                    {
+                        "item_name" : "No avisar a la supervisión sobre fallas en máquinas, herramientas, procesos, etc."
+                    },
+                    {
+                        "item_name" : "Realizar labores o manejar equipos sin estar autorizado."
+                    },
+                    {
+                        "item_name" : "Falta de atención a las condiciones del piso o vecindades."
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    }
+                ]
+            },
+            {
+                "category_name": "Uso impropio del equipo y bromas o juegos pesados",
+                "items": [
+                    {
+                        "item_name" : "Uso del material o equipo de una manera para la cual no está indicado."
+                    },
+                    {
+                        "item_name" : "Recargar de peso (andamios, vehículos,  recipientes...)"
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    },
+                    {
+                        "item_name" : "Distraer, reñir, jugar, lanzar materiales, jugar con máquinas o equipos, etc."
+                    },
+                    {
+                        "item_name" : "Usar equipo defectuoso o inseguro"
+                    },
+                    {
+                        "item_name" : "Uso impropio no especificado."
+                    }
+                ]
+            },
+            {
+                "category_name": "Uso impropio de las manos o partes del cuerpo",
+                "items": [
+                    {
+                        "item_name" : "Adoptar postura insegura al levantar o descargar objetos"
+                    },
+                    {
+                        "item_name" : "Agarrar los objetos inseguramente o en forma errada."
+                    },
+                    {
+                        "item_name" : "Usar las manos en lugar de las herramientas manuales ( retirar productos, limpiar, reparar...)"
+                    },
+                    {
+                        "item_name" : "No solicitar ayuda para levantar, movilizar, etc."
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte"
+                    }
+                ]
+            },
+            {
+                "category_name": "Hacer inoperantes los dispositivos de seguridad",
+                "items": [
+                    {
+                        "item_name" : "Omitir las normas de seguridad establecidas"
+                    },
+                    {
+                        "item_name" : "Bloquear, tapar, atar, etc, los dispositivos de seguridad."
+                    },
+                    {
+                        "item_name" : "Desconectar o quitar los dispositivos o guardas de seguridad"
+                    },
+                    {
+                        "item_name" : "Instalar mal los dispositivos de seguridad."
+                    },
+                    {
+                        "item_name" : "Reemplazar los dispositivos de seguridad por otros impropios (fusibles con mayor amperaje, válvulas de baja capacidad...)"
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    }
+                ]
+            },
+            {
+                "category_name": "Operar o trabajar a velocidad insegura",
+                "items": [
+                    {
+                        "item_name" : "Transportar o manipular objetos rápidamente"
+                    },
+                    {
+                        "item_name" : "Alimentar o suministrar muy rápidamente."
+                    },
+                    {
+                        "item_name" : "Operar los vehículos de la planta a velocidad insegura."
+                    },
+                    {
+                        "item_name" : "Correr"
+                    },
+                    {
+                        "item_name" : "Lanzar material en lugar de cargarlo o pasarlo."
+                    },
+                    {
+                        "item_name" : "Precipitud no especificada en otra parte"
+                    }
+                ]
+            },
+            {
+                "category_name": "Adoptar posiciones o posturas inseguras",
+                "items": [
+                    {
+                        "item_name" : "Entrar en tanques u otros espacios cerrados sin eliminar previamente vapores, gases sustancias químicas peligrosas, etc."
+                    },
+                    {
+                        "item_name" : "Viajar en posición insegura (plataformas, horquillas, montacargas, ganchos de grúas...)"
+                    },
+                    {
+                        "item_name" : "Exponerse innecesariamente bajo cargas suspendidas u oscilantes."
+                    },
+                    {
+                        "item_name" : "Exponerse innecesariamente a materiales o equipos que se mueven."
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    }
+                ]
+            },
+            {
+                "category_name": "Errores de conducción",
+                "items": [
+                    {
+                        "item_name" : "Conducir demasiado rápido o demasiado despacio. servicios"
+                    },
+                    {
+                        "item_name" : "Entrar o salir del vehículo por el lado del tránsito."
+                    },
+                    {
+                        "item_name" : "No hacer la señal cuando se para, se voltea o se retrocede."
+                    },
+                    {
+                        "item_name" : "No otorgar el derecho a la vía."
+                    },
+                    {
+                        "item_name" : "No obedecer las señales o signos de control del tránsito"
+                    },
+                    {
+                        "item_name" : "No guardar la distancia"
+                    },
+                    {
+                        "item_name" : "Pasar impropiamente."
+                    },
+                    {
+                        "item_name" : "Voltear impropiamente."
+                    },
+                    {
+                        "item_name" : "No especificados en otra parte."
+                    }
+                ]
+            },
+            {
+                "category_name": "Colocar, mezclar, combinar, etc, inseguramente",
+                "items": [
+                    {
+                        "item_name" : "Inyectar, mezclar o combinar una sustancia con otra, de manera que se produzca explosión, fuego u otro riesgo (inyectar agua fría en una caldera caliente, verter agua en ácido...)"
+                    },
+                    {
+                        "item_name" : "Colocación insegura de vehículos o de equipo para el movimiento de materiales (estacionar o dejar vehículos o aparatos de transporte en posición insegura para cargar o descargar)"
+                    },
+                    {
+                        "item_name" : "Colocación insegura de materiales, herramientas, desechos, etc.(como para crear riesgos de derrumbe, tropezón, choque, resbalón...)"
+                    },
+                    {
+                        "item_name" : "No especificado en otra parte."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "section_name": "FACTORES PERSONALES",
+        "categories": [
+            {
+                "category_name": "Capacidad física / fisiológica inadecuada",
+                "items": [
+                    {
+                        "item_name" : "Altura, peso, talla, fuerza, alcance inapropiado condiciones de salud de los trabajadores"
+                    },
+                    {
+                        "item_name" : "Capacidad movimiento corporal limitada promoción de la salud"
+                    },
+                    {
+                        "item_name" : "Capacidad limitada para mantenerse en determinadas posiciones corporales"
+                    },
+                    {
+                        "item_name" : "Sensibilidad a substancias o alergias"
+                    },
+                    {
+                        "item_name" : "Sensibilidad a los extremos sensitivos (temperatura, sonido…)"
+                    },
+                    {
+                        "item_name" : "Visión defectuosa"
+                    },
+                    {
+                        "item_name" : "Audición defectuosa"
+                    },
+                    {
+                        "item_name" : "Otras deficiencias sensitivas (tacto, gusto, olfato, equilibrio)"
+                    },
+                    {
+                        "item_name" : "Incapacidad respiratoria"
+                    },
+                    {
+                        "item_name" : "Otras incapacidades físicas permanentes"
+                    },
+                    {
+                        "item_name" : "Incapacidades temporales "
+                    }
+                ]
+            },
+            {
+                "category_name": "Capacidad mental / psicológica inadecuada",
+                "items": [
+                    {
+                        "item_name" : "Temores y fobias"
+                    },
+                    {
+                        "item_name" : "Disturbios emocionales"
+                    },
+                    {
+                        "item_name" : "Enfermedad mental"
+                    },
+                    {
+                        "item_name" : "Nivel de inteligencia"
+                    },
+                    {
+                        "item_name" : "Incapacidad para comprender"
+                    },
+                    {
+                        "item_name" : "Falta de juicio "
+                    },
+                    {
+                        "item_name" : "Escasa coordinación"
+                    },
+                    {
+                        "item_name" : "Bajo tiempo de reacción"
+                    },
+                    {
+                        "item_name" : "Poca aptitud mecánica"
+                    },
+                    {
+                        "item_name" : "Poca aptitud de aprendizaje"
+                    },
+                    {
+                        "item_name" : "Problemas de memoria"
+                    }
+                ]
+            },
+            {
+                "category_name": "Tensión física o fisiológica",
+                "items": [
+                    {
+                        "item_name" : "Lesión o enfermedad"
+                    },
+                    {
+                        "item_name" : "Fatiga debida a la carga o duración de la tarea"
+                    },
+                    {
+                        "item_name" : "Fatiga debida a la falta de descanso"
+                    },
+                    {
+                        "item_name" : "Fatiga debida a sobrecarga sensitiva"
+                    },
+                    {
+                        "item_name" : "Exposición a riesgos contra la salud"
+                    },
+                    {
+                        "item_name" : "Exposición a temperatura extremas"
+                    },
+                    {
+                        "item_name" : "Insuficiencia de oxigeno"
+                    },
+                    {
+                        "item_name" : "Variación de la presión atmosférica"
+                    },
+                    {
+                        "item_name" : "Movimiento restringido"
+                    },
+                    {
+                        "item_name" : "Insuficiencia de azúcar en la sangre"
+                    },
+                    {
+                        "item_name" : "Ingestión de drogas"
+                    }
+                ]
+            },
+            {
+                "category_name": "Tensión mental o sicológica",
+                "items": [
+                    {
+                        "item_name" : "Sobrecarga emocional"
+                    },
+                    {
+                        "item_name" : "Fatiga debida a la carga o a las limitaciones de tiempo de la tarea mental."
+                    },
+                    {
+                        "item_name" : "Obligaciones que exigen un juicio o toma de decisiones extremas."
+                    },
+                    {
+                        "item_name" : "Rutina, monotonía, exigencias para un cargo sin trascendencia"
+                    },
+                    {
+                        "item_name" : "Exigencias de una concentración / percepción profunda"
+                    },
+                    {
+                        "item_name" : "Actividades “insignificantes” o “degradantes”"
+                    },
+                    {
+                        "item_name" : "Ordenes confusas"
+                    },
+                    {
+                        "item_name" : "Peticiones conflictivas"
+                    },
+                    {
+                        "item_name" : "Preocupación por problemas"
+                    },
+                    {
+                        "item_name" : "Frustraciones"
+                    },
+                    {
+                        "item_name" : "Enfermedad mental"
+                    }
+                ]
+            },
+            {
+                "category_name": "Falta de conocimiento",
+                "items": [
+                    {
+                        "item_name" : "Falta de experiencia"
+                    },
+                    {
+                        "item_name" : "Orientación deficiente"
+                    },
+                    {
+                        "item_name" : "Entrenamiento inicial inadecuado"
+                    },
+                    {
+                        "item_name" : "Reentrenamiento insuficiente"
+                    },
+                    {
+                        "item_name" : "Ordenes mal interpretadas"
+                    }
+                ]
+            },
+            {
+                "category_name": "Falta de habilidad",
+                "items": [
+                    {
+                        "item_name" : "Instrucción inicial insuficiente"
+                    },
+                    {
+                        "item_name" : "Práctica insuficiente"
+                    },
+                    {
+                        "item_name" : "Operación esporádica"
+                    },
+                    {
+                        "item_name" : "Falta de preparación"
+                    }
+                ]
+            },
+            {
+                "category_name": "Motivación deficiente",
+                "items": [
+                    {
+                        "item_name" : "El desempeño subestándar es más gratificante"
+                    },
+                    {
+                        "item_name" : "El desempeño estándar causa desagrado"
+                    },
+                    {
+                        "item_name" : "Falta de incentivos"
+                    },
+                    {
+                        "item_name" : "Demasiadas frustraciones"
+                    },
+                    {
+                        "item_name" : "Falta de desafíos"
+                    },
+                    {
+                        "item_name" : "No existe intención de ahorro de tiempo y esfuerzo"
+                    },
+                    {
+                        "item_name" : "No existe interés para evitar la incomodidad"
+                    },
+                    {
+                        "item_name" : "Sin interés por sobresalir"
+                    },
+                    {
+                        "item_name" : "Presión indebida de los compañeros"
+                    },
+                    {
+                        "item_name" : "Ejemplo deficiente por parte de la supervisión"
+                    },
+                    {
+                        "item_name" : "Retroalimentación deficiente en relación con el desempeño"
+                    },
+                    {
+                        "item_name" : "Falta de esfuerzo positivo para el comportamiento correcto"
+                    },
+                    {
+                        "item_name" : "Falta de incentivos de producción"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "section_name": "FACTORES DEL TRABAJO",
+        "categories": [
+            {
+                "category_name": "Liderazgo/ supervisión deficiente",
+                "items": [
+                    {
+                        "item_name" : "Relaciones jerárquicas poco claras o conflictivas"
+                    },
+                    {
+                        "item_name" : "Asignación de responsabilidad poco clara o conflictiva"
+                    },
+                    {
+                        "item_name" : "Delegación insuficiente o inadecuada"
+                    },
+                    {
+                        "item_name" : "Definir políticas, procedimientos, prácticas o pautas de acción inadecuadas"
+                    },
+                    {
+                        "item_name" : "Formular objetivos, metas o estándares que ocasionan conflictos"
+                    },
+                    {
+                        "item_name" : "Programación o planificación insuficiente del trabajo"
+                    },
+                    {
+                        "item_name" : "Instrucción / orientación y/o entrenamiento deficiente"
+                    },
+                    {
+                        "item_name" : "Entrega insuficiente de documentos de consulta, de instrucciones y de publicaciones guía"
+                    },
+                    {
+                        "item_name" : "Identificación y evaluación deficiente de exposiciones a pérdida"
+                    },
+                    {
+                        "item_name" : "Falta de conocimiento en el trabajo de supervisión / administración"
+                    },
+                    {
+                        "item_name" : "Ubicación inadecuada del trabajador, de acuerdo con sus cualidades y exigencias que demanda la tarea"
+                    },
+                    {
+                        "item_name" : "Medición y evaluación deficientes del desempeño"
+                    },
+                    {
+                        "item_name" : "Retroalimentación deficiente o incorrecta en relación con el  desempeño"
+                    }
+                ]
+            },
+            {
+                "category_name": "Ingeniería inadecuada",
+                "items": [
+                    {
+                        "item_name" : "Evaluación insuficiente de las exposiciones a pérdidas"
+                    },
+                    {
+                        "item_name" : "Poca preocupación por los factores ergonómicos / humanos"
+                    },
+                    {
+                        "item_name" : "Estándares especificaciones y/o criterios de diseño inadecuados"
+                    },
+                    {
+                        "item_name" : "Control e inspecciones inadecuado de las construcciones"
+                    },
+                    {
+                        "item_name" : "Evaluación deficiente de la condición conveniente para operar "
+                    }
+                ]
+            },
+            {
+                "category_name": "Deficiencia en las adquisiciones",
+                "items": [
+                    {
+                        "item_name" : "Especificaciones deficientes en cuanto a los requerimientos"
+                    },
+                    {
+                        "item_name" : "Investigación deficiente respecto a materiales / equipos"
+                    },
+                    {
+                        "item_name" : "Especificaciones deficientes para los vendedores"
+                    },
+                    {
+                        "item_name" : "Modalidad o ruta o embarque inadecuada"
+                    },
+                    {
+                        "item_name" : "Inspección de recepción y aceptación deficiente"
+                    },
+                    {
+                        "item_name" : "Comunicación inadecuada de las informaciones (datos) sobre aspectos de seguridad y salud"
+                    },
+                    {
+                        "item_name" : "Manejo inadecuado de los materiales"
+                    },
+                    {
+                        "item_name" : "Almacenamiento inadecuado de los materiales"
+                    },
+                    {
+                        "item_name" : "Transporte inadecuado de los materiales"
+                    },
+                    {
+                        "item_name" : "Identificación deficiente de  los ítems que implican riesgos"
+                    },
+                    {
+                        "item_name" : "Sistemas deficientes de recuperación o de eliminación de desechos"
+                    }
+                ]
+            },
+            {
+                "category_name": "Mantenimiento deficiente",
+                "items": [
+                    {
+                        "item_name" : "Aspectos preventivos e inadecuados para: Lubricación y servicio, ajuste / ensamble, limpieza / pulimiento"
+                    },
+                    {
+                        "item_name" : "Aspectos correctivos inapropiados para: Programación del trabajo, revisión de las piezas, reemplazo de partes defectuosas."
+                    }
+                ]
+            },
+            {
+                "category_name": "Herramientas y equipos inadecuados",
+                "items": [
+                    {
+                        "item_name" : "Evaluación deficiente de las necesidades y de los riesgos"
+                    },
+                    {
+                        "item_name" : "Preocupación deficiente en cuanto a los factores Humanos"
+                    },
+                    {
+                        "item_name" : "Estándares o especificaciones inadecuadas"
+                    },
+                    {
+                        "item_name" : "Disponibilidad inadecuada"
+                    },
+                    {
+                        "item_name" : "Ajustes / reparación / mantenimiento deficiente"
+                    },
+                    {
+                        "item_name" : "Sistema deficiente de reparación y recuperación de materiales"
+                    },
+                    {
+                        "item_name" : "Eliminación y reemplazo inapropiado de piezas defectuosas"
+                    }
+                ]
+            },
+            {
+                "category_name": "Estándares deficientes de trabajo",
+                "items": [
+                    {
+                        "item_name" : "Desarrollo inadecuado de normas para: inventario y evaluación de exposiciones y necesidades."
+                    },
+                    {
+                        "item_name" : "Desarrollo inadecuado de normas para: Coordinación con quienes diseñan el proceso."
+                    },
+                    {
+                        "item_name" : "Desarrollo inadecuado de normas para: Compromiso del trabajador; estándares"
+                    },
+                    {
+                        "item_name" : "Desarrollo inadecuado de normas para: Estándares / procedimientos / reglas inconsistentes."
+                    },
+                    {
+                        "item_name" : "Comunicación inadecuada de las normas: publicación, distribución, entrenamiento."
+                    },
+                    {
+                        "item_name" : "Comunicación inadecuada de las normas: Entrenamiento."
+                    },
+                    {
+                        "item_name" : "Mantenimiento inadecuado de las normas: seguimiento del flujo de trabajo, actualización, control del uso de normas / procedimientos / reglamentos."
+                    }
+                ]
+            },
+            {
+                "category_name": "Uso y desgaste",
+                "items": [
+                    {
+                        "item_name" : "Planificación inadecuada del uso"
+                    },
+                    {
+                        "item_name" : "Prolongación excesiva de la vida útil del elemento"
+                    },
+                    {
+                        "item_name" : "Inspección o control deficientes"
+                    },
+                    {
+                        "item_name" : "Sobrecarga o proporción de uso excesivo"
+                    },
+                    {
+                        "item_name" : "Mantenimiento deficiente"
+                    },
+                    {
+                        "item_name" : "Empleo del elemento por personas no calificadas o sin preparación"
+                    },
+                    {
+                        "item_name" : "Empleo inadecuado para otros propósitos"
+                    }
+                ]
+            },
+            {
+                "category_name": "Abuso o maltrato",
+                "items": [
+                    {
+                        "item_name" : "Permitidos por la supervisión: intencional / no intencional"
+                    },
+                    {
+                        "item_name" : "No permitidos por la supervisión: intencional / no intencional"
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -34,5 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PhQualificationsInspectionsSeeder::class);
         $this->call(PhTypeInspectionsSeeder::class);
         $this->call(CreatedApiTokenUsersSeeder::class);
+        $this->call(AccidentAnalisysCausesSeeder::class);
     }
 }
