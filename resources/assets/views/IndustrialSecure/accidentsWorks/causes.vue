@@ -39,7 +39,18 @@ export default {
 	},
 	data(){
 		return {
-			causes: {},
+			causes: [				
+				{
+					key: new Date().getTime(),
+					description: 'Causas Inmediatas',
+					secondary: []
+				},
+				{
+					key: new Date().getTime(),
+					description: 'Causas Básicas/Raíz',
+					secondary: []
+				}
+			],
       		ready: false,
 		}
 	},
@@ -47,7 +58,7 @@ export default {
 		//axios para obtener los documentos
 		axios.post("/industrialSecurity/accidents/getCauses", {id: `${this.$route.params.id}`})
 		.then(response => {
-			this.causes = response.data;
+			//this.causes = response.data;
 			this.ready = true
 		})
 		.catch(error => {

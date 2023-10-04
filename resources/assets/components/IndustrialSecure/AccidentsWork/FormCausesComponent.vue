@@ -2,15 +2,8 @@
     <b-row>
         <b-col>
             <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-            	<b-card border-variant="primary" title="Causas del accidente o incidente">
+            	<b-card border-variant="primary" title="Análisis de causas">
 				    <div class="col-md-12">
-                        <b-form-row>
-                            <div class="col-md-12">
-                                <div class="float-right" style="padding-top: 10px;">
-                                <b-btn variant="primary" @click.prevent="addCause()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Causa Principal</b-btn>
-                                </div>
-                            </div>
-                        </b-form-row>
                         <b-form-row style="padding-top: 15px;">
                             <b-form-feedback class="d-block" v-if="form.errorsFor(`causes`)" style="padding-bottom: 10px;">
                             {{ form.errorsFor(`causes`) }}
@@ -24,16 +17,9 @@
                                         <b-col cols="2">
                                         <div class="float-right">
                                             <b-button-group>
-                                            <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + cause.key+'-1'" variant="link">
-                                                <span class="collapse-icon"></span>
-                                            </b-btn>
-                                            <b-btn @click.prevent="removeCause(index)" 
-                                               
-                                                size="sm" 
-                                                variant="secondary icon-btn borderless"
-                                                v-b-tooltip.top title="Eliminar Tema">
-                                                <span class="ion ion-md-close-circle"></span>
-                                            </b-btn>
+                                                <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + cause.key+'-1'" variant="link">
+                                                    <span class="collapse-icon"></span>
+                                                </b-btn>
                                             </b-button-group>
                                         </div>
                                         </b-col>
@@ -136,11 +122,11 @@
                     </div>
             	</b-card>
 <br><br>
-                <b-card v-show="form.isEdit">
+                <!--<b-card v-show="form.isEdit">
                     <div style="overflow-x: auto;" id="tree_cause" class="tree_cause">
                     </div>
                     <b-btn type="button" @click="download" variant="primary">Descargar Imagen</b-btn>
-                </b-card>
+                </b-card>-->
 				<br>
 				<div class="row float-right pt-10 pr-10">
                     <template>
@@ -173,7 +159,18 @@ export default {
         causes: {
 			default() {
 				return {
-					causes: [],
+					causes: [
+                        {
+                            key: new Date().getTime(),
+                            description: 'Causas Inmediatas',
+                            secondary: []
+                        },
+                        {
+                            key: new Date().getTime(),
+                            description: 'Causas Básicas / Raíz',
+                            secondary: []
+                        }
+                    ],
                     accident_id: '',
                     isEdit: false,
                     delete: {
@@ -258,7 +255,7 @@ export default {
 
             this.form.causes[indexObj].secondary[indexSub].tertiary.splice(index, 1)
         },
-        download()
+        /*download()
         {
             let serializer = new XMLSerializer();
             var svgData = serializer.serializeToString(document.getElementById('tree_cause'));
@@ -352,10 +349,10 @@ export default {
         },
         builderX(data) {
             return data.isPar != undefined && data.isPar ? -260 : data.value;
-        }
+        }*/
     },
     mounted() {
-        this.initTree();
+        //this.initTree();
     }
 };
 </script>

@@ -18,6 +18,7 @@
             configName="legalaspects-informs-contracts-lesse"
           ></vue-table>
           <vue-table
+            v-else
             configName="legalaspects-informs-contracts"
             :modelId="`${this.$route.params.id}`"
           ></vue-table>

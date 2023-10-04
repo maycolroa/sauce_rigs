@@ -1972,6 +1972,19 @@ export default [
                 },
                 permission: 'accidentsWork_investigation'
             },
+            /*{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Analisis de causas'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-accidentswork-causes' },
+                    id: 'id',
+                },
+                permission: 'accidentsWork_investigation'
+            },*/
             {
                 name: 'pdfSendMail',
                 config: {
