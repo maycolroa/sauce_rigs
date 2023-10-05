@@ -16,6 +16,7 @@
           <vue-table
             v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']"
             configName="legalaspects-informs-contracts-lesse"
+            :modelId="`${this.$route.params.id}`"
           ></vue-table>
           <vue-table
             v-else

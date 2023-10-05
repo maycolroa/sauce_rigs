@@ -1834,6 +1834,19 @@ export default [
               type: 'push',
               buttons: [
                 {
+                    config: {
+                        color: 'outline-success',
+                        borderless: true,
+                        icon: 'ion ion-md-create',
+                        title: 'Editar'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-informs-contracts-edit' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_informs_edit_informs_made'
+                },
+                {
                 config: {
                     color: 'outline-info',
                     borderless: true,
