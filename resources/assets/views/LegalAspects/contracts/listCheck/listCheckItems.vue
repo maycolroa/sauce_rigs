@@ -13,7 +13,7 @@
 					<loading v-if="!ready" :display="!ready"/>
 					<template v-else>
 						<template v-if="items.length == 0">
-							<p class="mb-0">No hay estándares definidos para usted</p>
+							<p class="mb-0">Para poder vizualizar los items debe completar la información del contratista, tal como el numero de trabajadores y clase de riesgo.</p>
 						</template>
 						<list-check-items
 							v-else

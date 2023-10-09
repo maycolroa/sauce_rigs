@@ -424,8 +424,8 @@ class ContractLesseeController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf')
-                            $fail('Archivo debe ser un pdf o un excel');
+                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt')
+                            $fail('Archivo debe ser un pdf, un excel, un word o una presentación');
                     }
                 }
 
@@ -884,9 +884,10 @@ class ContractLesseeController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf' && $ext != 'doc' && $ext != 'docx' && $ext != 'xlsx' && $ext != 'xls')
+
+                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt')
                         {
-                            $fail('Archivo debe ser un pdf, doc, docx, xlsx, xls');
+                            $fail('Archivo debe ser un pdf, doc, docx, xlsx, xls, ppt, pptx');
                         }
                     }
                     /*if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')

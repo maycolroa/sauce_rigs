@@ -128,9 +128,15 @@ class InformContractController extends Controller
                         $value->getClientMimeType() != 'image/png' && 
                         $value->getClientMimeType() != 'image/jpg' &&
                         $value->getClientMimeType() != 'image/jpeg' &&
-                        $value->getClientOriginalExtension() != 'pdf')
+                        $value->getClientOriginalExtension() != 'pdf' &&
+                        $value->getClientOriginalExtension() != 'xlsx' &&
+                        $value->getClientOriginalExtension() != 'xls' &&
+                        $value->getClientOriginalExtension() != 'docx' &&
+                        $value->getClientOriginalExtension() != 'doc' &&
+                        $value->getClientOriginalExtension() != 'ppt' &&
+                        $value->getClientOriginalExtension() != 'pptx')
                         
-                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                        $fail('Archivo debe ser png, jpg, jpeg, pdf, doc, docx, xlsx, xls, ppt, pptx');
                 },
 
             ]
@@ -189,12 +195,18 @@ class InformContractController extends Controller
                 function ($attribute, $value, $fail)
                 {
                     if (!is_string($value) && 
-                    $value->getClientMimeType() != 'image/png' && 
-                    $value->getClientMimeType() != 'image/jpg' &&
-                    $value->getClientMimeType() != 'image/jpeg' &&
-                    $value->getClientOriginalExtension() != 'pdf')
-                    
-                    $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                        $value->getClientMimeType() != 'image/png' && 
+                        $value->getClientMimeType() != 'image/jpg' &&
+                        $value->getClientMimeType() != 'image/jpeg' &&
+                        $value->getClientOriginalExtension() != 'pdf' &&
+                        $value->getClientOriginalExtension() != 'xlsx' &&
+                        $value->getClientOriginalExtension() != 'xls' &&
+                        $value->getClientOriginalExtension() != 'docx' &&
+                        $value->getClientOriginalExtension() != 'doc' &&
+                        $value->getClientOriginalExtension() != 'ppt' &&
+                        $value->getClientOriginalExtension() != 'pptx')
+                        
+                        $fail('Archivo debe ser png, jpg, jpeg, pdf, doc, docx, xlsx, xls, ppt, pptx');
                 },
             ]
         ])->validate();

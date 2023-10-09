@@ -102,7 +102,8 @@ class ConfigurationController extends Controller
                         {
                             $user = User::where('email', $email)->first();
 
-                            array_push($multiselect, $user->multiselect());
+                            if ($user)
+                                array_push($multiselect, $user->multiselect());
                         }
                     }
                 }   
@@ -118,7 +119,8 @@ class ConfigurationController extends Controller
                         {
                             $user = User::where('email', $email)->first();
 
-                            array_push($multiselect_incapacitated, $user->multiselect());
+                            if ($user)
+                                array_push($multiselect_incapacitated, $user->multiselect());
                         }
                     }
                 } 
