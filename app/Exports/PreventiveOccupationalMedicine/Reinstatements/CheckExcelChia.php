@@ -43,7 +43,6 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
 
     public function __construct($company_id, $data)
     {
-      \Log::info('chia');
       $this->company_id = $company_id;
       $this->data = $data;
       $this->keywords = $this->getKeywordQueue($this->company_id);
@@ -305,7 +304,7 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
             'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AX' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            //'AX' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             //'AK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }

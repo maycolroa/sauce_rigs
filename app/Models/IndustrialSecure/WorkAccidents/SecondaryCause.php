@@ -10,7 +10,8 @@ class SecondaryCause extends Model
 
     protected $fillable = [
         'main_cause_id',
-        'description'
+        'description',
+        'section_id'
     ];
 
     public function tertiary()
@@ -20,6 +21,11 @@ class SecondaryCause extends Model
 
     public function main()
     {
-        return $this->belongsTo(Objective::class, 'main_cause_id');
+        return $this->belongsTo(MainCause::class, 'main_cause_id');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
 }

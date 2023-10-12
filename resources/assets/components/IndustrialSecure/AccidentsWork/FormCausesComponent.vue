@@ -28,7 +28,7 @@
                                     <b-collapse :id="`accordion${cause.key}-1`" visible :accordion="`accordion-123`">
                                     <b-card-body>
                                         <b-form-row>
-                                            <vue-textarea class="col-md-12" v-model="form.causes[index].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.description`)" rows="1"></vue-textarea>
+                                            <vue-textarea class="col-md-12" v-model="form.causes[index].description" disabled name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.description`)" rows="1"></vue-textarea>
                                         </b-form-row>
                                         <b-form-row>
                                             <div class="col-md-12">
@@ -41,7 +41,7 @@
                                             <b-form-feedback class="d-block" v-if="form.errorsFor(`causes.${index}.secondary`)" style="padding-bottom: 10px;">
                                                 {{ form.errorsFor(`causes.${index}.secondary`) }}
                                             </b-form-feedback>
-                                            <template v-for="(secondaryCause, index2) in cause.secondary" style="padding-right: 15px;">
+                                            <template v-for="(secondaryCause, index2) in cause.secondary">
                                                 <b-card no-body class="mb-2 border-secondary" :key="secondaryCause.key" style="width: 100%;">
                                                     <b-card-header class="bg-secondary">
                                                         <b-row>

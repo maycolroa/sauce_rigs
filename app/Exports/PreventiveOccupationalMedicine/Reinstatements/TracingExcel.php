@@ -46,7 +46,7 @@ class TracingExcel implements FromCollection, WithHeadings, WithMapping, WithCol
       return [
         $data->check_id,
         $data->description,
-        $data->madeBy->name,
+        $data->madeBy ? $data->madeBy->name : '',
         Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('Y-m-d')
       ];
     }

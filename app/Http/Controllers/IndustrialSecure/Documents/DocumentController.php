@@ -47,15 +47,17 @@ class DocumentController extends Controller
         $roles = implode(',', $roles);
 
         $files = Document::selectRaw(
-            'sau_documents_security.*,
+            'sau_documents_security.name,
+             sau_documents_security.updated_at,
+             sau_documents_security.id,
              sau_users.name as user_name'
           )
           ->join('sau_users','sau_users.id','sau_documents_security.user_creator_id')
           ->leftJoin('sau_document_security_users', 'sau_document_security_users.document_security_id', 'sau_documents_security.id')
           ->leftJoin('sau_document_security_roles', 'sau_document_security_roles.document_security_id', 'sau_documents_security.id')
-          ->whereRaw("sau_document_security_users.user_id = {$this->user->id}")
-          ->orWhere('sau_documents_security.user_creator_id', $this->user->id)
-          ->orWhereRaw("sau_document_security_roles.role_id in ($roles)")
+          ->whereRaw("sau_document_security_users.user_id = {$this->user->id} OR sau_documents_security.user_creator_id = {$this->user->id} OR sau_document_security_roles.role_id in ($roles)")
+          /*->orWhere('sau_documents_security.user_creator_id', $this->user->id)
+          ->orWhereRaw("sau_document_security_roles.role_id in ($roles)")*/
           ->groupBy('sau_documents_security.id');
 
         /*$url = "/industrialsecure/documents";

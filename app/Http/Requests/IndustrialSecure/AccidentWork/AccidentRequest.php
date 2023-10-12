@@ -47,6 +47,21 @@ class AccidentRequest extends FormRequest
             }
         }
         
+        if ($this->has('causes'))
+        {
+            foreach ($this->input('causes') as $key => $value)
+            {
+                $data['causes'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+        
+        if ($this->has('delete_causes'))
+        {
+            $data['delete_causes'] = json_decode($this->input('delete_causes'), true);
+            $this->merge($data);
+        }
+
         if ($this->has('participants_investigations'))
         {
             $this->merge([

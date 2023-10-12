@@ -10,11 +10,23 @@ class TertiaryCause extends Model
 
     protected $fillable = [
         'secondary_cause_id',
-        'description'
+        'description',
+        'category_id',
+        'item_id'
     ];
 
     public function secondary()
     {
         return $this->belongsTo(SecondaryCause::class, 'secondary_cause_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(SectionCategory::class, 'category_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(SectionCategoryItems::class, 'item_id');
     }
 }

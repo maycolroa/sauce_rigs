@@ -271,6 +271,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('yearDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselectYear');
         Route::post('tagsRoles', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectRolesParticipants');
+        Route::post('awCategories', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategory');
+        Route::post('awItems', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategoryItem');
         Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');

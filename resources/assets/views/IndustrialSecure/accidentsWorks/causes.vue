@@ -58,7 +58,62 @@ export default {
 		//axios para obtener los documentos
 		axios.post("/industrialSecurity/accidents/getCauses", {id: `${this.$route.params.id}`})
 		.then(response => {
-			//this.causes = response.data;
+			this.causes = {
+				causes : [				
+					{
+						key: new Date().getTime(),
+						description: 'Causas Inmediatas',
+						secondary: [
+							{
+								description: 'CONDICIÓN AMBIENTAL PELIGROSA',
+								tertiary:
+								[
+									{
+										key: new Date().getTime(),
+										description: ''
+									}
+								]
+							},
+							{
+								description: 'ACTOS  INSEGUROS',
+								tertiary:
+								[
+									{
+										key: new Date().getTime(),
+										description: ''
+									}
+								]
+							}
+						]
+					},
+					{
+						key: new Date().getTime(),
+						description: 'Causas Básicas/Raíz',
+						secondary: [
+							{
+								description: 'FACTORES PERSONALES',
+								tertiary:
+								[
+									{
+										key: new Date().getTime(),
+										description: ''
+									}
+								]
+							},
+							{
+								description: 'FACTORES DEL TRABAJO',
+								tertiary:
+								[
+									{
+										key: new Date().getTime(),
+										description: ''
+									}
+								]
+							}
+						]
+					}
+				]
+			}
 			this.ready = true
 		})
 		.catch(error => {

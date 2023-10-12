@@ -14,6 +14,9 @@ use App\Models\IndustrialSecure\WorkAccidents\TagsRolesParticipant;
 use App\Models\IndustrialSecure\WorkAccidents\MainCause;
 use App\Models\IndustrialSecure\WorkAccidents\SecondaryCause;
 use App\Models\IndustrialSecure\WorkAccidents\TertiaryCause;
+use App\Models\IndustrialSecure\WorkAccidents\Section;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategory;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItems;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -548,6 +551,84 @@ class AccidentsWorkController extends Controller
             $accident->files = $this->getFiles($accident->id);
             $accident->actionPlan = ActionPlan::model($accident)->prepareDataComponent();
 
+            $causes = $this->getCauses($accident->id);
+
+            if (count($causes) > 0)
+            {
+                $accident->causes = $causes;
+            }
+            else
+            {
+                $accident->causes = [			
+                    [
+                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                        "description" => 'Causas Inmediatas',
+                        "secondary" => [
+                            [
+                                "description" => 'CONDICIÓN AMBIENTAL PELIGROSA',
+                                "section_id" => 1,
+                                "tertiary" => 
+                                [
+                                    [
+                                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                                        "category_id" => '',
+                                        "item_id" => ''
+                                    ]
+                                ]
+                            ],
+                            [
+                                "description" => 'ACTOS  INSEGUROS',
+                                "section_id" => 2,
+                                "tertiary" => 
+                                [
+                                    [
+                                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                                        "category_id" => '',
+                                        "item_id" => ''
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    [
+                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                        "description" => 'Causas Básicas/Raíz',
+                        "secondary" => [
+                            [
+                                "description" => 'FACTORES PERSONALES',
+                                "section_id" => 3,
+                                "tertiary" => 
+                                [
+                                    [
+                                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                                        "category_id" => '',
+                                        "item_id" => ''
+                                    ]
+                                ]
+                            ],
+                            [
+                                "description" => 'FACTORES DEL TRABAJO',
+                                "section_id" => 4,
+                                "tertiary" => 
+                                [
+                                    [
+                                        "key" => Carbon::now()->timestamp + rand(1,10000),
+                                        "category_id" => '',
+                                        "item_id" => ''
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+            }
+
+            $accident->delete_causes = [
+                "causes" => [],
+                "secondary" => [],
+                "tertiary" => []
+            ];
+
             return $this->respondHttp200([
                 'data' => $accident
             ]);
@@ -928,6 +1009,8 @@ class AccidentsWorkController extends Controller
                 $this->processFiles($request->get('files'), $accident->id);
             }
 
+            $this->saveCauses($request->causes, $accident->id, $request->delete_causes);
+
             $this->saveLogActivitySystem('Investigación de accidentes', 'Se realizo la investigacion del evento del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
 
             DB::commit();
@@ -1259,12 +1342,9 @@ class AccidentsWorkController extends Controller
         }
     }
 
-    public function saveCauses(Request $request)
+    public function saveCauses($causes, $accident_id, $delete_causes)
     {
-        $data['delete'] = json_decode($request->delete, true);
-        $request->merge($data);
-
-        if ($request->delete && count($request->delete) > 0)
+        if ($delete_causes)
         {
             foreach ($request->delete as $key => $value) 
             {
@@ -1310,13 +1390,7 @@ class AccidentsWorkController extends Controller
             }
         }
 
-        foreach ($request->causes as $key => $value)
-        {
-            $data['causes'][$key] = json_decode($value, true);
-            $request->merge($data);
-        }
-
-        foreach ($request->causes as $cause)
+        foreach ($causes as $cause)
         {
             $id = isset($cause['id']) ? $cause['id'] : NULL;
             $causeNew = MainCause::updateOrCreate(
@@ -1326,7 +1400,7 @@ class AccidentsWorkController extends Controller
                 [
                     'id' => $id,
                     'description' => $cause['description'],
-                    'accident_id' => $request->accident_id
+                    'accident_id' => $accident_id
                 ]
             );
 
@@ -1342,6 +1416,7 @@ class AccidentsWorkController extends Controller
     {
         foreach ($secondaries as $secondary)
         {
+            \Log::info($secondary);
             $id = isset($secondary['id']) ? $secondary['id'] : NULL;
             $secondaryNew = SecondaryCause::updateOrCreate(
                 [
@@ -1350,7 +1425,8 @@ class AccidentsWorkController extends Controller
                 [
                     'id' => $id,
                     'description' => $secondary['description'],
-                    'main_cause_id' => $cause->id
+                    'main_cause_id' => $cause->id,
+                    'section_id' => $secondary['section_id']
                 ]
             );
 
@@ -1370,15 +1446,17 @@ class AccidentsWorkController extends Controller
                 [
                     'id' => $id,
                     'description' => $tertiary['description'],
-                    'secondary_cause_id' => $secondary->id
+                    'secondary_cause_id' => $secondary->id,
+                    'category_id' => $tertiary['category_id'],
+                    'item_id' => $tertiary['item_id']
                 ]
             );
         }
     }
 
-    public function getCauses(Request $request)
+    public function getCauses($accident_id)
     {
-        $isEdit = false;
+        /*$isEdit = false;
         $id_tree = 0;
         $id_tree++;
 
@@ -1388,15 +1466,15 @@ class AccidentsWorkController extends Controller
             'value' => 15,
             'type' => "black",
             'level' => "orange",
-        ];
+        ];*/
 
-        $causes = MainCause::where('accident_id', $request->id)->get();
+        $causes = MainCause::where('accident_id', $accident_id)->get();
 
         if ($causes->count() > 0)
         {
             foreach ($causes as $key => $cause) 
             {
-                $id_tree++;
+                /*$id_tree++;
             
                 $principal = [
                     "children" => [],
@@ -1404,11 +1482,12 @@ class AccidentsWorkController extends Controller
                     'value' => 10,
                     'type' => "grey",
                     'level' => "red"
-                ];
+                ];*/
 
                 foreach ($cause->secondary as $secondary)
                 {
-                    $id_tree++;
+                    \Log::info($secondary);
+                    /*$id_tree++;
 
                     $secundaria = [
                         "children" => [],
@@ -1416,13 +1495,14 @@ class AccidentsWorkController extends Controller
                         'value' => 7,
                         'type' => "grey",
                         'level' => "purple"
-                    ];
+                    ];*/
 
                     $secondary->key = Carbon::now()->timestamp + rand(1,10000);
+                    $secondary->description = $secondary->description ? $secondary->description : $secondary->section->section_name;
 
                     foreach ($secondary->tertiary as $indexLevel => $tertiary)
                     {
-                        $id_tree++;
+                        /*$id_tree++;
 
                         $terciaria = [
                             "children" => [],
@@ -1433,21 +1513,23 @@ class AccidentsWorkController extends Controller
                             'isPar' => ($indexLevel % 2) == 0
                         ];
 
-                        array_push($secundaria['children'], $terciaria);
+                        array_push($secundaria['children'], $terciaria);*/
 
                         $tertiary->key = Carbon::now()->timestamp + rand(1,10000);
+                        $tertiary->multiselect_category_id = $tertiary->category_id ? $tertiary->category->multiselect() : [];
+                        $tertiary->multiselect_item_id = $tertiary->item_id ? $tertiary->item->multiselect() : [];
                     }
 
-                    array_push($principal['children'], $secundaria);
+                    //array_push($principal['children'], $secundaria);
                 }
 
-                array_push($tree['children'], $principal);
+                //array_push($tree['children'], $principal);
             }
 
             $isEdit = true;
         }
 
-        $data = [
+        /*$data = [
             'delete' => [
                 'causes' => [],
                 'secondary' => [],
@@ -1462,7 +1544,10 @@ class AccidentsWorkController extends Controller
         if ($request->has('no_encrypt'))
             return $data;
         else
-            return $this->respondHttp200($data);
+            return $this->respondHttp200($data);*/
+
+            return $causes;
+
     }
 
     public function prueba(Request $request)
@@ -1501,5 +1586,75 @@ class AccidentsWorkController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function multiselectSectionCategory(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $categories = SectionCategory::select("id", "category_name as name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('category_name', 'like', $keyword);
+                })
+                ->where('sau_aw_causes_section_category.section_id', $request->section)
+                ->orderBy('category_name')
+                ->take(30)
+                ->get();
+                
+            $categories = $categories->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($categories)
+            ]);
+        }
+        else
+        {
+            $categories = SectionCategory::selectRaw("            
+                sau_aw_causes_section_category.id as id,
+                sau_aw_causes_section_category.category_name as name
+            ")
+            ->where('sau_aw_causes_section_category.section_id', $request->section)
+            ->orderBy('category_name')
+            ->get()
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($categories);
+        }        
+    }
+
+    public function multiselectSectionCategoryItem(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $items = SectionCategoryItems::select("id", "item_name as name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('item_name', 'like', $keyword);
+                })
+                ->where('sau_aw_causes_section_category_items.category_id', $request->category)
+                ->orderBy('item_name')
+                ->take(30)
+                ->get();
+                
+            $items = $items->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($items)
+            ]);
+        }
+        else
+        {
+            $items = SectionCategoryItems::selectRaw("            
+                sau_aw_causes_section_category_items.id as id,
+                sau_aw_causes_section_category_items.item_name as name
+            ")
+            ->where('sau_aw_causes_section_category_items.category_id', $request->category)
+            ->orderBy('item_name')
+            ->get()
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($items);
+        }  
     }
 }

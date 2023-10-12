@@ -191,6 +191,25 @@
         </b-row>
       </tab-content>
 
+      <tab-content title="Analisis de causas">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <form-causes-analisys
+                  :form="form"
+                  :causes="form.causes"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"
+                  :empty="false"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
       <template slot="footer" slot-scope="props">
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
         <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
@@ -225,6 +244,7 @@ import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.v
 import DescriptionAccident from '@/components/IndustrialSecure/AccidentsWork/Investigation/DescriptionAccidentForm.vue';
 import ObservationFiles from '@/components/IndustrialSecure/AccidentsWork/Investigation/ObservationFilesComponent.vue';
 import PersonAdd from '@/components/IndustrialSecure/AccidentsWork/Investigation/PersonAddComponent.vue';
+import FormCausesAnalisys from '@/components/IndustrialSecure/AccidentsWork/Investigation/FormCausesAnalisysComponent.vue';
 
 export default {
   components: {
@@ -246,7 +266,8 @@ export default {
     DescriptionAccident,
     PersonAdd,
     InforAccident,
-    ObservationFiles
+    ObservationFiles,
+    FormCausesAnalisys
   },
   props: {
     url: { type: String },
@@ -363,6 +384,7 @@ export default {
              persons: [],
              delete: []
           },
+          causes: {},
           files: [],
           firm_image: '',
           old_firm: '',
