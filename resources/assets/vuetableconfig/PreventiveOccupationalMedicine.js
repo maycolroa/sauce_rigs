@@ -1050,8 +1050,9 @@ export default [
     name: 'biologicalmonitoring-documents',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'user_name', data: 'user_name', title: 'Usuario creador', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_documents_preventive.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_documents_preventive.updated_at', data: 'updated_at', title: 'Fecha de carga', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user_name', title: 'Usuario creador', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
