@@ -17,6 +17,8 @@ use App\Models\IndustrialSecure\WorkAccidents\TertiaryCause;
 use App\Models\IndustrialSecure\WorkAccidents\Section;
 use App\Models\IndustrialSecure\WorkAccidents\SectionCategory;
 use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItems;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryCompany;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItemsCompany;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -1346,7 +1348,7 @@ class AccidentsWorkController extends Controller
     {
         if ($delete_causes)
         {
-            foreach ($request->delete as $key => $value) 
+            foreach ($delete_causes as $key => $value) 
             {
                 if ($key == 0)
                 {
@@ -1416,7 +1418,6 @@ class AccidentsWorkController extends Controller
     {
         foreach ($secondaries as $secondary)
         {
-            \Log::info($secondary);
             $id = isset($secondary['id']) ? $secondary['id'] : NULL;
             $secondaryNew = SecondaryCause::updateOrCreate(
                 [
@@ -1445,7 +1446,7 @@ class AccidentsWorkController extends Controller
                 ], 
                 [
                     'id' => $id,
-                    'description' => $tertiary['description'],
+                    //'description' => $tertiary['description'],
                     'secondary_cause_id' => $secondary->id,
                     'category_id' => $tertiary['category_id'],
                     'item_id' => $tertiary['item_id']
@@ -1486,7 +1487,6 @@ class AccidentsWorkController extends Controller
 
                 foreach ($cause->secondary as $secondary)
                 {
-                    \Log::info($secondary);
                     /*$id_tree++;
 
                     $secundaria = [
@@ -1593,11 +1593,12 @@ class AccidentsWorkController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $categories = SectionCategory::select("id", "category_name as name")
+            $categories = SectionCategoryCompany::select("id", "category_name as name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('category_name', 'like', $keyword);
                 })
-                ->where('sau_aw_causes_section_category.section_id', $request->section)
+                ->where('sau_aw_causes_section_category_company.section_id', $request->section)
+                ->where('company_id', $this->company)
                 ->orderBy('category_name')
                 ->take(30)
                 ->get();
@@ -1610,11 +1611,12 @@ class AccidentsWorkController extends Controller
         }
         else
         {
-            $categories = SectionCategory::selectRaw("            
-                sau_aw_causes_section_category.id as id,
-                sau_aw_causes_section_category.category_name as name
+            $categories = SectionCategoryCompany::selectRaw("            
+                sau_aw_causes_section_category_company.id as id,
+                sau_aw_causes_section_category_company.category_name as name
             ")
-            ->where('sau_aw_causes_section_category.section_id', $request->section)
+            ->where('sau_aw_causes_section_category_company.section_id', $request->section)
+            ->where('company_id', $this->company)
             ->orderBy('category_name')
             ->get()
             ->pluck('id', 'name');
@@ -1628,11 +1630,12 @@ class AccidentsWorkController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $items = SectionCategoryItems::select("id", "item_name as name")
+            $items = SectionCategoryItemsCompany::select("id", "item_name as name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('item_name', 'like', $keyword);
                 })
-                ->where('sau_aw_causes_section_category_items.category_id', $request->category)
+                ->where('sau_aw_causes_section_category_items_company.category_id', $request->category)
+                ->where('company_id', $this->company)
                 ->orderBy('item_name')
                 ->take(30)
                 ->get();
@@ -1645,11 +1648,12 @@ class AccidentsWorkController extends Controller
         }
         else
         {
-            $items = SectionCategoryItems::selectRaw("            
-                sau_aw_causes_section_category_items.id as id,
-                sau_aw_causes_section_category_items.item_name as name
+            $items = SectionCategoryItemsCompany::selectRaw("            
+                sau_aw_causes_section_category_items_company.id as id,
+                sau_aw_causes_section_category_items_company.item_name as name
             ")
-            ->where('sau_aw_causes_section_category_items.category_id', $request->category)
+            ->where('sau_aw_causes_section_category_items_company.category_id', $request->category)
+            ->where('company_id', $this->company)
             ->orderBy('item_name')
             ->get()
             ->pluck('id', 'name');

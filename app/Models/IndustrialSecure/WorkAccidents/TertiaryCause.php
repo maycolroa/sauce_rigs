@@ -22,11 +22,11 @@ class TertiaryCause extends Model
 
     public function category()
     {
-        return $this->belongsTo(SectionCategory::class, 'category_id');
+        return $this->belongsTo(SectionCategoryCompany::class, 'category_id');
     }
 
     public function item()
     {
-        return $this->belongsTo(SectionCategoryItems::class, 'item_id');
+        return $this->belongsTo(SectionCategoryItemsCompany::class, 'item_id');
     }
 }

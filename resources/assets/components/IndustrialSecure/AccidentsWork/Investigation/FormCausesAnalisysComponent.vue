@@ -23,10 +23,10 @@
                     </b-card-header>
                     <b-collapse :id="`accordion${cause.key}-1`" visible :accordion="`accordion-123`">
                     <b-card-body>
-                        <b-form-row>
+                        <!--<b-form-row>
                             <vue-textarea class="col-md-12" v-model="causes[index].description" disabled name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.description`)" rows="1"></vue-textarea>
                         </b-form-row>
-                        <!--<b-form-row>
+                        <b-form-row>
                             <div class="col-md-12">
                                 <div class="float-right" style="padding-top: 10px;">
                                 <b-btn variant="primary" @click.prevent="addCauseSecondary(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Causa Secundaria</b-btn>
@@ -62,9 +62,9 @@
                                     </b-card-header>
                                     <b-collapse :id="`accordion${secondaryCause.key}-1`" visible :accordion="`accordion-1234`">
                                         <b-card-body>
-                                            <b-form-row>
+                                            <!--<b-form-row>
                                                 <vue-textarea class="col-md-12" v-model="causes[index].secondary[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.secondary.${index2}.description`)" disabled rows="1"></vue-textarea>
-                                            </b-form-row>
+                                            </b-form-row>-->
                                             <b-form-row>
                                                 <div class="col-md-12">
                                                     <div class="float-right" style="padding-top: 10px;">

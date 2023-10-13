@@ -15,6 +15,7 @@ use App\Models\System\Licenses\License;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\SyncRestrictionDefaultJob;
+use App\Jobs\IndustrialSecure\AccidentsWork\SyncCategoryItemsDefaultJob;
 use DB;
 
 class NotifyLicenseRenewalJob implements ShouldQueue
@@ -219,5 +220,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         if (in_array(Module::where('name', 'reinstatements')->first()->id, $this->modules))
             SyncRestrictionDefaultJob::dispatch($this->company_id);
+        else if (in_array(Module::where('name', 'dangerousConditions')->first()->id, $this->modules))
+            SyncCategoryItemsDefaultJob::dispatch($this->company_id);
     }
 }
