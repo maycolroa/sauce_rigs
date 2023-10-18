@@ -2,24 +2,21 @@
   <div>
     <header-module
       title="ACCIDENTES E INCIDENTES DE TRABAJO"
-      subtitle="ADMINISTRAR ACCIDENTES"
-      url="industrialsecure-dangerousconditions"
+      subtitle="ADMINISTRAR CATEGORIAS"
+      url="industrialsecure-accidentswork-index-causes"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['accidentsWork_c']">
-            <b-btn :to="{name:'industrialsecure-accidentswork-create'}" variant="primary">Crear Reporte</b-btn><b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
-            <b-btn v-if="auth.can['accidentsWork_r']" :to="{name:'industrialsecure-accidentswork-report'}" variant="primary">Reportes</b-btn>
-            <b-btn v-if="auth.can['accidentsWork_c']" :to="{name:'industrialsecure-accidentswork-index-causes'}" variant="primary">Administrar Causas</b-btn>
+            <b-btn :to="{name:'industrialsecure-accidentswork-causes-categories-create'}" variant="primary">Crear Categoria</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="industrialsecure-accidents"
+                configName="industrialsecure-accidents-causes-categories"
                 v-if="auth.can['accidentsWork_r']"
-                @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -31,17 +28,17 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'accidentsWork',
+  name: 'accidentsWork-causes-categories',
   metaInfo: {
-    title: 'Accidentes e incidentes'
+    title: 'Causas - Categorias'
   },
   data () {
     return {
-      filters: []
+      //filters: []
     }
   },
   methods: {
-    setFilters(value)
+    /*setFilters(value)
     {
       this.filters = value
     },
@@ -60,7 +57,7 @@ export default {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         }
       });
-    },
+    },*/
   }
 }
 </script>

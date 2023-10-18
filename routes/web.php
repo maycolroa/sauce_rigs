@@ -271,6 +271,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('yearDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselectYear');
         Route::post('tagsRoles', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectRolesParticipants');
+        Route::post('awSections', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSection');
         Route::post('awCategories', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategory');
         Route::post('awItems', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategoryItem');
         Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
@@ -650,6 +651,11 @@ Route::middleware(['auth'])->group(function () {
       Route::post('accidents/saveCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@saveCauses');
 
       Route::post('accidents/getCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@getCauses');
+
+      Route::prefix('causes')->group(function () {
+        Route::ApiResource('categories', 'IndustrialSecure\AccidentsWork\CausesCategoriesController');
+        Route::post('categories/data', 'IndustrialSecure\AccidentsWork\CausesCategoriesController@data');
+      });
 
       Route::post('configuration', 'IndustrialSecure\DangerousConditions\ConfigurationController@store');
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');

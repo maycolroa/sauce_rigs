@@ -1588,6 +1588,39 @@ class AccidentsWorkController extends Controller
         }
     }
 
+    public function multiselectSection(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $categories = Section::select("id", "section_name as name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('section_name', 'like', $keyword);
+                })
+                ->orderBy('section_name')
+                ->take(30)
+                ->get();
+                
+            $categories = $categories->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($categories)
+            ]);
+        }
+        else
+        {
+            $categories = Section::selectRaw("            
+                sau_aw_causes_sections.id as id,
+                sau_aw_causes_sections.section_name as name
+            ")
+            ->orderBy('section_name')
+            ->get()
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($categories);
+        }        
+    }
+
     public function multiselectSectionCategory(Request $request)
     {
         if($request->has('keyword'))

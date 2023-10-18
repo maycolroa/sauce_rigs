@@ -1132,6 +1132,46 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/causes')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-index-causes',
+          path: 'accidents/index/causes',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/indexCauses')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-categories',
+          path: 'accidents/index/causes/categories',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/categories/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-categories-create',
+          path: 'accidents/index/causes/categories/create',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/categories/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-categories-edit',
+          path: 'accidents/index/causes/categories/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/categories/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-categories-view',
+          path: 'accidents/index/causes/categories/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/categories/view')
+        }
+      ]),
       ...middleware({ 'check-permission': 'accidentsWork_u' }, [
         {
           name: 'industrialsecure-accidentswork-investigation',

@@ -22,6 +22,11 @@ class SectionCategoryCompany extends Model
         return $this->hasMany(SectionCategoryItems::class, 'category_id');
     }
 
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
+    }
+
     public function multiselect()
     {
         return [
