@@ -216,6 +216,20 @@ class InspectionItemsQualificationAreaLocation extends Model
         return $query;
     }
 
+    public function scopeInQualification($query, $levels, $typeSearch = 'IN')
+    {
+        if (COUNT($levels) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.qualification_id', $levels);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.qualification_id', $levels);
+        }
+
+        return $query;
+    }
+
      /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

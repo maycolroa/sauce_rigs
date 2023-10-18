@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExportJob;
 use App\Inform\IndustrialSecure\DangerousConditions\Inspections\InformManagerInspections;
 use App\Models\General\Module;
@@ -746,8 +747,8 @@ class InspectionReportController extends Controller
             if (isset($filters["inspections"]))
               $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
 
-            /*if (isset($filters["themes"]))
-              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 'sau_ph_inspection_sections');*/
+            if (isset($filters["qualification"]))
+              $consultas->inQualification($this->getValuesForMultiselect($filters["qualification"]), $filters['filtersType']['qualification']);
 
             if (isset($filters["items"]))
               $consultas->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);

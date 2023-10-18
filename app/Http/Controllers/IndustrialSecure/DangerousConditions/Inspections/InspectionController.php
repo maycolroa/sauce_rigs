@@ -976,10 +976,10 @@ class InspectionController extends Controller
     {
         $qualification = Qualifications::select(
             "sau_ph_qualifications_inspections.id as id",
-            "sau_ph_qualifications_inspections.description as description")
+            "sau_ph_qualifications_inspections.description as name")
             ->where('id', '<=', 4)
             ->orderBy('description')
-            ->pluck('id', 'description');
+            ->pluck('id', 'name');
 
         return $this->multiSelectFormat($qualification);
     }

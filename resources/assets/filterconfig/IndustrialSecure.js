@@ -729,12 +729,12 @@ export default [
           type: 'select',
           label: 'Nombres'
         },
-        /*{
-          url: '/selects/themes',
-          key: 'themes',
+        {
+          url: '/selects/qualificationMasiveInspection',
+          key: 'qualification',
           type: 'select',
-          label: 'Temas',
-        },*/
+          label: 'Calificacion',
+        },
         {
           url: '/selects/phItems',
           key: 'items',
