@@ -14,6 +14,11 @@ class SectionCategoryItemsCompany extends Model
         'company_id'
     ];
 
+    public function category()
+    {
+        return $this->belongsTo(SectionCategoryCompany::class, 'category_id');
+    }
+
     public function multiselect()
     {
         return [

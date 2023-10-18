@@ -1188,5 +1188,37 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/sendMailPdf')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-items',
+          path: 'accidents/index/causes/items',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/items/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-items-create',
+          path: 'accidents/index/causes/items/create',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/items/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-items-edit',
+          path: 'accidents/index/causes/items/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/items/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes-items-view',
+          path: 'accidents/index/causes/items/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/items/view')
+        }
+      ]),
     ]
   }]

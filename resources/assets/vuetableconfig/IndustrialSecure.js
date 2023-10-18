@@ -2396,4 +2396,59 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-accidents-causes-items',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'item_name', data: 'item_name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_aw_causes_section_category_company.category_name', data: 'category_name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_aw_causes_sections.section_name', data: 'section_name', title: 'Sección', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'causes_name', data: 'causes_name', title: 'Causa', sortable: false, searchable: false, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-accidentswork-causes-items-edit' },
+            id: 'id',
+        },
+        //permission: 'documentsSecurity_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-accidentswork-causes-items-view' },
+            id: 'id',
+        },
+        //permission: 'documentsSecurity_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/causes/items/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el item __item_name__'
+        },
+        //permission: 'documentsSecurity_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/causes/items/data',
+        filterColumns: true,
+    }
+},
 ];

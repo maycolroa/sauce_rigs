@@ -3,17 +3,16 @@
     <header-module
       title="ACCIDENTES E INCIDENTES DE TRABAJO"
       subtitle="CREAR REPORTE"
-      url="industrialsecure-accidentswork"
+      url="industrialsecure-accidentswork-causes-items"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <accident-form
-                url="/industrialSecurity/accidents"
+                url="/industrialSecurity/causes/items"
                 method="POST"
-                :sexs="sexs"
-                :cancel-url="{ name: 'industrialsecure-accidentswork'}"
+                :cancel-url="{ name: 'industrialsecure-accidentswork-causes-items'}"
                 />
         </b-card-body>
       </b-card>
@@ -22,37 +21,21 @@
 </template>
 
 <script>
-import AccidentForm from '@/components/IndustrialSecure/AccidentsWork/FormAccidentsComponent.vue';
+import AccidentForm from '@/components/IndustrialSecure/AccidentsWork/Causes/FormItemComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'industrialsecure-accidents-work-create',
+  name: 'accidentsWork-causes-items-create',
   metaInfo: {
-    title: 'Accidentes e incidentes - Crear'
+    title: 'Causas Items - Crear'
   },
   components:{
     AccidentForm
   },
   data(){
     return {
-      sexs: []
     }
-  },
-  created(){ 
-    this.fetchSelect('sexs', '/selects/sexs')
-  },
-  methods: {
-		fetchSelect(key, url)
-		{
-			GlobalMethods.getDataMultiselect(url)
-			.then(response => {
-				this[key] = response;
-			})
-			.catch(error => {
-				Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-			});
-		},
-	}
+  }
 }
 </script>

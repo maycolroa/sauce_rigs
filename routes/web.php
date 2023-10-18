@@ -273,6 +273,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsRoles', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectRolesParticipants');
         Route::post('awSections', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSection');
         Route::post('awCategories', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategory');
+        Route::post('awCategories2', 'IndustrialSecure\AccidentsWork\CausesItemsController@multiselectSectionCategory');
         Route::post('awItems', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSectionCategoryItem');
         Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
@@ -655,6 +656,8 @@ Route::middleware(['auth'])->group(function () {
       Route::prefix('causes')->group(function () {
         Route::ApiResource('categories', 'IndustrialSecure\AccidentsWork\CausesCategoriesController');
         Route::post('categories/data', 'IndustrialSecure\AccidentsWork\CausesCategoriesController@data');
+        Route::ApiResource('items', 'IndustrialSecure\AccidentsWork\CausesItemsController');
+        Route::post('items/data', 'IndustrialSecure\AccidentsWork\CausesItemsController@data');
       });
 
       Route::post('configuration', 'IndustrialSecure\DangerousConditions\ConfigurationController@store');

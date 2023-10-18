@@ -5,11 +5,13 @@ namespace App\Http\Controllers\IndustrialSecure\AccidentsWork;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItems;
+use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItemsCompany;
 use App\Models\IndustrialSecure\WorkAccidents\SectionCategory;
 use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryCompany;
 use DB;
 
-class CausesCategoriesController extends Controller
+class CausesItemsController extends Controller
 {
     /**
      * creates and instance and middlewares are checked
@@ -41,16 +43,19 @@ class CausesCategoriesController extends Controller
     */
     public function data(Request $request)
     {
-        $categories = SectionCategoryCompany::select(
-            'sau_aw_causes_section_category_company.*',
+        $items = SectionCategoryItemsCompany::select(
+            'sau_aw_causes_section_category_items_company.*',
+            'sau_aw_causes_section_category_company.category_name',
             'sau_aw_causes_sections.section_name',
             DB::raw("IF(sau_aw_causes_sections.id <= 2, 'Causas Inmediatas', 'Causas Básicas/Raíz') AS causes_name")
         )
+        ->join('sau_aw_causes_section_category_company', 'sau_aw_causes_section_category_company.id', 'sau_aw_causes_section_category_items_company.category_id')
         ->join('sau_aw_causes_sections', 'sau_aw_causes_sections.id', 'sau_aw_causes_section_category_company.section_id')
-        ->where('company_id', $this->company)
-        ->orderBy('sau_aw_causes_section_category_company.created_at', 'DESC');
+        ->where('sau_aw_causes_section_category_company.company_id', $this->company)
+        ->where('sau_aw_causes_section_category_items_company.company_id', $this->company)
+        ->orderBy('sau_aw_causes_section_category_items_company.created_at', 'DESC');
 
-        return Vuetable::of($categories)
+        return Vuetable::of($items)
                     ->make();
     }
 
@@ -66,20 +71,21 @@ class CausesCategoriesController extends Controller
 
         try 
         {
-            $category = new SectionCategoryCompany($request->all());
-            $category->company_id = $this->company;
+            $item = new SectionCategoryItemsCompany($request->all());
+            $item->company_id = $this->company;
+            $item->category_default = false;
             
-            if(!$category->save()){
+            if(!$item->save()){
                 \Log::info('entro error');
                 return $this->respondHttp500();
             }
 
-            $this->saveLogActivitySystem('Accidentes e incidentes - Causas Categorias', 'Se creo la categoria '.$category->category_name.' ');
+            $this->saveLogActivitySystem('Accidentes e incidentes - Causas Items', 'Se creo el item '.$item->item_name.' ');
 
             DB::commit();
 
             return $this->respondHttp200([
-                'message' => 'Se creo la categoria'
+                'message' => 'Se creo el item'
             ]);
 
         } catch (\Exception $e) {
@@ -99,12 +105,13 @@ class CausesCategoriesController extends Controller
     {
         try
         {
-            $category = SectionCategoryCompany::findOrFail($id);
-            $category->multiselect_section = $category->section->multiselect();
+            $item = SectionCategoryItemsCompany::findOrFail($id);
+            $item->multiselect_category = $item->category->multiselect();
 
+            \Log::info($item);
 
             return $this->respondHttp200([
-                'data' => $category,
+                'data' => $item,
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -118,24 +125,24 @@ class CausesCategoriesController extends Controller
      * @param  Danger  $danger
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SectionCategoryCompany $category)
+    public function update(Request $request, SectionCategoryItemsCompany $item)
     {
         DB::beginTransaction();
 
         try 
         {
-            $category->fill($request->all());
+            $item->fill($request->all());
         
-            if(!$category->update()){
-            return $this->respondHttp500();
+            if(!$item->update()){
+                return $this->respondHttp500();
             }
 
-            $this->saveLogActivitySystem('Accidentes e incidentes - Causas Categorias', 'Se edito la categoria '.$category->category_name.' ');
+            $this->saveLogActivitySystem('Accidentes e incidentes - Causas Items', 'Se edito el item '.$item->item_name.' ');
 
             DB::commit();
 
             return $this->respondHttp200([
-                'message' => 'Se edito la categoria'
+                'message' => 'Se edito el item'
             ]);
 
         } catch (\Exception $e) {
@@ -151,17 +158,52 @@ class CausesCategoriesController extends Controller
      * @param  Danger  $danger
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SectionCategoryCompany $category)
+    public function destroy(SectionCategoryItemsCompany $item)
     {
-        $this->saveLogActivitySystem('Accidentes e incidentes - Causas Categorias', 'Se elimino la categoria '.$category->category_name.' ');
+        $this->saveLogActivitySystem('Accidentes e incidentes - Causas Items', 'Se elimino el item '.$item->item_name.' ');
 
-        if(!$category->delete())
+        if(!$item->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la categoria'
+            'message' => 'Se elimino el item'
         ]);
+    }
+
+    public function multiselectSectionCategory(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $categories = SectionCategoryCompany::select("id", "category_name as name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('category_name', 'like', $keyword);
+                })
+                ->where('company_id', $this->company)
+                ->orderBy('category_name')
+                ->take(30)
+                ->get();
+                
+            $categories = $categories->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($categories)
+            ]);
+        }
+        else
+        {
+            $categories = SectionCategoryCompany::selectRaw("            
+                sau_aw_causes_section_category_company.id as id,
+                sau_aw_causes_section_category_company.category_name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('category_name')
+            ->get()
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($categories);
+        }        
     }
 }
