@@ -562,6 +562,16 @@ class FileUploadController extends Controller
       ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
       ->groupBy('sau_ct_information_contract_lessee.id')
       ->orderBy('contract');
+      
+      if (!$this->user->hasRole('Superadmin', $this->team))
+      {
+          if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+          {
+              $contract = $this->getContractIdUser($this->user->id);
+
+              $data->where('sau_ct_information_contract_lessee.id', $contract);
+          }
+      }
 
       $url = "/legalaspects/upload-files/report";
 
