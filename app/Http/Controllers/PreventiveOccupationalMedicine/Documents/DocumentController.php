@@ -53,9 +53,11 @@ class DocumentController extends Controller
           ->join('sau_users','sau_users.id','sau_documents_preventive.user_creator_id')
           ->leftJoin('sau_documents_preventive_user', 'sau_documents_preventive_user.document_preventive_id', 'sau_documents_preventive.id')
           ->leftJoin('sau_documents_preventive_roles', 'sau_documents_preventive_roles.document_preventive_id', 'sau_documents_preventive.id')
-          ->whereRaw("sau_documents_preventive_user.user_id = {$this->user->id}")
-          ->orWhere('sau_documents_preventive.user_creator_id', $this->user->id)
-          ->orWhereRaw("sau_documents_preventive_roles.role_id in ($roles)")
+          ->where(function ($q) use ($roles) {
+            $q->orWhereRaw("sau_documents_preventive_user.user_id = {$this->user->id}")
+            ->orWhere('sau_documents_preventive.user_creator_id', $this->user->id)
+            ->orWhereRaw("sau_documents_preventive_roles.role_id in ($roles)");
+          })          
           ->groupBy('sau_documents_preventive.id');
 
         /*$url = "/industrialsecure/documents";
