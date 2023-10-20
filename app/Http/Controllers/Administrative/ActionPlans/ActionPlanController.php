@@ -545,6 +545,33 @@ class ActionPlanController extends Controller
             $reports->betweenDate($dates);
         }
 
+        if (!$this->user->hasRole('Superadmin', $this->team))
+        {
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            {
+                $contract = $this->getContractUser($this->user->id);
+                $users = $this->getUsersContract($contract->id);
+                $users_list = [$this->user->id];
+
+                foreach ($users as $user)
+                {
+                    array_push($users_list, $user->id);
+                }
+
+                $reports->where(function ($subquery) use ($users_list) {
+                    $subquery->whereIn('sau_action_plans_activities.responsible_id', $users_list);
+                });
+            }
+            else
+            {
+                $reports->where(function ($subquery) {
+                    $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
+
+                    $subquery->orWhere('sau_action_plans_activities.responsible_id', $this->user->id);
+                });
+            }
+        }
+
         return Vuetable::of($reports)
             ->addColumn('p_num_eje', function ($report) {
                 if (($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados) > 0)
@@ -610,6 +637,33 @@ class ActionPlanController extends Controller
             }
                 
             $reports->betweenDate($dates);
+        }
+
+        if (!$this->user->hasRole('Superadmin', $this->team))
+        {
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            {
+                $contract = $this->getContractUser($this->user->id);
+                $users = $this->getUsersContract($contract->id);
+                $users_list = [$this->user->id];
+
+                foreach ($users as $user)
+                {
+                    array_push($users_list, $user->id);
+                }
+
+                $reports->where(function ($subquery) use ($users_list) {
+                    $subquery->whereIn('sau_action_plans_activities.responsible_id', $users_list);
+                });
+            }
+            else
+            {
+                $reports->where(function ($subquery) {
+                    $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
+
+                    $subquery->orWhere('sau_action_plans_activities.responsible_id', $this->user->id);
+                });
+            }
         }
 
         $reports = $reports->get();
