@@ -230,6 +230,27 @@ class InspectionItemsQualificationAreaLocation extends Model
         return $query;
     }
 
+    public function scopeInActionPlan($query, $ap, $typeSearch = 'IN')
+    {
+        \Log::info($ap);
+        if ($typeSearch == 'IN')
+        {
+            if (count($ap) > 0 && $ap[0] == 'SI')
+                $query->whereNotNull('sau_action_plans_activities.id');
+            else
+                $query->whereNull('sau_action_plans_activities.id');
+        }
+        else if ($typeSearch == 'NOT IN')
+        {
+            if (count($ap) > 0 && $ap[0] == 'NO')
+                $query->whereNull('sau_action_plans_activities.id');
+            else
+                $query->whereNotNull('sau_action_plans_activities.id');
+        }
+
+        return $query;
+    }
+
      /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

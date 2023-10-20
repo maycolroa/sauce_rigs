@@ -748,6 +748,12 @@ export default [
           label: 'Usuario Calificador'
         },
         {
+          url: '/selects/accidents/siNo',
+          key: 'tienePlan',
+          type: 'select',
+          label: '¿Tiene plan de acción?',
+        },
+        {
           key: 'dateRange',
           type: 'dateRange',
           label: 'Fecha',

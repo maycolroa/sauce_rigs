@@ -753,6 +753,9 @@ class InspectionReportController extends Controller
             if (isset($filters["items"]))
               $consultas->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
 
+            if (isset($filters["tienePlan"]) && COUNT($filters["tienePlan"]))
+              $consultas->inActionPlan($this->getValuesForMultiselect($filters["tienePlan"]), $filters['filtersType']['tienePlan']);
+
             $dates_request = explode('/', $filters["dateRange"]);
 
             $dates = [];

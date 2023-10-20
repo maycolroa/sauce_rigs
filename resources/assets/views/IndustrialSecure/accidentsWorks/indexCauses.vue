@@ -2,7 +2,7 @@
   	<div>
     	<header-module
 			title="INSPECCIONES PLANEADAS REPORTES"
-			url="dangerousconditions-inspections"
+			url="industrialsecure-accidentswork"
 		/>
     	<div class="col-md">
 			<b-card no-body>
