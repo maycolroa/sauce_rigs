@@ -45,7 +45,8 @@ class CompanyController extends Controller
     */
     public function data(Request $request)
     {
-        $companies = CompanyGroup::select('*');
+        $companies = CompanyGroup::select('*')
+        ->orderBy('sau_company_groups.id', 'DESC');
 
         return Vuetable::of($companies)
             ->addColumn('switchStatus', function ($company) {

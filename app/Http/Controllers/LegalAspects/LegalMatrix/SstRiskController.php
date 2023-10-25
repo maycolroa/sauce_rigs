@@ -40,7 +40,7 @@ class SstRiskController extends Controller
     */
     public function data(Request $request)
     {
-        $sst_risks = SstRisk::select('*');
+        $sst_risks = SstRisk::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($sst_risks)
                     ->make();
@@ -150,6 +150,7 @@ class SstRiskController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -162,6 +163,7 @@ class SstRiskController extends Controller
                 'sau_lm_sst_risks.id as id',
                 'sau_lm_sst_risks.name as name'
             )
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($sst_risks);

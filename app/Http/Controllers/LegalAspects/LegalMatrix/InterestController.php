@@ -46,9 +46,9 @@ class InterestController extends Controller
     public function data(Request $request)
     {
         if ($request->has('custom'))
-            $interests = Interest::company()->select('*');
+            $interests = Interest::company()->select('*')->orderBy('id', 'DESC');
         else
-            $interests = Interest::system()->select('*');
+            $interests = Interest::system()->select('*')->orderBy('id', 'DESC');
 
         if (!$request->has('orderBy'))
             $interests->orderBy('name');

@@ -79,7 +79,8 @@ class RiskMatrixController extends Controller
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
         ->join('sau_users', 'sau_users.id', 'sau_rm_risks_matrix.user_id')
-        ->where('sau_rm_risks_matrix.company_id', $this->company);
+        ->where('sau_rm_risks_matrix.company_id', $this->company)
+        ->orderBy('sau_rm_risks_matrix.id', 'DESC');
 
         return Vuetable::of($riskMatrix)
                     ->make();

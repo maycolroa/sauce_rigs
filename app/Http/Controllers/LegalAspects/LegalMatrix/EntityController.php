@@ -41,9 +41,9 @@ class EntityController extends Controller
     public function data(Request $request)
     {
         if ($request->has('custom'))
-            $entities = Entity::company()->select('*');
+            $entities = Entity::company()->select('*')->orderBy('id', 'DESC');
         else
-            $entities = Entity::system()->select('*');
+            $entities = Entity::system()->select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($entities)
                     ->make();
@@ -158,6 +158,7 @@ class EntityController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -170,6 +171,7 @@ class EntityController extends Controller
                 "GROUP_CONCAT(sau_lm_entities.id) as ids,
                  sau_lm_entities.name as name")
             ->$scope()
+            ->orderBy('name')
             ->groupBy('sau_lm_entities.name')
             ->pluck('ids', 'name');
         

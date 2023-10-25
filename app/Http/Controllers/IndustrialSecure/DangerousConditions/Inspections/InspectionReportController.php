@@ -107,7 +107,8 @@ class InspectionReportController extends Controller
         $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
         $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
       })
-      ->where('sau_ph_inspections.company_id', $this->company);
+      ->where('sau_ph_inspections.company_id', $this->company)
+      ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
 
         if ($request->table == "with_theme" )
           $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');
@@ -215,7 +216,8 @@ class InspectionReportController extends Controller
           $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
           $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
         })
-        ->where('sau_ph_inspections.company_id', $this->company);
+        ->where('sau_ph_inspections.company_id', $this->company)
+        ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
 
         if ($request->table == "with_theme" )
           $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');

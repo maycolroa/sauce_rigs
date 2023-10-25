@@ -66,7 +66,8 @@ class ListCheckQualificationController extends Controller
             'sau_users.name as user_creator')
         ->join('sau_users', 'sau_users.id', 'sau_ct_list_check_qualifications.user_id')
         ->where('company_id', $this->company)
-        ->where('contract_id', $contract->id);
+        ->where('contract_id', $contract->id)
+        ->orderBy('sau_ct_list_check_qualifications.id', 'DESC');
 
         return Vuetable::of($qualifications)
                     ->make();

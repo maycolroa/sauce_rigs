@@ -87,7 +87,8 @@ class DangerMatrixController extends Controller
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
-        ->join('sau_users', 'sau_users.id', 'sau_dangers_matrix.user_id');
+        ->join('sau_users', 'sau_users.id', 'sau_dangers_matrix.user_id')
+        ->orderBy('sau_dangers_matrix.id', 'DESC');
 
         return Vuetable::of($dangersMatrix)
                     ->make();
@@ -818,6 +819,7 @@ class DangerMatrixController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -839,7 +841,9 @@ class DangerMatrixController extends Controller
     {
         $danger_matrix = DangerMatrix::selectRaw("
                 sau_dangers_matrix.year as id
-            ")->pluck('id', 'id');
+            ")
+            ->orderBy('id')
+            ->pluck('id', 'id');
         
         return $this->multiSelectFormat($danger_matrix);
     }

@@ -44,14 +44,16 @@ class ReportController extends Controller
     public function data(Request $request)
     {
         if($this->user->can('absen_reports_view_all', $this->team)){
-            $reports = Report::select('*');
+            $reports = Report::select('*')
+            ->orderBy('id', 'DESC');
         }
         else{
             $reports = Report::select(
                 'sau_absen_reports.*'
             )
             ->join('sau_absen_report_user', 'sau_absen_report_user.report_id', 'sau_absen_reports.id')
-            ->where('sau_absen_report_user.user_id', $this->user->id);
+            ->where('sau_absen_report_user.user_id', $this->user->id)            
+            ->orderBy('sau_absen_reports.id', 'DESC');
         }
         
         return Vuetable::of($reports)

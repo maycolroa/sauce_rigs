@@ -66,7 +66,8 @@ class TransactionReturnsController extends Controller
         ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
         ->where('sau_epp_transactions_employees.type', 'Devolucion')
-        ->groupBy('sau_epp_transactions_employees.id');
+        ->groupBy('sau_epp_transactions_employees.id')
+        ->orderBy('sau_epp_transactions_employees.id', 'DESC');
 
         return Vuetable::of($transactions)
         ->make();

@@ -67,7 +67,8 @@ class EmployeesController extends Controller
         ->leftJoin('sau_employees_businesses', 'sau_employees_businesses.id', 'sau_employees.employee_business_id')
         ->leftJoin('sau_employees_eps', 'sau_employees_eps.id', 'sau_employees.employee_eps_id')
         ->leftJoin('sau_employees_afp', 'sau_employees_afp.id', 'sau_employees.employee_afp_id')
-        ->leftJoin('sau_employees_arl', 'sau_employees_arl.id', 'sau_employees.employee_arl_id');
+        ->leftJoin('sau_employees_arl', 'sau_employees_arl.id', 'sau_employees.employee_arl_id')
+        ->orderBy('sau_employees.id', 'DESC');
 
         return Vuetable::of($employees)
                 ->make();
@@ -230,6 +231,7 @@ class EmployeesController extends Controller
             ->orWhere('name', 'like', $keyword);
         })  
         ->active()
+        ->orderBy('name')
         ->take(30)->pluck('id', 'name');
         return $this->respondHttp200([
             'options' => $this->multiSelectFormat($employees)
@@ -255,6 +257,7 @@ class EmployeesController extends Controller
                     "DISTINCT sau_employees.deal AS deal"
                 )
                 ->whereNotNull('sau_employees.deal')
+                ->orderBy('deal')
                 ->pluck('deal', 'deal');
             
         return $this->multiSelectFormat($deals);
@@ -267,6 +270,7 @@ class EmployeesController extends Controller
                 )
                 ->active()
                 ->whereNotNull('sau_employees.identification')
+                ->orderBy('identification')
                 ->pluck('identification', 'identification');
             
         return $this->multiSelectFormat($identifications);
@@ -279,6 +283,7 @@ class EmployeesController extends Controller
                 )
                 ->active()
                 ->whereNotNull('sau_employees.name')
+                ->orderBy('name')
                 ->pluck('name', 'name');
             
         return $this->multiSelectFormat($names);

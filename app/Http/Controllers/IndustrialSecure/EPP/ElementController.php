@@ -64,7 +64,8 @@ class ElementController extends Controller
             case when sau_epp_elements.state is true then 'SI' else 'NO' end as state,
             case when sau_epp_elements.identify_each_element is true then 'SI' else 'NO' end as identy,
             case when sau_epp_elements.reusable is true then 'SI' else 'NO' end as reusable"
-        );
+        )
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($elements)
                     ->make();

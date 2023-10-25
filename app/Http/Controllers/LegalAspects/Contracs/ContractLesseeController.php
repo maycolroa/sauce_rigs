@@ -97,7 +97,8 @@ class ContractLesseeController extends Controller
                       $join->on("sau_ct_list_check_qualifications.contract_id", "sau_ct_information_contract_lessee.id");
                       $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
                     })
-                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id');
+                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
+                    ->orderBy('sau_ct_information_contract_lessee.id', 'DESC');
 
         $url = "/legalaspects/contractor";
 
@@ -554,7 +555,7 @@ class ContractLesseeController extends Controller
                 $contracts->where('sau_ct_information_contract_lessee.id', $contract->id);
             }
 
-            $contracts = $contracts->take(30)->pluck('id', 'nit');
+            $contracts = $contracts->orderBy('social_reason')->take(30)->pluck('id', 'nit');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($contracts)
@@ -565,7 +566,9 @@ class ContractLesseeController extends Controller
             $contracts = ContractLesseeInformation::selectRaw("
                 sau_ct_information_contract_lessee.id as id,
                 CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
-            ")->pluck('id', 'nit');
+            ")
+            ->orderBy('social_reason')
+            ->pluck('id', 'nit');
         
             return $this->multiSelectFormat($contracts);
         }
@@ -583,6 +586,7 @@ class ContractLesseeController extends Controller
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('item_name', 'like', $keyword);
             })
+            ->orderBy('item_name')
             ->take(30)->pluck('id', 'item_name');
 
             return $this->respondHttp200([
@@ -594,7 +598,9 @@ class ContractLesseeController extends Controller
             $items = SectionCategoryItems::selectRaw("
                 sau_ct_section_category_items.id as id,
                 sau_ct_section_category_items.item_name as item_name
-            ")->pluck('id', 'item_name');
+            ")
+            ->orderBy('item_name')
+            ->pluck('id', 'item_name');
         
             return $this->multiSelectFormat($items);
         }
@@ -1150,6 +1156,7 @@ class ContractLesseeController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -1171,7 +1178,7 @@ class ContractLesseeController extends Controller
     public function multiselectUsers(Request $request)
     {
         $users = $this->getUsersMasterContract($this->company);
-        $users = $users->pluck('id', 'name');
+        $users = $users->orderBy('name')->pluck('id', 'name');
 
         return $this->multiSelectFormat($users);
 

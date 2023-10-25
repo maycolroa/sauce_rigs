@@ -43,7 +43,7 @@ class EmployeeRegionalController extends Controller
     */
     public function data(Request $request)
     {
-        $regionals = EmployeeRegional::select('*');
+        $regionals = EmployeeRegional::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($regionals)
                     ->make();

@@ -40,7 +40,8 @@ class DangerController extends Controller
     */
     public function data(Request $request)
     {
-        $dangers = Danger::select('*');
+        $dangers = Danger::select('*')
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($dangers)
                     ->make();
@@ -154,6 +155,7 @@ class DangerController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -165,7 +167,9 @@ class DangerController extends Controller
             $dangers = Danger::selectRaw("
                 sau_dm_dangers.id as id,
                 sau_dm_dangers.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($dangers);
         }

@@ -36,7 +36,7 @@ class CauseControlsController extends Controller
     */
     public function data(Request $request)
     {
-        $participants = TagsRmCauseControls::select('*');
+        $participants = TagsRmCauseControls::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($participants)
                     ->make();
@@ -70,6 +70,7 @@ class CauseControlsController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

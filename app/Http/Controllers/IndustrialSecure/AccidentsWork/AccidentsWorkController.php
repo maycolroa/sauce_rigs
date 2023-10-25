@@ -71,7 +71,8 @@ class AccidentsWorkController extends Controller
             if(sau_aw_form_accidents.consolidado, 'NO', 'SI') AS consolidado,
             sau_users.name as user")
         ->join('sau_users', 'sau_users.id', 'sau_aw_form_accidents.user_id')
-        ->where('sau_aw_form_accidents.company_id', $this->company);
+        ->where('sau_aw_form_accidents.company_id', $this->company)
+        ->orderBy('sau_aw_form_accidents.id', 'DESC');
 
         $url = "/industrialsecure/accidents";
 

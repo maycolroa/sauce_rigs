@@ -41,9 +41,9 @@ class LawTypeController extends Controller
     public function data(Request $request)
     {
         if ($request->has('custom'))
-            $types = LawType::company()->select('*');
+            $types = LawType::company()->select('*')->orderBy('id', 'DESC');
         else
-            $types = LawType::system()->select('*');
+            $types = LawType::system()->select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($types)
                     ->make();
@@ -152,6 +152,7 @@ class LawTypeController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -165,6 +166,7 @@ class LawTypeController extends Controller
                 'sau_lm_laws_types.name as name'
             )
             ->$scope()
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($lawtypes);

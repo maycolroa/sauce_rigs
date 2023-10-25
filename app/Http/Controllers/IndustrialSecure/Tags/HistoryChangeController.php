@@ -36,7 +36,7 @@ class HistoryChangeController extends Controller
     */
     public function data(Request $request)
     {
-        $history_change = TagsHistoryChange::select('*');
+        $history_change = TagsHistoryChange::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($history_change)
                     ->make();

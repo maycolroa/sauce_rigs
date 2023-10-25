@@ -52,7 +52,8 @@ class LogMailController extends Controller
                      "SI" AS view'
                 )
                 ->join('sau_modules', 'sau_modules.id', 'sau_log_mails.module_id')
-                ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id');
+                ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id')
+                ->orderBy('sau_log_mails.created_at', 'DESC');
 
         $mails2 = DB::table('sent_emails')->selectRaw("
                     sent_emails.id,
@@ -64,7 +65,8 @@ class LogMailController extends Controller
                     'RIGS' AS company,
                     'NO' AS view
                 ")
-                ->where('sent_emails.subject', DB::raw("'SAUCE - Restablecer contraseña'"));
+                ->where('sent_emails.subject', DB::raw("'SAUCE - Restablecer contraseña'"))
+                ->orderBy('sent_emails.created_at', 'DESC');
 
 
         $url = "/system/logmails";
@@ -78,7 +80,7 @@ class LogMailController extends Controller
         
         if (COUNT($filters['companies']) == 0 && COUNT($filters['modules']) == 0)
         {
-            $mails = $mails->union($mails2);
+            $mails = $mails->union($mails2)->orderBy('created_at', 'DESC');
         }
 
         return Vuetable::of($mails)

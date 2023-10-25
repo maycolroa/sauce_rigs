@@ -57,7 +57,8 @@ class EvaluationController extends Controller
             'sau_ct_evaluations.*')
             ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
             ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
-            ->groupBy('sau_ct_evaluations.id');
+            ->groupBy('sau_ct_evaluations.id')
+            ->orderBy('sau_ct_evaluations.id', 'DESC');
 
         $url = "/legalaspects/evaluations";
 
@@ -368,6 +369,7 @@ class EvaluationController extends Controller
         $evaluations = Evaluation::selectRaw(
             "sau_ct_evaluations.id as id,
              sau_ct_evaluations.name as name")
+        ->orderBy('name')
         ->pluck('id', 'name');
     
         return $this->multiSelectFormat($evaluations);
@@ -387,6 +389,7 @@ class EvaluationController extends Controller
              sau_ct_objectives.description as name")
         ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
         ->groupBy('sau_ct_objectives.description')
+        ->orderBy('sau_ct_objectives.description')
         ->pluck('ids', 'name');
     
         return $this->multiSelectFormat($objectives);
@@ -407,6 +410,7 @@ class EvaluationController extends Controller
         ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
         ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
         ->groupBy('sau_ct_subobjectives.description')
+        ->orderBy('sau_ct_subobjectives.description')
         ->pluck('ids', 'name');
     
         return $this->multiSelectFormat($subobjectives);
@@ -428,6 +432,7 @@ class EvaluationController extends Controller
         ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
         ->join('sau_ct_items', 'sau_ct_items.subobjective_id', 'sau_ct_subobjectives.id')
         ->groupBy('sau_ct_items.description')
+        ->orderBy('sau_ct_items.description')
         ->pluck('ids', 'name');
     
         return $this->multiSelectFormat($items);

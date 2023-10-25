@@ -253,6 +253,8 @@ class ActionPlanController extends Controller
             }
         }
 
+        $activities = $activities->orderBy('sau_action_plans_activities.id', 'DESC');
+
         return Vuetable::of($activities)
                     ->make();
     }

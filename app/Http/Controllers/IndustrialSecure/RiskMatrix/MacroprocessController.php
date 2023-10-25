@@ -40,7 +40,7 @@ class MacroprocessController extends Controller
     */
     public function data(Request $request)
     {
-        $macroprocess = TagsProcess::select('*');
+        $macroprocess = TagsProcess::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($macroprocess)
                     ->make();
@@ -107,6 +107,7 @@ class MacroprocessController extends Controller
             sau_tags_processes.name")
         ->whereIn('sau_tags_processes.name', $data)
         ->where('sau_tags_processes.company_id', $this->company)
+        ->orderBy('name')
         ->pluck('id', 'name');
 
         $options = $this->multiSelectFormat($options_macro);

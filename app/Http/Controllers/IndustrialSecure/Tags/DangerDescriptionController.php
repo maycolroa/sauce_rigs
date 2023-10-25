@@ -38,7 +38,7 @@ class DangerDescriptionController extends Controller
     */
     public function data(Request $request)
     {
-        $danger_descriptions = TagsDangerDescription::select('*');
+        $danger_descriptions = TagsDangerDescription::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($danger_descriptions)
                     ->make();

@@ -40,7 +40,7 @@ class ActivityController extends Controller
     */
     public function data(Request $request)
     {
-        $activities = Activity::select('*');
+        $activities = Activity::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($activities)
                     ->make();
@@ -151,6 +151,7 @@ class ActivityController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -162,7 +163,8 @@ class ActivityController extends Controller
             $activities = Activity::selectRaw("
                 sau_dm_activities.id as id,
                 sau_dm_activities.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('name')->pluck('id', 'name');
         
             return $this->multiSelectFormat($activities);
         }

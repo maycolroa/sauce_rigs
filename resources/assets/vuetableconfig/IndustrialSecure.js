@@ -2401,7 +2401,7 @@ export default [
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'item_name', data: 'item_name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_aw_causes_section_category_company.category_name', data: 'category_name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_aw_causes_section_category_company.category_name', data: 'category_name', title: 'Categoria', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_aw_causes_sections.section_name', data: 'section_name', title: 'Sección', sortable: true, searchable: true, detail: false, key: false },
         { name: 'causes_name', data: 'causes_name', title: 'Causa', sortable: false, searchable: false, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },

@@ -61,7 +61,8 @@ class TransferController extends Controller
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_transfer_details.element_id')
         ->join('sau_epp_locations as origin', 'origin.id', 'sau_epp_transfers.location_origin_id')
         ->join('sau_epp_locations as destiny', 'destiny.id', 'sau_epp_transfers.location_destiny_id')
-        ->groupBy('sau_epp_transfers.id', 'origin.name', 'destiny.name');
+        ->groupBy('sau_epp_transfers.id', 'origin.name', 'destiny.name')
+        ->orderBy('sau_epp_transfers.id', 'DESC');
 
         return Vuetable::of($transfer)
         ->make();

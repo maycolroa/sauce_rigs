@@ -30,7 +30,8 @@ class ArticleHistoryController extends Controller
             'sau_lm_article_histories.*',
             'sau_users.name as name'
         )
-        ->join('sau_users', 'sau_users.id', 'sau_lm_article_histories.user_id');
+        ->join('sau_users', 'sau_users.id', 'sau_lm_article_histories.user_id')
+        ->orderBy('sau_lm_article_histories.id', 'DESC');
 
         if ($request->has('modelId') && $request->get('modelId'))
             $histories->where('sau_lm_article_histories.article_id', '=', $request->get('modelId'));

@@ -38,7 +38,7 @@ class SubstitutionController extends Controller
     */
     public function data(Request $request)
     {
-        $substitutions = TagsSubstitution::select('*');
+        $substitutions = TagsSubstitution::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($substitutions)
                     ->make();

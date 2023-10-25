@@ -37,7 +37,7 @@ class ParticipantsController extends Controller
     */
     public function data(Request $request)
     {
-        $participants = TagsParticipant::select('*');
+        $participants = TagsParticipant::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($participants)
                     ->make();

@@ -41,7 +41,8 @@ class OriginAdvisorController extends Controller
     */
     public function data(Request $request)
     {
-        $originAdvisors = OriginAdvisor::select('*');
+        $originAdvisors = OriginAdvisor::select('*')
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($originAdvisors)
                     ->make();
@@ -151,6 +152,7 @@ class OriginAdvisorController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

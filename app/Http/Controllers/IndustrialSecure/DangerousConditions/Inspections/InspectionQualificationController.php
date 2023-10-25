@@ -79,7 +79,8 @@ class InspectionQualificationController extends Controller
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
             ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId)
-            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator'/*, 'level_risk'*/);
+            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator'/*, 'level_risk'*/)
+            ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
 
         $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
 

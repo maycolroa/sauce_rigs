@@ -99,7 +99,8 @@ class LawController extends Controller
             ->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
             ->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
             //->where('sau_lm_articles_fulfillment.company_id', $this->company);
-            ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))");
+            ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))")
+            ->orderBy('sau_lm_laws.id', 'DESC');
 
             if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
                 $laws->whereNotIn('sau_lm_laws.id', $hides);
@@ -123,7 +124,8 @@ class LawController extends Controller
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
             ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
             ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
-            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+            ->orderBy('sau_lm_laws.id', 'DESC');
 
             if ($request->has('custom'))
             {

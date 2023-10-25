@@ -40,7 +40,8 @@ class SubProcessController extends Controller
     */
     public function data(Request $request)
     {
-        $sub_processes = SubProcess::select('*')->where('company_id', $this->company);
+        $sub_processes = SubProcess::select('*')->where('company_id', $this->company)
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($sub_processes)
                     ->make();
@@ -151,6 +152,7 @@ class SubProcessController extends Controller
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->where('company_id', $this->company)
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

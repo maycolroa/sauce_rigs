@@ -36,7 +36,9 @@ class TagController extends Controller
             $tags = TagsProcess::selectRaw("
                 sau_tags_processes.id as id,
                 sau_tags_processes.name as name
-            ")->pluck('name', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('name', 'name');
         
             return $this->multiSelectFormat($tags);
         }
@@ -63,7 +65,9 @@ class TagController extends Controller
             $tags = TagsProcess::selectRaw("
                 sau_tags_processes.id as id,
                 sau_tags_processes.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($tags);
         }

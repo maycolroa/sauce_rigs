@@ -54,7 +54,8 @@ class LocationController extends Controller
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_epp_locations.employee_regional_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_epp_locations.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_epp_locations.employee_area_id')
-        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_epp_locations.employee_process_id');
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_epp_locations.employee_process_id')
+        ->orderBy('sau_epp_locations.id', 'DESC');
 
         return Vuetable::of($elements)
                     ->make();
@@ -176,6 +177,7 @@ class LocationController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

@@ -60,7 +60,8 @@ class DocumentController extends Controller
             ->orWhere('sau_documents_security.user_creator_id', $this->user->id)
             ->orWhereRaw("sau_document_security_roles.role_id in ($roles)");
           })
-          ->groupBy('sau_documents_security.id');
+          ->groupBy('sau_documents_security.id')
+          ->orderBy('id', 'DESC');
 
         /*$url = "/industrialsecure/documents";
 

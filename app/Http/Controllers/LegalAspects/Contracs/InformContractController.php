@@ -69,7 +69,8 @@ class InformContractController extends Controller
             )
             ->join('sau_users', 'sau_users.id', 'sau_ct_inform_contract.evaluator_id')
             ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
-            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'));
+            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'))
+            ->orderBy('sau_ct_inform_contract.id', 'DESC');
 
         if ($this->user->hasRole('Contratista', $this->team))
         {

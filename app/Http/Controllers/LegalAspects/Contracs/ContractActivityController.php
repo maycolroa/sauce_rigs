@@ -44,7 +44,7 @@ class ContractActivityController extends Controller
     */
     public function data(Request $request)
     {
-        $activities = ActivityContract::select('*')->where('company_id', $this->company);
+        $activities = ActivityContract::select('*')->where('company_id', $this->company)->orderBy('id', 'DESC');
 
         return Vuetable::of($activities)
                     ->make();
@@ -222,6 +222,7 @@ class ContractActivityController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -235,6 +236,7 @@ class ContractActivityController extends Controller
                 sau_ct_activities.name as name
             ")
             ->where('company_id', $this->company)
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($activities);

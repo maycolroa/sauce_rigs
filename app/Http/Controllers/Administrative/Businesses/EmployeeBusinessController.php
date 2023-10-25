@@ -40,7 +40,7 @@ class EmployeeBusinessController extends Controller
     */
    public function data(Request $request)
    {
-       $businesses = EmployeeBusiness::select('*');
+       $businesses = EmployeeBusiness::select('*')->orderBy('id', 'DESC');
 
        return Vuetable::of($businesses)
                 ->make();
@@ -151,6 +151,7 @@ class EmployeeBusinessController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -162,7 +163,9 @@ class EmployeeBusinessController extends Controller
             $businesses = EmployeeBusiness::selectRaw("
                 sau_employees_businesses.id as id,
                 sau_employees_businesses.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($businesses);
         }

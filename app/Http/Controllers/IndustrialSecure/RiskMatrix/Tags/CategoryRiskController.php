@@ -36,7 +36,7 @@ class CategoryRiskController extends Controller
     */
     public function data(Request $request)
     {
-        $category = TagsRmCategoryRisk::select('*');
+        $category = TagsRmCategoryRisk::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($category)
                     ->make();
@@ -70,6 +70,7 @@ class CategoryRiskController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

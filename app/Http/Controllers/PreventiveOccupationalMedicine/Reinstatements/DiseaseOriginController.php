@@ -41,7 +41,7 @@ class DiseaseOriginController extends Controller
     */
     public function data(Request $request)
     {
-        $diseaseOrigins = DiseaseOrigin::select('*');
+        $diseaseOrigins = DiseaseOrigin::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($diseaseOrigins)
                     ->make();
@@ -151,6 +151,7 @@ class DiseaseOriginController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

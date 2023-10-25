@@ -38,7 +38,7 @@ class WarningSignageController extends Controller
     */
     public function data(Request $request)
     {
-        $warning_signage = TagsWarningSignage::select('*');
+        $warning_signage = TagsWarningSignage::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($warning_signage)
                     ->make();

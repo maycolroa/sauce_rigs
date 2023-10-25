@@ -53,7 +53,7 @@ class RespiratoryAnalysisController extends Controller
    {
        $data = RespiratoryAnalysis::select(
          'sau_bm_respiratory_analysis.*'
-        );
+        )->orderBy('id', 'DESC');
        
        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/respiratoryanalysis";
 
@@ -227,7 +227,7 @@ class RespiratoryAnalysisController extends Controller
               $query->orWhere('name', 'like', $keyword);
               $query->orWhere('patient_identification', 'like', $keyword);
           })
-          ->take(30)->orderBy('id')->pluck('id', 'name');
+          ->take(30)->orderBy('name')->pluck('id', 'name');
 
         return $this->respondHttp200([
             'options' => $this->multiSelectFormat($data)

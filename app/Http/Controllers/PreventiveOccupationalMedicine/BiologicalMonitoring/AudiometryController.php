@@ -58,7 +58,8 @@ class AudiometryController extends Controller
            'sau_employees_regionals.name AS regional'
         )
         ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+        ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id')
+        ->orderBy('sau_bm_audiometries.id', 'DESC');
 
         $url = "/preventiveoccupationalmedicine/biologicalmonitoring/audiometry";
         

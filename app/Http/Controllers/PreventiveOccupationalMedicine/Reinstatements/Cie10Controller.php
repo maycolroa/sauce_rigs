@@ -66,6 +66,7 @@ class Cie10Controller extends Controller
                     $query->orWhere('description', 'like', $keyword);
                     $query->orWhere('code', 'like', $keyword);
                 })
+                ->orderBy('description')
                 ->take(50)->pluck('id', 'description');
 
             return $this->respondHttp200([
@@ -77,7 +78,9 @@ class Cie10Controller extends Controller
             $cie10 = Cie10Code::selectRaw("
                 sau_reinc_cie10_codes.id as id,
                 CONCAT(sau_reinc_cie10_codes.code, ' - ', sau_reinc_cie10_codes.description) as description
-            ")->pluck('id', 'description');
+            ")
+            ->orderBy('description')
+            ->pluck('id', 'description');
         
             return $this->multiSelectFormat($cie10);
         }

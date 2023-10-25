@@ -34,6 +34,7 @@ class TagController extends Controller
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->where('field_id', $id)
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -238,7 +239,9 @@ class TagController extends Controller
             $tags = TagsDangerDescription::selectRaw("
                 sau_tags_danger_description.id as id,
                 sau_tags_danger_description.name as name
-            ")->pluck('name', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('name', 'name');
         
             return $this->multiSelectFormat($tags);
         }
@@ -265,7 +268,9 @@ class TagController extends Controller
             $tags = TagsHistoryChange::selectRaw("
                 sau_tags_dm_history_change.id as id,
                 sau_tags_dm_history_change.name as name
-            ")->pluck('name', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('name', 'name');
         
             return $this->multiSelectFormat($tags);
         }

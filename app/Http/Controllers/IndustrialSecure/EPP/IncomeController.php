@@ -58,7 +58,8 @@ class IncomeController extends Controller
         ->join('sau_epp_incomen_details', 'sau_epp_incomen_details.income_id', 'sau_epp_incomen.id')
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_incomen_details.element_id')
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_incomen_details.location_id')
-        ->groupBy('sau_epp_incomen.id', 'sau_epp_locations.name');
+        ->groupBy('sau_epp_incomen.id', 'sau_epp_locations.name')
+        ->orderBy('sau_epp_incomen.id', 'DESC');
 
         return Vuetable::of($income)
         ->make();

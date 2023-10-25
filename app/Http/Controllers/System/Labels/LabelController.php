@@ -38,7 +38,8 @@ class LabelController extends Controller
     */
     public function data(Request $request)
     {
-        $labels = Keyword::select('*');
+        $labels = Keyword::select('*')
+        ->orderBy('sau_keywords.id', 'DESC');
 
         return Vuetable::of($labels)
                     ->make();

@@ -43,7 +43,7 @@ class FileUploadController extends Controller
       )
       ->join('sau_absen_talends', 'sau_absen_talends.id', 'sau_absen_file_upload.talend_id')
       ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id')
-      ->orderBy('sau_absen_file_upload.created_at', 'DESC');
+      ->orderBy('sau_absen_file_upload.id', 'DESC');
     
       return Vuetable::of($files)
                   ->make();

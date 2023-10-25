@@ -58,7 +58,8 @@ class EmployeeAreaController extends Controller
         })
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-    ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name'/*, 'sau_employees_headquarters.name', 'sau_employees_processes.name'*/);
+        ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name'/*, 'sau_employees_headquarters.name', 'sau_employees_processes.name'*/)
+        ->orderBy('sau_employees_areas.id', 'DESC');
 
         return Vuetable::of($areas)
                 ->make();

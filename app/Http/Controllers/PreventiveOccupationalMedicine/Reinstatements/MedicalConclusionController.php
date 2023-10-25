@@ -41,7 +41,8 @@ class MedicalConclusionController extends Controller
     */
     public function data(Request $request)
     {
-        $medicalConclusions = MedicalConclusion::select('*');
+        $medicalConclusions = MedicalConclusion::select('*')
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($medicalConclusions)
                     ->make();
@@ -151,6 +152,7 @@ class MedicalConclusionController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

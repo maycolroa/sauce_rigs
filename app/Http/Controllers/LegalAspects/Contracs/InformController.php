@@ -53,7 +53,8 @@ class InformController extends Controller
         $informs = Inform::select(
             'sau_ct_informs.*')
             ->join('sau_ct_informs_themes', 'sau_ct_informs_themes.inform_id', 'sau_ct_informs.id')
-            ->groupBy('sau_ct_informs.id');
+            ->groupBy('sau_ct_informs.id')
+            ->orderBy('sau_ct_informs.id', 'DESC');
 
         /*$url = "/legalaspects/informs";
 

@@ -53,7 +53,8 @@ class MusculoskeletalAnalysisController extends Controller
    {
        $data = MusculoskeletalAnalysis::select(
          'sau_bm_musculoskeletal_analysis.*'
-        );
+        )
+        ->orderBy('id', 'DESC');
        
        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/musculoskeletalanalysis";
 
@@ -225,7 +226,7 @@ class MusculoskeletalAnalysisController extends Controller
               $query->orWhere('name', 'like', $keyword);
               $query->orWhere('patient_identification', 'like', $keyword);
           })
-          ->take(30)->orderBy('id')->pluck('id', 'name');
+          ->take(30)->orderBy('name')->pluck('id', 'name');
 
         return $this->respondHttp200([
             'options' => $this->multiSelectFormat($data)

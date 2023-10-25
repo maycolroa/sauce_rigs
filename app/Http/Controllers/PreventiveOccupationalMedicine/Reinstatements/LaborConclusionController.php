@@ -41,7 +41,8 @@ class LaborConclusionController extends Controller
     */
     public function data(Request $request)
     {
-        $laborConclusions = LaborConclusion::select('*');
+        $laborConclusions = LaborConclusion::select('*')
+        ->orderBy('id', 'DESC');
 
         return Vuetable::of($laborConclusions)
                     ->make();
@@ -151,6 +152,7 @@ class LaborConclusionController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

@@ -53,7 +53,8 @@ class RoleController extends Controller
                 'sau_modules.display_name as display_name'
             )
             ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
-            ->alls();
+            ->alls()
+            ->orderBy('sau_roles.id', 'DESC');
         /*else 
         
             $roles = Role::select(
@@ -275,6 +276,7 @@ class RoleController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -283,10 +285,11 @@ class RoleController extends Controller
         }
         else
         {
-            $roles = Role::alls($includeSuper)->selectRaw(
-               "sau_roles.id as id,
-                sau_roles.name as name")
-                ->orderBy('name')
+            $roles = Role::alls($includeSuper)->selectRaw("
+                sau_roles.id as id,
+                sau_roles.name as name
+            ")
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($roles);
@@ -306,7 +309,8 @@ class RoleController extends Controller
         foreach ($permissions as $key => $value)
         {
             $ids = array_keys($value);
-            $data = Permission::whereIn('id', $ids)->pluck('name', 'display_name');
+            $data = Permission::whereIn('id', $ids)
+            ->orderBy('display_name')->pluck('name', 'display_name');
             $permissions[$key] = $this->multiSelectFormat($data);
         }
         
@@ -322,6 +326,7 @@ class RoleController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
                 })
+                ->orderBy('description')
                 ->take(30)->pluck('id', 'description');
 
             return $this->respondHttp200([
@@ -353,6 +358,7 @@ class RoleController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

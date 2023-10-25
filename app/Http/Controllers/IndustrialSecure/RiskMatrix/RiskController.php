@@ -41,7 +41,7 @@ class RiskController extends Controller
     */
     public function data(Request $request)
     {
-        $risks = Risk::select('*')->where('company_id', $this->company);
+        $risks = Risk::select('*')->where('company_id', $this->company)->orderBy('id', 'DESC');
 
         return Vuetable::of($risks)
                     ->make();
@@ -160,6 +160,7 @@ class RiskController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->where('company_id', $this->company)
                 ->take(30)->pluck('id', 'name');
 

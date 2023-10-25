@@ -123,6 +123,8 @@ class UserController extends Controller
         {
             $users->inRoles($this->getValuesForMultiselect($filters["roles"]), $filters['filtersType']['roles']);
         }
+
+        $users = $users->orderBy('sau_users.id', 'DESC');
         
 
        return Vuetable::of($users)

@@ -48,7 +48,7 @@ class ContractTrainingController extends Controller
     */
     public function data(Request $request)
     {
-        $trainings = Training::select('*');
+        $trainings = Training::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($trainings)
                 ->addColumn('retrySendMail', function ($training) {
@@ -389,6 +389,7 @@ class ContractTrainingController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
                 })
+                ->orderBy('description')
                 ->take(30)->pluck('id', 'description');
 
             return $this->respondHttp200([
@@ -400,7 +401,9 @@ class ContractTrainingController extends Controller
             $typeQuestions = TrainingTypeQuestion::selectRaw("
                 sau_ct_training_types_questions.id as id,
                 sau_ct_training_types_questions.description as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('description')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($typeQuestions);
         }

@@ -38,7 +38,7 @@ class AdministrativeControlsController extends Controller
     */
     public function data(Request $request)
     {
-        $controls = TagsAdministrativeControls::select('*');
+        $controls = TagsAdministrativeControls::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($controls)
                     ->make();

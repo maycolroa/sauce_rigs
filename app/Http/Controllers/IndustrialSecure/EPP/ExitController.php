@@ -58,7 +58,8 @@ class ExitController extends Controller
         ->join('sau_epp_exits_details', 'sau_epp_exits_details.exit_id', 'sau_epp_exits.id')
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_exits_details.element_id')
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_exits_details.location_id')
-        ->groupBy('sau_epp_exits.id', 'sau_epp_locations.name');
+        ->groupBy('sau_epp_exits.id', 'sau_epp_locations.name')
+        ->orderBy('sau_epp_exits.id', 'DESC');
 
         return Vuetable::of($exit)
         ->make();

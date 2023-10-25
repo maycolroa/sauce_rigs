@@ -63,7 +63,8 @@ class EvaluationPerformController extends Controller
                 'sau_users.name as name'
             )
             ->join('sau_users', 'sau_users.id', 'sau_bm_evaluation_perform.evaluator_id')
-            ->where('sau_bm_evaluation_perform.evaluation_id', '=', $request->get('modelId'));
+            ->where('sau_bm_evaluation_perform.evaluation_id', '=', $request->get('modelId'))
+            ->orderBy('sau_bm_evaluation_perform.id', 'DESC');
 
         /*$url = "/legalaspects/evaluations/contracts/".$request->get('modelId');
 

@@ -38,7 +38,7 @@ class EngineeringControlsController extends Controller
     */
     public function data(Request $request)
     {
-        $controls = TagsEngineeringControls::select('*');
+        $controls = TagsEngineeringControls::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($controls)
                     ->make();

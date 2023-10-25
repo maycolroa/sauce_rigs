@@ -72,7 +72,8 @@ class ReportController extends Controller
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
-        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id');
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+        ->orderBy('sau_ph_reports.id', 'DESC');
 
         $url = "/industrialsecure/reports";
 
@@ -432,7 +433,8 @@ class ReportController extends Controller
             $conditions = Condition::select("id", "description")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
-                });
+                })
+                ->orderBy('description');
 
             $condition_type = $request->get('condition');
                     
@@ -450,7 +452,9 @@ class ReportController extends Controller
             $conditions = Condition::selectRaw("
                 sau_ph_conditions.id as id,
                 sau_ph_conditions.description as description
-            ")->pluck('id', 'description');
+            ")
+            ->orderBy('description')
+            ->pluck('id', 'description');
         
             return $this->multiSelectFormat($conditions);
         }
@@ -461,7 +465,8 @@ class ReportController extends Controller
         $conditions = ConditionType::selectRaw("
             sau_ph_conditions_types.id as id,
             sau_ph_conditions_types.description as description
-        ")->pluck('id', 'description');
+        ")
+        ->orderBy('description')->pluck('id', 'description');
     
         return $this->multiSelectFormat($conditions);
         

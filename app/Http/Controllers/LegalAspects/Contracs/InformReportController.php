@@ -235,6 +235,7 @@ class InformReportController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->where('sau_ct_informs_themes.inform_id', $request->inform_id)
                 ->take(30)->pluck('id', 'description');
 
@@ -270,7 +271,7 @@ class InformReportController extends Controller
                 $data->where('show_program_value', DB::raw("'SI'"));
             
             $data = $data->where('sau_ct_informs_themes.inform_id', $request->inform_id)
-            ->take(30)->pluck('sau_ct_inform_theme_item.id', 'sau_ct_inform_theme_item.description');
+            ->take(30)->orderBy('sau_ct_inform_theme_item.description')->pluck('sau_ct_inform_theme_item.id', 'sau_ct_inform_theme_item.description');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($data)
@@ -283,6 +284,7 @@ class InformReportController extends Controller
                 sau_ct_inform_theme_item.description as description
             ")
             ->join('sau_ct_informs_themes', 'sau_ct_informs_themes.id', 'sau_ct_inform_theme_item.evaluation_theme_id')
+            ->orderBy('sau_ct_inform_theme_item.description')
             ->pluck('id', 'description');
         
             return $this->multiSelectFormat($data);

@@ -40,7 +40,7 @@ class RiskAspectController extends Controller
     */
     public function data(Request $request)
     {
-        $risk_aspects = RiskAspect::select('*');
+        $risk_aspects = RiskAspect::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($risk_aspects)
                     ->make();
@@ -150,6 +150,7 @@ class RiskAspectController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -162,6 +163,7 @@ class RiskAspectController extends Controller
                 'sau_lm_risks_aspects.id as id',
                 'sau_lm_risks_aspects.name as name'
             )
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($risk_aspects);

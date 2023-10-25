@@ -38,7 +38,7 @@ class EppController extends Controller
     */
     public function data(Request $request)
     {
-        $epp = TagsEpp::select('*');
+        $epp = TagsEpp::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($epp)
                     ->make();

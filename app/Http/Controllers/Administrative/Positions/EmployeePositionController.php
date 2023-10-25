@@ -44,7 +44,7 @@ class EmployeePositionController extends Controller
     */
    public function data(Request $request)
    {
-       $positions = EmployeePosition::select('*');
+       $positions = EmployeePosition::select('*')->orderBy('id', 'DESC');
 
        return Vuetable::of($positions)
                 ->make();
@@ -168,6 +168,7 @@ class EmployeePositionController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -179,7 +180,9 @@ class EmployeePositionController extends Controller
             $positions = EmployeePosition::selectRaw("
                 sau_employees_positions.id as id,
                 sau_employees_positions.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($positions);
         }

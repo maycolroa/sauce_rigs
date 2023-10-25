@@ -93,6 +93,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($reports->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 21)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -127,6 +128,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($dangerMatrix->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 14)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -161,6 +163,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($riskMatrix->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 31)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -213,6 +216,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($inspections->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 26)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -261,6 +265,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($files->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 24)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -355,6 +360,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($eva_files->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 16)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -407,6 +413,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($emails->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 17)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
@@ -528,6 +535,7 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($return->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 32)
+            ->orderBy('sau_companies.name')
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)

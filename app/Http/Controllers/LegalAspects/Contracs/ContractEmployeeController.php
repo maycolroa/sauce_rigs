@@ -62,7 +62,8 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.position AS position',
             'sau_ct_contract_employees.identification AS identification',
             'sau_ct_contract_employees.state as state'
-        );
+        )
+        ->orderBy('sau_ct_contract_employees.id', 'DESC');
 
         if ($request->has('modelId') && $request->get('modelId'))
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
@@ -495,6 +496,7 @@ class ContractEmployeeController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_ct_activities.name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -506,6 +508,7 @@ class ContractEmployeeController extends Controller
             $activities = ActivityContract::selectRaw("id, name")
             ->join('sau_ct_contracts_activities', 'sau_ct_activities.id','sau_ct_contracts_activities.activity_id' )
             ->where('sau_ct_contracts_activities.contract_id', $contract->id)
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($activities);

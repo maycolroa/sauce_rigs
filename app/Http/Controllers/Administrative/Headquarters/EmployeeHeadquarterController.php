@@ -45,7 +45,9 @@ class EmployeeHeadquarterController extends Controller
             'sau_employees_headquarters.id as id',
             'sau_employees_headquarters.name as name',
             'sau_employees_regionals.name as regional'
-        )->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id');
+        )
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->orderBy('sau_employees_headquarters.id', 'DESC');
 
         return Vuetable::of($headquarters)
                 ->make();

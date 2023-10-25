@@ -47,7 +47,8 @@ class LabelController extends Controller
                 'sau_keywords.display_name AS name',
                 'sau_keyword_company.display_name AS display_name'
             )
-            ->join('sau_keywords', 'sau_keywords.id', 'sau_keyword_company.keyword_id');
+            ->join('sau_keywords', 'sau_keywords.id', 'sau_keyword_company.keyword_id')
+            ->orderBy('sau_keywords.id', 'DESC');
 
         return Vuetable::of($labels)
                     ->make();

@@ -38,7 +38,7 @@ class PossibleConsequencesDangerController extends Controller
     */
     public function data(Request $request)
     {
-        $consequences = TagsPossibleConsequencesDanger::select('*');
+        $consequences = TagsPossibleConsequencesDanger::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($consequences)
                     ->make();

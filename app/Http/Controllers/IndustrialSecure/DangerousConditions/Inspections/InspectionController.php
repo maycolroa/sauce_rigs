@@ -98,7 +98,7 @@ class InspectionController extends Controller
             ) AS areas";
 
 
-        $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');  
+        $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name')->orderBy('sau_ph_inspections.id', 'DESC');  
 
         $url = "/industrialsecure/dangerousconditions/inspections";
 
@@ -927,6 +927,7 @@ class InspectionController extends Controller
         ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
         ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
         ->groupBy('sau_ph_inspection_section_items.description')
+        ->orderBy('name')
         ->pluck('ids', 'name');
 
       return $this->multiSelectFormat($items);
@@ -939,6 +940,7 @@ class InspectionController extends Controller
           sau_ph_inspection_sections.name as name")
         ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
         ->groupBy('sau_ph_inspection_sections.name')
+        ->orderBy('name')
         ->pluck('ids', 'name');
 
       return $this->multiSelectFormat($themes);

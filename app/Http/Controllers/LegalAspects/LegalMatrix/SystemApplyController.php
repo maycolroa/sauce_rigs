@@ -41,9 +41,9 @@ class SystemApplyController extends Controller
     public function data(Request $request)
     {
         if ($request->has('custom'))
-            $system_apply = SystemApply::company()->select('*');
+            $system_apply = SystemApply::company()->select('*')->orderBy('id', 'DESC');
         else
-            $system_apply = SystemApply::system()->select('*');
+            $system_apply = SystemApply::system()->select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($system_apply)
                     ->make();
@@ -168,6 +168,7 @@ class SystemApplyController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -181,6 +182,7 @@ class SystemApplyController extends Controller
                 'sau_lm_system_apply.name as name'
             )
             ->$scope()
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($system_apply);

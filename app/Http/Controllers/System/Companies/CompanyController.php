@@ -53,7 +53,8 @@ class CompanyController extends Controller
             'sau_companies.*',
             'sau_company_groups.name as group'
         )
-        ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id');
+        ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
+        ->orderBy('sau_companies.id', 'DESC');
 
         $url = "/system/companies";
 
@@ -322,6 +323,7 @@ class CompanyController extends Controller
                 ->select('sau_users.*')
                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_company_user.company_id', $request->id)
+                ->orderBy('sau_users.name')
                 ->pluck('id')
                 ->toArray();
 
@@ -330,6 +332,7 @@ class CompanyController extends Controller
                     DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
                 )
                 ->active()
+                ->orderBy('sau_users.name')
                 ->whereNotIn('sau_users.id', $users_ids)
                 ->pluck('id', 'name');
                 
@@ -340,6 +343,7 @@ class CompanyController extends Controller
     {
         $roles = Role::form(false, $request->id)
                     ->select("id", "name")
+                    ->orderBy('sau_roles.name')
                     ->pluck('id', 'name');
 
         return $this->multiSelectFormat($roles);

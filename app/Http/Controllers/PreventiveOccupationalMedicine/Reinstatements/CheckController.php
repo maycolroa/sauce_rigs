@@ -78,7 +78,8 @@ class CheckController extends Controller
                 )
                 ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-                ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id');
+                ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
+                ->orderBy('sau_reinc_checks.id', 'DESC');
 
         if ($request->current_check_id)
             $checks->where('sau_reinc_checks.id', '<>', $request->current_check_id);
@@ -1243,6 +1244,7 @@ class CheckController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -1260,6 +1262,7 @@ class CheckController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -1277,6 +1280,7 @@ class CheckController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
