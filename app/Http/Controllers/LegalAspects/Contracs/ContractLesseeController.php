@@ -98,7 +98,7 @@ class ContractLesseeController extends Controller
                       $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
                     })
                     ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
-                    ->orderBy('sau_ct_information_contract_lessee.id', 'DESC');
+                    ->orderBy('sau_ct_information_contract_lessee.social_reason');
 
         $url = "/legalaspects/contractor";
 
