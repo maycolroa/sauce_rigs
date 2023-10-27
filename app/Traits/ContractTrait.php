@@ -128,7 +128,8 @@ trait ContractTrait
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             //->where('sau_company_user.company_id', $company_id)
-            ->whereNull('sau_user_information_contract_lessee.information_id');
+            ->whereNull('sau_user_information_contract_lessee.information_id')
+            ->orderBy('name');
             //->get();
 
         if ($company_id)

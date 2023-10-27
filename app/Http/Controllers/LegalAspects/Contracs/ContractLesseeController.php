@@ -1178,7 +1178,7 @@ class ContractLesseeController extends Controller
     public function multiselectUsers(Request $request)
     {
         $users = $this->getUsersMasterContract($this->company);
-        $users = $users->orderBy('name')->pluck('id', 'name');
+        $users = $users->pluck('id', 'name');
 
         return $this->multiSelectFormat($users);
 
