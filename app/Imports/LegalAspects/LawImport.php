@@ -218,7 +218,7 @@ class LawImport implements ToCollection, WithCalculatedFormulas
         $law = Law::query();
         $law->company_scope = $this->company_id;
         $law = $law->firstOrCreate(
-            ['name' => $name, 'law_type_id' => $type, 'law_number' => $number, 'law_year' => $year, 'company_id' => $this->company_id], 
+            ['name' => $name, 'law_type_id' => $type, 'law_number' => $number, 'law_year' => $year, 'company_id' => $this->company_id, 'system_apply_id' => $this->system_apply], 
             [
                 'name' => $name,
                 'law_type_id' => $type,
