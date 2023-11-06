@@ -339,6 +339,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('rates', 'General\MultiSelectRadioController@phRates');
           Route::post('inspections', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectInspection');
           Route::post('inspectionType', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectTypes');
+          Route::post('inspectionTypeItems', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectTypesItems');
         });
         Route::post('themes', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectThemes');
 

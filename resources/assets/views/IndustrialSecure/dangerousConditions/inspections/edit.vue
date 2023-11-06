@@ -9,7 +9,21 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <form-inspection-personalized
+                v-if="type == '3'"
+                :url="`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`"
+                method="PUT"
+                regionals-data-url="/selects/regionals"
+                headquarters-data-url="/selects/headquarters"
+                areas-data-url="/selects/areas"
+                processes-data-url="/selects/processes"
+                :typesInspection="typesInspection"
+                :inspection="data"
+                :is-edit="true"
+                :typesItems="typesItems"
+                :cancel-url="{ name: 'dangerousconditions-inspections'}"/>
             <form-inspection
+                v-else
                 :url="`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`"
                 method="PUT"
                 regionals-data-url="/selects/regionals"
@@ -28,6 +42,7 @@
 
 <script>
 import FormInspection from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionComponent.vue';
+import FormInspectionPersonalized from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionPersonalizadasComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -37,20 +52,25 @@ export default {
     title: 'Inspecciones Planeadas - Editar'
   },
   components:{
-    FormInspection
+    FormInspection,
+    FormInspectionPersonalized
   },
   data () {
     return {
       data: [],
-      typesInspection: []
+      typesInspection: [],
+      typesItems: [],
+      type: ''
     }
   },
   created(){
     this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
+    this.fetchSelect('typesItems', '/selects/industrialSecurity/inspectionTypeItems')
 
     axios.get(`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        this.type = response.data.data.type_id
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

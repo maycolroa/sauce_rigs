@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\TypeInspections;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\TypeInspectionsItems;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
@@ -497,6 +498,7 @@ class InspectionController extends Controller
                 foreach ($theme->items as $item)
                 {
                     $item->key = Carbon::now()->timestamp + rand(1,10000);
+                    $item->values = $item->values ? implode("\n", $item->values->get('values')) : NULL;
                 }
             }
 
@@ -570,7 +572,7 @@ class InspectionController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            //\Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -647,6 +649,18 @@ class InspectionController extends Controller
     {
         foreach ($items as $item)
         {
+            if (isset($item['values']))
+            {
+                $config = collect(['values' => []]);
+
+                if (is_array($item['values']))
+                    $config->put('values', explode("\n", $item['values'][0]));
+                else 
+                    $config->put('values', explode("\n", $item['values']));
+
+                $item['values'] = $config;
+            }
+
             $id = isset($item['id']) ? $item['id'] : NULL;
             $itemNew = $theme->items()->updateOrCreate(['id'=>$id], $item);
         }
@@ -968,11 +982,24 @@ class InspectionController extends Controller
         $types = TypeInspections::select(
             "sau_ph_type_inspections.id as id",
             "sau_ph_type_inspections.type as type")
+            ->where('id', '<>', 3)
             ->orderBy('type')
             ->pluck('id', 'type');
 
         return $this->multiSelectFormat($types);
     }
+
+    public function multiselectTypesItems()
+    {
+        $types = TypeInspectionsItems::select(
+            "sau_ph_inspetions_type_items.id as id",
+            "sau_ph_inspetions_type_items.type as type")
+            ->orderBy('type')
+            ->pluck('id', 'type');
+
+        return $this->multiSelectFormat($types);
+    }
+
 
     public function multiselectQualification()
     {

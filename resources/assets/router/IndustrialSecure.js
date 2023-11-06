@@ -1220,5 +1220,13 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/items/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'dangerousconditions-inspections-perzonalized-create',
+          path: 'dangerousconditions/inspections/perzonalized/create',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/personalizadas/create')
+        }
+      ]),
     ]
   }]

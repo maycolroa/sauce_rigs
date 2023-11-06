@@ -9,7 +9,15 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <form-inspection-personalized
+                v-if="type == '3'"
+                :inspection="data"
+                :view-only="true"
+                :typesInspection="typesInspection"
+                :typesItems="typesItems"
+                :cancel-url="{ name: 'dangerousconditions-inspections'}"/> 
             <form-inspection
+                v-else
                 :inspection="data"
                 :view-only="true"
                 :typesInspection="typesInspection"
@@ -24,6 +32,7 @@
 import FormInspection from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import FormInspectionPersonalized from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionPersonalizadasComponent.vue';
 
 export default {
   name: 'dangerousconditions-inspections-view',
@@ -31,20 +40,25 @@ export default {
     title: 'Inspecciones Planeadas - Ver'
   },
   components:{
-    FormInspection
+    FormInspection,
+    FormInspectionPersonalized
   },
   data () {
     return {
       data: [],
-      typesInspection: []
+      typesInspection: [],
+      typesItems: [],
+      type: ''
     }
   },
   created(){
     this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
+    this.fetchSelect('typesItems', '/selects/industrialSecurity/inspectionTypeItems')
 
     axios.get(`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        this.type = response.data.data.type_id
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

@@ -207,6 +207,10 @@
                     {
                         "name": "reinc_checks_visor",
                         "display_name": "Reincorporaciones/Reportes - visor"
+                    },
+                    {
+                        "name": "reinc_checks_configuration",
+                        "display_name": "Reincorporaciones/Reportes - Configuracion"
                     }
                 ]
             },

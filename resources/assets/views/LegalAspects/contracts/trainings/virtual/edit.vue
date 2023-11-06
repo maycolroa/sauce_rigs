@@ -44,7 +44,6 @@ export default {
     axios.get(`/legalAspects/trainingContract/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
-        console.log(this.data)
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
