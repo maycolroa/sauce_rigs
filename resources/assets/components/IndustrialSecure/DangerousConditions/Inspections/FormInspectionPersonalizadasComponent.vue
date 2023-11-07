@@ -105,51 +105,26 @@
                             </div>
                           </div>
                         </b-form-row>
-                        <b-form-row style="padding-top: 15px;">
-                          <b-form-feedback class="d-block" v-if="form.errorsFor(`themes.${index}.items`)" style="padding-bottom: 10px;">
-                            {{ form.errorsFor(`themes.${index}.items`) }}
-                          </b-form-feedback>
-                          <div class="table-responsive" style="padding-right: 15px;">
-                            <table class="table table-bordered table-hover" v-if="theme.items.length > 0">
-                              <thead class="bg-secondary">
-                                <tr>
-                                  <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
-                                  <th scope="col" class="align-middle">Descripción</th>
-                                  <th scope="col" class="align-middle">Tipo</th>
-                                  <th scope="col" class="align-middle">Valores (Separadas por enter)</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template v-for="(item, index2) in theme.items">
-                                  <tr :key="index2">
-                                    <td class="align-middle" v-if="!viewOnly">
-                                      <b-btn @click.prevent="removeItem(index, index2)" 
-                                        size="xs" 
-                                        variant="outline-primary icon-btn borderless"
-                                        v-b-tooltip.top title="Eliminar Item">
-                                        <span class="ion ion-md-close-circle"></span>
-                                      </b-btn>
-                                    </td>
-                                    <td style="padding: 0px;">
-                                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
-                                    </td>
-                                    <td>
-                                      <vue-advanced-select 
-                                        v-model="form.themes[index].items[index2].type_id"
-                                        :disabled="viewOnly" class="col-md-12" :multiple="false" :options="typesItems" :hide-selected="false" name="type_id" placeholder="Selecciona el tipo de item"
-                                        :error="form.errorsFor('type_id')" >
-                                      </vue-advanced-select>
-                                    </td>
-                                    <td>
-                                      <!--<vue-textarea v-if="form.themes[index].items[index2].type_id" :disabled="viewOnly || form.themes[index].items[index2].type_id == 5 || form.themes[index].items[index2].type_id == 6 || form.themes[index].items[index2].type_id == 7 || form.themes[index].items[index2].type_id == 8" class="col-md-12" v-model="form.themes[index].items[index2].values" label="" type="text" name="values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" placeholder="Valores"></vue-textarea>-->
-
-                                      <vue-textarea v-if="form.themes[index].items[index2].type_id" :disabled="viewOnly || form.themes[index].items[index2].type_id == 5 || form.themes[index].items[index2].type_id == 6 || form.themes[index].items[index2].type_id == 7 || form.themes[index].items[index2].type_id == 8" class="col-md-12" v-model="form.themes[index].items[index2].values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" name="values" placeholder="valores" rows="3"></vue-textarea>
-                                    </td>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
-                          </div>
+                        <br><br>
+                        <b-form-row>
+                          <template v-for="(item, index2) in theme.items">
+                            <div :key="item.key" class="col-md-12">
+                                <b-form-row>
+                                  <div class="col-md-12">
+                                      <div class="float-right">
+                                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeItem(index, index2)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                      </div>
+                                  </div>
+                                </b-form-row>
+                                <b-form-row>
+                                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
+                                  <vue-advanced-select v-model="form.themes[index].items[index2].type_id" :disabled="viewOnly" class="col-md-6" :multiple="false" label="Seleccione el tipo" :options="typesItems" :hide-selected="false" name="type_id" placeholder="Selecciona el tipo de item" :error="form.errorsFor('type_id')"></vue-advanced-select>
+                                </b-form-row>
+                                <b-form-row>
+                                  <vue-textarea v-if="form.themes[index].items[index2].type_id && (form.themes[index].items[index2].type_id == 1 || form.themes[index].items[index2].type_id == 2 || form.themes[index].items[index2].type_id == 4)" :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" label="Valores (Separados por enter)" name="values" placeholder="valores" rows="3"></vue-textarea>
+                                </b-form-row>
+                            </div>
+                          </template>
                         </b-form-row>
                       </b-card-body>
                     </b-collapse>
