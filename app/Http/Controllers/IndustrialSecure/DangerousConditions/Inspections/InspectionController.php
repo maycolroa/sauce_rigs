@@ -498,7 +498,19 @@ class InspectionController extends Controller
                 foreach ($theme->items as $item)
                 {
                     $item->key = Carbon::now()->timestamp + rand(1,10000);
-                    $item->values = $item->values ? implode("\n", $item->values->get('values')) : NULL;
+
+                    if (isset($item->type_id) && $item->type_id != 4)
+                        $item->values = $item->values ? implode("\n", $item->values->get('values')) : NULL;
+                    else
+                    {
+                        $values = $item->values ? $item->values->get('values') : [];
+
+                        if (count($values) > 0)
+                        {
+                            $item->min_value = $values[0];
+                            $item->max_value = $values[1];
+                        }
+                    }
                 }
             }
 
@@ -649,7 +661,17 @@ class InspectionController extends Controller
     {
         foreach ($items as $item)
         {
-            if (isset($item['values']))
+            \Log::info($item);
+            if (isset($item['min_value']) && isset($item['max_value']))
+            {
+                $values = [$item['min_value'],$item['max_value']];
+                $config = collect(['values' => []]);
+                $config->put('values', $values);
+                \Log::info($config);
+
+                $item['values'] = $config; 
+            }
+            else if (isset($item['values']))
             {
                 $config = collect(['values' => []]);
 

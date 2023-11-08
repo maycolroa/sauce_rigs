@@ -120,8 +120,12 @@
                                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
                                   <vue-advanced-select v-model="form.themes[index].items[index2].type_id" :disabled="viewOnly" class="col-md-6" :multiple="false" label="Seleccione el tipo" :options="typesItems" :hide-selected="false" name="type_id" placeholder="Selecciona el tipo de item" :error="form.errorsFor('type_id')"></vue-advanced-select>
                                 </b-form-row>
-                                <b-form-row>
-                                  <vue-textarea v-if="form.themes[index].items[index2].type_id && (form.themes[index].items[index2].type_id == 1 || form.themes[index].items[index2].type_id == 2 || form.themes[index].items[index2].type_id == 4)" :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" label="Valores (Separados por enter)" name="values" placeholder="valores" rows="3"></vue-textarea>
+                                <b-form-row v-if="form.themes[index].items[index2].type_id && (form.themes[index].items[index2].type_id == 1 || form.themes[index].items[index2].type_id == 2)">
+                                  <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" label="Valores (Separados por enter)" name="values" placeholder="valores" rows="3"></vue-textarea>
+                                </b-form-row>
+                                <b-form-row v-if="form.themes[index].items[index2].type_id && form.themes[index].items[index2].type_id == 4">
+                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].min_value" label="Valor minimo" type="number" name="min_value" :error="form.errorsFor(`themes.${index}.items.${index2}.min_value`)" placeholder="Minimo"></vue-input>
+                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].max_value" label="Valor maximo" type="number" name="max_value" :error="form.errorsFor(`themes.${index}.items.${index2}.max_value`)" placeholder="Maximo"></vue-input>
                                 </b-form-row>
                             </div>
                           </template>
