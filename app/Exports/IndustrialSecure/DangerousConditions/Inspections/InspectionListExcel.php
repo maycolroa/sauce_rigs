@@ -57,6 +57,8 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
         $select[] = "sau_ph_inspections.created_at";
         $select[] = "sau_ph_inspection_sections.name as section_name";
         $select[] = "sau_ph_inspection_section_items.description as description";
+        $select[] = "sau_ph_inspetions_type_items.type as type_item";
+        $select[] = "sau_ph_inspection_section_items.values as item_values";
 
         if ($this->confLocationTableInspections['regional'] == 'SI')
             $select[] = "(SELECT GROUP_CONCAT(r.name) 
@@ -86,7 +88,7 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
                 WHERE a.inspection_id = sau_ph_inspections.id
             ) AS area";
 
-        $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description')
+        $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_ph_inspetions_type_items.type', 'sau_ph_inspection_section_items.values')
         ->join('sau_ph_inspection_sections', function ($join) 
         {
           $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
@@ -95,6 +97,11 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
         ->join('sau_ph_inspection_section_items', function ($join) 
         {
           $join->on("sau_ph_inspection_section_items.inspection_section_id", "sau_ph_inspection_sections.id");
+          $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
+        })
+        ->leftJoin('sau_ph_inspetions_type_items', function ($join) 
+        {
+          $join->on("sau_ph_inspection_section_items.type_id", "sau_ph_inspetions_type_items.id");
           $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
         })
         ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'])
@@ -205,6 +212,8 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
       $select2[] = "state";
       $select2[] = "section_name";
       $select2[] = "description";
+      $select2[] = "type_item";
+      $select2[] = "item_values";
 
       if ($this->confLocationTableInspections['regional'] == 'SI')
             $select2[] = "GROUP_CONCAT(regional) AS regional";
@@ -281,7 +290,7 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
       
       $result = DB::table(DB::raw("({$inspections->toSql()}) AS t"))
       ->selectRaw(implode(",", $select2))
-      ->groupBy('id', 'name', 'created_at', 'state', 'section_name', 'description')
+      ->groupBy('id', 'name', 'created_at', 'state', 'section_name', 'description', 'type_item', 'item_values')
       ->orderBy('id')
       ->mergeBindings($inspections->getQuery());
 
@@ -291,6 +300,9 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
     public function map($data): array
     {
       $values = [$data->id, $data->name];
+
+      $values_item = json_decode($data->item_values, true);
+      \Log::info($values_item['values']);
 
       if ($this->confLocationTableInspections['regional'] == 'SI')
         array_push($values, $data->regional);
@@ -308,7 +320,9 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
         $data->created_at,
         $data->state,
         $data->section_name,
-        $data->description
+        $data->description,
+        $data->type_item,
+        $data->item_values ? implode(",", $values_item['values']) : ''
       ]);
 
       return $values;
@@ -334,7 +348,9 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
         'Fecha de creación',
         '¿Activa?',
         'Nombre del tema',
-        'Descripción del item'
+        'Descripción del item',
+        'Tipo de item',
+        'Valores posibles'
       ]);
 
       return $columns;
