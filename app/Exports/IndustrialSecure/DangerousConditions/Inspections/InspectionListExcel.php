@@ -302,7 +302,6 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
       $values = [$data->id, $data->name];
 
       $values_item = json_decode($data->item_values, true);
-      \Log::info($values_item['values']);
 
       if ($this->confLocationTableInspections['regional'] == 'SI')
         array_push($values, $data->regional);
