@@ -8,7 +8,16 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <form-inspection-qualification-personalized
+                v-if="type"
+                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`"
+                method="PUT"
+                :qualification="data"
+                :action-plan-states="actionPlanStates"
+                :is-edit="true"
+                :cancel-url="{ name: 'dangerousconditions-inspections-qualification'}"/>
             <form-inspection-qualification
+                v-else
                 :url="`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`"
                 method="PUT"
                 :qualification="data"
@@ -23,6 +32,7 @@
 
 <script>
 import FormInspectionQualification from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionQualificationComponent.vue';
+import FormInspectionQualificationPersonalized from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionQualificationPersonalizedComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -32,12 +42,14 @@ export default {
     title: 'Inspecciones Planeadas - Calificaciones Ver'
   },
   components:{
-    FormInspectionQualification
+    FormInspectionQualification,
+    FormInspectionQualificationPersonalized
   },
   data () {
     return {
       data: [],
-      actionPlanStates: []
+      actionPlanStates: [],
+      type: false
     }
   },
   created(){
@@ -46,6 +58,11 @@ export default {
     axios.get(`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+
+        if (this.data.type == 3)
+        {
+          this.type = true
+        }
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

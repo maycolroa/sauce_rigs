@@ -183,6 +183,7 @@ class InspectionQualificationController extends Controller
                 $itemRow->put('id_item_qualification', $item->id);
                 $itemRow->put('description', $item->item_name);
                 $itemRow->put('qualification', $item->qualification);
+                $itemRow->put('qualify', $item->qualify);
                 $itemRow->put('find', $item->find);
                 $itemRow->put('level_risk', $item->level_risk);
                 $itemRow->put('photo_1', $item->photo_1);
@@ -257,6 +258,7 @@ class InspectionQualificationController extends Controller
             
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
+        $data->put('type', $qualification->item->section->inspection->type_id);
         $data->put('version', $qualification->item->section->inspection->version);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
         $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');

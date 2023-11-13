@@ -290,38 +290,6 @@ class InspectionController extends ApiController
      */
     public function store(InspectionQualificationsRequest $request)
     {
-        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }*/
-
-        /*$inspection = Inspection::selectRaw("
-          sau_ph_inspections.*,
-          GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
-          GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area,
-          GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional,
-          GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS proceso")*/
-        /*->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
-        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
-        ->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id')
-        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id')
-        ->where('sau_ph_inspections.id', $request->inspection_id)
-        ->groupBy('sau_ph_inspections.id');
-
-        $inspection->company_scope = $request->company_id;
-        $inspection = $inspection->first();*/
-
-        /*$regionals = $inspection->regional ? $inspection->regional : null;
-        $headquarters =  $inspection->sede ? $inspection->sede : null;
-        $processes = $inspection->proceso ? $inspection->proceso : null;
-        $areas = $inspection->area ? $inspection->area : null;*/
-
         $keywords = $this->getKeywordQueue($request->company_id);
         $confLocation = $this->getLocationFormConfModule($request->company_id);;
 
@@ -370,8 +338,14 @@ class InspectionController extends ApiController
 
                     $qualification_date_verify = $item->qualification_date;
 
+                    if ($inspection->type_id == 3 && $value['type_id'] == 2)
+                    {
+                        $value['qualify'] = implode(',', $value['qualify']);
+                    }
+
                     $item->item_id = $value["item_id"];
-                    $item->qualification_id = $value["qualification_id"];
+                    $item->qualification_id = $inspection->type_id == 3 ? 3 : $value["qualification_id"];
+                    $item->qualify = $inspection->type_id == 3 ? $value["qualify"] : NULL;
                     $item->find = isset($value["find"]) ? $value["find"] : '';
                     $item->level_risk = isset($value["level_risk"]) ? $value["level_risk"] : '';
                     $item->qualifier_id = $qualifier_id;
