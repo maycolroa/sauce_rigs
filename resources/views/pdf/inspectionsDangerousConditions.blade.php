@@ -172,7 +172,7 @@
                     @foreach($theme["items"] as $keyItem => $item)
                     <tr>
                         <td class="title-obj">{{ $keyTheme + 1 }}.{{ $keyItem + 1 }} - {{ $item["description"] }}</td>
-                        <td>{{ $item["qualification"] }}</td>
+                        <td>{{ $inspections["type"] == 3 ? $item["qualify"] : $item["qualification"] }}</td>
                         <td>{{ $item["level_risk"] }}</td>
                         <td>{{ $item["find"] }}</td>
                     </tr> 
