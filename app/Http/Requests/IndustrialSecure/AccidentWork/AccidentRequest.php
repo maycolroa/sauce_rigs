@@ -134,7 +134,7 @@ class AccidentRequest extends FormRequest
             //////////////////////////////////////////////////////////////
             'nivel_accidente' => 'required|string|in:' . implode(',', $accidentLevels),
             'investigation_arl' => 'required',
-            'fecha_envio_arl' => 'required_unless:investigation_arl,NO',
+            'fecha_envio_arl' => 'required_unless:investigation_arl,SI',
             'employee_eps_id' => 'nullable',
             'employee_arl_id' => 'nullable',
             'employee_afp_id' => 'nullable',

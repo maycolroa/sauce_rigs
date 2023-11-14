@@ -123,8 +123,8 @@ class AccidentRequest extends FormRequest
             'employee_eps_id' => 'nullable',
             'employee_arl_id' => 'nullable',
             'employee_afp_id' => 'nullable',
-            'tiene_seguro_social' => 'required|string',
-            'nombre_seguro_social' => 'required_if:tiene_seguro_social,SI',
+            //'tiene_seguro_social' => 'required|string',
+            //'nombre_seguro_social' => 'required_if:tiene_seguro_social,SI',
             /////////////////////////////////////////////////////////////
             'fecha_accidente' => 'required',
             'jornada_accidente' => 'nullable|string|in:' . implode(',', $workingDayTypes),
@@ -161,7 +161,7 @@ class AccidentRequest extends FormRequest
             'fecha_diligenciamiento_informe' => 'required',
             ///////////////////////////////////////////////////////////////////////
 
-            'observaciones_empresa' => 'required|string',
+            //'observaciones_empresa' => 'required|string',s
             'files' => 'nullable',
             'participants_investigations' => 'required|array',
         ];
