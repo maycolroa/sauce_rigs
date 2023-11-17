@@ -45,6 +45,12 @@ export default [
         label: 'areas'
       },
       {
+        url: '/selects/industrialSecurity/inspections',
+        key: 'inspections',
+        type: 'select',
+        label: 'Inspecciones'
+      },
+      {
         url: '/selects/users',
         key: 'creators',
         type: 'select',
