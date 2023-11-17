@@ -618,7 +618,7 @@ export default [
     configuration: {
         urlData: '/administration/actionplan/report',
         filterColumns: true,
-        configNameFilter: 'administrative-actionplans'
+        configNameFilter: 'administrative-actionplans-report'
     }
   },
   {
