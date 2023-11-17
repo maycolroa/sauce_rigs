@@ -626,8 +626,6 @@ export default {
     this.form.dxs.forEach((dx, keydx) => {
         axios.get(`/biologicalmonitoring/reinstatements/cie10/${dx.cie10_code_id}`)
         .then(response => {
-          console.log(response.data.data);
-          console.log(response.data.data.system);
             this.form.dxs[keydx].system = response.data.data.system;
             this.form.dxs[keydx].category = response.data.data.category;
             console.log(this.form.dxs[keydx]);

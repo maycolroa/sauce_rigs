@@ -86,7 +86,10 @@ trait ReinstatementsTrait
         else if ($formModel == 'chia')
         {
             $rules = array_merge($rules, [
-                'dxs' => 'required'
+                'dxs' => 'required|array',
+                'dxs.*.disease_origin' => 'required',
+                'dxs.*.cie10_code_id.*.description' => 'required|exists:sau_reinc_cie10_codes,id'
+                
             ]);
         }
         else

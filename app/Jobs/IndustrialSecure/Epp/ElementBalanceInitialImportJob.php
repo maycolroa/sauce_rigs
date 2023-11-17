@@ -50,9 +50,9 @@ class ElementBalanceInitialImportJob implements ShouldQueue
      */
     public function handle()
     {
-      if ($this->type_element == 'Identificable')
+      /*if ($this->type_element == 'Identificable')
         Excel::import(new ElementBalanceInitialImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
-      else
+      else*/
         Excel::import(new ElementBalanceInitialNotIdentyImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
 
       Storage::disk('public')->delete('import/1/'. $this->nameFile);

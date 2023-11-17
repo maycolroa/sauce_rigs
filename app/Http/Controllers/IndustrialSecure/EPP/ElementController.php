@@ -114,7 +114,7 @@ class ElementController extends Controller
         $element->applicable_standard = $standar_apply->implode(',');
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
-        $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
+        $element->identify_each_element = false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
         $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;
@@ -250,7 +250,7 @@ class ElementController extends Controller
         $element->applicable_standard = $standar_apply->implode(',');
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
-        $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
+        $element->identify_each_element = false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
         $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;

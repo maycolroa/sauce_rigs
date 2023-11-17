@@ -69,7 +69,7 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
         'Instrucciones de uso (Opcional)',
         'Estado (Activo, Inactivo) *',
         '¿Reutilizable? (SI, NO) *',
-        '¿Desea identificar cada elemento? (SI, NO) *',
+        //'¿Desea identificar cada elemento? (SI, NO) *',
         '¿Tiene fecha de vencimiento? (SI, NO) (Opcional)',
         'Máximos dias de uso (Opcional aplica si tiene fecha de vencimiento)'
       ];

@@ -29,9 +29,9 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-radio :disabled="viewOnly" class="col-md-4" v-model="form.state" :options="actInac" name="state" :error="form.errorsFor('state')" label="Estado" :checked="form.state"></vue-radio>
-      <vue-radio :disabled="viewOnly" class="col-md-4" v-model="form.reusable" :options="siNo" name="reusable" :error="form.errorsFor('reusable')" label="Reutilizable" :checked="form.reusable"></vue-radio>
-      <vue-radio v-if="auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.state" :options="actInac" name="state" :error="form.errorsFor('state')" label="Estado" :checked="form.state"></vue-radio>
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.reusable" :options="siNo" name="reusable" :error="form.errorsFor('reusable')" label="Reutilizable" :checked="form.reusable"></vue-radio>
+      <!--<vue-radio v-if="auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>-->
       </b-form-row>
 
     <b-form-row>

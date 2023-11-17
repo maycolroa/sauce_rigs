@@ -114,8 +114,8 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'instrucciones' => $row[7],
             'estado' => $row[8],
             'reutilizable' => strtoupper($row[9]),
-            'identificar' => strtoupper($row[10]),
-            'vencimiento' => strtoupper($row[11]),
+            //'identificar' => strtoupper($row[10]),
+            'vencimiento' => strtoupper($row[10]),
             'dias_vencimiento' => $row[8]
 
         ];
@@ -142,7 +142,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'instrucciones' => 'nullable',
             'estado' => 'required|in:Activo,Inactivo',
             'reutilizable' => 'required|in:SI,NO',
-            'identificar' => 'required|in:SI,NO',
+            //'identificar' => 'required|in:SI,NO',
             'vencimiento' => 'nullable|in:SI,NO',
             'dias_vencimiento' => 'required_if:vencimiento,SI'       
         ];
@@ -181,7 +181,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
                 $element->applicable_standard = $data['norma'];
                 $element->state = $data['estado'] == "Activo" ? true : false;
                 $element->reusable = $data['reutilizable'] == "SI" ? true : false;
-                $element->identify_each_element = $data['identificar'] == "SI" ? true : false;
+                $element->identify_each_element = false;
                 $element->expiration_date = $data['vencimiento'] == "SI" ? true : false;
                 $element->days_expired = $data['vencimiento'] == "SI" ? $data['dias_vencimiento'] : NULL;
                 $element->company_id = $this->company_id;
