@@ -116,6 +116,41 @@
               </b-card-body>
             </b-card>
           </b-tab>
+          <b-tab>
+            <template slot="title">
+                <strong>Reporte Elementos Entregados</strong> 
+            </template>
+            <b-card bg-variant="transparent" border-variant="dark" title="Totales" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                    <div><b>Empleado:</b></div>
+                </b-col>
+                <b-col>
+                    <div><b># Elementos entregados:</b></div>
+                </b-col>
+              </b-row>
+              <template v-for="(item, index) in information3">
+                <b-row  :key="index+round()">
+                  <b-col>
+                      <div><b>{{item.employee}}</b></div>
+                  </b-col>
+                  <b-col>
+                      <div><b>{{item.asignados}}</b></div>
+                  </b-col>
+                </b-row>
+              </template>
+            </b-card>
+            <b-card>
+              <b-card-body>
+                <vue-table
+                  configName="industrialsecure-epp-reports-employees-history"
+                  v-if="auth.can['elements_r']"
+                  :params="{filters}"
+                  ref="elementsDeliveryHistory"
+                ></vue-table>
+              </b-card-body>
+            </b-card>
+          </b-tab>
         </b-tabs>
     </b-card>
     </div>
@@ -148,6 +183,10 @@ export default {
                 empleado: '',
                 total: 0
             },
+            information3: {
+                empleado: '',
+                total: 0
+            },
         }
     },
     watch: {
@@ -156,6 +195,7 @@ export default {
                 this.$refs.saldosElements.refresh()
                 this.$refs.elementsAsigned.refresh()
                 this.$refs.stockMinimun.refresh()
+                this.$refs.elementsDeliveryHistory.refresh()
                 this.updateTotales()
             },
             deep: true
@@ -178,6 +218,13 @@ export default {
             axios.post('/industrialSecurity/epp/element/reportEmployeeTotals', postData)
                 .then(response => {
                     this.information2 = response.data.data;
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+            axios.post('/industrialSecurity/epp/element/reportEmployeeTotalsHistory', postData)
+                .then(response => {
+                    this.information3 = response.data.data;
                 })
                 .catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

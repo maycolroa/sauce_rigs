@@ -544,6 +544,11 @@ export default [
           key: 'employee',
           type: 'select',
           label: 'Empleado',
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de entrega',
         }
       ]
     },
