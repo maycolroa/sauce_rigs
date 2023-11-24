@@ -1,7 +1,8 @@
 <template>
   	<div>
     	<header-module
-			title="INSPECCIONES PLANEADAS REPORTES"
+			title="ACCIDENTES E INCIDENTES DE TRABAJO"
+      		subtitle="ADMINISTRAR CAUSAS"
 			url="industrialsecure-accidentswork"
 		/>
     	<div class="col-md">
