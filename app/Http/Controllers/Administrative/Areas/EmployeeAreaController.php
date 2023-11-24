@@ -103,7 +103,7 @@ class EmployeeAreaController extends Controller
                     $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
             }
 
-            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+            if ($request->has('employee_headquarter_id') && (isset($headquarter_alls) && $headquarter_alls == 'Todos'))
                 $headquarters = $this->getHeadquarter($request->employee_regional_id);
 
             else if ($request->has('employee_headquarter_id'))
@@ -128,7 +128,7 @@ class EmployeeAreaController extends Controller
                     $process_alls =  json_decode($request->employee_process_id[0])->value;
             }
 
-            if ($request->has('employee_process_id') && $process_alls == 'Todos')
+            if ($request->has('employee_process_id') && (isset($process_alls) && $process_alls == 'Todos'))
                 $processes = $this->getProcess($headquarters);
 
             else if ($request->has('employee_process_id'))
@@ -318,7 +318,7 @@ class EmployeeAreaController extends Controller
                     $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
             }
 
-            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+            if ($request->has('employee_headquarter_id') && (isset($headquarter_alls) && $headquarter_alls == 'Todos'))
                 $headquarters = $this->getHeadquarter($request->employee_regional_id);
 
             else if ($request->has('employee_headquarter_id'))
@@ -343,7 +343,7 @@ class EmployeeAreaController extends Controller
                     $process_alls =  json_decode($request->employee_process_id[0])->value;
             }
 
-            if ($request->has('employee_process_id') && $process_alls == 'Todos')
+            if ($request->has('employee_process_id') && (isset($process_alls) && $process_alls == 'Todos'))
                 $processes = $this->getProcess($headquarters);
 
             else if ($request->has('employee_process_id'))
