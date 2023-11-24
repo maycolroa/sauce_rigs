@@ -55,7 +55,7 @@ class UpdateQualificationsRepeleadCompany implements ShouldQueue
 
           if ($article_base->law->repealed == 'SI')
           {
-            DB::table('sau_lm_articles_fulfillment')->where('id', $article->id)>where('company_id', $this->company_id)->update(
+            DB::table('sau_lm_articles_fulfillment')->where('id', $article->id)->where('company_id', $this->company_id)->update(
               [
                 'fulfillment_value_id' => 8
               ]
