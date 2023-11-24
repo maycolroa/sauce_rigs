@@ -77,7 +77,10 @@
                                                 <th class="text-center align-middle">En estudio</th>
                                                 <th class="text-center align-middle">No aplica</th>
                                                 <th class="text-center align-middle">Informativo</th>
-                                                <th class="text-center align-middle">Sin calificar</th>      
+                                                <th class="text-center align-middle">Sin calificar</th>   
+                                                <th class="text-center align-middle">No vigente</th>
+                                                <th class="text-center align-middle">En Transición</th>
+                                                <th class="text-center align-middle">Pendiente reglamentación</th>    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -90,6 +93,9 @@
                                                 <td class="text-center align-middle">{{ row["No aplica"] }}</td>
                                                 <td class="text-center align-middle">{{ row["Informativo"] }}</td>
                                                 <td class="text-center align-middle">{{ row["Sin calificar"] }}</td>
+                                                 <td class="text-center align-middle">{{ row["No vigente"] }}</td>
+                                                <td class="text-center align-middle">{{ row["En Transición"] }}</td>
+                                                <td class="text-center align-middle">{{ row["Pendiente reglamentación"] }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

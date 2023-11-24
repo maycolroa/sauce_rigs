@@ -46,7 +46,9 @@ class ReportManagerLaw
         "Parcial"       => ["count" => 1, "qualify" => 0.5],
         "No aplica"     => ["count" => 0, "qualify" => 0],
         "Informativo"   => ["count" => 0, "qualify" => 0],
-        "No vigente"   => ["count" => 0, "qualify" => 0]
+        "No vigente"    => ["count" => 0, "qualify" => 0],
+        "En Transición" => ["count" => 0, "qualify" => 0],
+        "Pendiente reglamentación" => ["count" => 0, "qualify" => 0]
     ];
 
     /**
