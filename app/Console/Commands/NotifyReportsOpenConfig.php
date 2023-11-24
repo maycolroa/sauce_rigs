@@ -88,7 +88,15 @@ class NotifyReportsOpenConfig extends Command
             ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
-            ->isOpen();
+            ->whereRaw("CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -{$configDay} DAY)")
+            ->isOpen()
+            ->groupBy([
+                'sau_reinc_checks.company_id',
+                'sau_employees.identification',
+                'sau_employees.name',
+                'sau_employees.employee_headquarter_id',
+                'sau_reinc_checks.id'
+            ]);
 
             $reports->company_scope = $company;
             $reports = $reports->get();
@@ -113,14 +121,58 @@ class NotifyReportsOpenConfig extends Command
                             {
                                 if (in_array($check->sede,$headquarters))
                                 {
-                                    $now = Carbon::now();
+                                    /*$now = Carbon::now();
 
                                     if ($check->created_at)
+                                    {
+                                        /*$second_fecha = Carbon::createFromFormat('D M d Y', $check->created_at);
+
+                                        $definitive = $now->greaterThan($second_fecha);
+
+                                        if ($definitive)
+                                        {
+                                            $diff = $now->diffInDays($check->created_at);
+
+                                            if ($diff >= $configDay)
+                                            {*/
+                                                $content = [
+                                                    'Empleado' => $check->name,
+                                                    'Tipo de Evento' => $check->disease_origin,
+                                                    'Codigo CIE' => $check->code,
+                                                    'Descripción CIE' => $check->dx,
+                                                    'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
+                                                    'Sede' => $check->sede_name,
+                                                    'Estado' => $check->state
+                                                ];
+
+                                                array_push($expired_reports, $content);
+                                            /*}
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }*/
+                                    /*}
+                                    else
+                                        continue;*/
+                                }
+                            }
+                            else
+                            {
+                                /*$now = Carbon::now();
+
+                                if ($check->created_at)
+                                {
+                                    /*$second_fecha = Carbon::createFromFormat('D M d Y', $check->created_at);
+
+                                    $definitive = $now->greaterThan($second_fecha);
+
+                                    if ($definitive)
                                     {
                                         $diff = $now->diffInDays($check->created_at);
 
                                         if ($diff >= $configDay)
-                                        {
+                                        {*/
                                             $content = [
                                                 'Empleado' => $check->name,
                                                 'Tipo de Evento' => $check->disease_origin,
@@ -132,37 +184,11 @@ class NotifyReportsOpenConfig extends Command
                                             ];
 
                                             array_push($expired_reports, $content);
-                                        }
-                                    }
-                                    else
-                                        continue;
-                                }
-                            }
-                            else
-                            {
-                                $now = Carbon::now();
-
-                                if ($check->created_at)
-                                {
-                                    $diff = $now->diffInDays($check->created_at);
-
-                                    if ($diff >= $configDay)
-                                    {
-                                        $content = [
-                                            'Empleado' => $check->name,
-                                            'Tipo de Evento' => $check->disease_origin,
-                                            'Codigo CIE' => $check->code,
-                                            'Descripción CIE' => $check->dx,
-                                            'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                            'Sede' => $check->sede_name,
-                                            'Estado' => $check->state
-                                        ];
-
-                                        array_push($expired_reports, $content);
-                                    }
-                                }
+                                        //}
+                                    //}
+                                /*}
                                 else
-                                    continue;
+                                    continue;*/
                             }
                         }
 
@@ -171,7 +197,7 @@ class NotifyReportsOpenConfig extends Command
                             NotificationMail::
                                 subject('Sauce - Reincorporaciones Reportes')
                                 ->recipients($user)
-                                ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
+                                ->message("Este es el listado de empleados con seguimientos a recomendaciones en los próximos <b>$configDay</b> dias.")
                                 ->module('reinstatements')
                                 ->event('Tarea programada: NotifyReportsOpenConfig')
                                 ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
