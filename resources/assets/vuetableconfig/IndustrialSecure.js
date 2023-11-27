@@ -1705,10 +1705,10 @@ export default [
     name: 'industrialsecure-epp-reports',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'class', data: 'class', title: 'Clase', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'mark', data: 'mark', title: 'Marca', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'element', title: 'Elemento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.class_element', data: 'class', title: 'Clase', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.mark', data: 'mark', title: 'Marca', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
         { name: 'quantity', data: 'quantity', title: 'Cantidad Total', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity_available', data: 'quantity_available', title: 'Cantidad Disponible', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity_allocated', data: 'quantity_allocated', title: 'Cantidad Asignada', sortable: true, searchable: false, detail: false, key: false },
@@ -1725,7 +1725,7 @@ export default [
         }],
     configuration: {
         urlData: '/industrialSecurity/epp/element/reportBalance',
-        filterColumns: false,
+        filterColumns: true,
         //configNameFilter: 'industrialsecure-epp-report'
     }
 },
@@ -1844,12 +1844,12 @@ export default [
     name: 'industrialsecure-epp-reports-employees',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'class', data: 'class', title: 'Clase', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_employees.name', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'element', title: 'Elemento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.class_element', data: 'class', title: 'Clase', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
         { name: 'cantidad', data: 'cantidad', title: 'Cantidad', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'fecha', data: 'fecha', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.created_at', data: 'fecha', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
     ],
     'controlls': [{
             type: 'push',
@@ -1861,7 +1861,7 @@ export default [
         }],
     configuration: {
         urlData: '/industrialSecurity/epp/element/reportEmployee',
-        filterColumns: false,
+        filterColumns: true,
         //configNameFilter: 'industrialsecure-epp-report'
     }
 },
@@ -1869,12 +1869,12 @@ export default [
     name: 'industrialsecure-epp-reports-employees-history',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'class', data: 'class', title: 'Clase', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_employees.name', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'element', title: 'Elemento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.class_element', data: 'class', title: 'Clase', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
         { name: 'cantidad', data: 'cantidad', title: 'Cantidad', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'fecha', data: 'fecha', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.created_at', data: 'fecha', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
     ],
     'controlls': [{
             type: 'push',
@@ -1886,7 +1886,7 @@ export default [
         }],
     configuration: {
         urlData: '/industrialSecurity/epp/element/reportEmployeeHistory',
-        filterColumns: false,
+        filterColumns: true,
         //configNameFilter: 'industrialsecure-epp-report'
     }
 },
@@ -2083,8 +2083,8 @@ export default [
     name: 'industrialsecure-epp-reports-stock-minimun',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'element', title: 'Elemento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
         { name: 'quantity', data: 'quantity', title: 'Existencia Mínima', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity_available', data: 'quantity_available', title: 'Existencia Disponible', sortable: true, searchable: false, detail: false, key: false },
     ],
@@ -2098,7 +2098,7 @@ export default [
         }],
     configuration: {
         urlData: '/industrialSecurity/epp/element/reportStockMinimun',
-        filterColumns: false,
+        filterColumns: true,
         //configNameFilter: 'industrialsecure-epp-report'
     }
 },
