@@ -194,17 +194,20 @@ class NotifyReportsOpenConfig extends Command
 
                         if (count($expired_reports) > 0)
                         {
-                            NotificationMail::
-                                subject('Sauce - Reincorporaciones Reportes')
-                                ->recipients($user)
-                                ->message("Este es el listado de empleados con seguimientos a recomendaciones en los próximos <b>$configDay</b> dias.")
-                                ->module('reinstatements')
-                                ->event('Tarea programada: NotifyReportsOpenConfig')
-                                ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
-                                ->with(['data'=>$expired_reports])
-                                //->table($expired_reports)
-                                ->company($company)
-                                ->send();
+                            if ($company == 130)
+                            {
+                                NotificationMail::
+                                    subject('Sauce - Reincorporaciones Reportes')
+                                    ->recipients($user)
+                                    ->message("Este es el listado de empleados con seguimientos a recomendaciones en los próximos <b>$configDay</b> dias.")
+                                    ->module('reinstatements')
+                                    ->event('Tarea programada: NotifyReportsOpenConfig')
+                                    ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
+                                    ->with(['data'=>$expired_reports])
+                                    //->table($expired_reports)
+                                    ->company($company)
+                                    ->send();
+                            }
                         }
                     }
                     else
