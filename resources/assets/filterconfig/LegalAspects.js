@@ -308,6 +308,11 @@ export default [
           key: 'qualifications',
           type: 'select',
           label: 'Calificación'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
         }
       ]
     },

@@ -71,12 +71,16 @@ class LawReportController extends Controller
         $interests = !$init ? $this->getValuesForMultiselect($request->interests) : (isset($filters['interests']) ? $this->getValuesForMultiselect($filters['interests']) : []);
 
         $states = !$init ? $this->getValuesForMultiselect($request->states) : (isset($filters['states']) ? $this->getValuesForMultiselect($filters['states']) : []);
-        
+
+        $range = $this->formatDatetimeToBetweenFilter($request->dateRange);
+
+        $dates = $range ? $range : [];
+
         $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $category = $request->legalMatrixSelected;
         
-        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category);
+        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates);
         
         return $this->respondHttp200($reportManager->getInformData());
     }
@@ -98,6 +102,7 @@ class LawReportController extends Controller
                 "responsibles" => $this->getValuesForMultiselect($request->responsibles),
                 "interests" => $this->getValuesForMultiselect($request->interests),
                 "states" => $this->getValuesForMultiselect($request->states),
+                "dates" => $this->formatDatetimeToBetweenFilter($request->dateRange),
                 "filtersType" => $request->filtersType
             ];
 

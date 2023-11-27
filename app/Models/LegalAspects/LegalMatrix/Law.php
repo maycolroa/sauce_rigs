@@ -369,4 +369,13 @@ class Law extends Model
 
         return $query;
     }
+
+    public function scopeBetweenDate($query, $dates = [])
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_lm_articles_fulfillment.date_qualification_edit', $dates);
+            return $query;
+        }
+    }
 }

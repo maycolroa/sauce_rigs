@@ -432,13 +432,15 @@ export default {
           {text: 'SI', value: 'SI'},
           {text: 'NO', value: 'NO'}
       ],
-      searchArticles: ''
+      searchArticles: '',
+      editDate: false
     };
   },
   mounted() {
     setTimeout(() => {
       this.$nextTick(() => {
         this.activateEvent = true;
+        this.editDate = true;
       });
     }, 5000)
   },
@@ -587,8 +589,16 @@ export default {
     updateQualify(event, index) {
       if (event) {
         this.form.articles[index].qualify = event;
+        this.dateEditQualification(index);
         this.saveArticleQualification(index);
         this.builderFilterQualificationOptions();
+      }
+    },
+    dateEditQualification(index) {
+      if (this.editDate) {
+        let postData = Object.assign({}, {qualification_id: this.form.articles[index].qualification_id});
+        axios.post('/legalAspects/legalMatrix/law/saveEditQualificationDate', postData)
+          .then(response => {}).catch(error => {});        
       }
     },
     deleteFile(index) {

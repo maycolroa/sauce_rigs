@@ -662,7 +662,8 @@ class LawController extends Controller
                     'responsible' => $request->responsible ? $request->responsible : NULL,
                     'workplace' => $request->workplace ? $request->workplace : NULL,
                     'qualification_masive' => true,
-                    'hide' => $request->hide ? $request->hide : 'NO'
+                    'hide' => $request->hide ? $request->hide : 'NO',
+                    'date_qualification_edit' => date('Y-m-d H:i:s')
                 ]);
 
                 $article_qualify = ArticleFulfillment::find($ids[0]);
@@ -844,6 +845,25 @@ class LawController extends Controller
                 return $this->respondHttp200([
                     'data' => $data
                 ]);
+            }
+
+        } catch (Exception $e){
+            return $this->respondHttp500();
+        }
+    }
+
+    public function saveEditQualificationArticle(Request $request)
+    {
+        try
+        {
+            $qualification = ArticleFulfillment::find($request->qualification_id);
+
+            if ($qualification)
+            {
+                $qualification->date_qualification_edit = date('Y-m-d H:i:s');
+
+                if (!$qualification->save())
+                    return $this->respondHttp500();
             }
 
         } catch (Exception $e){

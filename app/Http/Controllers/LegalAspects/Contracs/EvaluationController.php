@@ -104,6 +104,7 @@ class EvaluationController extends Controller
             $evaluation = new Evaluation($request->all());
             $evaluation->company_id = $this->company;
             $evaluation->creator_user_id = $this->user->id;
+            $evaluation->in_edit = 0;
 
             if(!$evaluation->save()){
                 return $this->respondHttp500();
@@ -127,6 +128,7 @@ class EvaluationController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
             //return $e->getMessage();
         }

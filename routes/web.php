@@ -899,6 +899,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('law/showFile/{law}', 'LegalAspects\LegalMatrix\LawController@showFile');
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
+        Route::post('law/saveEditQualificationDate', 'LegalAspects\LegalMatrix\LawController@saveEditQualificationArticle');
         Route::post('law/saveArticlesQualificationAlls', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualificationAlls');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::post('law/report', 'LegalAspects\LegalMatrix\LawReportController@data');
