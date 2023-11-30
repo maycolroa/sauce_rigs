@@ -91,7 +91,7 @@
                   <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
                 </b-form-row>
                 <b-form-row>
-                    <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
+                    <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
                       </vue-radio>
                   </b-form-row>
 
@@ -231,16 +231,16 @@
                   </b-form-row>
 
                   <b-form-row> 
-                    <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
+                    <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial' && article.qualify != 'En Transición' && article.qualify != 'Pendiente reglamentación'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
 
                     <div style="padding-top: 25px;" v-if="isEdit">
-                      <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                      <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.qualify != 'En Transición' && article.qualify != 'Pendiente reglamentación' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                     </div>
 
                     <!-- NO CUMPLE -->
-                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-                    <b-modal v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
+                    <b-modal v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                       <div slot="modal-title">
                         Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
                         <small class="text-muted">Crea planes de acción para tu justificación.</small>

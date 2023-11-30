@@ -312,7 +312,7 @@ export default [
         {
           key: 'dateRange',
           type: 'dateRange',
-          label: 'Rango de fecha',
+          label: 'Rango de fechas de modificación de la calificación',
         }
       ]
     },

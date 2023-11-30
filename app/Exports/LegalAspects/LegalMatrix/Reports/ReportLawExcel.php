@@ -50,7 +50,10 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
          sau_lm_articles_fulfillment.observations AS observations,
          sau_lm_articles_fulfillment.responsible AS responsible,
          sau_lm_articles_fulfillment.workplace AS workplace,
-         sau_lm_articles.repealed AS derogado
+         sau_lm_articles.repealed AS derogado,
+         GROUP_CONCAT(sau_lm_interests.name) AS intereses,
+         sau_lm_sst_risks.name AS risk_sst,
+         sau_lm_risks_aspects.name AS risk_aspects
          "
       )
       ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
@@ -61,6 +64,9 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
       ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
       ->leftJoin('sau_lm_fulfillment_values','sau_lm_fulfillment_values.id', 'sau_lm_articles_fulfillment.fulfillment_value_id')
+      ->join('sau_lm_interests', 'sau_lm_interests.id', 'sau_lm_article_interest.interest_id')
+      ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+      ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
       ->where('sau_lm_articles_fulfillment.company_id', $this->company_id)
       ->where('sau_lm_articles_fulfillment.hide', DB::raw("'NO'"))
       ->inLawTypes($this->filters['lawTypes'], $this->filters['filtersType']['lawTypes'])
@@ -101,6 +107,9 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
         $data->law_year,
         $data->derogado,
         $data->system,
+        $data->intereses,
+        $data->risk_sst,
+        $data->risk_aspects,
         $data->qualify,
         $data->entity,
         $data->observations,
@@ -118,6 +127,9 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           'Año',
           'Derogado',
           'Sistema',
+          'Intereses',
+          'Tema SST',
+          'Tema Ambiental',
           'Cumplimiento',
           'Ente',
           'Observaciones',
@@ -139,7 +151,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           $columna = str_replace(" ", "_", strtolower($color->qualify));
           $number = $index + 2;
 
-          $colors['G'.$number] = $report_colors['colors']["$columna"];
+          $colors['J'.$number] = $report_colors['colors']["$columna"];
         }
 
         foreach ($colors as $cols => $color)
