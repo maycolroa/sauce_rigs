@@ -25,7 +25,16 @@
 
     <b-form-row>
      <vue-advanced-select class="col-md-4" v-model="form.informativo" :error="form.errorsFor('informativo')" :multiple="false" :options="colors" :hide-selected="false" name="informativo" label="Informativo" placeholder="Seleccione el color">
-          </vue-advanced-select>        
+          </vue-advanced-select>      
+     <vue-advanced-select class="col-md-4" v-model="form.no_vigente" :error="form.errorsFor('no_vigente')" :multiple="false" :options="colors" :hide-selected="false" name="no_vigente" label="No Vigente" placeholder="Seleccione el color">
+          </vue-advanced-select>    
+     <vue-advanced-select class="col-md-4" v-model="form.en_transicion" :error="form.errorsFor('en_transicion')" :multiple="false" :options="colors" :hide-selected="false" name="en_transicion" label="En Transición" placeholder="Seleccione el color">
+          </vue-advanced-select>      
+    </b-form-row>
+    
+    <b-form-row>  
+     <vue-advanced-select class="col-md-4" v-model="form.pendiente_reglamentacion" :error="form.errorsFor('pendiente_reglamentacion')" :multiple="false" :options="colors" :hide-selected="false" name="pendiente_reglamentacion" label="Pendiente reglamentación" placeholder="Seleccione el color">
+          </vue-advanced-select>      
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -62,7 +71,10 @@ export default {
           en_estudio: '',
           parcial: '',
           no_aplica: '',
-          informativo: ''
+          informativo: '',
+          no_vigente: '',
+          en_transicion: '',
+          pendiente_reglamentacion: ''
         };
       }
     }
@@ -85,6 +97,8 @@ export default {
         {name: 'Naranja', value: 'ff9565'},
         {name: 'Mostaza', value: 'ca8622'},
         {name: 'Marron', value: 'd48265'},
+        {name: 'Morado', value: '6A5ACD'},
+        {name: 'Azul', value: '4169E1'},
         {name: 'Sin Color', value: 'ffffff'},
       ]
     };

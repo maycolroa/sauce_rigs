@@ -48,7 +48,10 @@ class ConfigurationController extends Controller
                 'en_estudio' => $request['en_estudio'],
                 'parcial' => $request['parcial'],
                 'no_aplica' => $request['no_aplica'],
-                'informativo' => $request['informativo']
+                'informativo' => $request['informativo'],
+                'no_vigente' => $request['no_vigente'],
+                'en_transicion' => $request['en_transicion'],
+                'pendiente_reglamentacion' => $request['pendiente_reglamentacion']
             ]
         );
 
@@ -79,7 +82,10 @@ class ConfigurationController extends Controller
                     'en_estudio' => '',
                     'parcial' => '',
                     'no_aplica' => '',
-                    'informativo' => ''
+                    'informativo' => '',
+                    'no_vigente' => '',
+                    'en_transicion' => '',
+                    'pendiente_reglamentacion' => ''
                 ];
             }
 

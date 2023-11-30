@@ -20,6 +20,9 @@ class QualificationColorDinamic extends Model
         'en_estudio',
         'parcial',
         'no_aplica',
-        'informativo'
+        'informativo',
+        'no_vigente',
+        'en_transicion',
+        'pendiente_reglamentacion'
     ];
 }

@@ -148,6 +148,13 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       {
         foreach ($report_colors['qualify'] as $index => $color)
         {
+
+          if ($color->qualify == 'En Transición')
+            $color->qualify = 'En Transicion';
+          else if ($color->qualify == 'Pendiente reglamentación')
+            $color->qualify = 'Pendiente reglamentacion';
+
+
           $columna = str_replace(" ", "_", strtolower($color->qualify));
           $number = $index + 2;
 
