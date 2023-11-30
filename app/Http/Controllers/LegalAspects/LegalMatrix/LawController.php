@@ -614,7 +614,7 @@ class LawController extends Controller
                     "activitiesRemoved" => []
                 ];
 
-                if ($article->qualify == 'No cumple' || $article->qualify == 'Parcial')
+                if ($article->qualify == 'No cumple' || $article->qualify == 'Parcial' || $article->qualify == 'En Transición' || $article->qualify == 'Pendiente reglamentación')
                 {
                     $article->actionPlan = ActionPlan::model(ArticleFulfillment::find($article->qualification_id))->prepareDataComponent();
                 }
