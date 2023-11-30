@@ -561,8 +561,6 @@ export default {
         update(data) {
             _.forIn(data.data, (value, key) => {
                 if (this[key]) {
-                    console.log(this[key])
-                    console.log(value)
                     this[key] = value;
                 }
             });

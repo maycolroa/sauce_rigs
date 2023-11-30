@@ -545,6 +545,37 @@ export default [
           type: 'select',
           label: 'Empleado',
         },
+
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/positions',
+          key: 'positions',
+          type: 'select',
+          label: 'positions'
+        },
         {
           key: 'dateRange',
           type: 'dateRange',

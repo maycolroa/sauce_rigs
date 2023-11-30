@@ -151,6 +151,21 @@
               </b-card-body>
             </b-card>
           </b-tab>
+          <b-tab>
+            <template slot="title">
+                <strong>Elementos mas entregados</strong> 
+            </template>
+            <b-row>
+              <b-col>
+                <b-card border-variant="primary" title="Top de elementos" class="mb-3 box-shadow-none">
+                  <chart-bar 
+                      :chart-data="eppTopData"
+                      title="Top de elementos"
+                      ref="topElement"/>
+                </b-card>
+              </b-col>
+            </b-row>
+          </b-tab>
         </b-tabs>
     </b-card>
     </div>
@@ -160,6 +175,7 @@
 <script>
 import Alerts from '@/utils/Alerts.js';
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
+import ChartBar from '@/components/ECharts/ChartBar.vue';
 
 export default {
   name: 'industrialsecure-epp-reports',
@@ -167,27 +183,32 @@ export default {
     title: 'EPP - Reportes'
   },
   components:{
-      FilterGeneral
+      FilterGeneral,
+      ChartBar
   },
   data () {
-        return {
-            filters: [],
-            information: {
-                total: 0,
-                dsponibles: 0,
-                asignados: 0,
-                transito: 0,
-                desechados: 0
-            },
-            information2: {
-                empleado: '',
-                total: 0
-            },
-            information3: {
-                empleado: '',
-                total: 0
-            },
+      return {
+        filters: [],
+        information: {
+            total: 0,
+            dsponibles: 0,
+            asignados: 0,
+            transito: 0,
+            desechados: 0
+        },
+        information2: {
+            empleado: '',
+            total: 0
+        },
+        information3: {
+            empleado: '',
+            total: 0
+        },
+        eppTopData: {
+            labels: [],
+            datasets: []
         }
+      }
     },
     watch: {
         filters: {
@@ -225,6 +246,15 @@ export default {
             axios.post('/industrialSecurity/epp/element/reportEmployeeTotalsHistory', postData)
                 .then(response => {
                     this.information3 = response.data.data;
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+
+            axios.post('/industrialSecurity/epp/element/reportElementTop', postData)
+                .then(response => {
+                    this.eppTopData = response.data;
+                    console.log(this.eppTopData);
                 })
                 .catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

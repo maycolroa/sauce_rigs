@@ -126,6 +126,76 @@ class ElementTransactionEmployee extends Model
         return $query;
     }
 
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_regional_id', $regionals);
+        }
+
+        return $query;
+    }
+
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        if (COUNT($headquarters) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_headquarter_id', $headquarters);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_headquarter_id', $headquarters);
+        }
+
+        return $query;
+    }
+
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_process_id', $processes);
+        }
+
+        return $query;
+    }
+
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    public function scopeInPositions($query, $positions, $typeSearch = 'IN')
+    {
+        if (COUNT($positions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_position_id', $positions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_position_id', $positions);
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

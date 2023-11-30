@@ -79,7 +79,7 @@ export default {
                 axisLine: {
                     lineStyle: { color: 'rgba(0, 0, 0, .08)' }
                 },
-                axisLabel: { color: 'rgba(0, 0, 0, .5)' }
+                axisLabel: { color: 'rgba(0, 0, 0, .5)', interval: 0 }
             },
             xAxis: {
                 splitLine: { show: false },
