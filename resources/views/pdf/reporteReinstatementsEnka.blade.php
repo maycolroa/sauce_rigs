@@ -203,54 +203,6 @@
                     <td colspan="2">{{$check->laterality_3}}</td>
                 </tr>  
                 @endif
-                @if($check->disease_origin_4) 
-                <tr>
-                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (4)</th>
-                    <th>Código CIE 10 (4)</th>
-                    <th>Sistema</th>
-                    
-                </tr>
-                <tr>
-                    <td>{{$check->disease_origin_4}}</td>
-                    <td>{{$check->cie10Code4->code}} - {{$check->cie10Code4->description}}</td>
-                    <td>{{$check->cie10Code4->system}}</td>
-                </tr>
-                <tr>
-                    <th>Categoría</th>
-                    <th colspan="2">Lateralidad (4)</th>
-                </tr>
-                <tr>
-                    <td>{{$check->cie10Code2->category}}</td>
-                    <td colspan="2">{{$check->laterality_4}}</td>
-                </tr>  
-                @endif
-                @if($check->disease_origin_5) 
-                <tr>
-                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (5)</th>
-                    <th>Código CIE 10 (5)</th>
-                    <th>Sistema</th>
-                    
-                </tr>
-                <tr>
-                    <td>{{$check->disease_origin_5}}</td>
-                    <td>{{$check->cie10Code5->code}} - {{$check->cie10Code5->description}}</td>
-                    <td>{{$check->cie10Code5->system}}</td>
-                </tr>
-                <tr>
-                    <th>Categoría</th>
-                    <th colspan="2">Lateralidad (5)</th>
-                </tr>
-                <tr>
-                    <td>{{$check->cie10Code2->category}}</td>
-                    <td colspan="2">{{$check->laterality_5}}</td>
-                </tr>  
-                @endif
-                <tr>
-                    <th colspan="3">Calificación DME</th>
-                </tr>
-                <tr>
-                    <td colspan="3">{{$check->qualification_dme}}</td>
-                </tr>
             </thead>
         </table>
     </div>
@@ -570,7 +522,7 @@
                 </tr>
                 @foreach($check->tracings as $tracing)
                 <tr>
-                    <td>{{$tracing->madeBy ? $tracing->madeBy->name : ''}}</td>
+                    <td>{{$tracing->madeBy->name}}</td>
                     <td>{{date('Y-m-d', strtotime($tracing->created_at))}}</td>
                     <td>{{$tracing->description}}</td>
                 </tr>
@@ -594,7 +546,7 @@
                 </tr>
                 @foreach($check->laborNotes as $labor)
                 <tr>
-                    <td>{{$labor->madeBy ? $tracing->madeBy->name : ''}}</td>
+                    <td>{{$labor->madeBy->name}}</td>
                     <td>{{date('Y-m-d', strtotime($labor->created_at))}}</td>
                     <td>{{$labor->description}}</td>
                 </tr>

@@ -229,7 +229,7 @@ class CheckController extends Controller
             $check = new Check(CheckManager::checkNullAttrs($request, $this->company));
             $check->company_id = $this->company;
 
-            if ($formModel == 'chia')
+            if ($formModel == 'chia' || $formModel == 'enka')
             {
                 foreach ($request->dxs as $key => $dx) 
                 {
@@ -360,7 +360,7 @@ class CheckController extends Controller
 
             $formModel = $this->getFormModel('form_check');
 
-            if ($formModel == 'chia')
+            if ($formModel == 'chia' || $formModel == 'enka')
             {
                 for ($i=0; $i < 5; $i++) 
                 { 
@@ -565,7 +565,7 @@ class CheckController extends Controller
             array_push($oldTracings, [
                 'id' => $tracing->id,
                 'description' => $tracing->description,
-                'made_by' => $tracing->madeBy->name,
+                'made_by' => $tracing->madeBy ? $tracing->madeBy->name :'',
                 'updated_at' => $tracing->updated_at->toDateString(),
                 'informant_role' => $tracing->informant_role
             ]);
@@ -583,7 +583,7 @@ class CheckController extends Controller
             array_push($oldLaborNotes, [
                 'id' => $tracing->id,
                 'description' => $tracing->description,
-                'made_by' => $tracing->madeBy->name,
+                'made_by' => $tracing->madeBy ? $tracing->madeBy->name : '',
                 'updated_at' => $tracing->updated_at->toDateString()
             ]);
         }
@@ -597,7 +597,7 @@ class CheckController extends Controller
             array_push($oldLaborNotesRelations, [
                 'id' => $tracing->id,
                 'description' => $tracing->description,
-                'made_by' => $tracing->madeBy->name,
+                'made_by' => $tracing->madeBy ? $tracing->madeBy->name : '',
                 'updated_at' => $tracing->updated_at->toDateString()
             ]);
         }
@@ -621,7 +621,7 @@ class CheckController extends Controller
 
         $formModel = $this->getFormModel('form_check');
 
-        if ($formModel == 'chia')
+        if ($formModel == 'chia' || $formModel == 'enka')
         {
             $dxs = [];
 
@@ -1213,6 +1213,10 @@ class CheckController extends Controller
         else if($formModel == 'mitsubishi')
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
+        else if ($formModel == 'enka')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsEnka', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');

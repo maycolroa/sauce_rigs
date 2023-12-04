@@ -63,6 +63,23 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'enka'">
+                <form-check-enka
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  :check="data"
+                  :view-only="true"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'familia'">
                 <form-check-familia
                   url="/biologicalmonitoring/reinstatements/check"
@@ -229,6 +246,7 @@ import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Rein
 import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
 import FormCheckHarinera from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHarineraComponent.vue';
 import FormCheckChia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckChiaComponent.vue';
+import FormCheckEnka from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEnkaComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -250,6 +268,7 @@ export default {
     FormCheckHarinera,
     FormCheckChia,
     FormCheckMitsubishi,
+    FormCheckEnka,
     Loading
   },
   data () {
