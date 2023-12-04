@@ -129,7 +129,7 @@ class ReportManagerLaw
 
         if ($colors)
         {
-            if ($colors->sin_calificar == 'ffffff' || $colors->cumple == 'ffffff' || $colors->no_cumple == 'ffffff' || $colors->en_estudio == 'ffffff' || $colors->parcial == 'ffffff' || $colors->no_aplica == 'ffffff' || $colors->informativo == 'ffffff')
+            if ($colors->sin_calificar == 'ffffff' && $colors->cumple == 'ffffff' && $colors->no_cumple == 'ffffff' && $colors->en_estudio == 'ffffff' && $colors->parcial == 'ffffff' && $colors->no_aplica == 'ffffff' && $colors->informativo == 'ffffff')
             {
                 $colors_company = [];
             }
