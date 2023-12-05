@@ -99,6 +99,8 @@ export default {
         {name: 'Marron', value: 'd48265'},
         {name: 'Morado', value: '6A5ACD'},
         {name: 'Azul', value: '4169E1'},
+        {name: 'Gris', value: 'd5d5d5'},
+        {name: 'Lila', value: 'adadf7'},
         {name: 'Sin Color', value: 'ffffff'},
       ]
     };
