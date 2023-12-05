@@ -62,7 +62,7 @@
     <b-row>
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-          <b-form-row>
+          <!--<b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
                 </vue-advanced-select>
           </b-form-row>
@@ -76,7 +76,43 @@
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                 </vue-advanced-select>
-          </b-form-row>
+          </b-form-row>-->
+          <b-card bg-variant="transparent" border-variant="dark" title="Diagnosticos" class="mb-3 box-shadow-none">
+            <template v-for="(dx, index) in form.dxs">
+              <div :key="dx.key">
+                <b-form-row>
+                  <div class="col-md-12">
+                      <div class="float-right">
+                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDx(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                      </div>
+                  </div>
+                </b-form-row>
+                <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
+                  <b-form-row>
+                    <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="dx.disease_origin" :error="form.errorsFor(`dxs.${index}.disease_origin`)" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
+                        </vue-advanced-select>
+                  </b-form-row>
+                  <b-form-row>
+                    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="dx.cie10_code_id" :error="form.errorsFor(`dxs.${index}.cie10_code_id`)" @input="getDetailsCie(index)" :selected-object="dx.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+                  </b-form-row>
+                  <b-form-row>
+                    <vue-input :disabled="true" class="col-md-6" v-model="dx.system" label="Sistema" type="text" name="system"></vue-input>
+                    <vue-input :disabled="true" class="col-md-6" v-model="dx.category" label="Categoría" type="text" name="category"></vue-input>
+                  </b-form-row>
+                  <b-form-row>
+                    <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="dx.laterality" :error="form.errorsFor(`dxs.${index}.laterality`)" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
+                        </vue-advanced-select>
+                  </b-form-row>
+                </b-card>
+              </div>
+            </template>
+
+            <b-form-row v-show="form.dxs.length < 3" style="padding-bottom: 20px;">
+              <div class="col-md-12">
+                  <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addDx()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              </div>
+            </b-form-row>
+          </b-card>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
@@ -533,7 +569,8 @@ export default {
           new_labor_notes: [],
           oldLaborNotes: [],
           files: [],
-          date_new_valoration : ''
+          date_new_valoration : '',
+          dxs: []
         };
       }
     }
@@ -603,8 +640,21 @@ export default {
     }
   },
   mounted() {
-    if (this.form.cie10_code_id)
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
+    /*if (this.form.cie10_code_id)
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');*/
+
+    this.form.dxs.forEach((dx, keydx) => {
+      axios.get(`/biologicalmonitoring/reinstatements/cie10/${dx.cie10_code_id}`)
+      .then(response => {
+          this.form.dxs[keydx].system = response.data.data.system;
+          this.form.dxs[keydx].category = response.data.data.category;
+          this.isLoading = false;
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+    });
     
     if (this.form.employee_id)
     {
@@ -757,6 +807,38 @@ export default {
     pushRemoveFile(value)
     {
       this.form.delete.files.push(value)
+    },
+    addDx()
+    {
+      this.form.dxs.push({
+          key: new Date().getTime(),
+          disease_origin: '',
+          cie10_code_id: '',
+          system: '',
+          category: '',
+          qualification_dme: '',
+          laterality: '',
+      });
+    },
+	  removeDx(index)
+    {
+      if (this.form.dxs[index].id != undefined)
+        this.form.delete.dxs.push(this.form.dxs[index].id)
+
+      this.form.dxs.splice(index, 1)
+    },
+    getDetailsCie(index)
+    {
+      axios.get(`/biologicalmonitoring/reinstatements/cie10/${this.form.dxs[index].cie10_code_id}`)
+        .then(response => {
+            this.form.dxs[index].system = response.data.data.system;
+            this.form.dxs[index].category = response.data.data.category;
+            this.isLoading = false;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
     },
   }
 };

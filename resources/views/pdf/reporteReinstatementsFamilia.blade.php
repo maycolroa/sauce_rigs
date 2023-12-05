@@ -164,6 +164,46 @@
                     <td>{{$check->cie10Code->category}}</td>
                     <td>{{$check->laterality}}</td>
                 </tr>   
+                @if($check->disease_origin_2) 
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (2)</th>
+                    <th>Código CIE 10 (2)</th>
+                    <th>Sistema</th>                    
+                </tr>
+                <tr>
+                    <td>{{$check->disease_origin_2}}</td>
+                    <td>{{$check->cie10Code2->code}} - {{$check->cie10Code2->description}}</td>
+                    <td>{{$check->cie10Code2->system}}</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th colspan="2">Lateralidad (2)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code2->category}}</td>
+                    <td colspan="2">{{$check->laterality_2}}</td>
+                </tr>  
+                @endif
+                @if($check->disease_origin_3) 
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (3)</th>
+                    <th>Código CIE 10 (3)</th>
+                    <th>Sistema</th>                    
+                </tr>
+                <tr>
+                    <td>{{$check->disease_origin_3}}</td>
+                    <td>{{$check->cie10Code3->code}} - {{$check->cie10Code3->description}}</td>
+                    <td>{{$check->cie10Code3->system}}</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th colspan="2">Lateralidad (3)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code3->category}}</td>
+                    <td colspan="2">{{$check->laterality_3}}</td>
+                </tr>  
+                @endif
             </thead>
         </table>
     </div>

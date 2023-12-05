@@ -615,17 +615,17 @@ export default {
     /*if (this.form.cie10_code_id)
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');*/
 
-      this.form.dxs.forEach((dx, keydx) => {
-        axios.get(`/biologicalmonitoring/reinstatements/cie10/${dx.cie10_code_id}`)
-        .then(response => {
-            this.form.dxs[keydx].system = response.data.data.system;
-            this.form.dxs[keydx].category = response.data.data.category;
-            this.isLoading = false;
-        })
-        .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
-        });
+    this.form.dxs.forEach((dx, keydx) => {
+      axios.get(`/biologicalmonitoring/reinstatements/cie10/${dx.cie10_code_id}`)
+      .then(response => {
+          this.form.dxs[keydx].system = response.data.data.system;
+          this.form.dxs[keydx].category = response.data.data.category;
+          this.isLoading = false;
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
     });
     
     if (this.form.employee_id)
