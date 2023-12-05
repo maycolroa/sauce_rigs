@@ -229,7 +229,7 @@ class CheckController extends Controller
             $check = new Check(CheckManager::checkNullAttrs($request, $this->company));
             $check->company_id = $this->company;
 
-            if ($formModel == 'chia' || $formModel == 'enka')
+            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi')
             {
                 foreach ($request->dxs as $key => $dx) 
                 {
@@ -250,13 +250,13 @@ class CheckController extends Controller
                     }    
                 }
             }
-            else if ($formModel == 'mitsubishi')
+            /*else if ($formModel == 'mitsubishi')
             {
                 $check['cie10_code_2_id'] = $request['cie10_code_2_id'];
                 $check['laterality_2'] = $request['laterality_2'];
                 $check['cie10_code_3_id'] = $request['cie10_code_3_id'];
                 $check['laterality_3'] = $request['laterality_3'];
-            }
+            }*/
 
             if (!$check->save())
                 return $this->respondHttp500();
@@ -360,7 +360,7 @@ class CheckController extends Controller
 
             $formModel = $this->getFormModel('form_check');
 
-            if ($formModel == 'chia' || $formModel == 'enka')
+            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi')
             {
                 for ($i=0; $i < 5; $i++) 
                 { 
@@ -402,13 +402,13 @@ class CheckController extends Controller
                     }    
                 }
             }
-            else if ($formModel == 'mitsubishi')
+            /*else if ($formModel == 'mitsubishi')
             {
                 $check['cie10_code_2_id'] = $request['cie10_code_2_id'];
                 $check['laterality_2'] = $request['laterality_2'];
                 $check['cie10_code_3_id'] = $request['cie10_code_3_id'];
                 $check['laterality_3'] = $request['laterality_3'];
-            }
+            }*/
             
             if (!$check->save())
                 return $this->respondHttp500();
@@ -621,7 +621,7 @@ class CheckController extends Controller
 
         $formModel = $this->getFormModel('form_check');
 
-        if ($formModel == 'chia' || $formModel == 'enka')
+        if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi')
         {
             $dxs = [];
 
