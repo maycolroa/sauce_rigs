@@ -83,7 +83,7 @@
                 <b-form-row>
                   <div class="col-md-12">
                       <div class="float-right">
-                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDx(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                          <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDx(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                       </div>
                   </div>
                 </b-form-row>
@@ -584,9 +584,9 @@ export default {
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');      
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     },
-    'form.cie10_code_id': function() {
+    /*'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
-    },
+    },*/
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
       this.emptySelect('relocated_headquarter_id', 'headquarter')
@@ -816,7 +816,6 @@ export default {
           cie10_code_id: '',
           system: '',
           category: '',
-          qualification_dme: '',
           laterality: '',
       });
     },

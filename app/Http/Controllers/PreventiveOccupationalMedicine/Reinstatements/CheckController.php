@@ -229,7 +229,7 @@ class CheckController extends Controller
             $check = new Check(CheckManager::checkNullAttrs($request, $this->company));
             $check->company_id = $this->company;
 
-            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi' || $formModel == 'familia')
+            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi' || $formModel == 'familia' || $formModel == 'harinera')
             {
                 foreach ($request->dxs as $key => $dx) 
                 {
@@ -360,7 +360,7 @@ class CheckController extends Controller
 
             $formModel = $this->getFormModel('form_check');
 
-            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi'  || $formModel == 'familia')
+            if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi'  || $formModel == 'familia' || $formModel == 'harinera')
             {
                 for ($i=0; $i < 5; $i++) 
                 { 
@@ -621,7 +621,7 @@ class CheckController extends Controller
 
         $formModel = $this->getFormModel('form_check');
 
-        if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi' || $formModel == 'familia')
+        if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'mitsubishi' || $formModel == 'familia' || $formModel == 'harinera')
         {
             $dxs = [];
 

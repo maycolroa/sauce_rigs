@@ -550,15 +550,6 @@ export default {
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
       this.oldCheck();
     },
-    'form.cie10_code_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
-    },
-    'form.cie10_code_2_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_2_id}`, 'cie10CodeDetail2');
-    },
-    'form.cie10_code_3_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_3_id}`, 'cie10CodeDetail3');
-    },
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
       this.emptySelect('relocated_headquarter_id', 'headquarter')
@@ -821,7 +812,6 @@ export default {
           cie10_code_id: '',
           system: '',
           category: '',
-          qualification_dme: '',
           laterality: '',
       });
     },
@@ -844,7 +834,7 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             this.$router.go(-1);
         });
-    },
+    }
   }
 };
 </script>
