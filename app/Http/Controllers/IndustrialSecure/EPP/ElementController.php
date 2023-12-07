@@ -79,6 +79,7 @@ class ElementController extends Controller
      */
     public function store(ElementRequest $request)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -89,6 +90,28 @@ class ElementController extends Controller
                         $value->getClientMimeType() != 'image/jpeg')
 
                         $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                },
+            ],
+            "data_sheet" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'application/pdf' && 
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                        $fail('Ficha Técnica debe ser pdf, Excel .xlsx o Word .docx');
+                },
+            ],
+            "user_manual" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'application/pdf' && 
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                        $fail('Manual de uso debe ser pdf, Excel .xlsx o Word .docx');
                 },
             ]
         ])->validate();
@@ -131,6 +154,28 @@ class ElementController extends Controller
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;
+
+            if(!$element->update())
+                return $this->respondHttp500();
+        }
+
+        if ($request->data_sheet)
+        {
+            $file_tmp2 = $request->data_sheet;
+            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->extension();
+            $file_tmp2->storeAs($element->path_client(false), $nameFile2, 's3');
+            $element->data_sheet = $nameFile2;
+
+            if(!$element->update())
+                return $this->respondHttp500();
+        }
+
+        if ($request->user_manual)
+        {
+            $file_tmp3 = $request->user_manual;
+            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->extension();
+            $file_tmp3->storeAs($element->path_client(false), $nameFile3, 's3');
+            $element->user_manual = $nameFile3;
 
             if(!$element->update())
                 return $this->respondHttp500();
@@ -226,6 +271,28 @@ class ElementController extends Controller
 
                         $fail('Imagen debe ser PNG ó JPG ó JPEG');
                 },
+            ],
+            "data_sheet" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'application/pdf' && 
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                        $fail('Ficha Técnica debe ser pdf, Excel .xlsx o Word .docx');
+                },
+            ],
+            "user_manual" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'application/pdf' && 
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+                        $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                        $fail('Manual de uso debe ser pdf, Excel .xlsx o Word .docx');
+                },
             ]
         ])->validate();
 
@@ -267,6 +334,28 @@ class ElementController extends Controller
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;
+
+            if(!$element->update())
+                return $this->respondHttp500();
+        }
+
+        if ($request->data_sheet != $element->data_sheet)
+        {
+            $file_tmp2 = $request->data_sheet;
+            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->extension();
+            $file_tmp2->storeAs($element->path_client(false), $nameFile2, 's3');
+            $element->data_sheet = $nameFile2;
+
+            if(!$element->update())
+                return $this->respondHttp500();
+        }
+
+        if ($request->user_manual != $element->user_manual)
+        {
+            $file_tmp3 = $request->user_manual;
+            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->extension();
+            $file_tmp3->storeAs($element->path_client(false), $nameFile3, 's3');
+            $element->user_manual = $nameFile3;
 
             if(!$element->update())
                 return $this->respondHttp500();
@@ -449,6 +538,20 @@ class ElementController extends Controller
         $name = $element->image;
 
         return Storage::disk('s3')->download($element->path_donwload(), $name);                                               
+    }
+
+    public function downloadDataSheet(Element $element)
+    {
+        $name = $element->data_sheet;
+
+        return Storage::disk('s3')->download($element->path_donwload_data_shet(), $name);                                               
+    }
+
+    public function downloadUserManual(Element $element)
+    {
+        $name = $element->user_manual;
+
+        return Storage::disk('s3')->download($element->path_donwload_user_manual(),$name);                                               
     }
 
     public function downloadTemplateImport()

@@ -75,7 +75,6 @@ class ElementRequest extends FormRequest
      */
     public function rules()
     {
-        \Log::info($this);
         $id = $this->input('id');
         //\Log::info($this->all());
 
@@ -91,7 +90,7 @@ class ElementRequest extends FormRequest
             'state' => 'required',
             'reusable' => 'required',
             'image' => 'nullable',
-            'identify_each_element' => 'required'
+            //'identify_each_element' => 'required'
         ];
     }
 }

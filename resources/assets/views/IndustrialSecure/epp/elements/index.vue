@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['elements_c']"> 
-            <b-btn :to="{name:'industrialsecure-epps-elements-create'}" variant="primary">Crear Elemento</b-btn>&nbsp;&nbsp;
+            <b-btn :to="{name:'industrialsecure-epps-elements-create'}" variant="primary">Crear</b-btn>&nbsp;&nbsp;
           </div>
           <b-btn v-if="auth.can['elements_c']" variant="primary" href="/templates/elementimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
           <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>&nbsp;&nbsp;

@@ -30,7 +30,9 @@ class Element extends Model
         'identify_each_element',
         'expiration_date',
         'days_expired',
-        'size'
+        'size',
+        'data_sheet',
+        'user_manual'
     ];
 
     public function multiselect()
@@ -55,6 +57,16 @@ class Element extends Model
     public function path_donwload()
     {
         return "{$this->path_client(false)}/{$this->image}";
+    }
+
+    public function path_donwload_data_shet()
+    {
+        return "{$this->path_client(false)}/{$this->data_sheet}";
+    }
+
+    public function path_donwload_user_manual()
+    {
+        return "{$this->path_client(false)}/{$this->user_manual}";
     }
 
     public function path_image()

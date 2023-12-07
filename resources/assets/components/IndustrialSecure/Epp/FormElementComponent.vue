@@ -39,6 +39,11 @@
       <vue-input v-if="form.expiration_date == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.days_expired" label="Máximos dias de uso" type="number" name="days_expired" :error="form.errorsFor('days_expired')" placeholder="Máximos dias de uso"></vue-input>
     </b-form-row>
 
+    <b-form-row v-if="form.class_element == 'Equipo'">
+      <vue-file-simple :disabled="viewOnly" :help-text="(form.id && form.data_sheet) ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/element/downloadDataSheet/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.data_sheet" label="Ficha Técnica" name="data_sheet" placeholder="Seleccione un archivo" :error="form.errorsFor(`data_sheet`)" :maxFileSize="20"/>
+      <vue-file-simple :disabled="viewOnly" :help-text="(form.id && form.user_manual) ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/element/downloadUserManual/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.user_manual" label="Manual de uso" name="user_manual" placeholder="Seleccione un archivo" :error="form.errorsFor(`user_manual`)" :maxFileSize="20"/>
+    </b-form-row>
+
     <b-form-row>
       <template v-if="form.id && form.image && form.path">
           <center>
@@ -129,7 +134,9 @@ export default {
             applicable_standard: [],
             identify_each_element: '',
             expiration_date: '',
-            locations_stock: []
+            locations_stock: [],
+            data_sheet: '',
+            user_manual: ''
         };
       }
     }
@@ -157,7 +164,8 @@ export default {
       ],
       classElement: [
         {text: 'Elemento de protección personal', value: 'Elemento de protección personal'},
-        {text: 'Dotación', value: 'Dotación'}
+        {text: 'Dotación', value: 'Dotación'},
+        {text: 'Equipo', value: 'Equipo'}
       ],
       inventary: auth.inventaryEpp,
       tagsLocationsDataUrl: '/selects/eppLocations',
