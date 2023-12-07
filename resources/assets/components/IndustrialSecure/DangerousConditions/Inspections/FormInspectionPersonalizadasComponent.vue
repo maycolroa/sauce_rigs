@@ -124,8 +124,8 @@
                                   <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].values" :error="form.errorsFor(`themes.${index}.items.${index2}.values`)" label="Valores (Separados por enter)" name="values" placeholder="valores" rows="3"></vue-textarea>
                                 </b-form-row>
                                 <b-form-row v-if="form.themes[index].items[index2].type_id && form.themes[index].items[index2].type_id == 4">
-                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].min_value" label="Valor minimo" type="number" name="min_value" :error="form.errorsFor(`themes.${index}.items.${index2}.min_value`)" placeholder="Minimo"></vue-input>
-                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].max_value" label="Valor maximo" type="number" name="max_value" :error="form.errorsFor(`themes.${index}.items.${index2}.max_value`)" placeholder="Maximo"></vue-input>
+                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].min_value" label="Valor mínimo" type="number" name="min_value" :error="form.errorsFor(`themes.${index}.items.${index2}.min_value`)" placeholder="Mínimo"></vue-input>
+                                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].max_value" label="Valor máximo" type="number" name="max_value" :error="form.errorsFor(`themes.${index}.items.${index2}.max_value`)" placeholder="Máximo"></vue-input>
                                 </b-form-row>
                             </div>
                           </template>

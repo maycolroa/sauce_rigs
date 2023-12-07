@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ELEMENTOS DE PROTECCIÓN PERSONAL"
+      title="EPP Y EQUIPOS"
       subtitle="EDITAR TRASLADO"
       url="industrialsecure-epps-transactions-transfers-location"
     />

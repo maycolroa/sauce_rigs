@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ELEMENTOS DE PROTECCIÓN PERSONAL"
+      title="EPP Y EQUIPOS"
       subtitle="VER DEVOLUCIÓN"
       url="industrialsecure-epps-transactions-returns"
     />

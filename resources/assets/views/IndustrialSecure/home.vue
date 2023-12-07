@@ -70,10 +70,10 @@
                     <router-link :to="{ name: 'industrialsecure-epp'}" v-on:click.native="activityUser('Elementos de proteccion personal')" class="text-dark cursor-pointer item-app-navbar">
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="epp" @mouseover="changeClassImage('epp', 'epp_hover')">
-                                <img class="ui-w-80" src="/images/contracts.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL &nbsp;&nbsp; &nbsp;&nbsp; 
+                                <img class="ui-w-80" src="/images/contracts.png" alt=""> EPP Y EQUIPOS &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             </div>
                             <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="epp_hover" @mouseleave="changeClassImage('epp_hover', 'epp')">
-                                <img class="ui-w-80" src="/images/contracts_hover.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL &nbsp;&nbsp; &nbsp;&nbsp; 
+                                <img class="ui-w-80" src="/images/contracts_hover.png" alt=""> EPP Y EQUIPOS&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             </div>
                         </center>
                     </router-link>

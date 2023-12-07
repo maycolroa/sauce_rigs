@@ -1,7 +1,7 @@
 <template>
   	<div>
     	<header-module
-			title="ELEMENTOS DE PROTECCIÓN PERSONAL"
+			title="EPP Y EQUIPOS"
 			url="industrialsecure"
 		/>
     	<div class="col-md">
@@ -14,9 +14,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-elements'}">
 									<i class="ion ion-md-glasses display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Elementos</span>
+										<span class="text-big font-weight-bolder">Elementos y Equipos</span>
 										<br>
-										<small class="text-muted">Administrar Elementos</small>
+										<small class="text-muted">Administrar Elementos y Equipos</small>
 									</span>
 								</router-link>
 							</div>
@@ -87,7 +87,7 @@ import Alerts from "@/utils/Alerts.js";
 export default {
 	name: "audiometry",
 	metaInfo: {
-		title: "Elementos de protección personal"
+		title: "EPP y Equipos"
 	},
   	methods: {
   	}
