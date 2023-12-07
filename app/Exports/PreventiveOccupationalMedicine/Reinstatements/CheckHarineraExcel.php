@@ -28,7 +28,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class CheckFamiliaExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
+class CheckHarineraExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
     use UtilsTrait;
@@ -130,8 +130,8 @@ class CheckFamiliaExcel implements FromCollection, WithHeadings, WithMapping, Wi
         $data->monitoring_recommendations,
         $data->origin_recommendations,
         $data->detail,
+        $data->reinstatement_condition,
         $data->position_functions_assigned_reassigned,
-        $data->date_new_valoration,
         $data->has_restrictions,
         $restriction,
         $data->in_process_origin,
@@ -190,8 +190,8 @@ class CheckFamiliaExcel implements FromCollection, WithHeadings, WithMapping, Wi
         'Fecha de seguimiento a recomendaciones',
         'Procedencia de las recomendaciones',
         $this->keywords['detail_recommendations'],
+        'Condición de Reincorporación',
         'Cargo y funciones asignadas y/o reasignadas al trabajador',
-        'Fecha nueva valoración',
         '¿Tiene Restricción?',
         'Parte del cuerpo afectada',
         '¿En proceso de calificación de origen?',
@@ -210,25 +210,24 @@ class CheckFamiliaExcel implements FromCollection, WithHeadings, WithMapping, Wi
     public function columnFormats(): array
     {
         return [
-            /*A' => NumberFormat::FORMAT_NUMBER,
+            'A' => NumberFormat::FORMAT_NUMBER,
             //'J' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'X' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Z' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AF' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AJ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AY' => NumberFormat::FORMAT_DATE_DDMMYYYY,*/
+            'AV' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:AZ1',
+        'A1:BZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
