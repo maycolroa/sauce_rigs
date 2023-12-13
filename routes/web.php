@@ -974,6 +974,11 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
       Route::post('usersCompanies/export', 'System\UsersCompanies\UserCompanyController@export');
+
+
+      Route::post('helpers/data', 'System\Helpers\HelperController@data');
+      Route::ApiResource('helpers', 'System\Helpers\HelperController');
+      Route::get('helpers/download/{id}', 'System\Helpers\HelperController@download');
     });
 
 

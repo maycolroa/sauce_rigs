@@ -228,6 +228,12 @@
                 "display_name": "Envio de boletin",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "helpers",
+                "display_name": "Configurar ayudas",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

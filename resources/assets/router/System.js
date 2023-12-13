@@ -330,6 +330,38 @@ export default [{
           component: () =>
             import('@/views/System/newsletterSend/reportsEmailOpen')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'helpers_r' }, [
+        {
+          name: 'system-helpers',
+          path: 'helpers',
+          component: () =>
+            import('@/views/System/helpers/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'helpers_c' }, [
+        {
+          name: 'system-helpers-create',
+          path: 'helpers/create',
+          component: () =>
+            import('@/views/System/helpers/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'helpers_u' }, [
+        {
+          name: 'system-helpers-edit',
+          path: 'helpers/edit/:id',
+          component: () =>
+            import('@/views/System/helpers/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'helpers_r' }, [
+        {
+          name: 'system-helpers-view',
+          path: 'helpers/view/:id',
+          component: () =>
+            import('@/views/System/helpers/view')
+        }
+      ]),
     ]
   }]

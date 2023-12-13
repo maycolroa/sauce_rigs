@@ -646,4 +646,60 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-helpers',
+        fields: [
+            { name: 'sau_helpers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_helpers.title', data: 'title', title: 'Título', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_users.name', data: 'user', title: 'Usuario creador', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_modules.display_name', data: 'module', title: 'Modulo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'system-helpers-edit' },
+                id: 'id',
+            },
+            permission: 'helpers_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'system-helpers-view' },
+                id: 'id',
+            },
+            permission: 'helpers_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+                name: 'delete',
+                data: {
+                    action: '/system/helpers/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la ayuda __title__'
+                },
+                permission: 'helpers_d'
+                }],
+        }],
+        configuration: {
+            urlData: '/system/helpers/data',
+            filterColumns: true,
+        }
+    },
 ]
