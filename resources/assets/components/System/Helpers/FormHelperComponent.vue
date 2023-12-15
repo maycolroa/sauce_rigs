@@ -29,22 +29,22 @@
         <template v-for="(file, index) in form.files">
           <div :key="file.key">
               <b-form-row>
-                <div class="col-md-12">
+                <!--<div class="col-md-12">
                     <div class="float-right">
                         <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                     </div>
-                </div>
+                </div>-->
                 <vue-input class="col-md-6" v-model="file.name" label="Nombre" name="name" type="text" placeholder="Nombre" :error="form.errorsFor(`files.${index}.name`)"></vue-input>
                 <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/system/helpers/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
               </b-form-row>
           </div>
         </template>
 
-        <b-form-row style="padding-bottom: 20px;">
+        <!--<b-form-row style="padding-bottom: 20px;">
           <div class="col-md-12">
               <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
-        </b-form-row>          
+        </b-form-row> -->     
       </b-card-body>
       </b-collapse>
     </b-card>
@@ -87,7 +87,13 @@ export default {
             title: '',
             description: '',
             module_id: '',
-            files: [],
+            files: [
+              {
+                key: new Date().getTime(),
+                name: '',
+                file: '',
+              }
+            ],
             delete: []
         };
       }
