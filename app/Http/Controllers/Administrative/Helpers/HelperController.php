@@ -74,7 +74,7 @@ class HelperController extends Controller
             $helper->file = [
                 'key' => Carbon::now()->timestamp + rand(1,10000),
                 'name' => $get_files->name,
-                'path' => Storage::disk('s3')->url('system/helpers/files/'.$get_files->file),
+                'path' => Storage::disk('s3')->url('system/helpers/files/1/'.$get_files->file),
                 'type' => explode('.', $get_files->file)[1]
             ];
 
