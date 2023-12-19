@@ -227,7 +227,8 @@ class HelperController extends Controller
                 {
                     $file_tmp = $value['file'];
                     $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                    $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+                    Storage::disk('s3')->put('system/helpers/files/'. $nameFile, $file_tmp, 'public');
+                    //$file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                     $fileUpload->file = $nameFile;
                 }
 
