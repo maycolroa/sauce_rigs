@@ -46,8 +46,10 @@ class HelperController extends Controller
         $modules = Module::where('application_id', 1)->get()->pluck('id');
 
         $helpers = Helper::select(
-            'sau_helpers.*'
+            'sau_helpers.*',
+            'sau_modules.display_name AS module'
         )
+        ->join('sau_modules', 'sau_modules.id', 'sau_helpers.module_id')
         ->whereIn('module_id', $modules)
         ->orderBy('sau_helpers.id', 'DESC');
 
