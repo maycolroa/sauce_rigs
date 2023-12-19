@@ -10,7 +10,7 @@
       <iframe style="width: 100%; height: 700px;" frameborder="0" id="frame_imprimir_rendicion" title="IMPRIMIR" :src="form.file.path"></iframe>
     </b-form-row>
     <b-form-row v-if="form.file && form.file.type == 'mp4'">
-      <video style="width: 100%; height: 700px;" controls>
+      <video style="width: 100%; height: 600px;" controls>
         <source :src="form.file.path" type="video/mp4">
       </video>
     </b-form-row>
