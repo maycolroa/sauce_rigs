@@ -393,6 +393,18 @@ export default [{
           component: () =>
             import('@/views/Administrative/actionplans/report')
         }
-      ])
+      ]),
+      {
+        name: 'administrative-customHelpers',
+        path: 'customHelpers',
+        component: () =>
+          import('@/views/Administrative/helpers/index')
+      },
+      {
+        name: 'administrative-customHelpers-view',
+        path: 'customHelpers/view/:id',
+        component: () =>
+          import('@/views/Administrative/helpers/view')
+      },
     ]
   }]

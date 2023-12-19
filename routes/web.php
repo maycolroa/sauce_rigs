@@ -491,6 +491,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('label/data', 'Administrative\Labels\LabelController@data');
       Route::ApiResource('label', 'Administrative\Labels\LabelController'); 
+
+
+      Route::post('helpers/data', 'Administrative\Helpers\HelperController@data');
+      Route::ApiResource('helpers', 'Administrative\Helpers\HelperController');
     });
 
     //Seguridad Industrial

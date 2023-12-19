@@ -3,7 +3,7 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.title" label="Título" type="text" name="title" :error="form.errorsFor('title')" placeholder="Título"></vue-input>
-      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripciónn" type="text" name="description" :error="form.errorsFor('description')" placeholder="Abreviatura"></vue-textarea>
+      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" type="text" name="description" :error="form.errorsFor('description')" placeholder="Abreviatura"></vue-textarea>
     </b-form-row>
     <b-form-row>
        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.module_id" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" name="module_id" label="Módulo" placeholder="Seleccione una opción" :url="modulesDataUrl"> </vue-ajax-advanced-select>
@@ -12,7 +12,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
-          <b-col cols="11" class="d-flex justify-content-between">Archivos</b-col>
+          <b-col cols="11" class="d-flex justify-content-between">Archivo</b-col>
           <b-col cols="1">
             <div class="float-right">
               <b-button-group>

@@ -31,14 +31,14 @@
                 </b-card>
             </div>
             <div class="col-md-4">
-              <b-card class="mb-4" v-if="routeAppName == 'preventiveoccupationalmedicine'">
+              <b-card class="mb-4" v-if="showHelp">
                 <template>
-                    <router-link class="text-dark cursor-pointer item-app-navbar" v-on:click.native="activityUser('Documentos Medicina Preventiva')" :to="{name:'preventiveoccupationalmedicine-documentspreventive'}"> 
+                    <router-link class="text-dark cursor-pointer item-app-navbar" v-on:click.native="activityUser('Ayudas Administrativo')" :to="{name:'administrative-customHelpers'}"> 
                         <center>
                             <div class="my-2 mx-2 text-center">
                                 <div class="text-center">
                                     <span class="text-big">
-                                        Documentos Medicina Preventiva
+                                        Ayudas
                                     </span>
                                 </div>
                             </div>
@@ -62,11 +62,21 @@
         }
       }
     },
+    data() {
+      return {
+        showHelp: false
+      }
+    },
     computed: {
       modules() {
         if (Object.keys(this.apps).length > 0)
         {
-            return this.apps[this.routeAppName] != undefined ? this.apps[this.routeAppName].modules : []
+          if (this.routeAppName == 'administrative')
+          {
+            this.showHelp = true;
+          }
+
+          return this.apps[this.routeAppName] != undefined ? this.apps[this.routeAppName].modules : []
         }
 
         return [];
