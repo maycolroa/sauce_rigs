@@ -21,6 +21,10 @@
         <b-card-body>
           <information-general
           :law="law"/>
+          <b-form-row>
+            <vue-radio class="col-md-12" @input="actionPlanCumple" v-model="form.action_plan_cumple" :options="siNoRadio" name="hide" label="¿Desea solicitar plan de accion para la calificación'Cumple'?" :checked="form.action_plan_cumple">
+              </vue-radio>
+          </b-form-row>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -91,7 +95,7 @@
                   <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
                 </b-form-row>
                 <b-form-row>
-                    <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
+                    <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10 || (form.action_plan_cumple == 'SI' && fulfillment_value_id == 2)" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
                       </vue-radio>
                   </b-form-row>
 
@@ -238,7 +242,7 @@
                     </div>
 
                     <!-- NO CUMPLE -->
-                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación' || (form.action_plan_cumple == 'SI' && article.qualify == 'Cumple')" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
                     <b-modal v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                       <div slot="modal-title">
@@ -374,7 +378,8 @@ export default {
           repealed: '',
           file: '',
           articles: [],
-          url: ''
+          url: '',
+          action_plan_cumple: ''
         };
       }
     }
@@ -441,6 +446,7 @@ export default {
       this.$nextTick(() => {
         this.activateEvent = true;
         this.editDate = true;
+        console.log(this.form)
       });
     }, 5000)
   },
@@ -720,6 +726,12 @@ export default {
       {
         Alerts.error('Error', 'El campo calificación es requerido');
       }
+    },
+    actionPlanCumple()
+    {
+      let postData = Object.assign({}, {law_id: this.form.id, param: this.form.action_plan_cumple});
+      axios.post('/legalAspects/legalMatrix/law/actionPlanCumple', postData)
+        .then(response => {}).catch(error => {});     
     },
     saveArticleQualification(index)
     {

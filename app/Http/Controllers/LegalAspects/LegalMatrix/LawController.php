@@ -13,6 +13,7 @@ use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Models\LegalAspects\LegalMatrix\LawHide;
+use App\Models\LegalAspects\LegalMatrix\LawActionPlan;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Jobs\LegalAspects\LegalMatrix\UpdateQualificationsRepeleadArticle;
 use App\Traits\LegalMatrixTrait;
@@ -557,6 +558,13 @@ class LawController extends Controller
             $law->sstRisk;
             $law->systemApply;
 
+            $lawActionPlan = LawActionPlan::where('company_id', $this->company)->where('law_id', $law->id)->first();
+
+            if ($lawActionPlan && $lawActionPlan->action_plan)
+                $law->action_plan_cumple = 'SI';
+            else
+                $law->action_plan_cumple = 'NO';
+
             if ($law->company_id)
             {
                 $articles = Article::select('sau_lm_articles.*')
@@ -935,5 +943,43 @@ class LawController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    public function actionPlanCumple(Request $request)
+    {
+        \Log::info($request);
+
+        $lawActionPlan = LawActionPlan::where('company_id', $this->company)->where('law_id', $request->law_id)->first();
+
+        if ($lawActionPlan)
+        {
+            if ($request->param == 'SI')
+            {
+                $lawActionPlan->action_plan = true;
+                $lawActionPlan->save();
+            }
+            else
+            {
+                $lawActionPlan->action_plan = false;
+                $lawActionPlan->save();
+            }
+        }
+        else
+        {
+            $lawActionPlan = new LawActionPlan;
+            $lawActionPlan->company_id = $this->company;
+            $lawActionPlan->law_id = $request->law_id;
+
+            if ($request->param == 'SI')
+            {
+                $lawActionPlan->action_plan = true;
+                $lawActionPlan->save();
+            }
+            else
+            {
+                $lawActionPlan->action_plan = false;
+                $lawActionPlan->save();
+            }
+        }
     }
 }
