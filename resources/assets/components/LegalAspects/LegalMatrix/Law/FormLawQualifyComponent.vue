@@ -242,7 +242,7 @@
                     </div>
 
                     <!-- NO CUMPLE -->
-                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación' || (form.action_plan_cumple == 'SI' && article.qualify == 'Cumple')" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                    <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación' || (form.action_plan_cumple == 'SI' && article.qualify == 'Cumple')" @click="showModal(`modalPlan${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
                     <b-modal v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                       <div slot="modal-title">
