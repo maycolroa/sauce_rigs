@@ -1070,16 +1070,20 @@ class ActionPlan
 
         $this->activitiesReady = collect($this->activitiesReady);
 
+        \Log::info($this->activitiesReady);
+
         $groupSupervisor = $this->activitiesReady->groupBy('user_id');
 
         foreach($groupSupervisor as $data => $value)
         {
             $supervisor = User::active()->find($data);
+            \Log::info($supervisor);
 
             if($supervisor && $supervisor->email != null)
             {
                 if ($supervisor->can('actionPlans_receive_notifications', $company_id))
                 {
+                    \Log::info('entro al envio');
                     NotificationMail::
                         subject('Actividades Actualizadas')
                         ->view('actionplan.activities')
