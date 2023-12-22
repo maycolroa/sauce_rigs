@@ -21,10 +21,6 @@
         <b-card-body>
           <information-general
           :law="law"/>
-          <b-form-row>
-            <vue-radio class="col-md-12" @input="actionPlanCumple" v-model="form.action_plan_cumple" :options="siNoRadio" name="hide" label="¿Desea solicitar plan de accion para la calificación'Cumple'?" :checked="form.action_plan_cumple">
-              </vue-radio>
-          </b-form-row>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -46,6 +42,10 @@
       </b-card-header>
       <b-collapse :id="`accordion-articles`" visible :accordion="`accordion-master`">
         <b-card-body>
+          <b-form-row>
+            <vue-radio class="col-md-12" @input="actionPlanCumple" v-model="form.action_plan_cumple" :options="siNoRadio" name="hide" label="¿Desea solicitar plan de accion para la calificación'Cumple'?" :checked="form.action_plan_cumple">
+              </vue-radio>
+          </b-form-row>
           <div class="media-body line-height-condenced ml-3">
               <div class="text-dark">
                 <label>Buscar Artículo</label>
