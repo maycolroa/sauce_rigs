@@ -532,6 +532,12 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/searchKeyword/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@searchKeyword');
 
+      Route::prefix('dangersMatrix')->group(function () {
+
+        Route::post('helpers/data', 'IndustrialSecure\DangerMatrix\HelperController@data');
+        Route::ApiResource('helpers', 'IndustrialSecure\DangerMatrix\HelperController');
+      });
+
 //tags
 
       Route::post('dangersMatrix/tagAdministrativeControls/searchKeyword/data', 'IndustrialSecure\Tags\AdministrativeControlsController@sharedTag');

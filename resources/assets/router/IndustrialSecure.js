@@ -1243,6 +1243,22 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerousConditions/helpers/view')
 				}
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [
+				{
+          name: 'dangerMatrix-customHelpers',
+          path: 'dangerMatrix/customHelpers',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [
+        {
+          name: 'dangerMatrix-customHelpers-view',
+          path: 'dangerMatrix/customHelpers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/helpers/view')
+				}
       ])
     ]
   }]
