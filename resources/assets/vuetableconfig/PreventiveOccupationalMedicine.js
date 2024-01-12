@@ -1143,7 +1143,6 @@ export default [
         //configNameFilter: 'legalaspects-evaluations-contracts'
     }
 },
-
 {
     name: 'reinstatements-helpers',
     fields: [

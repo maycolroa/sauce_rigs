@@ -1228,5 +1228,21 @@ export default [{
               import('@/views/IndustrialSecure/dangerousConditions/inspections/personalizadas/create')
         }
       ]),
+			...middleware({ 'check-permission': 'ph_inspections_r' }, [
+				{
+          name: 'dangerousconditions-inspections-customHelpers',
+          path: 'dangerousconditions/inspections/customHelpers',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections-customHelpers-view',
+          path: 'dangerousconditions/inspections/customHelpers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/helpers/view')
+				}
+      ])
     ]
   }]

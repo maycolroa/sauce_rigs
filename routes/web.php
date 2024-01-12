@@ -591,6 +591,10 @@ Route::middleware(['auth'])->group(function () {
       });
 
       Route::prefix('dangerousConditions')->group(function () {
+
+        Route::post('helpers/data', 'IndustrialSecure\DangerousConditions\HelperController@data');
+        Route::ApiResource('helpers', 'IndustrialSecure\DangerousConditions\HelperController');
+
         Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');
         Route::get('incentive/view', 'IndustrialSecure\DangerousConditions\IncentiveController@show');
         Route::post('incentive', 'IndustrialSecure\DangerousConditions\IncentiveController@store');
