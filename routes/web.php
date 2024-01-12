@@ -142,6 +142,10 @@ Route::middleware(['auth'])->group(function () {
 
           Route::post('configuration', 'PreventiveOccupationalMedicine\Reinstatements\ConfigurationController@store');
           Route::get('configuration/view', 'PreventiveOccupationalMedicine\Reinstatements\ConfigurationController@show');
+
+          Route::post('helpers/data', 'PreventiveOccupationalMedicine\Reinstatements\HelperController@data');
+          Route::ApiResource('helpers', 'PreventiveOccupationalMedicine\Reinstatements\HelperController');
+          
         });
         
         Route::post('musculoskeletalAnalysis/reportIndividual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisInformController@dataIndividual');

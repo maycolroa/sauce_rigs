@@ -594,5 +594,21 @@ export default [{
 					component: () => import('@/views/PreventiveOccupationalMedicine/documents/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'reinc_checks_r' }, [
+				{
+          name: 'reinstatements-customHelpers',
+          path: 'reinstatements/customHelpers',
+          component: () =>
+            import('@/views/PreventiveOccupationalMedicine/reinstatements/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+        {
+          name: 'reinstatements-customHelpers-view',
+          path: 'reinstatements/customHelpers/view/:id',
+          component: () =>
+            import('@/views/PreventiveOccupationalMedicine/reinstatements/helpers/view')
+				}
+      ])
   ]
 }]
