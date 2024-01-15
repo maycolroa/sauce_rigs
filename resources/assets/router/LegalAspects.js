@@ -955,6 +955,39 @@ export default [
 					component: () => import('@/views/LegalAspects/documents/view')
 				}
 			]),
+			,
+			...middleware({ 'check-permission': 'contracts_r' }, [
+						{
+				name: 'contracts-customHelpers',
+				path: 'contracts/customHelpers',
+				component: () =>
+					import('@/views/LegalAspects/contracts/helpers/index')
+				}
+					]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+				name: 'contracts-customHelpers-view',
+				path: 'contracts/customHelpers/view/:id',
+				component: () =>
+					import('@/views/LegalAspects/contracts/helpers/view')
+						}
+			]),
+			...middleware({ 'check-permission': 'lawsCustom_r' }, [
+						{
+				name: 'legalMatrix-customHelpers',
+				path: 'legalMatrix/customHelpers',
+				component: () =>
+					import('@/views/LegalAspects/legalMatrix/helpers/index')
+				}
+					]),
+			...middleware({ 'check-permission': 'lawsCustom_r' }, [
+				{
+				name: 'legalMatrix-customHelpers-view',
+				path: 'legalMatrix/customHelpers/view/:id',
+				component: () =>
+					import('@/views/LegalAspects/legalMatrix/helpers/view')
+						}
+			])
 		]
 	}
 ];

@@ -1953,4 +1953,74 @@ export default [
             configNameFilter: 'legalaspects-fileUpload-report'
         }
     },
+    {
+        name: 'contracts-helpers',
+        fields: [
+            { name: 'sau_helpers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_helpers.title', data: 'title', title: 'Título', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+            //{ name: 'sau_modules.display_name', data: 'module', title: 'Modulo', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-eye',
+                  title: 'Ver'
+              },
+              data: {
+                  routePush: { name: 'contracts-customHelpers-view' },
+                  id: 'id'
+              },
+              permission: ''
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/contracts/helpers/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalMatrix-helpers',
+        fields: [
+            { name: 'sau_helpers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_helpers.title', data: 'title', title: 'Título', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_helpers.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+            //{ name: 'sau_modules.display_name', data: 'module', title: 'Modulo', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-eye',
+                  title: 'Ver'
+              },
+              data: {
+                  routePush: { name: 'legalMatrix-customHelpers-view' },
+                  id: 'id'
+              },
+              permission: ''
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/helpers/data',
+            filterColumns: true,
+        }
+    },
 ]

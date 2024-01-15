@@ -687,7 +687,6 @@ Route::middleware(['auth'])->group(function () {
 
       Route::prefix('epp')->group(function () {
 
-
         Route::post('helpers/data', 'IndustrialSecure\EPP\HelperController@data');
         Route::ApiResource('helpers', 'IndustrialSecure\EPP\HelperController');
 
@@ -783,6 +782,12 @@ Route::middleware(['auth'])->group(function () {
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
+
+      Route::prefix('contracts')->group(function () {        
+        Route::post('helpers/data', 'LegalAspects\Contracs\HelperController@data');
+        Route::ApiResource('helpers', 'LegalAspects\Contracs\HelperController');
+      });
+
       Route::post('configuration', 'LegalAspects\LegalMatrix\ConfigurationController@store');
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
@@ -902,6 +907,9 @@ Route::middleware(['auth'])->group(function () {
       Route::get('configuration/view', 'LegalAspects\LegalMatrix\ConfigurationController@show');
 
       Route::prefix('legalMatrix')->group(function () {
+
+        Route::post('helpers/data', 'LegalAspects\LegalMatrix\HelperController@data');
+        Route::ApiResource('helpers', 'LegalAspects\LegalMatrix\HelperController');
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
         Route::post('interest/saveInterests', 'LegalAspects\LegalMatrix\InterestController@saveInterests');
