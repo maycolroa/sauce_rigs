@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ DE RIESGOS"
       subtitle="EDITAR MATRIZ"
-      url="industrialsecure-dangermatrix"
+      url="industrialsecure-riskmatrix"
     />
 
     <div class="col-md">
@@ -13,7 +13,7 @@
                 url="/industrialSecurity/dangersMatrix"
                 method="POST"
                 :dangerMatrix="data"
-                :cancel-url="{ name: 'industrialsecure-dangermatrix'}"
+                :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
                 :type-activities="typeActivities"
                 :danger-generated="dangerGenerated"
                 :si-no="siNo"
@@ -34,7 +34,7 @@ import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'industrialsecure-dangermatrix-clone',
+  name: 'industrialsecure-riskmatrix-clone',
   metaInfo: {
     title: 'Matriz de Riesgos - Clonar'
   },

@@ -1,16 +1,16 @@
 <template>
   <div>
     <header-module
-      title="MATRIZ DE PELIGROS"
+      title="MATRIZ DE RIESGOS"
       subtitle="VISUALIZAR AYUDAS"
-      url="industrialsecure-dangermatrix"
+      url="industrialsecure-riskmatrix"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
              <vue-table
-                configName="dangermatrix-helpers"
+                configName="riskMatrix-helpers"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -22,7 +22,7 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'dangermatrix-customHelpers',
+  name: 'riskmatrix-customHelpers',
   metaInfo: {
     title: 'Ayudas'
   },

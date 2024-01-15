@@ -1275,6 +1275,22 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/epp/helpers/view')
 				}
+      ]),
+      ...middleware({ 'check-permission': 'riskMatrix_r' }, [
+				{
+          name: 'riskMatrix-customHelpers',
+          path: 'riskMatrix/customHelpers',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'riskMatrix_r' }, [
+        {
+          name: 'riskMatrix-customHelpers-view',
+          path: 'riskMatrix/customHelpers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/helpers/view')
+				}
       ])
     ]
   }]

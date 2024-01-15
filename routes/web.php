@@ -594,6 +594,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::prefix('risksMatrix')->group(function () {
         Route::ApiResource('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController');
+
+        Route::post('helpers/data', 'IndustrialSecure\RiskMatrix\HelperController@data');
+        Route::ApiResource('helpers', 'IndustrialSecure\RiskMatrix\HelperController');
       });
 
       Route::prefix('dangerousConditions')->group(function () {
@@ -683,6 +686,7 @@ Route::middleware(['auth'])->group(function () {
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');
 
       Route::prefix('epp')->group(function () {
+
 
         Route::post('helpers/data', 'IndustrialSecure\EPP\HelperController@data');
         Route::ApiResource('helpers', 'IndustrialSecure\EPP\HelperController');

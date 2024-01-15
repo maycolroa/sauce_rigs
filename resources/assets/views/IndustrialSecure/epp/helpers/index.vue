@@ -3,7 +3,7 @@
     <header-module
       title="EPP Y EQUIPOS"
       subtitle="VISUALIZAR AYUDAS"
-      url="industrialsecure-epps"
+      url="industrialsecure-epp"
     />
 
     <div class="col-md">
