@@ -683,6 +683,10 @@ Route::middleware(['auth'])->group(function () {
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');
 
       Route::prefix('epp')->group(function () {
+
+        Route::post('helpers/data', 'IndustrialSecure\EPP\HelperController@data');
+        Route::ApiResource('helpers', 'IndustrialSecure\EPP\HelperController');
+
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
         Route::post('element/reportBalance', 'IndustrialSecure\EPP\ElementController@reportBalance');

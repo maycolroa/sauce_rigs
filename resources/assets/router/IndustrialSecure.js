@@ -1259,6 +1259,22 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/helpers/view')
 				}
+      ]),
+      ...middleware({ 'check-permission': 'elements_r' }, [
+				{
+          name: 'epp-customHelpers',
+          path: 'epp/customHelpers',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'elements_r' }, [
+        {
+          name: 'epp-customHelpers-view',
+          path: 'epp/customHelpers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/helpers/view')
+				}
       ])
     ]
   }]
