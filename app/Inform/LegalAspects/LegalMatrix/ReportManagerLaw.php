@@ -129,7 +129,6 @@ class ReportManagerLaw
 
     public function colors($data)
     {
-        \Log::info($data['labels']);
         $colors = QualificationColorDinamic::first();
 
         $colors_company = [];
