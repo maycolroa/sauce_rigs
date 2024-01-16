@@ -24,7 +24,7 @@ class ReportManagerLaw
         'resumenFulfillment',
         'reportTableDinamic',
         'fulfillmentPie',
-        'colors'
+        //'colors'
     ];
 
     const CATEGORY_COLUMNS = [
@@ -117,12 +117,19 @@ class ReportManagerLaw
         $informData = collect([]);
         foreach ($components as $component) {
             $informData->put($component, $this->$component());
+
+            if ($component == 'fulfillmentPie')
+            {
+                $colors = $this->colors($this->$component());
+                $informData->put('colors', $colors);
+            }
         }
         return $informData->toArray();
     }
 
-    public function colors()
+    public function colors($data)
     {
+        \Log::info($data['labels']);
         $colors = QualificationColorDinamic::first();
 
         $colors_company = [];
@@ -135,16 +142,30 @@ class ReportManagerLaw
             }
             else
             {
-                array_push($colors_company, $colors->sin_calificar ? '#'.$colors->sin_calificar : '#ffffff');
-                array_push($colors_company, $colors->cumple ? '#'.$colors->cumple : '#ffffff');
-                array_push($colors_company, $colors->no_cumple ? '#'.$colors->no_cumple : '#ffffff');
-                array_push($colors_company, $colors->parcial ? '#'.$colors->parcial : '#ffffff');
-                array_push($colors_company, $colors->no_aplica ? '#'.$colors->no_aplica : '#ffffff');
-                array_push($colors_company, $colors->informativo ? '#'.$colors->informativo : '#ffffff');
-                array_push($colors_company, $colors->no_vigente ? '#'.$colors->no_vigente : '#ffffff');
-                array_push($colors_company, $colors->en_estudio ? '#'.$colors->en_estudio : '#ffffff');
-                array_push($colors_company, $colors->en_transicion ? '#'.$colors->en_transicion : '#ffffff');
-                array_push($colors_company, $colors->pendiente_reglamentacion ? '#'.$colors->pendiente_reglamentacion : '#ffffff');
+                foreach ($data['labels'] as $key => $qualification) 
+                {
+                    if ($qualification == 'Sin calificar')
+                        array_push($colors_company, $colors->sin_calificar ? '#'.$colors->sin_calificar : '#ffffff');
+                    else if ($qualification == 'Cumple')
+                        array_push($colors_company, $colors->cumple ? '#'.$colors->cumple : '#ffffff');
+                    else if ($qualification == 'No cumple')
+                        array_push($colors_company, $colors->no_cumple ? '#'.$colors->no_cumple : '#ffffff');
+                    else if ($qualification == 'En estudio')
+                        array_push($colors_company, $colors->en_estudio ? '#'.$colors->en_estudio : '#ffffff');
+                    else if ($qualification == 'Parcial')
+                        array_push($colors_company, $colors->parcial ? '#'.$colors->parcial : '#ffffff');
+                    else if ($qualification == 'No aplica')
+                        array_push($colors_company, $colors->no_aplica ? '#'.$colors->no_aplica : '#ffffff');
+                    else if ($qualification == 'Informativo')
+                        array_push($colors_company, $colors->informativo ? '#'.$colors->informativo : '#ffffff');
+                    else if ($qualification == 'No vigente')
+                        array_push($colors_company, $colors->no_vigente ? '#'.$colors->no_vigente : '#ffffff');
+                    else if ($qualification == 'En Transición')
+                        array_push($colors_company, $colors->en_transicion ? '#'.$colors->en_transicion : '#ffffff');
+                    else if ($qualification == 'Pendiente reglamentación')
+                        array_push($colors_company, $colors->pendiente_reglamentacion ? '#'.$colors->pendiente_reglamentacion : '#ffffff');
+                }
+                
             }
         }
 
