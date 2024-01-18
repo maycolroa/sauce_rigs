@@ -861,6 +861,11 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('activityContract', 'LegalAspects\Contracs\ContractActivityController');
       Route::get('trainingContract/download/{file}', 'LegalAspects\Contracs\ContractTrainingController@download');
       Route::post('trainingContract/data', 'LegalAspects\Contracs\ContractTrainingController@data');
+
+      Route::post('trainingContract/dataEmployee', 'LegalAspects\Contracs\TrainingEmployeeController@dataEmployee');
+
+      Route::get('trainingContract/showEmployee/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@showEmployee');
+
       Route::ApiResource('trainingContract', 'LegalAspects\Contracs\ContractTrainingController');
       Route::post('trainingContract/switchStatus/{trainingContract}', 'LegalAspects\Contracs\ContractTrainingController@toggleState');
       Route::post('trainingContract/sendNotification/{trainingContract}', 'LegalAspects\Contracs\ContractTrainingController@sendNotification');

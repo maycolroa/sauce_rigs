@@ -4,6 +4,7 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\TrainingEmployeeRequest;
 use App\Models\LegalAspects\Contracts\Training;
@@ -221,5 +222,66 @@ class TrainingEmployeeController extends Controller
         }
 
         return $files;
+    }
+
+    public function dataEmployee(Request $request)
+    {
+        $training_employee = Training::select(
+            'sau_ct_training_employee_attempts.id',
+            'nit',
+            'social_reason',
+            'sau_ct_trainings.name as training',
+            'sau_ct_contract_employees.name as employee',
+            'attempt',
+            'sau_ct_training_employee_attempts.state as state_attempts'
+        )
+        ->join('sau_ct_training_employee_attempts', 'sau_ct_training_employee_attempts.training_id', 'sau_ct_trainings.id')
+        ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_training_employee_attempts.employee_id')
+        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id');
+
+        return Vuetable::of($training_employee)
+                    ->make();
+    }
+
+    public function showEmployee($id)
+    {
+        \Log::info('entro '.$id);
+        try
+        {
+            $attempt = TrainingEmployeeAttempt::findOrFail($id);
+
+            $question_answer = TrainingEmployeeQuestionsAnswers::where('attempt_id', $attempt->id)->get();
+
+            foreach ($question_answer as $answer)
+            {
+                $question = TrainingQuestions::find($answer->question_id);
+
+                $answer->key = Carbon::now()->timestamp + rand(1,10000);
+                $answer->description = $question->description;
+                $answer->type_question_id = $question->type_question_id;
+
+                if ($question->type_question_id == 1 || $question->type_question_id == 3 || $question->type_question_id == 5)
+                {
+                    $ans = explode('|', $answer->answers);
+                    $answer->answer = implode(',', $ans);
+                }
+                else
+                {
+                    $answer->answer = $answer->answers;
+                }
+                
+            }
+
+            $attempt->questions = $question_answer;
+            $attempt->name = Training::find($attempt->training_id)->name;
+            $attempt->qualification = $attempt->state;
+
+            return $this->respondHttp200([
+                'data' => $attempt
+            ]);
+        } catch(Exception $e){
+            \Log::info($e->getMessage());
+            $this->respondHttp500();
+        }
     }
 }

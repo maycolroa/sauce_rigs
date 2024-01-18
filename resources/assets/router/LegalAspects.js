@@ -979,13 +979,29 @@ export default [
 				component: () =>
 					import('@/views/LegalAspects/legalMatrix/helpers/index')
 				}
-					]),
+			]),
 			...middleware({ 'check-permission': 'lawsCustom_r' }, [
 				{
 				name: 'legalMatrix-customHelpers-view',
 				path: 'legalMatrix/customHelpers/view/:id',
 				component: () =>
 					import('@/views/LegalAspects/legalMatrix/helpers/view')
+						}
+			]),
+			...middleware({ 'check-permission': 'contracts_training_r' }, [
+				{
+				name: 'legalaspects-contracts-trainings-virtual-employees',
+				path: 'trainings/employee/:id',
+				component: () =>
+					import('@/views/LegalAspects/contracts/trainings/virtual/indexEmployee')
+						}
+			]),
+			...middleware({ 'check-permission': 'contracts_training_r' }, [
+				{
+				name: 'legalaspects-training-employee-view',
+				path: 'trainings/employee/view/:id',
+				component: () =>
+					import('@/views/LegalAspects/contracts/trainings/virtual/viewEmployee')
 						}
 			])
 		]

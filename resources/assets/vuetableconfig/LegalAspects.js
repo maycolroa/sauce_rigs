@@ -723,6 +723,18 @@ export default [
                 id: 'id',
             },
             permission: 'contracts_training_r'
+            },{
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Ver Capacitaciones Realizadas'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-trainings-virtual-employees' },
+                    id: 'id',
+                },
+                permission: 'contracts_training_u'
             }]
         },
         {
@@ -772,6 +784,43 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'legalaspects-contracts-trainings-employees',
+        fields: [
+            { name: 'sau_ct_training_employee_attempts.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'NIT', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.name', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_training_employee_attempts.attempt', data: 'attempt', title: 'Número de intento', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_training_employee_attempts.state', data: 'state_attempts', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+              type: 'push',
+              buttons: [{
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-eye',
+                  title: 'Ver'
+              },
+              data: {
+                  routePush: { name: 'legalaspects-training-employee-view' },
+                  id: 'id',
+              },
+              permission: 'contracts_training_r'
+              }]
+          },
+          {
+              type: 'base',
+              buttons: [],
+          }],
+        configuration: {
+            urlData: '/legalAspects/trainingContract/dataEmployee',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-contracts'
+        }
+      },
     {
         name: 'legalaspects-contracts-employees',
         fields: [
