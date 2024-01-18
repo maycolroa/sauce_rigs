@@ -99,6 +99,7 @@ class TrainingEmployeeController extends Controller
     public function saveTraining(TrainingEmployeeRequest $request)
     {
         DB::beginTransaction();
+        \Log::info($request);
         
         try
         {
@@ -121,21 +122,23 @@ class TrainingEmployeeController extends Controller
                 $answersEmployee->question_id = $question['id'];
                 $answersEmployee->attempt_id = $attempt->id;
 
-                if (!is_array($question['answers']))
-                    $answers = $question['answers'];
+                if (is_array($question['answers_pairing']) && COUNT($question['answers_pairing']) > 0)
+                    $answers = implode('|', $question['answers_pairing']);
+                else if (!is_array($question['answers']))
+                    $answers = $question['answers'];                
                 else
                     $answers = $this->getValuesForMultiselect($question['answers'])->sort()->implode("|");
 
                 $answersEmployee->answers = $answers;
 
-                if ($question['type']['name'] != 'selection_multiple' && $question['type']['name'] != 'pairing')
+                if ($question['type']['id'] != 3 && $question['type']['id'] != 5)
                 {
                     if ($answers == $answer->first())
                         $answersEmployee->correct = true;
                     else
                         $answersEmployee->correct = false;
                 }
-                else if ($question['type']['name'] == 'pairing')
+                else if ($question['type']['id'] == 5)
                 {
                     $answers_repeat = [];
                     $answers = $question['answers_pairing'];
@@ -260,10 +263,28 @@ class TrainingEmployeeController extends Controller
                 $answer->description = $question->description;
                 $answer->type_question_id = $question->type_question_id;
 
-                if ($question->type_question_id == 1 || $question->type_question_id == 3 || $question->type_question_id == 5)
+                if ($question->type_question_id == 1 || $question->type_question_id == 3)
                 {
                     $ans = explode('|', $answer->answers);
                     $answer->answer = implode(',', $ans);
+                }
+                else if ($question->type_question_id == 5)
+                {
+                    $paring = [];
+
+                    $options = collect($question->answer_options->get('options'));
+
+                    foreach ($options as $key => $value) {
+                       array_push($paring, $value);
+                    }
+
+                    $ans = explode('|', $answer->answers);
+
+                    foreach ($ans as $key => $value) {
+                        $paring[$key] = $paring[$key].'-'.$value;
+                    }
+
+                    $answer->answer = implode(', ', $paring);
                 }
                 else
                 {
@@ -279,6 +300,7 @@ class TrainingEmployeeController extends Controller
             return $this->respondHttp200([
                 'data' => $attempt
             ]);
+
         } catch(Exception $e){
             \Log::info($e->getMessage());
             $this->respondHttp500();
