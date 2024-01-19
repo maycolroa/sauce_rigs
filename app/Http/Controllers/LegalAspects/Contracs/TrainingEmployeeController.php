@@ -248,7 +248,6 @@ class TrainingEmployeeController extends Controller
 
     public function showEmployee($id)
     {
-        \Log::info('entro '.$id);
         try
         {
             $attempt = TrainingEmployeeAttempt::findOrFail($id);
