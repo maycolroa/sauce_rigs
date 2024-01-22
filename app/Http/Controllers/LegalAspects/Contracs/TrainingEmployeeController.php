@@ -240,7 +240,8 @@ class TrainingEmployeeController extends Controller
         )
         ->join('sau_ct_training_employee_attempts', 'sau_ct_training_employee_attempts.training_id', 'sau_ct_trainings.id')
         ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_training_employee_attempts.employee_id')
-        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id');
+        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id')
+        ->where('sau_ct_training_employee_attempts.training_id', $request->get('modelId'));
 
         return Vuetable::of($training_employee)
                     ->make();
