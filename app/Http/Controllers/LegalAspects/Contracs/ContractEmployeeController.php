@@ -134,6 +134,8 @@ class ContractEmployeeController extends Controller
             $employee->contract_id = $contract->id;
             $employee->company_id = $this->company;
             $employee->token = Hash::make($employee->email.$employee->identification);
+            $tok = str_replace("/", "a", $employee->token);
+            $employee->token = $tok;
 
             if (!$employee->save())
                 return $this->respondHttp500();
