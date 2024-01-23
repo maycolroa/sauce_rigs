@@ -101,7 +101,7 @@ class TrainingSendNotificationJob implements ShouldQueue
 
                 if ($trainingSend)
                 {
-                  if ($trainingSend->created_at->diffInDays(Carbon::now()) < 7)
+                  if ($trainingSend->created_at->diffInDays(Carbon::now()) < 3)
                     return true;
                 }
 

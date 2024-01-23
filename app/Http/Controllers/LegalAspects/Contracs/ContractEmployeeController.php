@@ -395,7 +395,7 @@ class ContractEmployeeController extends Controller
 
             foreach ($activity['documents'] as $document)
             {
-                if (COUNT($document['files']) > 0)
+                if (COUNT($document['files']) > 0 && COUNT($documents) > 0)
                 {
                     $count_aprobe = 0;
 
