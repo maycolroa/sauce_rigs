@@ -49,7 +49,7 @@ class UpdateQualificationsRepeleadArticle implements ShouldQueue
 
         $articles_qualification = DB::table('sau_lm_articles_fulfillment')
         ->where('article_id', $id_article)
-        ->where('company_id', 1)
+        //->where('company_id', 1)
         //->limit(10)
         ->get();
 
