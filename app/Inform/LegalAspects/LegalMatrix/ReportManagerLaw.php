@@ -362,6 +362,7 @@ class ReportManagerLaw
 
         foreach ($laws as $category => $rows)
         {
+            $category_total = 0;
             $item = collect([]);
             $item->put('category', $category);
 
@@ -372,11 +373,16 @@ class ReportManagerLaw
 
             foreach ($rows as $row)
             {
+                $category_total = $category_total + $row->count;
                 $item->put($row->qualify, $row->count);
             }
 
+            $item->put('Total', $category_total);
+
             $result->push($item);
         }
+
+
 
         return $result;
     }

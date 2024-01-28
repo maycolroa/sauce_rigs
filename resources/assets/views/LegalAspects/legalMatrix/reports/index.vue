@@ -81,6 +81,7 @@
                                                 <th class="text-center align-middle">No vigente</th>
                                                 <th class="text-center align-middle">En Transición</th>
                                                 <th class="text-center align-middle">Pendiente reglamentación</th>    
+                                                <th class="text-center align-middle">Total</th>    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -96,6 +97,7 @@
                                                  <td class="text-center align-middle">{{ row["No vigente"] }}</td>
                                                 <td class="text-center align-middle">{{ row["En Transición"] }}</td>
                                                 <td class="text-center align-middle">{{ row["Pendiente reglamentación"] }}</td>
+                                                <td class="text-center align-middle">{{ row["Total"] }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
