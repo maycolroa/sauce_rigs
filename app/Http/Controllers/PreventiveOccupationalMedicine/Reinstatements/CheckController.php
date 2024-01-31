@@ -241,12 +241,14 @@ class CheckController extends Controller
                         $check['disease_origin_'.$index] = $dx['disease_origin'];
                         $check[$cie_name] = $dx['cie10_code_id'];
                         $check['laterality_'.$index] = $dx['laterality'];
+                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'];
                     }   
                     else
                     {
                         $check['disease_origin'] = $dx['disease_origin'];
                         $check['cie10_code_id'] = $dx['cie10_code_id'];
                         $check['laterality'] = $dx['laterality'];
+                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'];
                     }    
                 }
             }
@@ -372,12 +374,14 @@ class CheckController extends Controller
                         $check['disease_origin_'.$indexC] = NULL;
                         $check[$cie_name_delete] = NULL;
                         $check['laterality_'.$indexC] = NULL;
+                        $check['disease_origin_recomendations_'.$indexC] = NULL;
                     }   
                     else
                     {
                         $check['disease_origin'] = NULL;
                         $check['cie10_code_id'] = NULL;
                         $check['laterality'] = NULL;
+                        $check['disease_origin_recomendations'] = NULL;
                     }    
                     
                 }
@@ -393,12 +397,14 @@ class CheckController extends Controller
                         $check['disease_origin_'.$index] = $dx['disease_origin'];
                         $check[$cie_name] = $dx['cie10_code_id'];
                         $check['laterality_'.$index] = $dx['laterality'];
+                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'];
                     }   
                     else
                     {
                         $check['disease_origin'] = $dx['disease_origin'];
                         $check['cie10_code_id'] = $dx['cie10_code_id'];
                         $check['laterality'] = $dx['laterality'];
+                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'];
                     }    
                 }
             }
@@ -632,7 +638,8 @@ class CheckController extends Controller
                     'disease_origin' => $check->disease_origin,
                     'cie10_code_id' => $check->cie10_code_id,
                     'multiselect_cie10Code' => $check->multiselect_cie10Code,
-                    'laterality' => $check->laterality
+                    'laterality' => $check->laterality,
+                    'disease_origin_recomendations' => $check->disease_origin_recomendations
                 ];
 
                 array_push($dxs, $content);
@@ -645,7 +652,8 @@ class CheckController extends Controller
                     'disease_origin' => $check->disease_origin_2,
                     'cie10_code_id' => $check->cie10_code_2_id,
                     'multiselect_cie10Code' => $check->multiselect_cie10Code2,
-                    'laterality' => $check->laterality_2
+                    'laterality' => $check->laterality_2,
+                    'disease_origin_recomendations' => $check->disease_origin_recomendations_2
                 ];
 
                 array_push($dxs, $content);
@@ -658,7 +666,8 @@ class CheckController extends Controller
                     'disease_origin' => $check->disease_origin_3,
                     'cie10_code_id' => $check->cie10_code_3_id,
                     'multiselect_cie10Code' => $check->multiselect_cie10Code3,
-                    'laterality' => $check->laterality_3
+                    'laterality' => $check->laterality_3,
+                    'disease_origin_recomendations' => $check->disease_origin_recomendations_3
                 ];
 
                 array_push($dxs, $content);
@@ -671,7 +680,8 @@ class CheckController extends Controller
                     'disease_origin' => $check->disease_origin_4,
                     'cie10_code_id' => $check->cie10_code_4_id,
                     'multiselect_cie10Code' => $check->multiselect_cie10Code4,
-                    'laterality' => $check->laterality_4
+                    'laterality' => $check->laterality_4,
+                    'disease_origin_recomendations' => $check->disease_origin_recomendations_4
                 ];
 
                 array_push($dxs, $content);
@@ -684,7 +694,8 @@ class CheckController extends Controller
                     'disease_origin' => $check->disease_origin_5,
                     'cie10_code_id' => $check->cie10_code_5_id,
                     'multiselect_cie10Code' => $check->multiselect_cie10Code5,
-                    'laterality' => $check->laterality_5
+                    'laterality' => $check->laterality_5,
+                    'disease_origin_recomendations' => $check->disease_origin_recomendations_5
                 ];
 
                 array_push($dxs, $content);

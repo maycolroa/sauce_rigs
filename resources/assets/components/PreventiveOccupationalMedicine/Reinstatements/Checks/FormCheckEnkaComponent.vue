@@ -88,6 +88,7 @@
                     <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="dx.laterality" :error="form.errorsFor(`dxs.${index}.laterality`)" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                         </vue-advanced-select>
                   </b-form-row>
+                  <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="dx.disease_origin_recomendations" label="Recomendaciones" name="disease_origin_recomendations" :error="form.errorsFor(`dxs.${index}.disease_origin_recomendations`)" placeholder=""></vue-textarea>
                 </b-card>
               </div>
             </template>

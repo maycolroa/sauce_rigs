@@ -136,7 +136,12 @@ class Check extends Model
         'qualification_dme_4',
         'qualification_dme_5',
         'reinforced_job_stability',
-        'date_new_valoration'
+        'date_new_valoration',
+        'disease_origin_recomendations',
+        'disease_origin_recomendations_2',
+        'disease_origin_recomendations_3',
+        'disease_origin_recomendations_4',
+        'disease_origin_recomendations_5'
     ];
 
     /**
