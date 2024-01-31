@@ -157,11 +157,13 @@
                 </tr>
                 <tr>
                     <th>Categoría</th>
-                    <th colspan="2">Lateralidad</th>
+                    <th>Lateralidad</th>
+                    <th>Recomendaciones</th>
                 </tr>
                 <tr>
                     <td>{{$check->cie10Code->category}}</td>
-                    <td colspan="2">{{$check->laterality}}</td>
+                    <td>{{$check->laterality}}</td>
+                    <td>{{$check->disease_origin_recomendations}}</td>
                 </tr>  
                 @if($check->disease_origin_2) 
                 <tr>
@@ -176,11 +178,13 @@
                 </tr>
                 <tr>
                     <th>Categoría</th>
-                    <th colspan="2">Lateralidad (2)</th>
+                    <th>Lateralidad (2)</th>
+                    <th>Recomendaciones (2)</th>
                 </tr>
                 <tr>
                     <td>{{$check->cie10Code2->category}}</td>
-                    <td colspan="2">{{$check->laterality_2}}</td>
+                    <td>{{$check->laterality_2}}</td>
+                    <td>{{$check->disease_origin_recomendations_2}}</td>
                 </tr>  
                 @endif
                 @if($check->disease_origin_3) 
@@ -196,11 +200,13 @@
                 </tr>
                 <tr>
                     <th>Categoría</th>
-                    <th colspan="2">Lateralidad (3)</th>
+                    <th>Lateralidad (3)</th>
+                    <th>Recomendaciones ()</th>
                 </tr>
                 <tr>
                     <td>{{$check->cie10Code3->category}}</td>
                     <td colspan="2">{{$check->laterality_3}}</td>
+                    <td>{{$check->disease_origin_recomendations_3}}</td>
                 </tr>  
                 @endif
             </thead>
