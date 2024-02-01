@@ -241,14 +241,14 @@ class CheckController extends Controller
                         $check['disease_origin_'.$index] = $dx['disease_origin'];
                         $check[$cie_name] = $dx['cie10_code_id'];
                         $check['laterality_'.$index] = $dx['laterality'];
-                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'];
+                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'] ? $dx['disease_origin_recomendations'] : NULL;
                     }   
                     else
                     {
                         $check['disease_origin'] = $dx['disease_origin'];
                         $check['cie10_code_id'] = $dx['cie10_code_id'];
                         $check['laterality'] = $dx['laterality'];
-                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'];
+                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'] ? $dx['disease_origin_recomendations'] : NULL;
                     }    
                 }
             }
@@ -397,14 +397,14 @@ class CheckController extends Controller
                         $check['disease_origin_'.$index] = $dx['disease_origin'];
                         $check[$cie_name] = $dx['cie10_code_id'];
                         $check['laterality_'.$index] = $dx['laterality'];
-                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'];
+                        $check['disease_origin_recomendations_'.$index] = $dx['disease_origin_recomendations'] ? $dx['disease_origin_recomendations'] : NULL;
                     }   
                     else
                     {
                         $check['disease_origin'] = $dx['disease_origin'];
                         $check['cie10_code_id'] = $dx['cie10_code_id'];
                         $check['laterality'] = $dx['laterality'];
-                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'];
+                        $check['disease_origin_recomendations'] = $dx['disease_origin_recomendations'] ? $dx['disease_origin_recomendations'] : NULL;
                     }    
                 }
             }
