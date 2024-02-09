@@ -1003,7 +1003,39 @@ export default [
 				component: () =>
 					import('@/views/LegalAspects/contracts/trainings/virtual/viewEmployee')
 						}
-			])
+			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'contract-send-notification',
+					path: 'sendNotification',
+					component: () =>
+					import('@/views/LegalAspects/contracts/sendNotification/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'contract-send-notification-create',
+					path: 'sendNotification/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/sendNotification/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'contract-send-notification-edit',
+					path: 'sendNotification/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/sendNotification/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'contract-send-notification-view',
+					path: 'sendNotification/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/sendNotification/view')
+				}
+			]),
 		]
 	}
 ];
