@@ -26,7 +26,7 @@ class CreateTablesPivotNotificationsMasiveContractTable extends Migration
             $table->foreign('notification_id')->references('id')->on('sau_ct_send_notifications')->onDelete('cascade');
 
             $table->unsignedInteger('contract_id');
-            $table->foreign('contract_id')->references('id')->on('sau_user_information_contract_lessee')->onDelete('cascade');
+            $table->foreign('contract_id')->references('id')->on('sau_ct_information_contract_lessee')->onDelete('cascade');
         });
     }
 
