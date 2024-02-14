@@ -820,6 +820,14 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/configuration', 'LegalAspects\Contracs\ConfigurationController@store');
       Route::get('contracts/configuration/view', 'LegalAspects\Contracs\ConfigurationController@show');
 
+
+      Route::post('contracts/notificationSend/getListContract', 'LegalAspects\Contracs\SendNotificationController@getListContract');
+      Route::ApiResource('notificationSend', 'LegalAspects\Contracs\SendNotificationController');
+      Route::post('notificationSend/data', 'LegalAspects\Contracs\SendNotificationController@data');
+      Route::put('notificationSend/program/{notificationSend}', 'LegalAspects\Contracs\SendNotificationController@programSend');
+      Route::post('notificationSend/switchStatus/{notificationSend}', 'LegalAspects\Contracs\SendNotificationController@toggleState');
+
+
       Route::ApiResource('listCheck', 'LegalAspects\Contracs\ListCheckQualificationController');
       Route::post('listCheck/data', 'LegalAspects\Contracs\ListCheckQualificationController@data');
       Route::post('listCheck/getListCheckItems', 'LegalAspects\Contracs\ListCheckQualificationController@getListCheckItems');

@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-body>
             <form-newsletter
-                url="/system/sendNotification"
+                url="/legalAspects/notificationSend"
                 method="POST"
                 :cancel-url="{ name: 'contract-send-notification'}"/>
         </b-card-body>
@@ -25,7 +25,7 @@ import FormNewsletter from '@/components/LegalAspects/Contracts/SendNotification
 export default {
   name: 'contract-send-notification-create',
   metaInfo: {
-    title: 'Envio de Boletin - Crear'
+    title: 'Envio de Notificación - Crear'
   },
   components:{
     FormNewsletter

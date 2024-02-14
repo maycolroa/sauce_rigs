@@ -1,18 +1,18 @@
 <template>
   <div>
     <header-module
-      title="SISTEMA"
+      title="CONTRATISTAS"
       subtitle="CREAR PROGRAMACIÓN"
-      url="system-newslettersend"
+      url="contract-send-notification"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body style="height: 400px">
             <form-program
-              :url="`/system/newsletterSend/program/${this.$route.params.id}`"
+              :url="`/legalAspects/notificationSend/program/${this.$route.params.id}`"
               :newsletter="data"
-              :cancel-url="{ name: 'system-newslettersend'}"
+              :cancel-url="{ name: 'contract-send-notification'}"
             />
         </b-card-body>
       </b-card>
@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import FormProgram from '@/components/System/NewsletterSend/FormProgramComponent.vue';
+import FormProgram from '@/components/LegalAspects/Contracts/SendNotifications/FormProgramComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'newslettersend-program',
+  name: 'contract-send-notification-program',
   metaInfo() {
     return {
-      title: 'Cambiar Estado'
+      title: 'Programar'
     }
   },
   components:{
@@ -40,7 +40,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/system/newsletterSend/${this.$route.params.id}`)
+    axios.get(`/legalAspects/notificationSend/${this.$route.params.id}`)
       .then(response => {
           this.data = response.data.data;
       })

@@ -1,18 +1,18 @@
 <template>
   <div>
     <header-module
-      title="SISTEMA"
-      subtitle="VER GRUPO DE COMPAÑIA"
-      url="system-newslettersend"
+      title="CONTRATISTAS"
+      subtitle="VER NOTIFICACIÓN"
+      url="contract-send-notification"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-newsletter
-                :newsletter="data"
+                :notification="data"
                 :view-only="true"
-                :cancel-url="{ name: 'system-newslettersend'}"/>
+                :cancel-url="{ name: 'contract-send-notification'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -20,47 +20,32 @@
 </template>
  
 <script>
-import FormNewsletter from '@/components/System/NewsletterSend/FormNewsletterComponent.vue';
+import FormNewsletter from '@/components/LegalAspects/Contracts/SendNotifications/FormNotificationComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'system-newslettersend-view',
   metaInfo: {
-    title: 'Boletin - Ver'
+    title: 'Envio de Notificación - Ver'
   },
   components:{
     FormNewsletter
   },
   data () {
     return {
-      data: [],
-      siNo: []
+      data: []
     }
   },
   created(){
-    this.fetchSelect('siNo', '/radios/siNo')
-    axios.get(`/system/newsletterSend/${this.$route.params.id}`)
+    axios.get(`/legalAspects/notificationSend/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
     });
   },
-  methods: {
-      fetchSelect(key, url)
-      {
-          GlobalMethods.getDataMultiselect(url, {id: this.$route.params.id})
-          .then(response => {
-              this[key] = response;
-          })
-          .catch(error => {
-              Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-              this.$router.go(-1);
-          });
-      },
-  }
+  methods: {}
 }
 </script>

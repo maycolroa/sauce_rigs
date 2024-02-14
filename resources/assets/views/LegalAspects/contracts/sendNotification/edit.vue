@@ -1,20 +1,20 @@
 <template>
   <div>
     <header-module
-      title="SISTEMA"
-      subtitle="EDITAR GRUPO DE COMPAÑIA"
-      url="system-newslettersend"
+      title="CONTRATISTAS"
+      subtitle="EDITAR NOTIFICACIÓN"
+      url="contract-send-notification"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-newsletter
-                :url="`/system/newsletterSend/${this.$route.params.id}`"
+                :url="`/legalAspects/notificationSend/${this.$route.params.id}`"
                 method="PUT"
-                :newsletter="data"
+                :notification="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'system-newslettersend'}"/>
+                :cancel-url="{ name: 'contract-send-notification'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import FormNewsletter from '@/components/System/NewsletterSend/FormNewsletterComponent.vue';
+import FormNewsletter from '@/components/LegalAspects/Contracts/SendNotifications/FormNotificationComponent.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'system-newslettersend-edit',
+  name: 'contract-send-notification-edit',
   metaInfo: {
-    title: 'Boletin - Editar'
+    title: 'Envio de Notificación - Editar'
   },
   components:{
     FormNewsletter
@@ -40,7 +40,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/system/newsletterSend/${this.$route.params.id}`)
+    axios.get(`/legalAspects/notificationSend/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

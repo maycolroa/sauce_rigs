@@ -15,7 +15,7 @@
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="system-newslettersend"
+                configName="contract-notification-send"
                 ></vue-table>
         </b-card-body>
     </b-card>

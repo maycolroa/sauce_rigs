@@ -93,17 +93,13 @@ export default {
   methods: {
     submit(e) {
       this.loading = true;
-      console.log(this.form)
       this.form
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-
-            console.log(this.$data)
-            console.log(this)
             Object.assign(this.$data, this.$options.data.apply(this))
             //this.closeEvent()
-            this.$router.push({ name: "system-newslettersend" });
+            this.$router.push({ name: "contract-send-notification" });
         })
         .catch(error => {
           this.loading = false;

@@ -1036,6 +1036,14 @@ export default [
 					import('@/views/LegalAspects/contracts/sendNotification/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'contract-send-notification-program',
+					path: 'sendNotification/program/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/sendNotification/switchStatus')
+				}
+			]),
 		]
 	}
 ];
