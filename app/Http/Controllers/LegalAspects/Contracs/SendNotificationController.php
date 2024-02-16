@@ -82,7 +82,6 @@ class SendNotificationController extends Controller
      */
     public function store(SendNotificationRequest $request)
     {
-        \Log::info($request);
         DB::beginTransaction();
         
         try
