@@ -80,9 +80,10 @@ class ElementRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_epp_elements,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'code' => 'required|string',
+            'code' => 'required|string|unique:sau_epp_elements,code,'.$id.',id,company_id,'.Session::get('company_id'),
+            'class_element' => 'required',
             'description' => 'required|string',
-            'type' => 'required_if:inventary,SI',
+            'type' => 'required',
             'mark' => 'required',
             'applicable_standard' => 'nullable|array',
             'observations' => 'nullable|string',

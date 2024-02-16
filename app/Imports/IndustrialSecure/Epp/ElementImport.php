@@ -106,17 +106,18 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
         $data = [
             'codigo' => $row[0],
             'nombre' => $row[1],
-            'tipo' => $row[2],
-            'marca' => $row[3],
-            'descripcion' => $row[4],
-            'norma' => $row[5],
-            'observaciones' => $row[6],
-            'instrucciones' => $row[7],
-            'estado' => $row[8],
-            'reutilizable' => strtoupper($row[9]),
+            'clase' => $row[2],
+            'tipo' => $row[3],
+            'marca' => $row[4],
+            'descripcion' => $row[5],
+            'norma' => $row[6],
+            'observaciones' => $row[7],
+            'instrucciones' => $row[8],
+            'estado' => $row[9],
+            'reutilizable' => strtoupper($row[10]),
+            'vencimiento' => strtoupper($row[11]),
+            'dias_vencimiento' => $row[12],
             //'identificar' => strtoupper($row[10]),
-            'vencimiento' => strtoupper($row[10]),
-            'dias_vencimiento' => $row[8]
 
         ];
 
@@ -134,9 +135,10 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
         $rules = [
             'codigo' => 'required|not_in:'.  implode(',', $codes),
             'nombre' => 'required',
-            'tipo' => 'nullable',
-            'marca' => 'nullable',
-            'descripcion' => 'nullable',
+            'clase' => 'required',
+            'tipo' => 'required',
+            'marca' => 'required',
+            'descripcion' => 'required',
             'norma' => 'nullable',
             'observaciones' => 'nullable',
             'instrucciones' => 'nullable',
@@ -175,6 +177,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
                 $element = new Element();
                 $element->name = $data['nombre'];
                 $element->code = $data['codigo'];
+                $element->class_element = $data['clase'];
                 $element->description = $data['descripcion'];
                 $element->observations = $data['observaciones'];
                 $element->operating_instructions = $data['instrucciones'];

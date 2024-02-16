@@ -61,9 +61,10 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
       $columns = [
         'Código *',
         'Nombre *',
-        'Tipo (Si es mas de uno separarlo por comas ",")',
-        'Marca',
-        'Descripción',
+        'Clase (Elemento de protección personal, Dotación, Equipo)*',
+        'Tipo (Si es mas de uno separarlo por comas ",")*',
+        'Marca*',
+        'Descripción*',
         'Norma Aplicable',
         'Observaciones (Opcional)',
         'Instrucciones de uso (Opcional)',
