@@ -64,6 +64,7 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
         'Clase (Elemento de protección personal, Dotación, Equipo)*',
         'Tipo (Si es mas de uno separarlo por comas ",")*',
         'Marca*',
+        'Talla',
         'Descripción*',
         'Norma Aplicable',
         'Observaciones (Opcional)',

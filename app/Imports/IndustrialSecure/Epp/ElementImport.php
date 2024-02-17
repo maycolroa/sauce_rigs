@@ -109,14 +109,15 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'clase' => $row[2],
             'tipo' => $row[3],
             'marca' => $row[4],
-            'descripcion' => $row[5],
-            'norma' => $row[6],
-            'observaciones' => $row[7],
-            'instrucciones' => $row[8],
-            'estado' => $row[9],
-            'reutilizable' => strtoupper($row[10]),
-            'vencimiento' => strtoupper($row[11]),
-            'dias_vencimiento' => $row[12],
+            'talla' => $row[5],
+            'descripcion' => $row[6],
+            'norma' => $row[7],
+            'observaciones' => $row[8],
+            'instrucciones' => $row[9],
+            'estado' => $row[10],
+            'reutilizable' => strtoupper($row[11]),
+            'vencimiento' => strtoupper($row[12]),
+            'dias_vencimiento' => $row[13],
             //'identificar' => strtoupper($row[10]),
 
         ];
@@ -138,6 +139,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'clase' => 'required',
             'tipo' => 'required',
             'marca' => 'required',
+            'talla' => 'nullable',
             'descripcion' => 'required',
             'norma' => 'nullable',
             'observaciones' => 'nullable',
@@ -177,6 +179,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
                 $element = new Element();
                 $element->name = $data['nombre'];
                 $element->code = $data['codigo'];
+                $element->size = $data['talla'];
                 $element->class_element = $data['clase'];
                 $element->description = $data['descripcion'];
                 $element->observations = $data['observaciones'];
