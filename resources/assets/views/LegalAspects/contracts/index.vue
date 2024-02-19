@@ -91,7 +91,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-menu-upload-files'}">
 									<i class="lnr lnr-upload display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Subida de Archivos y COmunicaciones</span>
+										<span class="text-big font-weight-bolder">Subida de Archivos y Comunicaciones</span>
 										<br>
 										<small class="text-muted">Subida de Archivos y Comunicaciones</small>
 									</span>
