@@ -2,8 +2,8 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="ENVIO DE NOTIFICACIÓN"
-      url="legalaspects-contracts"
+      subtitle="ENVIO DE COMUNICACIÓN"
+      url="legalaspects-menu-upload-files"
     />
 
     <div class="col-md">
@@ -30,7 +30,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 export default {
   name: 'contract-send-notification',
   metaInfo: {
-    title: 'Envio de motificación'
+    title: 'Envio de Comunicación'
   },
   components: {
     VueAjaxAdvancedSelect

@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="VER NOTIFICACIÓN"
+      subtitle="VER COMUNICACIÓN"
       url="contract-send-notification"
     />
 
@@ -27,7 +27,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'system-newslettersend-view',
   metaInfo: {
-    title: 'Envio de Notificación - Ver'
+    title: 'Envio de Comunicación - Ver'
   },
   components:{
     FormNewsletter

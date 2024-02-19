@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="CREAR NOTIFICACIÓN"
+      subtitle="CREAR COMUNICACIÓN"
       url="contract-send-notification"
     />
 
@@ -25,7 +25,7 @@ import FormNewsletter from '@/components/LegalAspects/Contracts/SendNotification
 export default {
   name: 'contract-send-notification-create',
   metaInfo: {
-    title: 'Envio de Notificación - Crear'
+    title: 'Envio de Comunicación - Crear'
   },
   components:{
     FormNewsletter

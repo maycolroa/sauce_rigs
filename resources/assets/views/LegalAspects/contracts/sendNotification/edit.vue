@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="EDITAR NOTIFICACIÓN"
+      subtitle="EDITAR COMUNICACIÓN"
       url="contract-send-notification"
     />
 
@@ -29,7 +29,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'contract-send-notification-edit',
   metaInfo: {
-    title: 'Envio de Notificación - Editar'
+    title: 'Envio de Comunicación - Editar'
   },
   components:{
     FormNewsletter

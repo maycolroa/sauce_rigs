@@ -3,7 +3,7 @@
     <header-module
 			title="CONTRATISTAS"
 			subtitle="ADMINISTRAR ARCHIVOS"
-			url="legalaspects-contracts"
+			url="legalaspects-menu-upload-files"
 		/>
     
     <div class="col-md">

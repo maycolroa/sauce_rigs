@@ -226,6 +226,13 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'legalaspects-menu-upload-files',
+					path: 'upload-files',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/indexMenu')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_uploadFiles_c' }, [
 				{
 					name: 'legalaspects-upload-files-create',
