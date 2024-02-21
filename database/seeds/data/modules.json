@@ -108,6 +108,12 @@
                 "display_name": "Elementos protección personal",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "roadSafety",
+                "display_name": "Seguridad Vial",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

@@ -64,7 +64,11 @@ class MakeAllPermissionsSeeder extends Seeder
                 'useractivitymonitoring_c',
                 'useractivitymonitoring_r',
                 'useractivitymonitoring_u',
-                'useractivitymonitoring_d'
+                'useractivitymonitoring_d',
+                'roadSafety_c',
+                'roadSafety_r',
+                'roadSafety_u',
+                'roadSafety_d'
             ];
 
             $modules = Module::all();

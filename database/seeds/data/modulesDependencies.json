@@ -153,5 +153,23 @@
             "positions",
             "employees"
         ]
+    },
+    {
+        "module": "roadSafety",
+        "dependencies": [
+            "users",
+            "roles",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "subProcesses",
+            "configurations",
+            "customLabels",
+            "positions",
+            "employees",
+            "logos",
+            "actionPlans"
+        ]
     }
 ]
