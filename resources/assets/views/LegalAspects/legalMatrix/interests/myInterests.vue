@@ -17,6 +17,7 @@
                 		:cancel-url="{ name: 'legalaspects-legalmatrix'}"
 						:interest="data"
 						:options="options"
+						:descriptions="descriptions"
 						urlDataInterests="/selects/legalMatrix/interestsSystem"/>
 				</b-card-body>
 			</b-card>
@@ -43,6 +44,7 @@ export default {
 		return {
 			data: [],
 			options: [],
+			descriptions: [],
 			ready: false,
 		}
 	},
@@ -59,6 +61,20 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             this.$router.go(-1);
         });
+
+		GlobalMethods.getDataMultiselect(`/radios/legalMatrix/interestsSystemDescription`)
+        .then(response => {
+			this.descriptions = response;
+			console.log(this.descriptions);
+			setTimeout(() => {
+				this.ready = true
+			}, 3000)
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+
 
 		axios.get(`/legalAspects/legalMatrix/interest/myInterests`)
 		.then(response => {

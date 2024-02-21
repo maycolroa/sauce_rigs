@@ -206,6 +206,28 @@ class InterestController extends Controller
         return $this->multiselect($request, 'company');
     }
 
+    public function multiselectSystemDescription(Request $request)
+    {
+        $interests = Interest::select(
+            'sau_lm_interests.id as id',
+            'sau_lm_interests.description as name'
+        )
+        ->system()
+        ->orderBy('name')
+        ->whereNotNull('description')
+        ->pluck('id', 'name');
+        
+        $data = $this->radioFormat($interests);
+
+        $interest2 = [];
+
+        foreach ($data as $key => $value) {
+            $interest2[$value['value']] = $value['text'];
+        }
+
+        return $interest2;
+    }
+
     /**
      * Returns an array for a select type input
      *

@@ -417,6 +417,7 @@ Route::middleware(['auth'])->group(function () {
       
       Route::prefix('legalMatrix')->group(function () {
         Route::post('interestsSystem', 'LegalAspects\LegalMatrix\InterestController@radioSystem');
+        Route::post('interestsSystemDescription', 'LegalAspects\LegalMatrix\InterestController@multiselectSystemDescription');
       });
     });
 

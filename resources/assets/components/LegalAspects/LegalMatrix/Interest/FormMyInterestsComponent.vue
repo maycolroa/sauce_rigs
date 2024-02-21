@@ -6,7 +6,7 @@
         </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>
-      <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-12" v-model="form.values" :checked="form.values" label="Intereses" name="interests" :options="optionsFilters" :vertical="true"></vue-checkbox>
+      <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-12" v-model="form.values" :checked="form.values" label="Intereses" name="interests" :options="optionsFilters" :vertical="true" :descriptions="descriptions"></vue-checkbox>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -20,7 +20,7 @@
 
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
-import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
+import VueCheckbox from "@/components/Inputs/VueCheckboxIcons.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -37,6 +37,12 @@ export default {
     urlDataInterests: { type: String, default: "" },
     options: {
       type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    descriptions: {
+      type: [Array, Object],
       default: function() {
         return [];
       }

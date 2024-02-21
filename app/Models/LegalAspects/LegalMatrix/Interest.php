@@ -11,7 +11,8 @@ class Interest extends Model
 
     protected $fillable = [
         'name',
-        'company_id'
+        'company_id', 
+        'description'
     ];
 
     public function articles()

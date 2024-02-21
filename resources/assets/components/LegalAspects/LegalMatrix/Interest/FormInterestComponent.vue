@@ -4,6 +4,9 @@
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
     </b-form-row>
+    <b-form-row>
+      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor('description')" rows="2"></vue-textarea>
+    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -16,11 +19,13 @@
 
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
-    VueInput
+    VueInput,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -32,6 +37,7 @@ export default {
       default() {
         return {
             name: '',
+            description: '',
             custom: this.custom
         };
       }
