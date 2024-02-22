@@ -128,22 +128,16 @@ class PositionController extends Controller
      */
     public function update(PositionRequest $request, Position $document)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try
         {
-
-            \Log::info(1);
-        \Log::info($document);
             $document->name = EmployeePosition::find($request->employee_position_id)->name;
             $document->employee_position_id = $request->employee_position_id;
 
             if(!$document->update()){
                 return $this->respondHttp500();
             }
-
-            \Log::info(2);
 
             if ($request->has('documents'))
                 $this->saveDocuments($request->documents, $document);
