@@ -2617,4 +2617,56 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-roadsafety-documents',
+    fields: [
+        { name: 'sau_rs_positions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_positions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-documents-edit' },
+            id: 'id',
+        },
+        permission: 'roadsafety_documents_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-documents-view' },
+            id: 'id',
+        },
+        permission: 'roadsafety_documents_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/roadsafety/documents/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el documento __name__'
+        },
+        permission: 'roadsafety_documents_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/documents/data',
+        filterColumns: true,
+    }
+},
 ];

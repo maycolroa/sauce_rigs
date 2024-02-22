@@ -539,6 +539,11 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('helpers', 'IndustrialSecure\DangerMatrix\HelperController');
       });
 
+      Route::prefix('roadsafety')->group(function () {
+        Route::post('documents/data', 'IndustrialSecure\RoadSafety\Documents\PositionController@data');
+        Route::ApiResource('documents', 'IndustrialSecure\RoadSafety\Documents\PositionController');
+      });
+
 //tags
 
       Route::post('dangersMatrix/tagAdministrativeControls/searchKeyword/data', 'IndustrialSecure\Tags\AdministrativeControlsController@sharedTag');

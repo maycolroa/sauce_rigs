@@ -67,7 +67,8 @@ class EmployeePositionController extends Controller
 
         $this->saveLogActivitySystem('Cargos', 'Se creo el cargo  '.$position->name);
 
-        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
+        if ($request->has('elements_id') && COUNT($request->get('elements_id') > 0))
+            $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
 
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
@@ -120,7 +121,8 @@ class EmployeePositionController extends Controller
 
         $this->saveLogActivitySystem('Cargos', 'Se edito el cargo  '.$position->name);
 
-        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
+        if ($request->has('elements_id') && COUNT($request->get('elements_id') > 0))
+            $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'

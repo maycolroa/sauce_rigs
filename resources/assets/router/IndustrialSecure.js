@@ -1291,6 +1291,46 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/riskMatrix/helpers/view')
 				}
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_documents_r' }, [ 
+        {
+          name: 'industrialsecure-roadsafety',
+          path: 'roadsafety/menu',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/indexMenu')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_documents_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-documents',
+          path: 'roadsafety/documents',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/documents/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_documents_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-documents-create',
+          path: 'roadsafety/documents/create',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/documents/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_documents_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-documents-edit',
+          path: 'roadsafety/documents/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/documents/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_documents_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-documents-view',
+          path: 'roadsafety/documents/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/documents/view')
+        }
+      ]),
     ]
   }]

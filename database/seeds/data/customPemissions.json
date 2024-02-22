@@ -462,10 +462,30 @@
                         "name": "transaction_d",
                         "display_name": "Elementos de proteccion personal - transacciones borrar"
                     },
-
                     {
                         "name": "configuration_epp_c",
                         "display_name": "Elementos de proteccion personal - configuraciones crear"
+                    }
+                ]
+            },
+            {
+                "name": "roadSafety",
+                "permissions": [
+                    {
+                        "name": "roadsafety_documents_c",
+                        "display_name": "Seguridad Vial - Documentos crear"
+                    },
+                    {
+                        "name": "roadsafety_documents_r",
+                        "display_name": "Seguridad Vial - Documentos ver"
+                    },
+                    {
+                        "name": "roadsafety_documents_u",
+                        "display_name": "Seguridad Vial - Documentos actualizar"
+                    },
+                    {
+                        "name": "roadsafety_documents_d",
+                        "display_name": "Seguridad Vial - Documentos borrar"
                     }
                 ]
             }
