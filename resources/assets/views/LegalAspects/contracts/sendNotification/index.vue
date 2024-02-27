@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn :to="{name:'contract-send-notification-create'}" variant="primary">Crear Notificación</b-btn>
+            <b-btn :to="{name:'contract-send-notification-create'}" variant="primary">Crear Comunicación</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

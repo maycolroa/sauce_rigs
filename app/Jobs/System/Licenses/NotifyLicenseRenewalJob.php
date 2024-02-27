@@ -190,8 +190,19 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             }
         }
 
+        $mod_total = [];
+
         if (COUNT($recipients) > 0 && COUNT($admins) > 0)
         {
+            if ($this->freeze == 'NO')
+            {
+                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
+            }
+            else 
+            {
+                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
+            }
+            
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
                 ->recipients($recipients)
@@ -200,12 +211,21 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f])
+                ->with($mod_total)
                 ->copyHidden($admins)
                 ->send();
         }
         else
         {
+            if ($this->freeze == 'NO')
+            {
+                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
+            }
+            else 
+            {
+                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
+            }
+
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
                 ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : ($this->freeze == 'NO' ? "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>" :"Se acaba de congelar una licencia para la empresa <b>{$company->name}</b>, con las siguientes observaciones <b>{$this->observations}</b>"))
@@ -213,7 +233,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f])
+                ->with($mod_total)
                 ->copyHidden($admins)
                 ->send();
         }
