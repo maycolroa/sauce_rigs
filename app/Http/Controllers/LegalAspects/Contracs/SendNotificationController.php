@@ -126,7 +126,7 @@ class SendNotificationController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el boletin'
+            'message' => 'Se creo la comunicación'
         ]);
     }
 
@@ -229,7 +229,7 @@ class SendNotificationController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo el boletin'
+            'message' => 'Se actualizo la comunicación'
         ]);
     }
 
@@ -249,7 +249,7 @@ class SendNotificationController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el boletin'
+            'message' => 'Se elimino la comunicación'
         ]);
     }
 
