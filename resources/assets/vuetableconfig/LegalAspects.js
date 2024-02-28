@@ -2123,10 +2123,10 @@ export default [
                 permission: 'contracts_c'
             }]
         },
-        /*{
+        {
             type: 'base',
             buttons: [
-                {
+                /*{
                     name: 'switchStatus',
                     config: {
                         color: 'outline-danger',
@@ -2140,9 +2140,9 @@ export default [
                         messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                     },
                     permission: 'contracts_c'
-                }
+                }*/
             ],
-        }*/],
+        }],
         configuration: {
             urlData: '/legalAspects/notificationSend/data',
             filterColumns: true,
