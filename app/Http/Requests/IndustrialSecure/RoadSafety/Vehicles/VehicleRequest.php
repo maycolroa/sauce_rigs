@@ -29,6 +29,7 @@ class VehicleRequest extends FormRequest
 
     public function sanitize()
     {
+        \Log::info(1);
         if ($this->has('plate') && $this->plate)
         {
             foreach ($this->input('plate') as $key => $value)
@@ -37,6 +38,8 @@ class VehicleRequest extends FormRequest
                 $this->merge($data);
             }
         }
+
+        \Log::info(2);
 
         if ($this->has('name_propietary') && $this->name_propietary)
         {
@@ -47,6 +50,8 @@ class VehicleRequest extends FormRequest
             }
         }
 
+        \Log::info(3);
+
         if ($this->has('type_vehicle') && $this->type_vehicle)
         {
             foreach ($this->input('type_vehicle') as $key => $value)
@@ -55,6 +60,8 @@ class VehicleRequest extends FormRequest
                 $this->merge($data);
             }
         }
+
+        \Log::info(4);
 
         if ($this->has('mark') && $this->mark)
         {
@@ -65,6 +72,8 @@ class VehicleRequest extends FormRequest
             }
         }
 
+        \Log::info(5);
+
         if ($this->has('line') && $this->line)
         {
             foreach ($this->input('line') as $key => $value)
@@ -73,6 +82,7 @@ class VehicleRequest extends FormRequest
                 $this->merge($data);
             }
         }
+        \Log::info(6);
 
         if ($this->has('model') && $this->model)
         {
@@ -83,6 +93,8 @@ class VehicleRequest extends FormRequest
             }
         }
 
+        \Log::info(7);
+
         if ($this->has('color') && $this->color)
         {
             foreach ($this->input('color') as $key => $value)
@@ -92,6 +104,8 @@ class VehicleRequest extends FormRequest
             }
         }
 
+        \Log::info(8);
+
         if ($this->has('loading_capacity') && $this->platloading_capacitye)
         {
             foreach ($this->input('loading_capacity') as $key => $value)
@@ -100,6 +114,8 @@ class VehicleRequest extends FormRequest
                 $this->merge($data);
             }
         }
+
+        \Log::info(9);
 
         if ($this->has('locations') && $this->locations)
         {
