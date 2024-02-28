@@ -92,7 +92,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('loading_capacity') && $this->platloading_capacitye)
+        if ($this->has('loading_capacity') && $this->loading_capacity)
         {
             foreach ($this->input('loading_capacity') as $key => $value)
             {

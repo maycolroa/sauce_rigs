@@ -80,38 +80,29 @@ class VehiclesController extends Controller
 
         try
         {
-            \Log::info(1);
             $plate = $this->tagsPrepare($request->get('plate'));
             $this->tagsSave($plate, TagsPlate::class);
-            \Log::info(12);
 
             $name_propietary = $this->tagsPrepare($request->get('name_propietary'));
             $this->tagsSave($name_propietary, TagsNamePropietary::class);
-            \Log::info(13);
 
             $type_vehicle = $this->tagsPrepare($request->get('type_vehicle'));
             $this->tagsSave($type_vehicle, TagsTypeVehicle::class);
-            \Log::info(14);
 
             $mark = $this->tagsPrepare($request->get('mark'));
             $this->tagsSave($mark, TagsMark::class);
-            \Log::info(15);
 
             $line = $this->tagsPrepare($request->get('line'));
             $this->tagsSave($line, TagsLine::class);
-            \Log::info(16);
 
             $model = $this->tagsPrepare($request->get('model'));
             $this->tagsSave($model, TagsModel::class);
-            \Log::info(17);
 
             $color = $this->tagsPrepare($request->get('color'));
             $this->tagsSave($color, TagsColor::class);
-            \Log::info(18);
 
             $loading_capacity = $this->tagsPrepare($request->get('loading_capacity'));
             $this->tagsSave($loading_capacity, TagsCapacityLoading::class);
-            \Log::info(19);
 
             $vehicle = new Vehicle;
             $vehicle->company_id = $this->company;
