@@ -111,7 +111,7 @@ class VehiclesController extends Controller
             $vehicle->plate = $plate->implode(',');
             $vehicle->name_propietary = $name_propietary->implode(',');
             $vehicle->registration_number = $request->registration_number;
-            $vehicle->registration_number_date = (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d');
+            $vehicle->registration_number_date = $request->registration_number_date ? (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d') : null;
             $vehicle->type_vehicle = $type_vehicle->implode(',');
             $vehicle->code_vehicle = $request->code_vehicle;
 
@@ -130,8 +130,8 @@ class VehiclesController extends Controller
             ////SOAT
             $vehicle->soat_number = $request->soat_number;
             $vehicle->insurance = $request->insurance;
-            $vehicle->expedition_date_soat = (Carbon::createFromFormat('D M d Y', $request->expedition_date_soat))->format('Y-m-d');
-            $vehicle->due_date_soat =  (Carbon::createFromFormat('D M d Y', $request->due_date_soat))->format('Y-m-d');
+            $vehicle->expedition_date_soat = $request->expedition_date_soat ? (Carbon::createFromFormat('D M d Y', $request->expedition_date_soat))->format('Y-m-d') : null;
+            $vehicle->due_date_soat = $request->due_date_soat ? (Carbon::createFromFormat('D M d Y', $request->due_date_soat))->format('Y-m-d') : null;
 
             $path = "industrialSecure/roadSafety/files/".$this->company."/";
 
@@ -146,8 +146,8 @@ class VehiclesController extends Controller
             //Tecno mecanica
             $vehicle->mechanical_tech_number = $request->mechanical_tech_number;
             $vehicle->issuing_entity = $request->issuing_entity;
-            $vehicle->expedition_date_mechanical_tech = (Carbon::createFromFormat('D M d Y', $request->expedition_date_mechanical_tech))->format('Y-m-d');
-            $vehicle->due_date_mechanical_tech = (Carbon::createFromFormat('D M d Y', $request->due_date_mechanical_tech))->format('Y-m-d');
+            $vehicle->expedition_date_mechanical_tech = $request->expedition_date_mechanical_tech ? (Carbon::createFromFormat('D M d Y', $request->expedition_date_mechanical_tech))->format('Y-m-d') : null;
+            $vehicle->due_date_mechanical_tech = $request->due_date_mechanical_tech ? (Carbon::createFromFormat('D M d Y', $request->due_date_mechanical_tech))->format('Y-m-d') : null;
 
             if ($request->file_mechanical_tech)
             {
@@ -160,8 +160,8 @@ class VehiclesController extends Controller
             //Responsabilidad civil
             $vehicle->policy_number = $request->policy_number;
             $vehicle->policy_entity = $request->policy_entity;
-            $vehicle->expedition_date_policy = (Carbon::createFromFormat('D M d Y', $request->expedition_date_policy))->format('Y-m-d');;
-            $vehicle->due_date_policy = (Carbon::createFromFormat('D M d Y', $request->due_date_policy))->format('Y-m-d');
+            $vehicle->expedition_date_policy = $request->expedition_date_policy ? (Carbon::createFromFormat('D M d Y', $request->expedition_date_policy))->format('Y-m-d') : null;
+            $vehicle->due_date_policy = $request->due_date_policy ? (Carbon::createFromFormat('D M d Y', $request->due_date_policy))->format('Y-m-d') : null;
 
             if ($request->file_policy)
             {

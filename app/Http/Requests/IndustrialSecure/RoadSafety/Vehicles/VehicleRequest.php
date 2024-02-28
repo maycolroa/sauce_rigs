@@ -145,7 +145,7 @@ class VehicleRequest extends FormRequest
             'code_vehicle' => 'nullable',
             'mark' => 'required',
             'line' => 'required',
-            //'model' => 'required',
+            'model' => 'required',
             'cylinder_capacity' => 'required',
             'color' => 'required',
             'chassis_number' => 'required',
@@ -172,16 +172,20 @@ class VehicleRequest extends FormRequest
 
         $confLocation = $this->getLocationFormConfModule();
 
+        $rulesConfLocation = $this->getLocationFormRules();
+        $rules = array_merge($rules, $rulesConfLocation);
+
+
         /*if ($confLocation)
         {
             if ($confLocation['regional'] == 'SI')
-                $rules['employee_regional_id'] = 'required';
+                $rules['location.employee_regional_id'] = 'required';
             if ($confLocation['headquarter'] == 'SI')
-                $rules['employee_headquarter_id'] = 'required';
+                $rules['location.employee_headquarter_id'] = 'required';
             if ($confLocation['process'] == 'SI')
-                $rules['employee_process_id'] = 'required';
+                $rules['location.employee_process_id'] = 'required';
             if ($confLocation['area'] == 'SI')
-                $rules['employee_area_id'] = 'required';
+                $rules['location.employee_area_id'] = 'required';
         }*/
 
         return $rules;
