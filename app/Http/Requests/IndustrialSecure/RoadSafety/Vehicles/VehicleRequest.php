@@ -29,23 +29,7 @@ class VehicleRequest extends FormRequest
 
     public function sanitize()
     {
-        if ($this->has('documents'))
-        {
-            foreach ($this->input('documents') as $key => $value)
-            {
-                $data['documents'][$key] = json_decode($value, true);
-                $this->merge($data);
-            }
-        }
-
-        if ($this->has('delete'))
-        {
-            $this->merge([
-                'delete' => json_decode($this->input('delete'), true)
-            ]);
-        }
-
-        if ($this->has('plate'))
+        if ($this->has('plate') && $this->plate)
         {
             foreach ($this->input('plate') as $key => $value)
             {
@@ -54,7 +38,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('name_propietary'))
+        if ($this->has('name_propietary') && $this->name_propietary)
         {
             foreach ($this->input('name_propietary') as $key => $value)
             {
@@ -63,7 +47,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('type_vehicle'))
+        if ($this->has('type_vehicle') && $this->type_vehicle)
         {
             foreach ($this->input('type_vehicle') as $key => $value)
             {
@@ -72,7 +56,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('mark'))
+        if ($this->has('mark') && $this->mark)
         {
             foreach ($this->input('mark') as $key => $value)
             {
@@ -81,7 +65,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('line'))
+        if ($this->has('line') && $this->line)
         {
             foreach ($this->input('line') as $key => $value)
             {
@@ -90,7 +74,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('model'))
+        if ($this->has('model') && $this->model)
         {
             foreach ($this->input('model') as $key => $value)
             {
@@ -99,7 +83,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('color'))
+        if ($this->has('color') && $this->color)
         {
             foreach ($this->input('color') as $key => $value)
             {
@@ -108,7 +92,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('loading_capacity'))
+        if ($this->has('loading_capacity') && $this->platloading_capacitye)
         {
             foreach ($this->input('loading_capacity') as $key => $value)
             {
@@ -117,7 +101,7 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('locations'))
+        if ($this->has('locations') && $this->locations)
         {
             $this->merge([
                 'locations' => json_decode($this->input('locations'), true)
