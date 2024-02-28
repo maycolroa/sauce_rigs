@@ -2079,7 +2079,7 @@ export default [
             { name: 'sau_ct_send_notifications.subject', data: 'subject', title: 'Asunto', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_send_notifications.date_send', data: 'date_send', title: 'Fecha de envio', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_send_notifications.hour', data: 'hour', title: 'Hora de envio', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'active_send', data: 'active_send', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+            //{ name: 'active_send', data: 'active_send', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
             { name: 'send_2"', data: 'send_2', title: '¿Enviado?', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
@@ -2123,7 +2123,7 @@ export default [
                 permission: 'contracts_c'
             }]
         },
-        {
+        /*{
             type: 'base',
             buttons: [
                 {
@@ -2142,7 +2142,7 @@ export default [
                     permission: 'contracts_c'
                 }
             ],
-        }],
+        }*/],
         configuration: {
             urlData: '/legalAspects/notificationSend/data',
             filterColumns: true,

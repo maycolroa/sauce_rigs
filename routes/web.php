@@ -310,6 +310,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsReincMotive', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMotiveClose');
         Route::post('tagsReason', 'IndustrialSecure\EPP\IncomeController@multiselectReason');
 
+        Route::post('tagsRsPlate', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectPlate');
+        Route::post('tagsRsNamePropietary', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectNamePropietary');
+        Route::post('tagsRsTypeVehicle', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectTypeVehicle');
+        Route::post('tagsRsMark', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectMark');
+        Route::post('tagsRsLine', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectLine');
+        Route::post('tagsRsModel', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectModel');
+        Route::post('tagsRsColor', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectColor');
+        Route::post('tagsRsLoadingCapacity', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectLoadingCapacity');
+
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -542,6 +551,15 @@ Route::middleware(['auth'])->group(function () {
       Route::prefix('roadsafety')->group(function () {
         Route::post('documents/data', 'IndustrialSecure\RoadSafety\Documents\PositionController@data');
         Route::ApiResource('documents', 'IndustrialSecure\RoadSafety\Documents\PositionController');
+
+        Route::post('vehicles/data', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@data');
+        Route::ApiResource('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController');
+
+        Route::get('transaction/downloadSoat/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadSoat');
+
+        Route::get('transaction/downloadMechanicalTech/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadMechanicalTech');
+
+        Route::get('transaction/downloadPolicy/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadPolicy');
       });
 
 //tags

@@ -62,8 +62,7 @@ class NotificationSendContract extends Command
 
         foreach ($companies as $key => $company)
         {
-            $newletters = SendNotification::where('active', true)
-                ->where('send', false)
+            $newletters = SendNotification::where('send', false)
                 ->where('date_send', $now->format('Y-m-d'))
                 ->where([
                     ['hour', '<=', $now->toTimeString()],

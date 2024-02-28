@@ -53,7 +53,8 @@ class VuetableColumnManager
         'dangerousconditionsinspectionsrequestfirm',
         'industrialsecureriskmatrixreport',
         'industrialsecureriskmatrixreportresidual',
-        'industrialsecureeppslocation'
+        'industrialsecureeppslocation',
+        'industrialsecureroadsafetyvehicles'
 
     ];
 
@@ -746,6 +747,24 @@ class VuetableColumnManager
             array_push($colums, [
                 'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=> false, 'detail'=>false, 'key'=>false
             ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureroadsafetyvehicles()
+    {
+        $colums = [
+            ['name' => 'sau_rs_vehicles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rs_vehicles.plate', 'data'=> 'plate', 'title'=> 'Placa', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_vehicles.type_vehicle', 'data'=> 'type_vehicle', 'title'=> 'Tipo de Vehiculo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_vehicles.due_date_soat', 'data'=> 'due_date_soat', 'title'=> 'Vencimiento de SOAT', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_vehicles.due_date_mechanical_tech', 'data'=> 'due_date_mechanical_tech', 'title'=> 'Vencimiento de Tecnomecanica', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
 
         return $colums;
     }

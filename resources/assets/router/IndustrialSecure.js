@@ -1332,5 +1332,37 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/documents/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles',
+          path: 'roadsafety/vehicles',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-create',
+          path: 'roadsafety/vehicles/create',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-edit',
+          path: 'roadsafety/vehicles/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-view',
+          path: 'roadsafety/vehicles/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/view')
+        }
+      ]),
     ]
   }]

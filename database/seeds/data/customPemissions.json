@@ -486,6 +486,22 @@
                     {
                         "name": "roadsafety_documents_d",
                         "display_name": "Seguridad Vial - Documentos borrar"
+                    },
+                    {
+                        "name": "roadsafety_vehicles_c",
+                        "display_name": "Seguridad Vial - Vehiculos crear"
+                    },
+                    {
+                        "name": "roadsafety_vehicles_r",
+                        "display_name": "Seguridad Vial - Vehiculos ver"
+                    },
+                    {
+                        "name": "roadsafety_vehicles_u",
+                        "display_name": "Seguridad Vial - Vehiculos actualizar"
+                    },
+                    {
+                        "name": "roadsafety_vehicles_d",
+                        "display_name": "Seguridad Vial - Vehiculos borrar"
                     }
                 ]
             }

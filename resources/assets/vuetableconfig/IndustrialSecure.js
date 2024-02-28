@@ -2669,4 +2669,57 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-roadsafety-vehicles',
+    fields: [
+        { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-vehicles-edit' },
+                id: 'id',
+            },
+            permission: 'roadsafety_vehicles_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-vehicles-view' },
+                id: 'id',
+            },
+            permission: 'roadsafety_vehicles_r'
+          }]
+      },
+      {
+        type: 'base',
+        buttons: [
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/roadsafety/vehicles/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar el vehiculo'
+                },
+                permission: 'roadsafety_vehicles_d'
+                }
+        ],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehicles/data',
+        filterColumns: true,
+        //configNameFilter: 'dangerousconditions-inspections'
+    }
+},
 ];
