@@ -1,7 +1,7 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
         <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha de mantenimiento" :full-month-name="true" placeholder="Fecha de mantenimiento" :error="form.errorsFor('date')" name="date">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha de mantenimiento" :full-month-name="true" placeholder="Fecha de mantenimiento" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledExpirationDateFrom()" >
                       </vue-datepicker>
             <vue-radio :disabled="viewOnly" :checked="form.type" class="col-md-6" v-model="form.type" :options="typeOption" name="type" :error="form.errorsFor('type')" label="Tipo de mantenimiento"></vue-radio>
         </b-form-row>
@@ -15,7 +15,7 @@
         </b-form-row>
         <b-form-row>
             <vue-textarea v-if="form.apto == 'NO'" :disabled="viewOnly" class="col-md-6" v-model="form.reason" label="Observaciones" :error="form.errorsFor('reason')"  name="reason" placeholder="Observaciones" rows="2"></vue-textarea>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.next_date" label="Fecha de próximo mantenimiento" :full-month-name="true" placeholder="Fecha de próximo mantenimiento" :error="form.errorsFor('next_date')" name="next_date">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.next_date" label="Fecha de próximo mantenimiento" :full-month-name="true" placeholder="Fecha de próximo mantenimiento" :error="form.errorsFor('next_date')" name="next_date" :disabled-dates="disabledExpirationDateTo()">
                       </vue-datepicker>
         </b-form-row>
         <b-card border-variant="primary" title="Evidencias" class="mb-3 box-shadow-none">
@@ -152,7 +152,27 @@ export default {
                 this.form.delete.files.push(this.form.evidences[index].id)
                 
            this.form.evidences.splice(index, 1);
-        }
+        },
+        disabledExpirationDateFrom() {
+
+            let toDate = new Date()
+            toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+
+            return {
+                from: toDate
+            }
+            
+        },
+        disabledExpirationDateTo() {
+
+            let toDate = new Date()
+            toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+
+            return {
+                to: toDate
+            }
+            
+        },
     },
 }
 </script>

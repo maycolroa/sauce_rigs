@@ -77,9 +77,9 @@
           </b-form-row>
 
           <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_soat" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_soat')" name="expedition_date_soat">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_soat" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_soat')" name="expedition_date_soat" :disabled-dates="disabledExpirationDateFrom()">
                       </vue-datepicker>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_soat" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_soat')" name="due_date_soat">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_soat" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_soat')" name="due_date_soat" :disabled-dates="disabledExpirationDateTo('expedition_date_soat')">
                       </vue-datepicker>
           </b-form-row>    
 
@@ -100,9 +100,9 @@
           </b-form-row>
 
           <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_mechanical_tech" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_mechanical_tech')" name="expedition_date_mechanical_tech">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_mechanical_tech" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_mechanical_tech')" name="expedition_date_mechanical_tech" :disabled-dates="disabledExpirationDateFrom()">
                       </vue-datepicker>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_mechanical_tech" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_mechanical_tech')" name="due_date_mechanical_tech">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_mechanical_tech" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_mechanical_tech')" name="due_date_mechanical_tech" :disabled-dates="disabledExpirationDateTo('expedition_date_mechanical_tech')">
                       </vue-datepicker>
           </b-form-row>    
 
@@ -123,9 +123,9 @@
           </b-form-row>
 
           <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_policy" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_policy')" name="expedition_date_policy">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_policy" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_policy')" name="expedition_date_policy" :disabled-dates="disabledExpirationDateFrom()">
                       </vue-datepicker>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_policy" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_policy')" name="due_date_policy">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_policy" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_policy')" name="due_date_policy" :disabled-dates="disabledExpirationDateTo('expedition_date_policy')">
                       </vue-datepicker>
           </b-form-row>    
 
@@ -276,7 +276,27 @@ export default {
     setConfigLocation(value)
     {
       this.configLocation = value
-    }
+    },
+    disabledExpirationDateFrom() {
+
+            let toDate = new Date()
+            toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+
+            return {
+                from: toDate
+            }
+            
+    },
+    disabledExpirationDateTo(key) {
+
+        let toDate = new Date(this.form[key])
+        toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+
+        return {
+            to: toDate
+        }
+        
+    },
   }
 };
 </script>
