@@ -1364,5 +1364,37 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/vehicles/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-maintenance',
+          path: 'roadsafety/vehicles/maintenance/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/maintenance/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-maintenance-create',
+          path: 'roadsafety/vehicles/maintenance/create/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/maintenance/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-maintenance-edit',
+          path: 'roadsafety/vehicles/maintenance/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/maintenance/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-maintenance-view',
+          path: 'roadsafety/vehicles/maintenance/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/maintenance/view')
+        }
+      ]),
     ]
   }]

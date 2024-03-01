@@ -118,7 +118,7 @@ class VehiclesController extends Controller
             ///Informacion matricula
             $vehicle->mark = $mark->implode(',');
             $vehicle->line = $line->implode(',');
-            $vehicle->model = 'model';//$model->implode(',');
+            $vehicle->model = $model->implode(',');
             $vehicle->cylinder_capacity = $request->cylinder_capacity;
             $vehicle->color = $color->implode(',');
             $vehicle->chassis_number = $request->chassis_number;

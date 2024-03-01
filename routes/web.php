@@ -549,17 +549,20 @@ Route::middleware(['auth'])->group(function () {
       });
 
       Route::prefix('roadsafety')->group(function () {
+        ////Documentos///
         Route::post('documents/data', 'IndustrialSecure\RoadSafety\Documents\PositionController@data');
         Route::ApiResource('documents', 'IndustrialSecure\RoadSafety\Documents\PositionController');
 
+        ////Vehivulos///
         Route::post('vehicles/data', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@data');
         Route::ApiResource('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController');
+        Route::get('vehicles/downloadSoat/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadSoat');
+        Route::get('vehicles/downloadMechanicalTech/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadMechanicalTech');
+        Route::get('vehicles/downloadPolicy/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadPolicy');
 
-        Route::get('transaction/downloadSoat/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadSoat');
-
-        Route::get('transaction/downloadMechanicalTech/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadMechanicalTech');
-
-        Route::get('transaction/downloadPolicy/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadPolicy');
+        ///Mantenimiento///
+        Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
+        Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');
       });
 
 //tags

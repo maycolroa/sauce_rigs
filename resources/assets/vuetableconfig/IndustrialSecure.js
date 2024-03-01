@@ -2700,7 +2700,33 @@ export default [
                 id: 'id',
             },
             permission: 'roadsafety_vehicles_r'
-          }]
+          },
+          {
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-clipboard',
+                title: 'Realizar Mantenimiento'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance-create' },
+                id: 'id',
+            },
+            permission: 'roadsafety_vehicles_c'
+        },
+        {
+        config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Ver Mantenimientos Realizados'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance' },
+                id: 'id',
+            },
+            permission: 'roadsafety_vehicles_r'
+        }]
       },
       {
         type: 'base',
@@ -2720,6 +2746,63 @@ export default [
         urlData: '/industrialSecurity/roadsafety/vehicles/data',
         filterColumns: true,
         //configNameFilter: 'dangerousconditions-inspections'
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-maintenance',
+    fields: [
+        { name: 'sau_rs_vehicle_maintenance.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_vehicle_maintenance.date', data: 'date', title: 'Fecha de mantenimiento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_maintenance.type', data: 'type', title: 'Tipo de mantenimiento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_maintenance.km', data: 'km', title: 'Kilometraje', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_maintenance.responsible', data: 'responsible', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_maintenance.apto', data: 'apto', title: '¿Apto para retomar marcha?', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_maintenance.next_date', data: 'next_date', title: 'Fecha de proximo mantenimiento', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance-edit' },
+            id: 'id',
+        },
+        permission: 'roadsafety_vehicles_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance-view' },
+            id: 'id',
+        },
+        permission: 'roadsafety_vehicles_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/roadsafety/vehiclesMaintenance/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el mantenimiento con fecha __date__'
+        },
+        permission: 'roadsafety_vehicles_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehiclesMaintenance/data',
+        filterColumns: true,
     }
 },
 ];
