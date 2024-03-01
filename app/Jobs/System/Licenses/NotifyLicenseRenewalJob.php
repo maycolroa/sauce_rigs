@@ -41,6 +41,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
      */
     public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze = null, $observations = '', $modules_freeze = [])
     {
+        \Log::info($modules);
         $this->license_id = $license_id;
         $this->company_id = $company_id;
         $this->modules = $modules;
@@ -191,17 +192,15 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             }
         }
 
-        $mod_total = [];
-
         if (COUNT($recipients) > 0 && COUNT($admins) > 0)
         {
-            if ($this->freeze == 'NO')
+            if ($this->freeze == 'SI')
             {
-                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
+                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
             }
             else 
             {
-                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
+                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
             }
             
             NotificationMail::
@@ -218,13 +217,13 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         }
         else
         {
-            if ($this->freeze == 'NO')
+            if ($this->freeze == 'SI')
             {
-                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
+                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
             }
             else 
             {
-                $mod_total = ['modules_news'=> [], 'modules_olds'=> [], 'modify' => $fechas_modificadas, 'modules_delete' => [], 'modules_freeze' => $modules_f];
+                $mod_total = ['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f];
             }
 
             NotificationMail::
