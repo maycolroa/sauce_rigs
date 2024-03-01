@@ -1396,5 +1396,21 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/vehicles/maintenance/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+				{
+          name: 'industrialsecure-roadsafety-customHelpers',
+          path: 'roadsafety/customHelpers',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/helpers/index')
+        }
+			]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-customHelpers-view',
+          path: 'roadsafety/customHelpers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/helpers/view')
+				}
+      ]),
     ]
   }]

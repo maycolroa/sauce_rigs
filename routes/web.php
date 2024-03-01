@@ -563,6 +563,10 @@ Route::middleware(['auth'])->group(function () {
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
         Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');
+
+        ///Ayudas///
+        Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');
+          Route::ApiResource('helpers', 'IndustrialSecure\RoadSafety\Helpers\HelperController');
       });
 
 //tags
