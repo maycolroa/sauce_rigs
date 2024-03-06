@@ -158,6 +158,7 @@ class VehiclesController extends Controller
             }
 
             //Responsabilidad civil
+            $vehicle->policy_responsability = $request->policy_responsability;
             $vehicle->policy_number = $request->policy_number;
             $vehicle->policy_entity = $request->policy_entity;
             $vehicle->expedition_date_policy = $request->expedition_date_policy ? (Carbon::createFromFormat('D M d Y', $request->expedition_date_policy))->format('Y-m-d') : null;
@@ -314,6 +315,7 @@ class VehiclesController extends Controller
             }
 
             //Responsabilidad civil
+            $vehicle->policy_responsability = $request->policy_responsability;
             $vehicle->policy_number = $request->policy_number;
             $vehicle->policy_entity = $request->policy_entity;
             $vehicle->expedition_date_policy = $request->expedition_date_policy ? (Carbon::createFromFormat('D M d Y', $request->expedition_date_policy))->format('Y-m-d') : null;

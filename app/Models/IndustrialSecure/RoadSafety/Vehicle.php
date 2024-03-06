@@ -43,6 +43,7 @@ class Vehicle extends Model
         'expedition_date_mechanical_tech',
         'due_date_mechanical_tech',
         'file_mechanical_tech',
+        'policy_responsability',
         'policy_number',
         'policy_entity',
         'expedition_date_policy',

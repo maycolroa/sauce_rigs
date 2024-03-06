@@ -10,8 +10,7 @@
       <b-card no-body>
         <b-card-body>
             <vehicle-form
-                :vehicle="data"
-                positions-data-url="/selects/positions"
+                :vehicles="data"
                 :view-only="true"
                 :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles'}"/>
         </b-card-body>

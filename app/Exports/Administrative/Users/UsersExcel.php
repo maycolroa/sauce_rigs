@@ -51,6 +51,7 @@ class UsersExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, Wit
             ->on('sau_role_user.team_id', '=', DB::raw($team));
       })
       ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+      ->where('sau_roles.id', '<>', 5)
       ->groupBy('sau_users.id');
 
 

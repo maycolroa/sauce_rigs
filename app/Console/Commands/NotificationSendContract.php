@@ -164,6 +164,9 @@ class NotificationSendContract extends Command
                             }
                         }
                     }
+
+                    $newletter->send = true;
+                    $newletter->save();
                 }
             }
         }

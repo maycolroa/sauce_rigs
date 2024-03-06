@@ -118,22 +118,25 @@
     <b-card border-variant="primary" title="Póliza responsabilidad civil" class="mb-3 box-shadow-none">
         <b-card-body>
           <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.policy_number" label="Número de póliza" type="number" name="policy_number" :error="form.errorsFor('policy_number')" placeholder="Número de póliza"></vue-input>            
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.policy_entity" label="Entidad que expide" type="text" name="policy_entity" :error="form.errorsFor('policy_entity')" placeholder="Entidad que expide"></vue-input>   
+            <vue-radio :disabled="viewOnly" :checked="form.policy_responsability" class="col-md-12" v-model="form.policy_responsability" :options="siNo" name="policy_responsability" :error="form.errorsFor('policy_responsability')" label="Estado del vehiculo"></vue-radio>
+          </b-form-row>
+          <b-form-row>
+            <vue-input :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.policy_number" label="Número de póliza" type="number" name="policy_number" :error="form.errorsFor('policy_number')" placeholder="Número de póliza"></vue-input>            
+            <vue-input :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.policy_entity" label="Entidad que expide" type="text" name="policy_entity" :error="form.errorsFor('policy_entity')" placeholder="Entidad que expide"></vue-input>   
           </b-form-row>
 
           <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expedition_date_policy" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_policy')" name="expedition_date_policy" :disabled-dates="disabledExpirationDateFrom()">
+            <vue-datepicker :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.expedition_date_policy" label="Fecha de expedición" :full-month-name="true" placeholder="Fecha de expedición" :error="form.errorsFor('expedition_date_policy')" name="expedition_date_policy" :disabled-dates="disabledExpirationDateFrom()">
                       </vue-datepicker>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.due_date_policy" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_policy')" name="due_date_policy" :disabled-dates="disabledExpirationDateTo('expedition_date_policy')">
+            <vue-datepicker :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.due_date_policy" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor('due_date_policy')" name="due_date_policy" :disabled-dates="disabledExpirationDateTo('expedition_date_policy')">
                       </vue-datepicker>
           </b-form-row>    
 
           <b-form-row>        
             <template v-if="isEdit || viewOnly">
-						  <vue-file-simple :help-text="form.old_file_policy ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/vehicles/downloadPolicy/${this.$route.params.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file_policy" label="Evidencia" name="file_policy" :error="form.errorsFor('file_policy')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+						  <vue-file-simple :help-text="form.old_file_policy ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/vehicles/downloadPolicy/${this.$route.params.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.file_policy" label="Evidencia" name="file_policy" :error="form.errorsFor('file_policy')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
             </template>    
-						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file_policy" label="Evidencia" name="file_policy" :error="form.errorsFor('file_policy')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+						<vue-file-simple v-else :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.file_policy" label="Evidencia" name="file_policy" :error="form.errorsFor('file_policy')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
           </b-form-row>  
         </b-card-body>
     </b-card>
@@ -212,6 +215,7 @@ export default {
             expedition_date_mechanical_tech: '',
             due_date_mechanical_tech: '',
             file_mechanical_tech: '',
+            policy_responsability: 'NO',
             policy_number: '',
             policy_entity: '',
             expedition_date_policy: '',
@@ -222,7 +226,7 @@ export default {
     }
   },
   watch: {
-    vehicles() {
+    vehicles() { 
       this.loading = false;
       this.form = Form.makeFrom(this.vehicles, this.method);
     }
@@ -232,9 +236,13 @@ export default {
       loading: this.isEdit,
       form: Form.makeFrom(this.vehicles, this.method),
       activeInactive: [
-          {text: 'Activo', value: 'Activo'},
-          {text: 'Inactivo', value: 'Inactivo'}
-        ],
+        {text: 'Activo', value: 'Activo'},
+        {text: 'Inactivo', value: 'Inactivo'}
+      ],
+      siNo: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
       tagsPlateDataUrl: '/selects/tagsRsPlate',
       tagsColorDataUrl: '/selects/tagsRsColor',
       tagsLineDataUrl: '/selects/tagsRsLine',
