@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\IndustrialSecure\RoadSafety\TagsTypeVehicle;
+use App\Models\IndustrialSecure\RoadSafety\TagsTypeLicense;
 use DB;
 
 class TypeVehiclesDefaultJob implements ShouldQueue
@@ -43,9 +44,28 @@ class TypeVehiclesDefaultJob implements ShouldQueue
             'Montacargas',
         ];
 
+        $type_licences = [
+            'A1',
+            'B1',
+            'B3',
+            'C2',
+            'A2',
+            'B2',
+            'C1',
+            'C3'
+        ];
+
         foreach ($vehicles as $key => $value) 
         {
             $type = TagsTypeVehicle::query();
+            $type->company_scope = $this->company_id;
+            $type = $type->firstOrCreate(['name' => $value], 
+                                                ['name' => $value, 'company_id' => $this->company_id]);
+        }
+
+        foreach ($type_licences as $key => $value) 
+        {
+            $type = TagsTypeLicense::query();
             $type->company_scope = $this->company_id;
             $type = $type->firstOrCreate(['name' => $value], 
                                                 ['name' => $value, 'company_id' => $this->company_id]);
