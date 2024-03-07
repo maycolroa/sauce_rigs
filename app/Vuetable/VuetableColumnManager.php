@@ -54,7 +54,8 @@ class VuetableColumnManager
         'industrialsecureriskmatrixreport',
         'industrialsecureriskmatrixreportresidual',
         'industrialsecureeppslocation',
-        'industrialsecureroadsafetyvehicles'
+        'industrialsecureroadsafetyvehicles',
+        'industrialsecureroadsafetydrivers'
 
     ];
 
@@ -759,6 +760,23 @@ class VuetableColumnManager
             ['name' => 'sau_rs_vehicles.type_vehicle', 'data'=> 'type_vehicle', 'title'=> 'Tipo de Vehiculo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_rs_vehicles.due_date_soat', 'data'=> 'due_date_soat', 'title'=> 'Vencimiento de SOAT', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_rs_vehicles.due_date_mechanical_tech', 'data'=> 'due_date_mechanical_tech', 'title'=> 'Vencimiento de Tecnomecanica', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureroadsafetydrivers()
+    {
+        $colums = [
+            ['name' => 'sau_rs_drivers.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rs_drivers.type_license', 'data'=> 'type_license', 'title'=> 'Tipo de licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_vehicles.registration_number', 'data'=> 'registration_number', 'title'=> 'Vehiculo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_drivers.date_license', 'data'=> 'date_license', 'title'=> 'Vigenvia Licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());

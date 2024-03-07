@@ -79,13 +79,13 @@ class Vehicle extends Model
     public function position()
     {
         return $this->belongsTo('App\Models\Administrative\Positions\EmployeePosition', 'employee_position_id');
-    }
+    }*/
 
     public function multiselect()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->registration_number,
             'value' => $this->id
         ];
-    }*/
+    }
 }

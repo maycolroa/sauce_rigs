@@ -2672,7 +2672,7 @@ export default [
 {
     name: 'industrialsecure-roadsafety-vehicles',
     fields: [
-        { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+        { name: 'sau_rs_vehicles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
     'controlls': [{
           type: 'push',
@@ -2838,6 +2838,59 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/roadsafety/helpers/data',
         filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-drivers',
+    fields: [
+        { name: 'sau_rs_drivers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-drivers-edit' },
+                id: 'id',
+            },
+            permission: 'roadsafety_drivers_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-drivers-view' },
+                id: 'id',
+            },
+            permission: 'roadsafety_drivers_r'
+          }]
+      },
+      {
+        type: 'base',
+        buttons: [
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/roadsafety/drivers/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar el conductor'
+                },
+                permission: 'roadsafety_drivers_d'
+                }
+        ],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/drivers/data',
+        filterColumns: true,
+        //configNameFilter: 'dangerousconditions-inspections'
     }
 },
 ];

@@ -1412,5 +1412,37 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/helpers/view')
 				}
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_drivers_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers',
+          path: 'roadsafety/drivers',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_drivers_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-create',
+          path: 'roadsafety/drivers/create',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_drivers_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-edit',
+          path: 'roadsafety/drivers/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_drivers_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-view',
+          path: 'roadsafety/drivers/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/view')
+        }
+      ]),
     ]
   }]

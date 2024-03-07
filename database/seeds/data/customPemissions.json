@@ -502,6 +502,22 @@
                     {
                         "name": "roadsafety_vehicles_d",
                         "display_name": "Seguridad Vial - Vehiculos borrar"
+                    },
+                    {
+                        "name": "roadsafety_drivers_c",
+                        "display_name": "Seguridad Vial - Conductores crear"
+                    },
+                    {
+                        "name": "roadsafety_drivers_r",
+                        "display_name": "Seguridad Vial - Conductores ver"
+                    },
+                    {
+                        "name": "roadsafety_drivers_u",
+                        "display_name": "Seguridad Vial - Conductores actualizar"
+                    },
+                    {
+                        "name": "roadsafety_drivers_d",
+                        "display_name": "Seguridad Vial - Conductores borrar"
                     }
                 ]
             }

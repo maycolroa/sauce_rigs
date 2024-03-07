@@ -318,6 +318,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsRsModel', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectModel');
         Route::post('tagsRsColor', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectColor');
         Route::post('tagsRsLoadingCapacity', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectLoadingCapacity');
+        Route::post('tagTypeLicense', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselectTypeLicense');
+        Route::post('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselect');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -563,6 +565,12 @@ Route::middleware(['auth'])->group(function () {
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
         Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');
+
+
+        ///Conductores///
+        Route::post('drivers/data', 'IndustrialSecure\RoadSafety\Drivers\DriversController@data');
+        Route::ApiResource('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController');
+        Route::post('drivers/getDocuments', 'IndustrialSecure\RoadSafety\Drivers\DriversController@getDocuments');
 
         ///Ayudas///
         Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');

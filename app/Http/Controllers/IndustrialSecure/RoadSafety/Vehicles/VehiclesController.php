@@ -558,34 +558,34 @@ class VehiclesController extends Controller
      * @return Array
      */
 
-   /*public function multiselect(Request $request)
+   public function multiselect(Request $request)
     {
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $activities = ActivityContract::select("id", "name")
+            $vehicles = Vehicle::select("id", "registration_number as name")
                 ->where('company_id', $this->company)
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
+                    $query->orWhere('registration_number', 'like', $keyword);
                 })
                 ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
+                'options' => $this->multiSelectFormat($vehicles)
             ]);
         }
         else
         {
-            $activities = ActivityContract::selectRaw("
-                sau_ct_activities.id as id,
-                sau_ct_activities.name as name
+            $vehicles = Vehicle::selectRaw("
+                sau_rs_vehicles.id as id,
+                sau_rs_vehicles.registration_number as name
             ")
             ->where('company_id', $this->company)
             ->orderBy('name')
             ->pluck('id', 'name');
         
-            return $this->multiSelectFormat($activities);
+            return $this->multiSelectFormat($vehicles);
         }
-    }*/
+    }
 }

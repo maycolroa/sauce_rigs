@@ -15,6 +15,7 @@ class AddColumnPolicyResponsabilitySauRsVehiculesTable extends Migration
     {
         Schema::table('sau_rs_vehicles', function (Blueprint $table) {
             $table->string('policy_responsability')->nullable()->default('NO')->after('file_mechanical_tech');
+            $table->boolean('asigned')->default(false);
         });
     }
 
@@ -27,6 +28,7 @@ class AddColumnPolicyResponsabilitySauRsVehiculesTable extends Migration
     {
         Schema::table('sau_rs_vehicles', function (Blueprint $table) {   
             $table->dropColumn('policy_responsability');  
+            $table->dropColumn('asigned');  
         });
     }
 }
