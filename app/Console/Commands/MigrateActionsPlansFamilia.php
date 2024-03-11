@@ -39,7 +39,7 @@ class MigrateActionsPlansFamilia extends Command
      */
     public function handle()
     {
-        $activities = ActionPlansActivity::select(
+        /*$activities = ActionPlansActivity::select(
             'sau_action_plans_activities.*',
             'sau_action_plans_activity_module.*'
         )
@@ -47,7 +47,7 @@ class MigrateActionsPlansFamilia extends Command
         ->where('item_table_name', 'sau_lm_articles_fulfillment')
         ->where('sau_action_plans_activity_module.module_id', 17);
 
-        $activities->company_scope = 623;
+        $activities->company_scope = 691;
         $activities = $activities->get();
 
         
@@ -61,7 +61,7 @@ class MigrateActionsPlansFamilia extends Command
             $clone->expiration_date = $activity->expiration_date;
             $clone->state = $activity->state;
             $clone->editable = $activity->editable;
-            $clone->company_id = 691;
+            $clone->company_id = 710;
             $clone->observation = $activity->observation;
             $clone->detail_procedence = $activity->detail_procedence;
             $clone->evidence = $activity->evidence;
@@ -69,13 +69,13 @@ class MigrateActionsPlansFamilia extends Command
 
 
             $qualification = ArticleFulfillment::withoutGlobalScopes()->find($activity->item_id);
-            $qualification_clone = ArticleFulfillment::withoutGlobalScopes()->where('article_id', $qualification->article_id)->where('company_id', 691)->first();
+            $qualification_clone = ArticleFulfillment::withoutGlobalScopes()->where('article_id', $qualification->article_id)->where('company_id', 710)->first();
 
             $clone->activityModule()->create([
                 'module_id' => 17,
                 'item_id' => $qualification_clone->id,
                 'item_table_name' => 'sau_lm_articles_fulfillment'
             ]);
-        }
+        }*/
     }
 }

@@ -4,7 +4,7 @@
         name="flavour-2"
         stacked
       >
-        <b-form-checkbox v-for="(item, key) in options" :value="item.value" :key="key">{{item.text}} &nbsp;&nbsp;<b-btn v-if="descriptions[item.value]" variant="primary" class="btn-circle-micro" v-b-popover.hover.focus.left="descriptions[item.value]" title="Información"><span class="fas fa-info"></span></b-btn></b-form-checkbox>
+        <b-form-checkbox v-for="(item, key) in options" :value="item.value" :key="key">{{item.text}} &nbsp;&nbsp;<b-btn v-if="descriptions[item.value]" variant="primary" class="btn-circle-micro" v-b-popover.hover.focus.right="descriptions[item.value]" title="Información"><span class="fas fa-info"></span></b-btn></b-form-checkbox>
       </b-form-checkbox-group>
     <!--<b-form-group class="class" :label="label">
         <b-check-group 
