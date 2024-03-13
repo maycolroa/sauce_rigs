@@ -285,7 +285,8 @@ export default {
             file_policy: '',
             change_soat: '',
             change_mechanical: '',
-            change_resposability: ''
+            change_resposability: '',
+            activeChange: false
         };
       }
     }
@@ -297,7 +298,7 @@ export default {
     },
     'form.soat_number' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeSoat)
           this.showChangeSoat = true;
@@ -306,7 +307,7 @@ export default {
     },
     'form.insurance' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeSoat)
           this.showChangeSoat = true;
@@ -315,7 +316,7 @@ export default {
     },
     'form.expedition_date_soat' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeSoat)
           this.showChangeSoat = true;
@@ -324,7 +325,7 @@ export default {
     },
     'form.due_date_soat' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeSoat)
           this.showChangeSoat = true;
@@ -333,7 +334,7 @@ export default {
     },
     'form.file_soat' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeSoat)
           this.showChangeSoat = true;
@@ -341,7 +342,7 @@ export default {
     },
     'form.mechanical_tech_number' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeMecanical)
           this.showChangeMecanical = true;
@@ -349,7 +350,7 @@ export default {
     },
     'form.issuing_entity' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeMecanical)
           this.showChangeMecanical = true;
@@ -357,7 +358,7 @@ export default {
     },
     'form.expedition_date_mechanical_tech' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeMecanical)
           this.showChangeMecanical = true;
@@ -365,7 +366,7 @@ export default {
     },
     'form.due_date_mechanical_tech' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeMecanical)
           this.showChangeMecanical = true;
@@ -373,7 +374,7 @@ export default {
     },
     'form.file_mechanical_tech' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeMecanical)
           this.showChangeMecanical = true;
@@ -381,7 +382,7 @@ export default {
     },
     'form.policy_responsability' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -390,7 +391,7 @@ export default {
     },
     'form.policy_number' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -398,7 +399,7 @@ export default {
     },
     'form.policy_entity' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -406,7 +407,7 @@ export default {
     },
     'form.expedition_date_policy' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -414,7 +415,7 @@ export default {
     },
     'form.due_date_policy' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -422,7 +423,7 @@ export default {
     },
     'form.file_policy' () 
     {
-      if (this.isEdit)
+      if (this.isEdit && this.activeChange)
       {
         if (!this.showChangeResponsability)
           this.showChangeResponsability = true;
@@ -508,6 +509,11 @@ export default {
         }
         
     },
-  }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.activeChange = true;
+    }, 3000);
+  },
 };
 </script>
