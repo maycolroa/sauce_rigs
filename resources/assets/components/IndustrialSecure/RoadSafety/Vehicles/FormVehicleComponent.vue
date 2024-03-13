@@ -89,6 +89,27 @@
             </template>    
 						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file_soat" label="Evidencia" name="file_soat" :error="form.errorsFor('file_soat')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
           </b-form-row>  
+
+          <b-form-row v-if="isEdit && showChangeSoat"> 
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.change_soat" label="Descripción del cambio realizado" :error="form.errorsFor('change_soat')"  name="description" placeholder="Descripción del cambio realizado" rows="2"></vue-textarea>
+          </b-form-row>  
+          <b-form-row v-if="viewOnly">
+            <div class="col-md-12">
+              <h6 class="font-weight-bold mb-1">
+                Historial de cambios realizados
+              </h6>
+              <div class="col-md">
+                <b-card no-body>
+                  <b-card-body>
+                      <vue-table
+                          configName="industrialsecure-road-safety-history-soat"
+                          :modelId="form.id ? form.id : -1"
+                      ></vue-table>
+                  </b-card-body>
+              </b-card>
+              </div>
+            </div>
+          </b-form-row>
         </b-card-body>
     </b-card>
 
@@ -112,6 +133,26 @@
             </template>    
 						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file_mechanical_tech" label="Evidencia" name="file_mechanical_tech" :error="form.errorsFor('file_mechanical_tech')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
           </b-form-row>  
+          <b-form-row v-if="isEdit && showChangeMecanical">   
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.change_mechanical" label="Descripción del cambio realizado" :error="form.errorsFor('change_mechanical')"  name="description" placeholder="Descripción del cambio realizado" rows="2"></vue-textarea>
+          </b-form-row>  
+          <b-form-row v-if="viewOnly">
+            <div class="col-md-12">
+              <h6 class="font-weight-bold mb-1">
+                Historial de cambios realizados
+              </h6>
+              <div class="col-md">
+                <b-card no-body>
+                  <b-card-body>
+                      <vue-table
+                          configName="industrialsecure-road-safety-history-mechanical"
+                          :modelId="form.id ? form.id : -1"
+                      ></vue-table>
+                  </b-card-body>
+              </b-card>
+              </div>
+            </div>
+          </b-form-row>
         </b-card-body>
     </b-card>
 
@@ -138,6 +179,26 @@
             </template>    
 						<vue-file-simple v-else :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.file_policy" label="Evidencia" name="file_policy" :error="form.errorsFor('file_policy')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
           </b-form-row>  
+          <b-form-row v-if="isEdit && showChangeResponsability">      
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.change_resposability" label="Descripción del cambio realizado" :error="form.errorsFor('change_resposability')"  name="description" placeholder="Descripción del cambio realizado" rows="2"></vue-textarea>
+          </b-form-row>  
+          <b-form-row v-if="viewOnly">
+            <div class="col-md-12">
+              <h6 class="font-weight-bold mb-1">
+                Historial de cambios realizados
+              </h6>
+              <div class="col-md">
+                <b-card no-body>
+                  <b-card-body>
+                      <vue-table
+                          configName="industrialsecure-road-safety-history-responsability"
+                          :modelId="form.id ? form.id : -1"
+                      ></vue-table>
+                  </b-card-body>
+              </b-card>
+              </div>
+            </div>
+          </b-form-row>
         </b-card-body>
     </b-card>
 
@@ -160,6 +221,7 @@ import LocationLevelComponent from '@/components/CustomInputs/LocationLevelCompo
 import Form from "@/utils/Form.js";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
   components: {
@@ -170,8 +232,8 @@ export default {
     VueDatepicker,
     LocationLevelComponent,
     VueRadio,
-    VueFileSimple
-
+    VueFileSimple,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -221,6 +283,9 @@ export default {
             expedition_date_policy: '',
             due_date_policy: '',
             file_policy: '',
+            change_soat: '',
+            change_mechanical: '',
+            change_resposability: ''
         };
       }
     }
@@ -229,7 +294,140 @@ export default {
     vehicles() { 
       this.loading = false;
       this.form = Form.makeFrom(this.vehicles, this.method);
-    }
+    },
+    'form.soat_number' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeSoat)
+          this.showChangeSoat = true;
+      }
+
+    },
+    'form.insurance' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeSoat)
+          this.showChangeSoat = true;
+      }
+
+    },
+    'form.expedition_date_soat' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeSoat)
+          this.showChangeSoat = true;
+      }
+
+    },
+    'form.due_date_soat' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeSoat)
+          this.showChangeSoat = true;
+      }
+
+    },
+    'form.file_soat' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeSoat)
+          this.showChangeSoat = true;
+      }
+    },
+    'form.mechanical_tech_number' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeMecanical)
+          this.showChangeMecanical = true;
+      }
+    },
+    'form.issuing_entity' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeMecanical)
+          this.showChangeMecanical = true;
+      }
+    },
+    'form.expedition_date_mechanical_tech' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeMecanical)
+          this.showChangeMecanical = true;
+      }
+    },
+    'form.due_date_mechanical_tech' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeMecanical)
+          this.showChangeMecanical = true;
+      }
+    },
+    'form.file_mechanical_tech' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeMecanical)
+          this.showChangeMecanical = true;
+      }
+    },
+    'form.policy_responsability' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+
+    },
+    'form.policy_number' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+    },
+    'form.policy_entity' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+    },
+    'form.expedition_date_policy' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+    },
+    'form.due_date_policy' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+    },
+    'form.file_policy' () 
+    {
+      if (this.isEdit)
+      {
+        if (!this.showChangeResponsability)
+          this.showChangeResponsability = true;
+      }
+    },
   },
   data() {
     return {
@@ -251,7 +449,10 @@ export default {
       tagsCapacityLoadingDataUrl: '/selects/tagsRsLoadingCapacity',
       tagsNamePropietaryDataUrl: '/selects/tagsRsNamePropietary',
       tagsTypeVehicleDataUrl: '/selects/tagsRsTypeVehicle',
-      configLocation: {}
+      configLocation: {},
+      showChangeSoat: false,
+      showChangeMecanical: false,
+      showChangeResponsability: false
       
     };
   },
@@ -269,7 +470,8 @@ export default {
 
       this.form.documents.splice(index, 1)
     },
-    submit(e) {
+    submit(e) 
+    {
       this.loading = true;
       this.form
         .submit(e.target.action)
@@ -285,14 +487,15 @@ export default {
     {
       this.configLocation = value
     },
-    disabledExpirationDateFrom() {
+    disabledExpirationDateFrom() 
+    {
 
-            let toDate = new Date()
-            toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+      let toDate = new Date()
+      toDate = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
 
-            return {
-                from: toDate
-            }
+      return {
+          from: toDate
+      }
             
     },
     disabledExpirationDateTo(key) {

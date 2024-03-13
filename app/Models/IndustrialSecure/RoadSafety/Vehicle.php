@@ -71,12 +71,12 @@ class Vehicle extends Model
         return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
     }
 
-    /*public function documents()
+    public function histories()
     {
-        return $this->hasMany(PositionDocument::class, 'position_id');
+        return $this->hasMany(HistoryChanges::class, 'vehicle_id');
     }
 
-    public function position()
+    /*public function position()
     {
         return $this->belongsTo('App\Models\Administrative\Positions\EmployeePosition', 'employee_position_id');
     }*/

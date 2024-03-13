@@ -2893,4 +2893,46 @@ export default [
         //configNameFilter: 'dangerousconditions-inspections'
     }
 },
+{
+    name: 'industrialsecure-road-safety-history-soat',
+    fields: [
+        { name: 'sau_rs_history_records_vehicles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_history_records_vehicles.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_history_records_vehicles.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehicles/historySoatdata',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-road-safety-history-mechanical',
+    fields: [
+        { name: 'sau_rs_history_records_vehicles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_history_records_vehicles.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_history_records_vehicles.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehicles/historyMechanicaldata',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-road-safety-history-responsability',
+    fields: [
+        { name: 'sau_rs_history_records_vehicles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_history_records_vehicles.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_history_records_vehicles.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehicles/historyResponsabilitydata',
+        filterColumns: true,
+    }
+},
 ];

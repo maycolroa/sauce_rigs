@@ -562,6 +562,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('vehicles/downloadMechanicalTech/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadMechanicalTech');
         Route::get('vehicles/downloadPolicy/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadPolicy');
 
+        ///Historiales Vehiculos///
+
+        Route::post('vehicles/historySoatdata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataSoat');
+        Route::post('vehicles/historyMechanicaldata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataMechanical');
+        Route::post('vehicles/historyResponsabilitydata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataResponsability');
+
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
         Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');

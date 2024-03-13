@@ -14,6 +14,7 @@ use App\Models\IndustrialSecure\RoadSafety\TagsModel;
 use App\Models\IndustrialSecure\RoadSafety\TagsNamePropietary;
 use App\Models\IndustrialSecure\RoadSafety\TagsPlate;
 use App\Models\IndustrialSecure\RoadSafety\TagsTypeVehicle;
+use App\Models\IndustrialSecure\RoadSafety\HistoryChanges;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Vehicles\VehicleRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -65,6 +66,57 @@ class VehiclesController extends Controller
         ->orderBy('id', 'DESC');
 
         return Vuetable::of($vehicles)
+                    ->make();
+    }
+
+    public function dataSoat(Request $request)
+    {
+        $soat = HistoryChanges::select(
+            'sau_rs_history_records_vehicles.*',
+            'sau_users.name AS user'
+        )
+        ->join('sau_users', 'sau_users.id', 'sau_rs_history_records_vehicles.user_id')
+        ->where('sau_rs_history_records_vehicles.type', 'soat')
+        ->orderBy('id', 'DESC');
+
+        if ($request->has('modelId') && $request->get('modelId'))
+            $soat->where('sau_rs_history_records_vehicles.vehicle_id', '=', $request->get('modelId'));
+
+        return Vuetable::of($soat)
+                    ->make();
+    }
+
+    public function dataMechanical(Request $request)
+    {
+        $mechanical = HistoryChanges::select(
+            'sau_rs_history_records_vehicles.*',
+            'sau_users.name AS user'
+        )
+        ->join('sau_users', 'sau_users.id', 'sau_rs_history_records_vehicles.user_id')
+        ->where('sau_rs_history_records_vehicles.type', 'mechanical')
+        ->orderBy('id', 'DESC');
+
+        if ($request->has('modelId') && $request->get('modelId'))
+            $mechanical->where('sau_rs_history_records_vehicles.vehicle_id', '=', $request->get('modelId'));
+
+        return Vuetable::of($mechanical)
+                    ->make();
+    }
+
+    public function dataResponsability(Request $request)
+    {
+        $responsability = HistoryChanges::select(
+            'sau_rs_history_records_vehicles.*',
+            'sau_users.name AS user'
+        )
+        ->join('sau_users', 'sau_users.id', 'sau_rs_history_records_vehicles.user_id')
+        ->where('sau_rs_history_records_vehicles.type', 'responsability')
+        ->orderBy('id', 'DESC');
+
+        if ($request->has('modelId') && $request->get('modelId'))
+            $responsability->where('sau_rs_history_records_vehicles.vehicle_id', '=', $request->get('modelId'));
+
+        return Vuetable::of($responsability)
                     ->make();
     }
 
@@ -217,6 +269,11 @@ class VehiclesController extends Controller
             $vehicle->expedition_date_policy = $vehicle->expedition_date_policy ? (Carbon::createFromFormat('Y-m-d', $vehicle->expedition_date_policy))->format('D M d Y') : null;
             $vehicle->due_date_policy = $vehicle->due_date_policy ? (Carbon::createFromFormat('Y-m-d', $vehicle->due_date_policy))->format('D M d Y') : null;
 
+
+            $vehicle->change_soat = '';
+            $vehicle->change_mechanical = '';
+            $vehicle->change_resposability = '';
+
             return $this->respondHttp200([
                 'data' => $vehicle,
             ]);
@@ -336,6 +393,36 @@ class VehiclesController extends Controller
 
             if ($this->updateModelLocationForm($vehicle, $request->get('locations')))
                 return $this->respondHttp500();
+
+            if ($request->change_soat)
+            {
+                $vehicle->histories()->create([
+                    'user_id' => $this->user->id,
+                    'vehicle_id' => $vehicle->id,
+                    'description' => $request->change_soat,
+                    'type' => 'soat'
+                ]);
+            }
+
+            if ($request->change_mechanical)
+            {
+                $vehicle->histories()->create([
+                    'user_id' => $this->user->id,
+                    'vehicle_id' => $vehicle->id,
+                    'description' => $request->change_mechanical,
+                    'type' => 'mechanical'
+                ]);
+            }
+
+            if ($request->change_resposability)
+            {
+                $vehicle->histories()->create([
+                    'user_id' => $this->user->id,
+                    'vehicle_id' => $vehicle->id,
+                    'description' => $request->change_resposability,
+                    'type' => 'responsability'
+                ]);
+            }
 
             DB::commit();
 

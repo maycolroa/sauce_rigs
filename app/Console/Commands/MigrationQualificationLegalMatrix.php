@@ -45,14 +45,14 @@ class MigrationQualificationLegalMatrix extends Command
     public function handle()
     {
         /// Guardado de intereses///
-        /*$company_origin = Company::find(691);
+        $company_origin = Company::find(623);
 
-        $company_destiny = Company::find(710);
+        $company_destiny = Company::find(704);
 
         $company_destiny->interests()->sync($company_origin->interests()->pluck('id'));
 
         ///Calificaciones///
-        $qualifications_origin = ArticleFulfillment::withoutGlobalScopes()->where('company_id', $company_origin->id)->whereNotIn('article_id', [20568,20569,20570])->get();
+        $qualifications_origin = ArticleFulfillment::withoutGlobalScopes()->where('company_id', $company_origin->id)->whereNotIn('article_id', [9664])->get();
 
         if ($qualifications_origin)
         {
@@ -80,6 +80,6 @@ class MigrationQualificationLegalMatrix extends Command
                     ]
                 );
             }
-        }*/
+        }
     }
 }
