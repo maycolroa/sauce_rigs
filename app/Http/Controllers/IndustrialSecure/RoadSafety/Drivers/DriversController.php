@@ -326,34 +326,39 @@ class DriversController extends Controller
      * @return Array
      */
 
-   /*public function multiselect(Request $request)
+   public function multiselect(Request $request)
     {
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $activities = ActivityContract::select("id", "name")
-                ->where('company_id', $this->company)
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->orderBy('name')
-                ->take(30)->pluck('id', 'name');
+            $drivers = Driver::select(
+                "sau_rs_drivers.id as id", 
+                "sau_employees.name as name"
+            )
+            ->join('sau_employees', 'sau_employees.id', 'sau_rs_drivers.employee_id')
+            ->where('sau_employees.company_id', $this->company)
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('name', 'like', $keyword);
+            })
+            ->orderBy('name')
+            ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
+                'options' => $this->multiSelectFormat($drivers)
             ]);
         }
         else
         {
-            $activities = ActivityContract::selectRaw("
-                sau_ct_activities.id as id,
-                sau_ct_activities.name as name
+            $drivers = Driver::selectRaw("
+                sau_rs_drivers.id as id,
+                sau_employees.name as name
             ")
-            ->where('company_id', $this->company)
+            ->join('sau_employees', 'sau_employees.id', 'sau_rs_drivers.employee_id')
+            ->where('sau_employees.company_id', $this->company)
             ->orderBy('name')
             ->pluck('id', 'name');
         
-            return $this->multiSelectFormat($activities);
+            return $this->multiSelectFormat($drivers);
         }
-    }*/
+    }
 }

@@ -35,7 +35,7 @@ class Driver extends Model
     public function multiselect()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->employee->name,
             'value' => $this->id
         ];
     }

@@ -320,6 +320,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsRsLoadingCapacity', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectLoadingCapacity');
         Route::post('tagTypeLicense', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselectTypeLicense');
         Route::post('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselect');
+        Route::post('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselect');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -571,6 +572,11 @@ Route::middleware(['auth'])->group(function () {
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
         Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');
+
+
+        ///Combustible///
+        Route::post('vehiclesCombustible/data', 'IndustrialSecure\RoadSafety\Vehicles\CombustibleController@data');
+        Route::ApiResource('vehiclesCombustible', 'IndustrialSecure\RoadSafety\Vehicles\CombustibleController');
 
 
         ///Conductores///

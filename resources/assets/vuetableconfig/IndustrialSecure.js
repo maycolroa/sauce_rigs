@@ -2676,57 +2676,85 @@ export default [
     ],
     'controlls': [{
           type: 'push',
-          buttons: [{
-            config: {
-                color: 'outline-success',
-                borderless: true,
-                icon: 'ion ion-md-create',
-                title: 'Editar'
+          buttons: [
+            {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-vehicles-edit' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_vehicles_u'
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-vehicles-view' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_vehicles_r'
             },
-            data: {
-                routePush: { name: 'industrialsecure-roadsafety-vehicles-edit' },
-                id: 'id',
+            {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Realizar Mantenimiento'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance-create' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_vehicles_c'
             },
-            permission: 'roadsafety_vehicles_u'
-          }, {
-            config: {
-                color: 'outline-info',
-                borderless: true,
-                icon: 'ion ion-md-eye',
-                title: 'Ver'
+            {
+                config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-list',
+                        title: 'Ver Mantenimientos Realizados'
+                    },
+                    data: {
+                        routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance' },
+                        id: 'id',
+                    },
+                    permission: 'roadsafety_vehicles_r'
             },
-            data: {
-                routePush: { name: 'industrialsecure-roadsafety-vehicles-view' },
-                id: 'id',
+            {
+                config: {
+                    color: 'outline-warning',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Registrar carga de combustible'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-vehicles-combustible-create' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_vehicles_c'
             },
-            permission: 'roadsafety_vehicles_r'
-          },
-          {
-            config: {
-                color: 'outline-success',
-                borderless: true,
-                icon: 'ion ion-md-clipboard',
-                title: 'Realizar Mantenimiento'
-            },
-            data: {
-                routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance-create' },
-                id: 'id',
-            },
-            permission: 'roadsafety_vehicles_c'
-        },
-        {
-        config: {
-                color: 'outline-info',
-                borderless: true,
-                icon: 'ion ion-md-list',
-                title: 'Ver Mantenimientos Realizados'
-            },
-            data: {
-                routePush: { name: 'industrialsecure-roadsafety-vehicles-maintenance' },
-                id: 'id',
-            },
-            permission: 'roadsafety_vehicles_r'
-        }]
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Ver Cargas de combustible Realizados'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-vehicles-combustible' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_vehicles_r'
+            }
+        ]
       },
       {
         type: 'base',
@@ -2932,6 +2960,62 @@ export default [
     'controlls': [],
     configuration: {
         urlData: '/industrialSecurity/roadsafety/vehicles/historyResponsabilitydata',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-combustible',
+    fields: [
+        { name: 'sau_rs_vehicle_combustibles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_vehicle_combustibles.date', data: 'date', title: 'Fecha de mantenimiento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_combustibles.cylinder_capacity', data: 'cylinder_capacity', title: 'Cilindraje', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_combustibles.km', data: 'km', title: 'Kilometraje', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicle_combustibles.quantity_galons', data: 'quantity_galons', title: 'Cantidad de galones', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees.name', data: 'driver', title: 'Conductor', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-vehicles-combustible-edit' },
+            id: 'id',
+        },
+        permission: 'roadsafety_vehicles_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-vehicles-combustible-view' },
+            id: 'id',
+        },
+        permission: 'roadsafety_vehicles_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/roadsafety/vehiclesCombustible/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la carga de combustible con fecha __date__'
+        },
+        permission: 'roadsafety_vehicles_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/vehiclesCombustible/data',
         filterColumns: true,
     }
 },

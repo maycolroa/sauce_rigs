@@ -159,7 +159,7 @@
     <b-card border-variant="primary" title="Póliza responsabilidad civil" class="mb-3 box-shadow-none">
         <b-card-body>
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="form.policy_responsability" class="col-md-12" v-model="form.policy_responsability" :options="siNo" name="policy_responsability" :error="form.errorsFor('policy_responsability')" label="Estado del vehiculo"></vue-radio>
+            <vue-radio :disabled="viewOnly" :checked="form.policy_responsability" class="col-md-12" v-model="form.policy_responsability" :options="siNo" name="policy_responsability" :error="form.errorsFor('policy_responsability')" label="¿Tiene poliza de responsabilidad civil?"></vue-radio>
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="viewOnly || form.policy_responsability == 'NO'" class="col-md-6" v-model="form.policy_number" label="Número de póliza" type="number" name="policy_number" :error="form.errorsFor('policy_number')" placeholder="Número de póliza"></vue-input>            

@@ -1444,5 +1444,38 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/drivers/view')
         }
       ]),
+
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-combustible',
+          path: 'roadsafety/vehicles/combustible/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/combustible/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-combustible-create',
+          path: 'roadsafety/vehicles/combustible/create/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/combustible/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-combustible-edit',
+          path: 'roadsafety/vehicles/combustible/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/combustible/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-vehicles-combustible-view',
+          path: 'roadsafety/vehicles/combustible/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/vehicles/combustible/view')
+        }
+      ]),
     ]
   }]
