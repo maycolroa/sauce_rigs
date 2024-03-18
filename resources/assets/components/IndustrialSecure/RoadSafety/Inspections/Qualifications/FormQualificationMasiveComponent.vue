@@ -62,7 +62,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "dangerousconditions-inspections" });
+          this.$router.push({ name: "roadSafety-inspections" });
         })
         .catch(error => {
           this.loading = false;
