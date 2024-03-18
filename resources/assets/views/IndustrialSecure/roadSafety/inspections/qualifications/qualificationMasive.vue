@@ -3,7 +3,7 @@
     <header-module
       title="INSPECCIONES"
       subtitle="CONFIGURACIÓN CALIFICACIÓN MASIVA"
-      url="dangerousconditions-inspections"
+      url="roadSafety-inspections"
     />
 
     <div class="col-md">
@@ -11,7 +11,7 @@
         <b-card-body>
             <form-qualification-masive-component
             v-if="load"
-                url="/industrialSecurity/dangerousConditions/inspection/saveConfigurationMasive"
+                url="/industrialSecurity/roadsafety/inspection/saveConfigurationMasive"
                 method="POST"
                 :configuration="data"
                 :optionQualification="optionQualification"/>
@@ -22,12 +22,12 @@
 </template>
 
 <script>
-import FormQualificationMasiveComponent from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormQualificationMasiveComponent.vue';
+import FormQualificationMasiveComponent from '@/components/IndustrialSecure/RoadSafety/Inspections/Qualifications/FormQualificationMasiveComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'dangerousconditions-inspections-qualifiation-masive',
+  name: 'roadSafety-inspections-qualifiation-masive',
   metaInfo: {
     title: 'Configuración calificación masiva'
   },
@@ -46,7 +46,7 @@ export default {
   created(){
     this.fetchSelect('optionQualification', '/selects/qualificationMasiveInspection')
 
-    axios.post('/industrialSecurity/dangerousConditions/inspection/getConfigurationMasive')
+    axios.post('/industrialSecurity/roadsafety/inspection/getConfigurationMasive')
     .then(response => {
         this.data.options = response.data.data;
         this.load = true

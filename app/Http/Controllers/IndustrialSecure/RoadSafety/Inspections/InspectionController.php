@@ -914,7 +914,7 @@ class InspectionController extends Controller
             $optionsSave = $this->getDataFromMultiselect($request['options']);
 
         $company = Company::find($this->company);
-        $company->qualificationMasive()->sync($optionsSave);
+        $company->qualificationMasiveRs()->sync($optionsSave);
 
         return $this->respondHttp200([
             'message' => 'Se actualizó la configuración'
@@ -926,7 +926,7 @@ class InspectionController extends Controller
         $company = Company::find($this->company);
         $qualifications = [];
 
-        foreach ($company->qualificationMasive as $key => $value)
+        foreach ($company->qualificationMasiveRs as $key => $value)
         {
             array_push($qualifications, $value->multiselect());
         }
