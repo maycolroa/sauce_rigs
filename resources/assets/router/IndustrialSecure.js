@@ -1477,5 +1477,125 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/vehicles/combustible/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-menu',
+          path: 'roadSafety/inspectionsMenu',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/indexMenu')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections',
+          path: 'roadSafety/inspections',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_c' }, [
+        {
+          name: 'roadSafety-inspections-create',
+          path: 'roadSafety/inspections/create',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/create')
+        }
+      ]),      
+      ...middleware({ 'check-permission': 'roadsafety_inspections_c' }, [
+        {
+          name: 'roadSafety-inspection-qualification-masive',
+          path: 'roadSafety/inspections/qualification/masive',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/inspections/qualifications/qualificationMasive')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_c' }, [
+        {
+          name: 'roadSafety-inspections-import',
+          path: 'roadSafety/inspections/import',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/inspections/import')
+        }
+      ]),
+      /*...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-request-firm',
+          path: 'roadSafety/inspections/request/firm',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/inspections/viewRequestFirm')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-request-firm-view',
+          path: 'roadSafety/inspections/request/firm/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/inspections/firmQualification')
+        }
+      ]),*/
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-view',
+          path: 'roadSafety/inspections/view/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_u' }, [
+        {
+          name: 'roadSafety-inspections-edit',
+          path: 'roadSafety/inspections/edit/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_c' }, [
+        {
+          name: 'roadSafety-inspections-clone',
+          path: 'roadSafety/inspections/clone',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/clone')
+        }
+      ]),
+      /*...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-qualification',
+          path: 'roadSafety/inspections/qualification/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/indexQualification')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+        {
+          name: 'roadSafety-inspections-qualification-view',
+          path: 'roadSafety/inspections/qualification/view/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/viewQualification')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_report_view' }, [
+				{
+					name: 'roadSafety-inspection-report',
+					path: 'roadSafety/inspection/report',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/inspections/report')
+				}
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_report_view' }, [
+				{
+					name: 'roadSafety-inspection-report-menu',
+					path: 'roadSafety/inspection/report/menu',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/inspections/indexReports')
+				}
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_report_view' }, [
+				{
+					name: 'roadSafety-inspection-report-gestion',
+					path: 'roadSafety/inspection/report/gestion',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/inspections/reportGestion')
+				}
+      ]),*/
     ]
   }]

@@ -55,7 +55,8 @@ class VuetableColumnManager
         'industrialsecureriskmatrixreportresidual',
         'industrialsecureeppslocation',
         'industrialsecureroadsafetyvehicles',
-        'industrialsecureroadsafetydrivers'
+        'industrialsecureroadsafetydrivers',
+        'roadsafetyinspections'
 
     ];
 
@@ -777,6 +778,23 @@ class VuetableColumnManager
             ['name' => 'sau_rs_drivers.type_license', 'data'=> 'type_license', 'title'=> 'Tipo de licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_rs_vehicles.registration_number', 'data'=> 'registration_number', 'title'=> 'Vehiculo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_rs_drivers.date_license', 'data'=> 'date_license', 'title'=> 'Vigenvia Licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function roadsafetyinspections()
+    {
+        $colums = [
+            ['name' => 'sau_rs_inspections.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rs_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_inspections.state', 'data'=> 'state', 'title'=> '¿Activa?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_inspections.created_at', 'data'=> 'created_at', 'title'=> 'Fecha de creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());

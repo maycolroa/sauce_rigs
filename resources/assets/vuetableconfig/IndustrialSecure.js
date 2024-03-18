@@ -3019,4 +3019,96 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'roadSafety-inspections',
+    fields: [
+        { name: 'sau_rs_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'roadSafety-inspections-edit' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'roadSafety-inspections-view' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+          }, {
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-ios-copy',
+                title: 'Clonar'
+            },
+            data: {
+                routePush: { name: 'roadSafety-inspections-clone' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_c'
+          }/*,{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Calificadas'
+            },
+            data: {
+                routePush: { name: 'roadSafety-inspections-qualification' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+        }*/]
+      },
+      {
+        type: 'base',
+        buttons: [
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/industrialSecurity/roadSafety/inspection/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                },
+                permission: 'ph_inspections_u'
+            },
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/roadSafety/inspection/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la inspección planeada'
+                },
+                permission: 'ph_inspections_d'
+                }
+        ],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/roadSafety/inspection/data',
+        filterColumns: true,
+        configNameFilter: 'roadSafety-inspections'
+    }
+},
 ];

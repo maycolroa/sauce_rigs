@@ -796,4 +796,44 @@ export default [
         }
       ]
     },
+    {
+      name: 'roadSafety-inspections',
+      filters: [
+        {
+          url: '/selects/roadSafety/inspections',
+          key: 'inspections',
+          type: 'select',
+          label: 'Nombres'
+        },
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
+    },
 ];

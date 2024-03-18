@@ -518,6 +518,22 @@
                     {
                         "name": "roadsafety_drivers_d",
                         "display_name": "Seguridad Vial - Conductores borrar"
+                    },
+                    {
+                        "name": "roadsafety_inspections_c",
+                        "display_name": "Seguridad Vial - inspecciones crear"
+                    },
+                    {
+                        "name": "roadsafety_inspections_r",
+                        "display_name": "Seguridad Vial - inspecciones ver"
+                    },
+                    {
+                        "name": "roadsafety_inspections_u",
+                        "display_name": "Seguridad Vial - inspecciones actualizar"
+                    },
+                    {
+                        "name": "roadsafety_inspections_d",
+                        "display_name": "Seguridad Vial - inspecciones borrar"
                     }
                 ]
             }
