@@ -3020,7 +3020,7 @@ export default [
     }
 },
 {
-    name: 'roadSafety-inspections',
+    name: 'industrialsecure-roadsafety-inspections',
     fields: [
         { name: 'sau_rs_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
@@ -3088,7 +3088,7 @@ export default [
                     title: 'Cambiar Estado'
                 },
                 data: {
-                    action: '/industrialSecurity/roadSafety/inspection/switchStatus/',
+                    action: '/industrialSecurity/roadsafety/inspection/switchStatus/',
                     id: 'id',
                     messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                 },
@@ -3097,7 +3097,7 @@ export default [
             {
                 name: 'delete',
                 data: {
-                    action: '/industrialSecurity/roadSafety/inspection/',
+                    action: '/industrialSecurity/roadsafety/inspection/',
                     id: 'id',
                     messageConfirmation: 'Esta seguro de borrar la inspección planeada'
                 },
@@ -3106,7 +3106,7 @@ export default [
         ],
       }],
     configuration: {
-        urlData: '/industrialSecurity/roadSafety/inspection/data',
+        urlData: '/industrialSecurity/roadsafety/inspections/data',
         filterColumns: true,
         configNameFilter: 'roadSafety-inspections'
     }

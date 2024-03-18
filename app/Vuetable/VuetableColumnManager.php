@@ -56,7 +56,7 @@ class VuetableColumnManager
         'industrialsecureeppslocation',
         'industrialsecureroadsafetyvehicles',
         'industrialsecureroadsafetydrivers',
-        'roadsafetyinspections'
+        'industrialsecureroadsafetyinspections'
 
     ];
 
@@ -788,7 +788,7 @@ class VuetableColumnManager
         return $colums;
     }
 
-    public function roadsafetyinspections()
+    public function industrialsecureroadsafetyinspections()
     {
         $colums = [
             ['name' => 'sau_rs_inspections.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],

@@ -281,7 +281,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "readSafety-inspections" });
+          this.$router.push({ name: "roadSafety-inspectionss" });
         })
         .catch(error => {
           this.loading = false;

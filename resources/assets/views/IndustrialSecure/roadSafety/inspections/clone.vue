@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-body>
             <form-inspection
-                url="/industrialSecurity/roadSafety/inspection"
+                url="/industrialSecurity/roadsafety/inspection"
                 method="POST"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
@@ -47,7 +47,7 @@ export default {
   created(){
     this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
 
-    axios.get(`/industrialSecurity/roadSafety/inspection/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/roadsafety/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
         delete this.data.id

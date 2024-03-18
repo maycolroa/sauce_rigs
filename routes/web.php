@@ -322,6 +322,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselect');
         Route::post('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselect');
 
+        Route::post('roadSafety/inspections', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectInspection');
+        Route::post('roadSafety/themes', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectThemes');
+        Route::post('roadSafety/items', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectItems');
+
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -586,7 +590,15 @@ Route::middleware(['auth'])->group(function () {
 
         ///Ayudas///
         Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');
-          Route::ApiResource('helpers', 'IndustrialSecure\RoadSafety\Helpers\HelperController');
+        Route::ApiResource('helpers', 'IndustrialSecure\RoadSafety\Helpers\HelperController');
+
+        //Inspecciones//// 
+        Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@toggleState');
+        Route::post('inspections/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@data');
+        Route::ApiResource('inspection', 'IndustrialSecure\RoadSafety\Inspections\InspectionController');
+        Route::post('inspection/import', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@import');
+        Route::post('inspection/saveConfigurationMasive', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@storeQualificationOption');
+        Route::post('inspection/getConfigurationMasive', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@getQualificationOption');
       });
 
 //tags

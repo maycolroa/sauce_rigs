@@ -1557,6 +1557,14 @@ export default [{
               import('@/views/IndustrialSecure/roadSafety/inspections/clone')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_inspections_c' }, [
+        {
+          name: 'roadSafety-inspections-perzonalized-create',
+          path: 'roadSafety/inspections/perzonalized/create',
+          component: () =>
+              import('@/views/IndustrialSecure/roadSafety/inspections/personalizadas/create')
+        }
+      ]),
       /*...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
         {
           name: 'roadSafety-inspections-qualification',

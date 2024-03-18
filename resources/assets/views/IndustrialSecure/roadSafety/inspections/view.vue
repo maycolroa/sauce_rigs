@@ -55,7 +55,7 @@ export default {
     this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
     this.fetchSelect('typesItems', '/selects/industrialSecurity/inspectionTypeItems')
 
-    axios.get(`/industrialSecurity/roadSafety/inspection/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/roadsafety/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
         this.type = response.data.data.type_id

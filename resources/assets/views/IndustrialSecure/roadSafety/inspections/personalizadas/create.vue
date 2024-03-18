@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-body>
             <form-inspection
-                url="/industrialSecurity/roadSafety/inspection"
+                url="/industrialSecurity/roadsafety/inspection"
                 method="POST"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
