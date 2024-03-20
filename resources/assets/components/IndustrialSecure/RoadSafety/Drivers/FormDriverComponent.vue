@@ -61,7 +61,9 @@
       <template v-for="(document, index) in form.documents">
         <b-card no-body class="mb-2" :key="document.key" style="width: 100%;">
           <b-form-row>
-            <vue-file-simple :disabled="viewOnly" :help-text="document.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/drivers/download/${document.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="document.file" :label="document.name" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.file`)" :maxFileSize="20"/>
+            <vue-file-simple :disabled="viewOnly" :help-text="document.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/drivers/download/${document.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="document.file" :label="document.name" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.file`)" :maxFileSize="20"/>
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="document.expiration_date" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor(`documents.${index}.expiration_date`)" name="date_license">
+                </vue-datepicker>
           </b-form-row>
         </b-card>
       </template>

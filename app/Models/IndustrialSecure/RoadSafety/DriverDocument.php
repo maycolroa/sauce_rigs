@@ -13,7 +13,8 @@ class DriverDocument extends Model
     protected $fillable = [
         'driver_id',
         'name',
-        'file'
+        'file',
+        'expiration_date'
     ];
 
     public function driver()
