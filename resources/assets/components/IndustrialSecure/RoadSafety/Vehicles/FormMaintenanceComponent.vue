@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         </b-form-row>
-                        <vue-file-simple :disabled="viewOnly" :help-text="evidence.id ? `Para descargar el archivo actual, haga click <a href='//industrialSecurity/roadsafety/maintenance/downloadMaintenance/${evidence.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="evidence.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`form.evidences.${index}.file`)" :maxFileSize="20"/>
+                        <vue-file-simple :disabled="viewOnly" :help-text="evidence.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/vehiclesMaintenance/download/${evidence.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="evidence.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`form.evidences.${index}.file`)" :maxFileSize="20"/>
                     </div>
                 </template>
                 <div class="col-md-12 text-center" style="padding-top: 15px;">

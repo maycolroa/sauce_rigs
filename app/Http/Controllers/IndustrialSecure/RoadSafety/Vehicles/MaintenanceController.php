@@ -269,4 +269,11 @@ class MaintenanceController extends Controller
             'message' => 'Se elimino el mantenimiento'
         ]);
     }
+
+
+    public function downloadFile(MaintenanceFiles $maintenanceFiles)
+    {
+        $path = "industrialSecure/roadSafety/files/".$this->company."/";
+        return Storage::disk('s3')->download($path.$maintenanceFiles->file);
+    }
 }

@@ -6,7 +6,7 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.cylinder_capacity" label="Cilindraje" type="number" name="cylinder_capacity" :error="form.errorsFor('cylinder_capacity')" placeholder="Cilindraje"></vue-input>   
         </b-form-row>
         <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.driver_id" :error="form.errorsFor('driver_id')" :selected-object="form.multiselect_driver" name="driver_id" label="Vehiculo" placeholder="Seleccione una opción" :url="driverDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.driver_id" :error="form.errorsFor('driver_id')" :selected-object="form.multiselect_driver" name="driver_id" label="Conductor" placeholder="Seleccione una opción" :url="driverDataUrl">
           </vue-ajax-advanced-select>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.km" label="Kilometraje a la fecha" type="number" name="km" :error="form.errorsFor('km')" placeholder="Kilometraje a la fecha"></vue-input>
         </b-form-row>            

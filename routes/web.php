@@ -576,6 +576,7 @@ Route::middleware(['auth'])->group(function () {
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
         Route::ApiResource('vehiclesMaintenance', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController');
+        Route::get('vehiclesMaintenance/download/{maintenanceFiles}', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@downloadFile');
 
 
         ///Combustible///
@@ -587,6 +588,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('drivers/data', 'IndustrialSecure\RoadSafety\Drivers\DriversController@data');
         Route::ApiResource('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController');
         Route::post('drivers/getDocuments', 'IndustrialSecure\RoadSafety\Drivers\DriversController@getDocuments');
+        Route::get('drivers/download/{driverDocument}', 'IndustrialSecure\RoadSafety\Drivers\DriversController@downloadFile');
 
         ///Ayudas///
         Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');
@@ -1007,6 +1009,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('systemApply/data', 'LegalAspects\LegalMatrix\SystemApplyController@data');
         Route::ApiResource('systemApply', 'LegalAspects\LegalMatrix\SystemApplyController');
 
+        
         Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
         Route::get('law/showFile/{law}', 'LegalAspects\LegalMatrix\LawController@showFile');

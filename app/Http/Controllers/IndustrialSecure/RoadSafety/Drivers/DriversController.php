@@ -12,6 +12,7 @@ use App\Models\IndustrialSecure\RoadSafety\PositionDocument;
 use App\Models\IndustrialSecure\RoadSafety\TagsTypeLicense;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Drivers\DriverRequest;
 use App\Models\Administrative\Positions\EmployeePosition;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use DB;
 
@@ -360,5 +361,11 @@ class DriversController extends Controller
         
             return $this->multiSelectFormat($drivers);
         }
+    }
+
+    public function downloadFile(DriverDocument $driverDocument)
+    {
+        $path = "industrialSecure/roadSafety/files/".$this->company."/";
+        return Storage::disk('s3')->download($path.$driverDocument->file);
     }
 }
