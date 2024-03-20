@@ -1,6 +1,9 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
         <b-form-row>
+            <vue-input :disabled="true" class="col-md-12" v-model="plate_vehicle" label="Placa del vehiculo" type="text" name="plate_vehicle" :error="form.errorsFor('plate_vehicle')" placeholder="Placa del vehiculo"></vue-input> 
+        </b-form-row>
+        <b-form-row>
             <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha de mantenimiento" :full-month-name="true" placeholder="Fecha de mantenimiento" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledExpirationDateFrom()" >
                       </vue-datepicker>
             <vue-radio :disabled="viewOnly" :checked="form.type" class="col-md-6" v-model="form.type" :options="typeOption" name="type" :error="form.errorsFor('type')" label="Tipo de mantenimiento"></vue-radio>
@@ -112,16 +115,15 @@ export default {
                 {text: 'SI', value: 'SI'},
                 {text: 'NO', value: 'NO'}
             ],
+            plate_vehicle: ''
         };
     },
     methods: {
         submit(e) {
             this.loading = true;
 
-            console.log(this.vehicle)
             if (!this.isEdit)
             {
-                console.log('entro');
                 this.form.vehicle_id = this.vehicle;
             }
 
@@ -134,11 +136,11 @@ export default {
             this.form
                 .submit(e.target.action)
                 .then(response => {
-                this.loading = false;
-                this.$router.push({ name: "industrialsecure-roadsafety-vehicles" });
+                    this.loading = false;
+                    this.$router.push({ name: "industrialsecure-roadsafety-vehicles" });
                 })
                 .catch(error => {
-                this.loading = false;
+                    this.loading = false;
                 });
         },
         addFile() {
@@ -173,6 +175,19 @@ export default {
             }
             
         },
+        getInfoVehicle() {
+            axios.get(`/industrialSecurity/roadsafety/vehicles/${this.vehicle}`)
+            .then(response => {
+                this.plate_vehicle = response.data.data.registration_number;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+        }
     },
+    created() {
+        this.getInfoVehicle()
+    }
 }
 </script>
