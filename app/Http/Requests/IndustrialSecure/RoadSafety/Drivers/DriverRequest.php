@@ -36,6 +36,15 @@ class DriverRequest extends FormRequest
             }
         }
 
+        if ($this->has('vehicle_id'))
+        {
+            foreach ($this->input('vehicle_id') as $key => $value)
+            {
+                $data['vehicle_id'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
         {
             $data = $this->all();

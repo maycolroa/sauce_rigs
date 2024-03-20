@@ -41,7 +41,7 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.vehicle_id" :error="form.errorsFor('vehicle_id')" :selected-object="form.multiselect_vehicle" name="vehicle_id" label="Vehiculo" placeholder="Seleccione una opción" :url="vehiclesDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.vehicle_id" :error="form.errorsFor('vehicle_id')" :selected-object="form.multiselect_vehicle" name="vehicle_id" label="Vehiculo" placeholder="Seleccione una opción" :url="vehiclesDataUrl" :multiple="true">
           </vue-ajax-advanced-select>
         <label v-if="vehicleReasigned.asigned" >Este vehiculo de placa {{ vehicleReasigned.plate }} ya está asignado al conductor {{ vehicleReasigned.driver }}</label>
 

@@ -13,7 +13,7 @@ class Driver extends Model
         'employee_id',
         'type_license',
         'date_license',
-        'vehicle_id',
+        //'vehicle_id',
         'responsible_id'
     ];
 
@@ -27,9 +27,9 @@ class Driver extends Model
         return $this->belongsTo('App\Models\Administrative\Employees\Employee', 'responsible_id');
     }
 
-    public function vehicle()
+    public function vehicles()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsToMany(Vehicle::class, 'sau_rs_driver_vehicles', 'driver_id','vehicle_id');
     }
 
     public function multiselect()

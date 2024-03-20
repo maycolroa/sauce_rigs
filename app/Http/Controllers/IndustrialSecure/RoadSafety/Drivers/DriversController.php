@@ -48,21 +48,23 @@ class DriversController extends Controller
     */
     public function data(Request $request)
     {
-        $drivers = Driver::select(
-            'sau_rs_drivers.*',
-            'sau_employees.name',
-            'sau_rs_vehicles.registration_number',
-            'sau_employees_regionals.name as regional',
-            'sau_employees_headquarters.name as headquarter',
-            'sau_employees_processes.name as process',
-            'sau_employees_areas.name as area'
+        $drivers = Driver::selectRaw(
+            'sau_rs_drivers.*,
+            sau_employees.name,
+            GROUP_CONCAT(CONCAT(" ", sau_rs_vehicles.registration_number) ORDER BY sau_rs_vehicles.registration_number ASC) as registration_number,
+            sau_employees_regionals.name as regional,
+            sau_employees_headquarters.name as headquarter,
+            sau_employees_processes.name as process,
+            sau_employees_areas.name as area'
         )
         ->join('sau_employees', 'sau_employees.id', 'sau_rs_drivers.employee_id')
-        ->join('sau_rs_vehicles', 'sau_rs_vehicles.id', 'sau_rs_drivers.vehicle_id')
+        ->leftJoin('sau_rs_driver_vehicles', 'sau_rs_driver_vehicles.driver_id', 'sau_rs_drivers.id')
+        ->leftJoin('sau_rs_vehicles', 'sau_rs_vehicles.id', 'sau_rs_driver_vehicles.vehicle_id')
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')
+        ->groupBy('sau_rs_drivers.id')
         ->orderBy('id', 'DESC');
 
         return Vuetable::of($drivers)
@@ -84,15 +86,19 @@ class DriversController extends Controller
             $type_license = $this->tagsPrepare($request->get('type_license'));
             $this->tagsSave($type_license, TagsTypeLicense::class);
 
+            $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
+
             $driver = new Driver;
             $driver->employee_id = $request->employee_id;
             $driver->responsible_id = $request->responsible_id;
-            $driver->vehicle_id = $request->vehicle_id;
+            //$driver->vehicle_id = $request->vehicle_id 
             $driver->type_license = $type_license->implode(',');
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
             if (!$driver->save())
                 return $this->respondHttp500();
+
+            $driver->vehicles()->sync($vehicles);
 
             if ($request->has('documents'))
                 $this->saveFile($request->documents, $driver);
@@ -119,34 +125,37 @@ class DriversController extends Controller
         {
             foreach ($files as $keyF => $value) 
             {
-                $create_file = true;
-
-                if (isset($value['id']))
+                if (isset($value['file']) && $value['file'])
                 {
-                    $fileUpload = DriverDocument::findOrFail($value['id']);
+                    $create_file = true;
 
-                    if ($value['old_name'] == $value['file'] )
-                        $create_file = false;
+                    if (isset($value['id']))
+                    {
+                        $fileUpload = DriverDocument::findOrFail($value['id']);
+
+                        if ($value['old_name'] == $value['file'] )
+                            $create_file = false;
+                    }
+                    else
+                    {
+                        $fileUpload = new DriverDocument();                    
+                        $fileUpload->driver_id = $driver->id;
+                        $fileUpload->name = $value['name'];
+                    }
+
+                    if ($create_file)
+                    {
+                        $path = "industrialSecure/roadSafety/files/".$this->company."/";
+
+                        $file_tmp = $value['file'];
+                        $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                        $file_tmp->storeAs($path, $nameFile, 's3');
+                        $fileUpload->file = $nameFile;
+                    }
+
+                    if (!$fileUpload->save())
+                        return $this->respondHttp500();
                 }
-                else
-                {
-                    $fileUpload = new DriverDocument();                    
-                    $fileUpload->driver_id = $driver->id;
-                    $fileUpload->name = $value['name'];
-                }
-
-                if ($create_file)
-                {
-                    $path = "industrialSecure/roadSafety/files/".$this->company."/";
-
-                    $file_tmp = $value['file'];
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                    $file_tmp->storeAs($path, $nameFile, 's3');
-                    $fileUpload->file = $nameFile;
-                }
-
-                if (!$fileUpload->save())
-                    return $this->respondHttp500();
             }
         }
         
@@ -188,11 +197,21 @@ class DriversController extends Controller
             $driver = Driver::findOrFail($id);
             $driver->date_license = $driver->date_license ? (Carbon::createFromFormat('Y-m-d', $driver->date_license))->format('D M d Y') : null;
 
+            $vehicles = [];
+
             $driver->multiselect_employee = $driver->employee->multiselect();
-            $driver->multiselect_vehicle = $driver->vehicle->multiselect();
+            //$driver->multiselect_vehicle = $driver->vehicle->multiselect();
             $driver->multiselect_responsible = $driver->responsible->multiselect();
 
             $driver->documents = $this->getFiles($driver->id);
+
+            foreach ($driver->vehicles as $key => $value)
+            {                
+                array_push($vehicles, $value->multiselect());
+            }
+
+            $driver->multiselect_vehicle = $vehicles;
+            $driver->vehicle_id = $vehicles;
 
             return $this->respondHttp200([
                 'data' => $driver,
@@ -218,15 +237,19 @@ class DriversController extends Controller
             $type_license = $this->tagsPrepare($request->get('type_license'));
             $this->tagsSave($type_license, TagsTypeLicense::class);
 
+            $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
+
             $driver->employee_id = $request->employee_id;
             $driver->responsible_id = $request->responsible_id;
-            $driver->vehicle_id = $request->vehicle_id;
+            //$driver->vehicle_id = $request->vehicle_id;
             $driver->type_license = $type_license->implode(',');
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
             if(!$driver->update()){
                 return $this->respondHttp500();
             }
+
+            $driver->vehicles()->sync($vehicles);
 
             if ($request->has('documents'))
                 $this->saveFile($request->documents, $driver);

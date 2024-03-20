@@ -72,7 +72,6 @@ class EmployeeProcessController extends Controller
 
         try
         { 
-            \Log::info($request);
             /**CREA LOS TAGS */
             $types = $this->tagsPrepare($request->types);
             $this->tagsSave($types, TagsProcess::class);
