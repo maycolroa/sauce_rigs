@@ -24,7 +24,6 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::post('location', 'Api\LocationController@levelLocation');
 
     Route::post('preReports', 'Api\ReportsController@preReport');
-    //Route::resource('reports', 'Api\ReportsController');
     Route::post('saveImage', 'Api\ReportsController@saveImage');
     Route::post('incentives', 'Api\ReportsController@getIncentives');
 
@@ -32,14 +31,6 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::post('termsConditions', 'Api\ConfigurationController@termsConditions');
     Route::post('getTermsConditions', 'Api\ConfigurationController@getTermsConditions');
     Route::post('usersActionPlan', 'Api\ConfigurationController@getUsersActionPlan');
-    /*Route::post('statePositions', 'Api\ConfigurationController@statePositions');
-    Route::post('stateIncentives', 'Api\ConfigurationController@stateIncentives');
-    Route::post('incentives', 'Api\ConfigurationController@getIncentives');
-    Route::post('positions', 'Api\ConfigurationController@getPositions');
-
-    Route::post('locations', 'Api\ConfigurationController@listLocations');
-    Route::post('areas', 'Api\ConfigurationController@listAreas');
-    Route::post('responsibles', 'Api\ConfigurationController@listResponsibles');*/
 
     Route::post('conditions-info', 'Api\ReportsController@info');
 
@@ -73,9 +64,6 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('createDelivery', 'Api\EppController@saveDelivery');
         Route::post('deliveryEmployee', 'Api\EppController@getDeliveryEmployee');
         Route::post('createReturns', 'Api\EppController@storeReturns');
-        /*Route::post('imageItem', 'Api\InspectionController@imageItem');
-        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
-        Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
     });
 
     Route::group(['prefix'=>'accidents'], function () {
@@ -84,8 +72,14 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('departaments', 'Api\AccidentsController@getDepartaments');
         Route::post('dataAccidents', 'Api\AccidentsController@dataAccidents');
         Route::post('create', 'Api\AccidentsController@createAccident');
-        /* Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
-        Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
+    });
+
+    Route::group(['prefix'=>'roadsafety'], function () {
+        Route::group(['prefix'=>'inspections'], function () {
+            Route::post('moduleRoadSafety', 'Api\InspectionRoadSafetyController@getModuleRoadSafety');
+            Route::post('list', 'Api\InspectionRoadSafetyController@lisInspectionsAvailable');
+            //Route::post('register', 'Api\InspectionRoadSafetyController@store');
+        });
     });
 });
 

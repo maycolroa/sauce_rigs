@@ -17,9 +17,10 @@ class InspectionItemsQualificationAreaLocation extends Model
 
     const DISK = 's3';
 
-    protected $table = "sau_rs_inspection_items_qualification_area_location";
+    protected $table = "sau_rs_inspection_items_qualifications";
 
     protected $fillable = [
+        'inspection_qualification_id',
         'item_id',
         'qualification_id',
         'employee_regional_id',
@@ -90,10 +91,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($regionals) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.employee_regional_id', $regionals);
+                $query->whereIn('sau_rs_inspection_items_qualifications.employee_regional_id', $regionals);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.employee_regional_id', $regionals);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_regional_id', $regionals);
         }
 
         return $query;
@@ -119,10 +120,10 @@ class InspectionItemsQualificationAreaLocation extends Model
             $ids = explode(",", implode(",", $ids));
 
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.employee_headquarter_id', $ids);
+                $query->whereIn('sau_rs_inspection_items_qualifications.employee_headquarter_id', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.employee_headquarter_id', $ids);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_headquarter_id', $ids);
         }
 
         return $query;
@@ -139,10 +140,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($processes) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.employee_process_id', $processes);
+                $query->whereIn('sau_rs_inspection_items_qualifications.employee_process_id', $processes);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.employee_process_id', $processes);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_process_id', $processes);
         }
 
         return $query;
@@ -159,10 +160,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($areas) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.employee_area_id', $areas);
+                $query->whereIn('sau_rs_inspection_items_qualifications.employee_area_id', $areas);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.employee_area_id', $areas);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_area_id', $areas);
         }
 
         return $query;
@@ -179,10 +180,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($qualifiers) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.qualifier_id', $qualifiers);
+                $query->whereIn('sau_rs_inspection_items_qualifications.qualifier_id', $qualifiers);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.qualifier_id', $qualifiers);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.qualifier_id', $qualifiers);
         }
 
         return $query;
@@ -193,10 +194,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($items) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.item_id', $items);
+                $query->whereIn('sau_rs_inspection_items_qualifications.item_id', $items);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.item_id', $items);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.item_id', $items);
         }
 
         return $query;
@@ -207,10 +208,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($levels) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.level_risk', $levels);
+                $query->whereIn('sau_rs_inspection_items_qualifications.level_risk', $levels);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.level_risk', $levels);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.level_risk', $levels);
         }
 
         return $query;
@@ -221,10 +222,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($levels) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualification_area_location.qualification_id', $levels);
+                $query->whereIn('sau_rs_inspection_items_qualifications.qualification_id', $levels);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualification_area_location.qualification_id', $levels);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications.qualification_id', $levels);
         }
 
         return $query;
@@ -282,7 +283,7 @@ class InspectionItemsQualificationAreaLocation extends Model
     {
         if (COUNT($dates) == 2)
         {
-            $query->whereBetween('sau_rs_inspection_items_qualification_area_location.qualification_date', $dates);
+            $query->whereBetween('sau_rs_inspection_items_qualifications.qualification_date', $dates);
             return $query;
         }
     }

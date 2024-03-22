@@ -10,16 +10,16 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['roadsafety_inspections_c']" :to="{name:'roadSafety-inspections-create'}" variant="primary">Crear Formato Inspección</b-btn>
             <b-btn v-if="auth.can['roadsafety_inspections_c']" :to="{name:'roadSafety-inspections-perzonalized-create'}" variant="primary">Crear Formato Inspección Personalizada</b-btn>
-            <!--<b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'roadSafety-inspection-report-menu'}" variant="primary">Ver Informes</b-btn>
+            <!--<b-btn v-if="auth.can['roadsafety_inspections_c']" :to="{name:'roadSafety-inspections-create'}" variant="primary">Crear Formato Inspección</b-btn>
+            <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'roadSafety-inspection-report-menu'}" variant="primary">Ver Informes</b-btn>
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="auth.can['roadsafety_inspections_c']" variant="primary" href="/templates/inspectionsimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <div class="card-title-elements" v-if="auth.can['users_c']">
               <b-btn :to="{name:'roadSafety-inspections-import'}" variant="primary">Importar</b-btn>
-            </div>-->
+            </div>
             <b-btn v-if="auth.can['roadsafety_inspections_c']" variant="primary" :to="{name:'roadSafety-inspection-qualification-masive'}" v-b-tooltip.top title="Configurar opciones para la calificación másiva"><i class="oi oi-list"></i></b-btn>
-            <!--<b-btn v-if="auth.can['ph_inspections_r']" variant="primary" :to="{name:'roadSafety-inspections-request-firm'}" v-b-tooltip.top title="Ver Solicitudes de Firmas"><i class="ion ion-md-create"></i></b-btn>-->
+            <b-btn v-if="auth.can['ph_inspections_r']" variant="primary" :to="{name:'roadSafety-inspections-request-firm'}" v-b-tooltip.top title="Ver Solicitudes de Firmas"><i class="ion ion-md-create"></i></b-btn>-->
           </div>
         </b-card-header>
         <b-card-body>
