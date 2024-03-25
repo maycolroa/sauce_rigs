@@ -476,7 +476,7 @@ class InspectionQualificationController extends Controller
         if ($confLocation['area'] == 'SI')
             $description_delete = $description_delete . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
 
-        $this->saveLogDelete('Inspecciones - Inspecciones planeadas', 'Se elimino la inspección '. $inspection->name .' realizada en '.$description_delete . ', al vehiculo con placa: '. $qualification->vehicle->plate);
+        $this->saveLogDelete('Seguridad Vial - Inspecciones planeadas', 'Se elimino la inspección '. $inspection->name .' realizada en '.$description_delete . ', al vehiculo con placa: '. $qualification->vehicle->plate);
 
         try
         { 

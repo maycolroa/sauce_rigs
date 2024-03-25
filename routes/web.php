@@ -607,6 +607,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@saveQualification');
         Route::post('inspection/qualification/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@data');
         Route::ApiResource('inspection/qualification', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController');
+        Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@downloadPdf');
       });
 
 //tags
