@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Http\Controllers\IndustrialSecure\RoadSafety\Inspections;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionFirm;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\Inspection;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionFirm;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionSection;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionSectionItem;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionQualified;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionItemsQualificationLocation;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
@@ -39,9 +38,9 @@ class InspectionQualificationController extends Controller
         parent::__construct();
         $this->middleware('auth');
         //$this->middleware('permission:ph_inspections_c', ['only' => 'store']);
-        $this->middleware("permission:ph_inspections_r, {$this->team}");
+        //$this->middleware("permission:ph_inspections_r, {$this->team}");
         //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);        
-        $this->middleware("permission:ph_qualification_inspection_d, {$this->team}", ['only' => 'destroy']);
+        //$this->middleware("permission:ph_qualification_inspection_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -61,28 +60,27 @@ class InspectionQualificationController extends Controller
     */
     public function data(Request $request)
     {
-        $qualifications = InspectionItemsQualificationAreaLocation::distinct()->select(
-                DB::raw('MAX(sau_ph_inspection_items_qualification_area_location.id) AS id'),
-                'sau_ph_inspection_items_qualification_area_location.qualification_date',
+        $qualifications = InspectionQualified::select(
+                'sau_rs_inspections_qualified.id',
+                'sau_rs_inspections_qualified.qualification_date',
                 'sau_employees_regionals.name AS regional',
                 'sau_employees_headquarters.name AS headquarter',
                 'sau_employees_processes.name AS process',
                 'sau_employees_areas.name AS area',
-                'sau_users.name AS qualificator'/*,
-                'sau_ph_inspection_items_qualification_area_location.level_risk AS level_risk'*/
+                'sau_users.name AS qualificator',
+                'sau_rs_vehicles.plate AS plate'
             )
-            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
-            ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-            ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
-            ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId)
-            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator'/*, 'level_risk'*/)
-            ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rs_inspections_qualified.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rs_inspections_qualified.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rs_inspections_qualified.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rs_inspections_qualified.employee_area_id')
+            ->join('sau_users', 'sau_users.id', 'sau_rs_inspections_qualified.qualifier_id')
+            ->join('sau_rs_vehicles', 'sau_rs_vehicles.id', 'sau_rs_inspections_qualified.vehicle_id')
+            ->where('sau_rs_inspections_qualified.inspection_id', $request->inspectionId)
+            ->groupBy('sau_rs_inspections_qualified.id', 'regional', 'headquarter', 'process', 'area', 'qualificator')
+            ->orderBy('sau_rs_inspections_qualified.id', 'DESC');
 
-        $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
+        $url = "/industrialsecure/roadsafety/inspections/qualification/".$request->get('modelId');
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
@@ -101,9 +99,6 @@ class InspectionQualificationController extends Controller
             
             if (isset($filters["areas"]))
                 $qualifications->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
-
-            if (isset($filters["levelRisk"]))
-                $qualifications->inLevelRisk($this->getValuesForMultiselect($filters["levelRisk"]), $filters['filtersType']['levelRisk']);
 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -124,44 +119,34 @@ class InspectionQualificationController extends Controller
 
     public function show($id)
     {
+        \Log::info($id);
         try
         {
             return $this->respondHttp200([
                 'data' => $this->getInformationInspection($id),
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
 
     public function getInformationInspection($id)
     {
-        $qualification = InspectionItemsQualificationAreaLocation::withoutGlobalScopes()->findOrFail($id);
+        $qualification = InspectionQualified::withoutGlobalScopes()->findOrFail($id);
 
-        $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
-                'sau_ph_inspection_items_qualification_area_location.*',
+        $inspectionsReady = InspectionItemsQualificationLocation::select(
+                'sau_rs_inspection_items_qualifications_locations.*',
                 DB::raw('CONCAT(sau_ph_qualifications_inspections.name, " (",  sau_ph_qualifications_inspections.description, ")") AS qualification'),
-                'sau_ph_inspection_section_items.description AS item_name',
-                'sau_ph_inspection_sections.name AS section_name',
-                'sau_ph_inspection_sections.id AS section_id'
+                'sau_rs_inspection_section_items.description AS item_name',
+                'sau_rs_inspection_sections.name AS section_name',
+                'sau_rs_inspection_sections.id AS section_id'
             )
-            ->leftJoin('sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-            ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+            ->leftJoin('sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_rs_inspection_items_qualifications_locations.qualification_id')
+            ->join('sau_rs_inspection_section_items', 'sau_rs_inspection_section_items.id', 'sau_rs_inspection_items_qualifications_locations.item_id')
+            ->join('sau_rs_inspection_sections', 'sau_rs_inspection_sections.id', 'sau_rs_inspection_section_items.inspection_section_id')
             ->withoutGlobalScopes()
-            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
-
-        if ($qualification->employee_regional_id)
-            $inspectionsReady->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
-
-        if ($qualification->employee_headquarter_id)
-            $inspectionsReady->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
-
-        if ($qualification->employee_process_id)
-            $inspectionsReady->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
-
-        if ($qualification->employee_area_id)
-            $inspectionsReady->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
+            ->where('sau_rs_inspection_items_qualifications_locations.inspection_qualification_id', $qualification->id);
             
         $inspectionsReady = $inspectionsReady->get();
         $inspectionsReady = $inspectionsReady->groupBy('section_id');
@@ -200,23 +185,7 @@ class InspectionQualificationController extends Controller
             $themes->push($theme);
         }
 
-        $add_fields = AdditionalFieldsValues::where('qualification_date', $qualification->qualification_date)->get();
-
-        $fields = collect([]);
-
-        foreach ($add_fields as $fieldKey => $field)
-        {
-            $field_add = collect([]);
-
-            $add = AdditionalFields::find($field['field_id']);
-
-            $field_add->put('key', Carbon::now()->timestamp + rand(1,10000));
-            $field_add->put('name', $add->name);
-            $field_add->put('value', $field['value']);
-            $fields->push($field_add);
-        }
-
-        $firms = InspectionFirm::where('qualification_date', $qualification->qualification_date)->get();
+        $firms = InspectionFirm::where('inspection_qualification_id', $qualification->id)->get();
 
         $firms_values_par = collect([]);
         $firms_values = collect([]);
@@ -239,7 +208,6 @@ class InspectionQualificationController extends Controller
                 $firm_add->put('image', $firm->path_image('image'));
             }
 
-            //$firm_add->put('image', $firm->path_image('image'));
             $firms_values->push($firm_add);
 
             if ($firms_values->count() == 2)
@@ -251,123 +219,25 @@ class InspectionQualificationController extends Controller
 
         if ($firms_values->count() > 0)
             $firms_values_par->push($firms_values);
-
-        
-        if ($qualification->item->section->inspection->type_id == 1)
-            $compliance = $this->complianceType1($id);
             
         $data = collect([]);
-        $data->put('inspection', $qualification->item->section->inspection->name);
-        $data->put('type', $qualification->item->section->inspection->type_id);
-        $data->put('version', $qualification->item->section->inspection->version);
+        $data->put('inspection', $qualification->inspection->name);
+        $data->put('type', $qualification->inspection->type_id);
+        $data->put('version', $qualification->inspection->version);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
         $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');
         $data->put('process', $qualification->process ? $qualification->process->name : '');
         $data->put('area', $qualification->area ? $qualification->area->name : '');
-        $data->put('created_at', (Carbon::createFromFormat('Y-m-d H:i:s', $qualification->item->section->inspection->created_at))->format('Y-m-d H:i:s'));
+        $data->put('created_at', (Carbon::createFromFormat('Y-m-d H:i:s', $qualification->inspection->created_at))->format('Y-m-d H:i:s'));
         $data->put('qualification_date', $qualification->qualification_date);
         $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
         $data->put('themes', $themes);
-        $data->put('add_fields', $fields);
         $data->put('firms', $firms_values_par);
 
-        if ($qualification->item->section->inspection->type_id == 1)
-            $data->put('compliance', $compliance->p_cumple);
-        else
-            $data->put('compliance', null);
-
+        $data->put('compliance', null);
 
         return $data;
     }
-
-    public function complianceType1($id)
-    {
-        $qualification = InspectionItemsQualificationAreaLocation::withoutGlobalScopes()->findOrFail($id);
-
-        $consultas = InspectionItemsQualificationAreaLocation::select(
-            DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, null)) as t_cumple'),
-            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple'),
-            DB::raw('SUM(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_inspections.fullfilment_parcial, 0)) as t_cumple_p')
-            )
-            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
-            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
-            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
-            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date)
-            ->withoutGlobalScopes();
-
-        if ($qualification->employee_regional_id)
-            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
-
-        if ($qualification->employee_headquarter_id)
-            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
-
-        if ($qualification->employee_process_id)
-            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
-
-        if ($qualification->employee_area_id)
-            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
-
-        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
-        ->select(
-            DB::raw('ROUND( ((t_cumple + t_cumple_p) * 100) / numero_items, 1) AS p_cumple'),
-            DB::raw('ROUND( (t_no_cumple * 100) / numero_items, 1) AS p_no_cumple')
-            //DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')
-        )
-        ->mergeBindings($consultas->getQuery())
-        ->first();
-
-        return $consultas;
-    }
-
-
-    /*private function complianceType2($id)
-    {        
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
-
-        $consultas2 = InspectionItemsQualificationAreaLocation::select(
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 1, sau_ph_inspection_section_items.compliance_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_cumple'),
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 4, sau_ph_inspection_section_items.partial_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_parcial'),
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 2, 0, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_no_cumple')
-            )
-            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
-            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
-            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
-            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
-
-        if ($qualification->employee_regional_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
-
-        if ($qualification->employee_headquarter_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
-
-        if ($qualification->employee_process_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
-
-        if ($qualification->employee_area_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
-
-        $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
-        ->select(
-            DB::raw('ROUND(AVG(t_cumple), 1) AS p_cumple'),
-            DB::raw('ROUND(AVG(t_parcial), 1) AS p_cumple_p'),
-            DB::raw('ROUND((100 - AVG(t_cumple) - AVG(t_parcial)), 1) AS p_no_cumple')
-        )
-        ->mergeBindings($consultas2->getQuery())
-        ->first();
-
-        return $consultas2;
-    }*/
 
     public function saveQualification(SaveQualificationRequest $request)
     {
@@ -381,7 +251,7 @@ class InspectionQualificationController extends Controller
             $data = $request->except('themes');
             $data['id_item_qualification'] = (int) $data['id_item_qualification'];
 
-            $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id_item_qualification);
+            $qualification = InspectionItemsQualificationLocation::findOrFail($request->id_item_qualification);
 
             $inspection = $qualification->item->section->inspection;
             $theme = $qualification->item->section;
@@ -389,29 +259,24 @@ class InspectionQualificationController extends Controller
 
             $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
 
-            /*$regionals = $inspection->regionals ? $inspection->regionals->implode('name', ', ') : null;
-            $headquarters =  $inspection->headquarters ? $inspection->headquarters->implode('name', ', ') : null;
-            $processes = $inspection->processes ? $inspection->processes->implode('name', ', ') : null;
-            $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;*/
-
             if ($confLocation['regional'] == 'SI')
-                $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
+                $detail_procedence = 'Seguridad Vial - Inspecciones Planeadas. Placa de vehiculo: '. $qualification->qualified->vehicle->plate. ' - ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->qualified->regional->name;
             if ($confLocation['headquarter'] == 'SI')
-                $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->headquarter->name;
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->qualified->headquarter->name;
             if ($confLocation['process'] == 'SI')
-                $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->process->name;
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->qualified->process->name;
             if ($confLocation['area'] == 'SI')
-                $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->qualified->area->name;
 
             ActionPlan::
                     user($this->user)
-                ->module('dangerousConditions')
+                ->module('roadSafety')
                 ->url(url('/administrative/actionplans'))
                 ->model($qualification)
-                ->regional($qualification->regional->name)
-                ->headquarter($qualification->headquarter ? $qualification->headquarter->name : '')
-                ->area($qualification->area ? $qualification->area->name : '')
-                ->process($qualification->process ? $qualification->process->name : '')
+                ->regional($qualification->qualified->regional->name)
+                ->headquarter($qualification->qualified->headquarter ? $qualification->qualified->headquarter->name : '')
+                ->area($qualification->qualified->area ? $qualification->qualified->area->name : '')
+                ->process($qualification->qualified->process ? $qualification->qualified->process->name : '')
                 ->details($details)
                 ->detailProcedence($detail_procedence)
                 ->activities($request->actionPlan)
@@ -421,7 +286,7 @@ class InspectionQualificationController extends Controller
 
             ActionPlan::sendMail();
 
-            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito la calificacion realizada en '.$detail_procedence);
+            $this->saveLogActivitySystem('Seguridad vial - Inspecciones planeadas', 'Se edito la calificacion realizada en '.$detail_procedence);
 
             DB::commit();
 
@@ -437,6 +302,7 @@ class InspectionQualificationController extends Controller
 
     public function saveImage(Request $request)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -455,7 +321,7 @@ class InspectionQualificationController extends Controller
         $keywords = $this->user->getKeywords();
         $confLocation = $this->getLocationFormConfModule();
 
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id);
+        $qualification = InspectionItemsQualificationLocation::findOrFail($request->id);
         $data = $request->all();
         $picture = $request->column;
 
@@ -466,11 +332,11 @@ class InspectionQualificationController extends Controller
                 $file = $request->image;
                 $qualification->img_delete($picture);
                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs($qualification->path_base(), $nameFile, 's3_DConditions');
+                $file->storeAs($qualification->path_base(), $nameFile, 's3');
                 $qualification->$picture = $nameFile;
                 $data['image'] = $nameFile;
                 $data['old'] = $nameFile;
-                $data['path'] = Storage::disk('s3_DConditions')->url($qualification->path_base(). $nameFile);
+                $data['path'] = Storage::disk('s3')->url($qualification->path_base(). $nameFile);
             }
             else
             {
@@ -492,15 +358,15 @@ class InspectionQualificationController extends Controller
         $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
 
         if ($confLocation['regional'] == 'SI')
-            $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
+            $detail_procedence = 'Seguridad Vial - Inspecciones Planeadas. Placa de vehiculo: '. $qualification->qualified->vehicle->plate. ' - ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->qualified->regional->name;
         if ($confLocation['headquarter'] == 'SI')
-            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->headquarter->name;
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->qualified->headquarter->name;
         if ($confLocation['process'] == 'SI')
-            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->process->name;
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->qualified->process->name;
         if ($confLocation['area'] == 'SI')
-            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->qualified->area->name;
 
-        $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se cargaron imagenes a la calificacion realizada en '.$detail_procedence);
+        $this->saveLogActivitySystem('Seguridad Vial - Inspecciones planeadas', 'Se cargaron imagenes a la calificacion realizada en '.$detail_procedence);
 
         return $this->respondHttp200([
             'data' => $data
@@ -509,7 +375,7 @@ class InspectionQualificationController extends Controller
 
     public function downloadImage($id, $column)
     {
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+        $qualification = InspectionItemsQualificationLocation::findOrFail($id);
         return $qualification->donwload_img($column);
     }
 
@@ -519,7 +385,7 @@ class InspectionQualificationController extends Controller
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        $pdf = PDF::loadView('pdf.inspectionsDangerousConditions', ['inspections' => $inspections] );
+        $pdf = PDF::loadView('pdf.inspectionsRoadSafety', ['inspections' => $inspections] );
 
         $pdf->setPaper('A4', 'landscape');
 
@@ -590,15 +456,15 @@ class InspectionQualificationController extends Controller
     {
         DB::beginTransaction();
 
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($qualification);
+        $qualification = InspectionQualified::findOrFail($qualification);
 
-        $items = InspectionItemsQualificationAreaLocation::where('qualification_date', $qualification->qualification_date)->get();
+        $items = InspectionItemsQualificationLocation::where('inspection_qualification_id', $qualification->id)->get();
 
-        $firms = InspectionFirm::where('qualification_date', $qualification->qualification_date)->get();
+        $firms = InspectionFirm::where('inspection_qualification_id', $qualification->id)->get();
 
         $keywords = $this->user->getKeywords();
         $confLocation = $this->getLocationFormConfModule();
-        $inspection = $qualification->item->section->inspection;
+        $inspection = $qualification->inspection;
         $description_delete = '';
 
         if ($confLocation['regional'] == 'SI')
@@ -610,7 +476,7 @@ class InspectionQualificationController extends Controller
         if ($confLocation['area'] == 'SI')
             $description_delete = $description_delete . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
 
-        $this->saveLogDelete('Inspecciones - Inspecciones planeadas', 'Se elimino la inspección '. $inspection->name .' realizada en '.$description_delete);
+        $this->saveLogDelete('Inspecciones - Inspecciones planeadas', 'Se elimino la inspección '. $inspection->name .' realizada en '.$description_delete . ', al vehiculo con placa: '. $qualification->vehicle->plate);
 
         try
         { 

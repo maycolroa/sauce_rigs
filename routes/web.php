@@ -595,12 +595,18 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('helpers', 'IndustrialSecure\RoadSafety\Helpers\HelperController');
 
         //Inspecciones//// 
-        Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@toggleState');
+        Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@toggleState');
         Route::post('inspections/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@data');
         Route::ApiResource('inspection', 'IndustrialSecure\RoadSafety\Inspections\InspectionController');
         Route::post('inspection/import', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@import');
         Route::post('inspection/saveConfigurationMasive', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@storeQualificationOption');
         Route::post('inspection/getConfigurationMasive', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@getQualificationOption');
+
+        Route::get('inspection/qualification/downloadImage/{id}/{column}', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@downloadImage');
+        Route::post('inspection/qualification/saveImage', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@saveImage');
+        Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@saveQualification');
+        Route::post('inspection/qualification/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@data');
+        Route::ApiResource('inspection/qualification', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController');
       });
 
 //tags

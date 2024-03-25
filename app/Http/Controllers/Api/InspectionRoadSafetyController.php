@@ -230,20 +230,25 @@ class InspectionRoadSafetyController extends ApiController
                 $qualified = new InspectionQualified();
             }
 
+            $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
+            $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
+            $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
+            $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
+
             $qualified->company_id = $request->company_id;
             $qualified->inspection_id = $inspection->id;
             $qualified->vehicle_id = $request->vehicle_id;
             $qualified->qualifier_id = $qualifier_id;
             $qualified->qualification_date = $qualification_date;
+            $qualified->employee_regional_id = $employee_regional_id;
+            $qualified->employee_process_id = $employee_process_id;
+            $qualified->employee_area_id = $employee_area_id;
+            $qualified->employee_headquarter_id = $employee_headquarter_id;
             $qualified->save();
 
 
             $response['qualified_id'] = $qualified->id;
 
-            $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
-            $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
-            $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
-            $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
 
             foreach ($request->themes as $keyT => $theme)
             {
@@ -271,10 +276,6 @@ class InspectionRoadSafetyController extends ApiController
                     $item->qualification_id = $inspection->type_id == 3 ? 3 : $value["qualification_id"];                    
                     $item->find = isset($value["find"]) ? $value["find"] : '';
                     $item->level_risk = isset($value["level_risk"]) ? $value["level_risk"] : '';
-                    $item->employee_regional_id = $employee_regional_id;
-                    $item->employee_process_id = $employee_process_id;
-                    $item->employee_area_id = $employee_area_id;
-                    $item->employee_headquarter_id = $employee_headquarter_id;
                     $item->save();
                 
                     $response['themes'][$keyT]['items'][$key]['id'] = $item->id;

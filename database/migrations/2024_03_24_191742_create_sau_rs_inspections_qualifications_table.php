@@ -19,6 +19,10 @@ class CreateSauRsInspectionsQualificationsTable extends Migration
             $table->unsignedInteger('vehicle_id');
             $table->unsignedInteger('inspection_id');
             $table->unsignedInteger('qualifier_id');
+            $table->unsignedInteger('employee_regional_id');
+            $table->unsignedInteger('employee_headquarter_id')->nullable();
+            $table->unsignedInteger('employee_process_id')->nullable();
+            $table->unsignedInteger('employee_area_id')->nullable();
             $table->dateTime('qualification_date');
             $table->timestamps();
 
@@ -26,6 +30,10 @@ class CreateSauRsInspectionsQualificationsTable extends Migration
             $table->foreign('inspection_id')->references('id')->on('sau_rs_inspections')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('qualifier_id')->references('id')->on('sau_users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('vehicle_id')->references('id')->on('sau_rs_vehicles')->onDelete('cascade');
+            $table->foreign('employee_regional_id','regional_id_rs_foreign')->references('id')->on('sau_employees_regionals')->onDelete('cascade');
+            $table->foreign('employee_headquarter_id','headquarter_id_rs_foreign')->references('id')->on('sau_employees_headquarters')->onDelete('cascade');
+            $table->foreign('employee_process_id','process_id_rs_foreign')->references('id')->on('sau_employees_processes')->onDelete('cascade');
+            $table->foreign('employee_area_id','employee_area_id_rs_foreign')->references('id')->on('sau_employees_areas')->onDelete('cascade');
         });
 
         Schema::create('sau_rs_images_api', function (Blueprint $table) {
@@ -43,10 +51,6 @@ class CreateSauRsInspectionsQualificationsTable extends Migration
             $table->unsignedInteger('item_id');
             $table->unsignedInteger('qualification_id')->default(3);
             $table->text('qualify')->nullable();
-            $table->unsignedInteger('employee_regional_id');
-            $table->unsignedInteger('employee_headquarter_id')->nullable();
-            $table->unsignedInteger('employee_process_id')->nullable();
-            $table->unsignedInteger('employee_area_id')->nullable();
             $table->text('find')->nullable();
             $table->string('level_risk')->nullable();
             $table->string('photo_1',255)->nullable();
@@ -54,10 +58,6 @@ class CreateSauRsInspectionsQualificationsTable extends Migration
 
 
             $table->foreign('inspection_qualification_id', 'inspection_qualification_id_rs_foreign')->references('id')->on('sau_rs_inspections_qualified')->onDelete('cascade');
-            $table->foreign('employee_regional_id','regional_id_rs_foreign')->references('id')->on('sau_employees_regionals')->onDelete('cascade');
-            $table->foreign('employee_headquarter_id','headquarter_id_rs_foreign')->references('id')->on('sau_employees_headquarters')->onDelete('cascade');
-            $table->foreign('employee_process_id','process_id_rs_foreign')->references('id')->on('sau_employees_processes')->onDelete('cascade');
-            $table->foreign('employee_area_id','employee_area_id_rs_foreign')->references('id')->on('sau_employees_areas')->onDelete('cascade');
 
             $table->foreign('qualification_id','sau_qualification_id_rs_foreign')->references('id')->on('sau_ph_qualifications_inspections')->onDelete('cascade');
 

@@ -1565,12 +1565,12 @@ export default [{
               import('@/views/IndustrialSecure/roadSafety/inspections/personalizadas/create')
         }
       ]),
-      /*...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
+      ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
         {
           name: 'roadSafety-inspections-qualification',
           path: 'roadSafety/inspections/qualification/:id',
           component: () =>
-              import('@/views/IndustrialSecure/roadSafety/inspections/indexQualification')
+              import('@/views/IndustrialSecure/roadSafety/inspections/qualifications/indexQualification')
         }
       ]),
       ...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
@@ -1578,10 +1578,10 @@ export default [{
           name: 'roadSafety-inspections-qualification-view',
           path: 'roadSafety/inspections/qualification/view/:id',
           component: () =>
-              import('@/views/IndustrialSecure/roadSafety/inspections/viewQualification')
+              import('@/views/IndustrialSecure/roadSafety/inspections/qualifications/viewQualification')
         }
       ]),
-      ...middleware({ 'check-permission': 'roadsafety_inspections_report_view' }, [
+      /*...middleware({ 'check-permission': 'roadsafety_inspections_report_view' }, [
 				{
 					name: 'roadSafety-inspection-report',
 					path: 'roadSafety/inspection/report',

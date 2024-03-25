@@ -3037,7 +3037,7 @@ export default [
                 routePush: { name: 'roadSafety-inspections-edit' },
                 id: 'id',
             },
-            permission: 'ph_inspections_u'
+            permission: 'roadsafety_inspections_u'
           }, {
             config: {
                 color: 'outline-info',
@@ -3049,7 +3049,7 @@ export default [
                 routePush: { name: 'roadSafety-inspections-view' },
                 id: 'id',
             },
-            permission: 'ph_inspections_r'
+            permission: 'roadsafety_inspections_r'
           }, {
             config: {
                 color: 'outline-success',
@@ -3061,8 +3061,8 @@ export default [
                 routePush: { name: 'roadSafety-inspections-clone' },
                 id: 'id',
             },
-            permission: 'ph_inspections_c'
-          }/*,{
+            permission: 'roadsafety_inspections_c'
+          },{
             config: {
                 color: 'outline-info',
                 borderless: true,
@@ -3073,8 +3073,8 @@ export default [
                 routePush: { name: 'roadSafety-inspections-qualification' },
                 id: 'id',
             },
-            permission: 'ph_inspections_r'
-        }*/]
+            permission: 'roadsafety_inspections_r'
+        }]
       },
       {
         type: 'base',
@@ -3092,7 +3092,7 @@ export default [
                     id: 'id',
                     messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                 },
-                permission: 'ph_inspections_u'
+                permission: 'roadsafety_inspections_u'
             },
             {
                 name: 'delete',
@@ -3101,7 +3101,7 @@ export default [
                     id: 'id',
                     messageConfirmation: 'Esta seguro de borrar la inspección planeada'
                 },
-                permission: 'ph_inspections_d'
+                permission: 'roadsafety_inspections_d'
                 }
         ],
       }],
@@ -3109,6 +3109,62 @@ export default [
         urlData: '/industrialSecurity/roadsafety/inspections/data',
         filterColumns: true,
         configNameFilter: 'roadSafety-inspections'
+    }
+},
+{
+    name: 'roadsafety-inspections-qualification',
+    fields: [
+        { name: 'sau_rs_inspections_qualified.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'roadSafety-inspections-qualification-view' },
+                id: 'id',
+            },
+            permission: 'roadsafety_inspections_r'
+          }]
+      },
+      {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-danger',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar inspección en PDF'
+            },
+            data: {
+              action: '/industrialSecurity/roadsafety/inspection/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'roadsafety_inspections_r'
+            }],
+      },
+      {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/roadsafety/inspection/qualification/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la inspección realizada'
+        },
+        permission: 'roadsafety_inspections_qualifications_d'
+        }],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/inspection/qualification/data',
+        filterColumns: true,
+        configNameFilter: 'roadSafety-inspections-qualification'
     }
 },
 ];

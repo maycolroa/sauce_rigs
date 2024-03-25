@@ -10,20 +10,20 @@
         <b-card-body>
             <form-inspection-qualification-personalized
                 v-if="type"
-                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`"
+                :url="`/industrialSecurity/roadsafety/inspection/qualification/${this.$route.params.id}`"
                 method="PUT"
                 :qualification="data"
                 :action-plan-states="actionPlanStates"
                 :is-edit="true"
-                :cancel-url="{ name: 'dangerousconditions-inspections-qualification'}"/>
+                :cancel-url="{ name: 'roadsafety-inspections-qualification'}"/>
             <form-inspection-qualification
                 v-else
-                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`"
+                :url="`/industrialSecurity/roadsafety/inspection/qualification/${this.$route.params.id}`"
                 method="PUT"
                 :qualification="data"
                 :action-plan-states="actionPlanStates"
                 :is-edit="true"
-                :cancel-url="{ name: 'dangerousconditions-inspections-qualification'}"/>
+                :cancel-url="{ name: 'roadsafety-inspections-qualification'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import FormInspectionQualification from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionQualificationComponent.vue';
-import FormInspectionQualificationPersonalized from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionQualificationPersonalizedComponent.vue';
+import FormInspectionQualification from '@/components/IndustrialSecure/RoadSafety/Inspections/Qualifications/FormInspectionQualificationComponent.vue';
+import FormInspectionQualificationPersonalized from '@/components/IndustrialSecure/RoadSafety/Inspections/Qualifications/FormInspectionQualificationPersonalizedComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -55,7 +55,7 @@ export default {
   created(){
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
     
-    axios.get(`/industrialSecurity/dangerousConditions/inspection/qualification/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/roadsafety/inspection/qualification/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
 

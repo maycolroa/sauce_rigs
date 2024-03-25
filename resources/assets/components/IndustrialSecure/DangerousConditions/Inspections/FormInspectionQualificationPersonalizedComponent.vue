@@ -281,7 +281,8 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.qualification, this.method, false, false)
+        form: Form.makeFrom(this.qualification, this.method, false, false),
+        ready: false
     };
   },
   methods: {

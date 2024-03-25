@@ -153,8 +153,8 @@
                                                 <p class="mb-0">Imagen 1</p>
                                               </blockquote>
                                               <form-image
-                                                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/saveImage`"
-                                                :urlDownload="`/industrialSecurity/dangerousConditions/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_1`"
+                                                :url="`/industrialSecurity/roadsafety/inspection/qualification/saveImage`"
+                                                :urlDownload="`/industrialSecurity/roadsafety/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_1`"
                                                 column="photo_1"
                                                 :id="item.id_item_qualification"
                                                 :image="item.photo_1"
@@ -168,8 +168,8 @@
                                                 <p class="mb-0">Imagen 2</p>
                                               </blockquote>
                                               <form-image
-                                                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/saveImage`"
-                                                :urlDownload="`/industrialSecurity/dangerousConditions/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_2`"
+                                                :url="`/industrialSecurity/roadsafety/inspection/qualification/saveImage`"
+                                                :urlDownload="`/industrialSecurity/roadsafety/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_2`"
                                                 column="photo_2"
                                                 :id="item.id_item_qualification"
                                                 :image="item.photo_2"
@@ -263,8 +263,7 @@ export default {
     qualification: {
       default() {
         return {
-          themes: [],
-          add_fields: []
+          themes: []
         };
       }
     }
@@ -281,8 +280,9 @@ export default {
   },
   data() {
     return {
-        loading: this.isEdit,
-        form: Form.makeFrom(this.qualification, this.method, false, false)
+        loading: this.viewOnly,
+        form: Form.makeFrom(this.qualification, this.method, false, false),
+        ready: false
     };
   },
   methods: {
@@ -311,6 +311,8 @@ export default {
 			return result
     },
     removed(index, index2) {
+
+      this.ready = true
       let keys = [];
       
       this.form.themes[index].items[index2].actionPlan.activities.forEach((activity, keyAct) => {
@@ -342,7 +344,7 @@ export default {
 
         this.form.resetError()
         this.form
-          .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualification', false, data)
+          .submit('/industrialSecurity/roadsafety/inspection/qualification/saveQualification', false, data)
           .then(response => {
             _.forIn(response.data.data, (value, key) => {
               item[key] = value

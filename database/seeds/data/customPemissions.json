@@ -534,6 +534,10 @@
                     {
                         "name": "roadsafety_inspections_d",
                         "display_name": "Seguridad Vial - inspecciones borrar"
+                    },
+                    {
+                        "name": "roadsafety_inspections_qualifications_d",
+                        "display_name": "Seguridad Vial - inspecciones calificadas borrar"
                     }
                 ]
             }

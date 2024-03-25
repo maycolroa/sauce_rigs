@@ -3,21 +3,21 @@
     <header-module
       title="INSPECCIONES"
       subtitle="INSPECCIONES PLANEADAS CALIFICADAS"
-      url="dangerousconditions-inspections"
+      url="roadSafety-inspections"
     />
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-header class="with-elements">
+        <!--<b-card-header class="with-elements">
           <div class="card-title-elements">
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
           </div>
-        </b-card-header>
+        </b-card-header>-->
         <b-card-body>
           <vue-table
-            configName="dangerousconditions-inspections-qualification"
+            configName="roadsafety-inspections-qualification"
             :customColumnsName="true" 
-            v-if="auth.can['ph_inspections_r']"
+            v-if="auth.can['roadsafety_inspections_r']"
             :params="{inspectionId: `${this.$route.params.id}`}"
             :modelId="`${this.$route.params.id}`"
             @filtersUpdate="setFilters"
@@ -32,7 +32,7 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'dangerousconditions-inspections-qualification',
+  name: 'roadsafety-inspections-qualification',
   metaInfo: {
     title: 'Inspecciones Planeadas - Calificadas'
   },
