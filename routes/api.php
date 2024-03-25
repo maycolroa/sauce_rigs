@@ -78,7 +78,9 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::group(['prefix'=>'inspections'], function () {
             Route::post('moduleRoadSafety', 'Api\InspectionRoadSafetyController@getModuleRoadSafety');
             Route::post('list', 'Api\InspectionRoadSafetyController@lisInspectionsAvailable');
-            //Route::post('register', 'Api\InspectionRoadSafetyController@store');
+            Route::post('listVehicles', 'Api\InspectionRoadSafetyController@lisVehiclesAvailable');
+            Route::post('register', 'Api\InspectionRoadSafetyController@store');
+            Route::post('imageItem', 'Api\InspectionRoadSafetyController@imageItemRs');
         });
     });
 });

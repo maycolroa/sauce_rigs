@@ -12,10 +12,13 @@ class InspectionFirm extends Model
     public $table = 'sau_rs_qualification_inspection_firm';
 
     protected $fillable = [
+        'inspection_qualification_id',
+        'company_id',
         'name',
         'identification',
         'image',
-        'qualification_date'
+        'user_id',
+        'state'
     ];
 
     public function path_base()

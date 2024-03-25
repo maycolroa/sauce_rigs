@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\IndustrialSecure\DangerousConditions;
+namespace App\Models\IndustrialSecure\RoadSafety\Inspections;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;

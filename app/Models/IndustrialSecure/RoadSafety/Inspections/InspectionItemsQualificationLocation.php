@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Models\IndustrialSecure\RoadSafety\Inspections;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Scopes\InspectionsFilterScope;
 
-class InspectionItemsQualificationAreaLocation extends Model
+class InspectionItemsQualificationLocation extends Model
 {
     protected static function boot()
     {
@@ -17,19 +17,20 @@ class InspectionItemsQualificationAreaLocation extends Model
 
     const DISK = 's3';
 
-    protected $table = "sau_rs_inspection_items_qualifications";
+    protected $table = "sau_rs_inspection_items_qualifications_locations";
 
     protected $fillable = [
         'inspection_qualification_id',
+        'theme_id',
         'item_id',
         'qualification_id',
+        'qualify',
         'employee_regional_id',
         'employee_headquarter_id',
         'employee_process_id',
         'employee_area_id',
-        'qualifier_id',	
         'find',
-        'qualification_date',
+        'level_risk',
         'photo_1',
         'photo_2'
     ];
@@ -39,6 +40,11 @@ class InspectionItemsQualificationAreaLocation extends Model
     public function item()
     {
         return $this->belongsTo(InspectionSectionItem::class, 'item_id');
+    }
+
+    public function theme()
+    {
+        return $this->belongsTo(InspectionSection::class, 'theme_id');
     }
 
     public function regional()
@@ -59,11 +65,6 @@ class InspectionItemsQualificationAreaLocation extends Model
     public function area()
     {
         return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
-    }
-
-    public function qualifier()
-    {
-        return $this->belongsTo('App\Models\Administrative\Users\User', 'qualifier_id');
     }
 
     public function qualification()
@@ -91,10 +92,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($regionals) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.employee_regional_id', $regionals);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.employee_regional_id', $regionals);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_regional_id', $regionals);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.employee_regional_id', $regionals);
         }
 
         return $query;
@@ -120,10 +121,10 @@ class InspectionItemsQualificationAreaLocation extends Model
             $ids = explode(",", implode(",", $ids));
 
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.employee_headquarter_id', $ids);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.employee_headquarter_id', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_headquarter_id', $ids);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.employee_headquarter_id', $ids);
         }
 
         return $query;
@@ -140,10 +141,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($processes) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.employee_process_id', $processes);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.employee_process_id', $processes);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_process_id', $processes);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.employee_process_id', $processes);
         }
 
         return $query;
@@ -160,10 +161,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($areas) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.employee_area_id', $areas);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.employee_area_id', $areas);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.employee_area_id', $areas);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.employee_area_id', $areas);
         }
 
         return $query;
@@ -180,10 +181,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($qualifiers) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.qualifier_id', $qualifiers);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.qualifier_id', $qualifiers);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.qualifier_id', $qualifiers);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.qualifier_id', $qualifiers);
         }
 
         return $query;
@@ -194,10 +195,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($items) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.item_id', $items);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.item_id', $items);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.item_id', $items);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.item_id', $items);
         }
 
         return $query;
@@ -208,10 +209,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($levels) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.level_risk', $levels);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.level_risk', $levels);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.level_risk', $levels);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.level_risk', $levels);
         }
 
         return $query;
@@ -222,10 +223,10 @@ class InspectionItemsQualificationAreaLocation extends Model
         if (COUNT($levels) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rs_inspection_items_qualifications.qualification_id', $levels);
+                $query->whereIn('sau_rs_inspection_items_qualifications_locations.qualification_id', $levels);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rs_inspection_items_qualifications.qualification_id', $levels);
+                $query->whereNotIn('sau_rs_inspection_items_qualifications_locations.qualification_id', $levels);
         }
 
         return $query;
@@ -283,7 +284,7 @@ class InspectionItemsQualificationAreaLocation extends Model
     {
         if (COUNT($dates) == 2)
         {
-            $query->whereBetween('sau_rs_inspection_items_qualifications.qualification_date', $dates);
+            $query->whereBetween('sau_rs_inspection_items_qualifications_locations.qualification_date', $dates);
             return $query;
         }
     }
@@ -354,7 +355,7 @@ class InspectionItemsQualificationAreaLocation extends Model
 
     public function path_base()
     {
-        return "inspections_images/";
+        return "rs_inspections_images/";
     }
 
     public function donwload_img($key)

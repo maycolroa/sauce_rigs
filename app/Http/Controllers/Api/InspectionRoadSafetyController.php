@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\IndustrialSecure\RoadSafety\Vehicle;
 use App\Models\IndustrialSecure\RoadSafety\Inspections\Inspection;
 use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionFirm;
 use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionSectionItem;
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
-use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionQualified;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\InspectionItemsQualificationLocation;
+use App\Models\IndustrialSecure\RoadSafety\Inspections\ImageApi;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
@@ -34,6 +36,37 @@ class InspectionRoadSafetyController extends ApiController
     {
         $this->middleware('auth:api');
         parent::__construct();
+    }
+
+    public function saveImageApi(Request $request)
+    {
+      DB::beginTransaction();
+          
+        try
+        {
+          $img = $this->base64($request->image['image']);
+          $fileName = $img['name'];
+          $file = $img['image'];
+
+          $image = new ImageApi;
+          $image->file = $fileName;
+          $image->type = $request->image['type'];
+          $image->hash = $request->image['hash'];
+          $image->save();
+
+          (new InspectionItemsQualificationLocation)->store_image_api($fileName, $file);
+
+          DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+          'data' => $request->image['id']
+        ]);
     }
 
     public function getModuleRoadSafety(Request $request)
@@ -116,6 +149,34 @@ class InspectionRoadSafetyController extends ApiController
         ]);
     }
 
+    public function lisVehiclesAvailable(InspectionsRequest $request)
+    {
+        $vehicles = Vehicle::query();
+        $vehicles->company_scope = $request->company_id;
+        $data = collect([]);
+
+        foreach ($vehicles->get() as $key => $value)
+        {
+            $created_at = $value->created_at != '' ? Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at)->toDateString() : '';
+            $vehicle = collect([
+                'id' => $value->id,
+                'name' => $value->name,
+                'created_at' => $created_at,
+                'regionals' => $value->employee_regional_id,
+                'headquarters' => $value->employee_headquarter_id,
+                'processes' => $value->employee_process_id,
+                'areas' => $value->employee_area_id,
+                'name' => $value->plate
+            ]);
+
+            $data->push($vehicle);
+        }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
     /**
      * Stores the images of a given report.
      *
@@ -123,20 +184,30 @@ class InspectionRoadSafetyController extends ApiController
      * @return \Illuminate\Http\Response
      */
     public function store(InspectionQualificationsRequest $request)
-    {
+    {        
+        \Log::info($request);
         $keywords = $this->getKeywordQueue($request->company_id);
         $confLocation = $this->getLocationFormConfModule($request->company_id);;
 
         $response = $request->all();
 
         $inspection = Inspection::selectRaw("
-          sau_ph_inspections.*
+          sau_rs_inspections.*
         ")
-        ->where('sau_ph_inspections.id', $request->inspection_id)
-        ->groupBy('sau_ph_inspections.id');
+        ->where('sau_rs_inspections.id', $request->inspection_id)
+        ->groupBy('sau_rs_inspections.id');
 
         $inspection->company_scope = $request->company_id;
         $inspection = $inspection->first();
+
+        $vehicle = Vehicle::selectRaw("
+          sau_rs_vehicles.*
+        ")
+        ->where('sau_rs_vehicles.id', $request->inspection_id)
+        ->groupBy('sau_rs_vehicles.id');
+
+        $vehicle->company_scope = $request->company_id;
+        $vehicle = $vehicle->first();
 
         if (!$inspection)
         {
@@ -144,17 +215,35 @@ class InspectionRoadSafetyController extends ApiController
         }
 
         try
-        {
+        {         
             DB::beginTransaction();
 
+
+            $date = Carbon::now();
+
             $qualifier_id = $this->user->id;
+            $qualification_date = $date->format('Y-m-d H:i:s'); 
+
+            if (isset($response['qualified_id']) && $response['qualified_id'])
+                $qualified = InspectionQualified::find($response['qualified_id'])->withoutGlobalScopes();
+            else { 
+                $qualified = new InspectionQualified();
+            }
+
+            $qualified->company_id = $request->company_id;
+            $qualified->inspection_id = $inspection->id;
+            $qualified->vehicle_id = $request->vehicle_id;
+            $qualified->qualifier_id = $qualifier_id;
+            $qualified->qualification_date = $qualification_date;
+            $qualified->save();
+
+
+            $response['qualified_id'] = $qualified->id;
+
             $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
             $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
             $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
             $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
-            $qualification_date = $this->getQualificationDate($employee_regional_id);            
-
-            $qualification_date_verify = '';
 
             foreach ($request->themes as $keyT => $theme)
             {
@@ -164,37 +253,35 @@ class InspectionRoadSafetyController extends ApiController
                     $fileName2 = null;
 
                     if (isset($value['id']) && $value['id'])
-                        $item = InspectionItemsQualificationAreaLocation::find($value['id'])->withoutGlobalScopes();
+                        $item = InspectionItemsQualificationLocation::find($value['id'])->withoutGlobalScopes();
                     else { 
-                        $item = new InspectionItemsQualificationAreaLocation();
-                        $item->qualification_date = $qualification_date;
+                        $item = new InspectionItemsQualificationLocation();
                     }
-
-                    $qualification_date_verify = $item->qualification_date;
 
                     if ($inspection->type_id == 3 && $value['type_id'] == 2)
-                    {
                         $value['qualify'] = implode(',', $value['qualify']);
-                    }
+                    elseif ($inspection->type_id == 3 && $value['type_id'] != 2) 
+                        $item->qualify = $value["qualify"];
+                    else 
+                        $item->qualify = NULL;
 
+                    $item->inspection_qualification_id = $qualified->id;
                     $item->item_id = $value["item_id"];
-                    $item->qualification_id = $inspection->type_id == 3 ? 3 : $value["qualification_id"];
-                    $item->qualify = $inspection->type_id == 3 ? $value["qualify"] : NULL;
+                    $item->theme_id = $theme['id'];
+                    $item->qualification_id = $inspection->type_id == 3 ? 3 : $value["qualification_id"];                    
                     $item->find = isset($value["find"]) ? $value["find"] : '';
                     $item->level_risk = isset($value["level_risk"]) ? $value["level_risk"] : '';
-                    $item->qualifier_id = $qualifier_id;
                     $item->employee_regional_id = $employee_regional_id;
                     $item->employee_process_id = $employee_process_id;
                     $item->employee_area_id = $employee_area_id;
                     $item->employee_headquarter_id = $employee_headquarter_id;
                     $item->save();
                 
-
                     $response['themes'][$keyT]['items'][$key]['id'] = $item->id;
 
                     if (isset($value['photos']))
                     {
-                        $photo_1 = ImageApi::where('hash', $value['photos']['photo_1']['file'])->where('type', 2)->first();
+                        $photo_1 = ImageApi::where('hash', $value['photos']['photo_1']['file'])->where('type', 1)->first();
 
                         if ($photo_1)
                         {
@@ -203,7 +290,7 @@ class InspectionRoadSafetyController extends ApiController
                           $photo_1->delete();
                         }
 
-                        $photo_2 = ImageApi::where('hash', $value['photos']['photo_2']['file'])->where('type', 2)->first();
+                        $photo_2 = ImageApi::where('hash', $value['photos']['photo_2']['file'])->where('type', 1)->first();
                         
                         if ($photo_2)
                         {
@@ -231,10 +318,11 @@ class InspectionRoadSafetyController extends ApiController
 
                         $theme = $item->item->section;
                         $itemName = $item->item;
-                        $details = 'Inspección: ' . $inspection->name . ' - Tema: ' . $theme->name . ' - Item: ' . $itemName->description;
+
+                        $details = 'Inspección:' . $inspection->name . ' - Tema: ' . $theme->name . ' - Item: ' . $itemName->description. ' - ';
 
                         if ($confLocation['regional'] == 'SI')
-                            $detail_procedence = 'Inspecciones Planeadas. ' . $details . ' - ' . $keywords['regional']. ': ' .  $regional_detail->name;
+                            $detail_procedence = 'Inspecciones Planeadas Vehiculos. Placa de vehiculo: '. $vehicle->plate. '. ' . $details . ' - ' . $keywords['regional']. ': ' .  $regional_detail->name;
                         if ($confLocation['headquarter'] == 'SI')
                             $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $headquarter_detail->name;
                         if ($confLocation['process'] == 'SI')
@@ -244,7 +332,7 @@ class InspectionRoadSafetyController extends ApiController
 
                         ActionPlan::
                             user($this->user)
-                        ->module('dangerousConditions')
+                        ->module('roadSafety')
                         ->url(url('/administrative/actionplans'))
                         ->model($item)
                         ->regional($regional_detail)
@@ -266,60 +354,6 @@ class InspectionRoadSafetyController extends ApiController
                 }
             }
 
-            if ($request->has('repeat_date') && $request->repeat_date)
-            {
-                $mails_notify = [];
-
-                if ($request->has('repeat_emails') && $request->repeat_emails)
-                {
-                    foreach ($request->repeat_emails as $email)
-                    {
-                        $mails = User::find($email['value']);
-                        array_push($mails_notify, $mails->email);
-                    }
-                }
-
-                $regionalRepeat = EmployeeRegional::where('id', $employee_regional_id);
-                $regionalRepeat->company_scope = $request->company_id;
-                $regionalRepeat = $regionalRepeat->first();
-                $headquarterRepeat = EmployeeHeadquarter::find($employee_headquarter_id);
-                $processRepeat = EmployeeProcess::find($employee_process_id);
-                $areaRepeat = EmployeeArea::find($employee_area_id);
-
-                $exist_repeat = QualificationRepeat::where('qualification_date', $qualification_date_verify);
-                $exist_repeat = $exist_repeat->first();
-
-                if ($exist_repeat)
-                {
-                    $exist_repeat->inspection_id = $request->inspection_id;
-                    $exist_repeat->user_id = $this->user->id;
-                    $exist_repeat->regional = $regionalRepeat->name;
-                    $exist_repeat->headquarter = $headquarterRepeat ? $headquarterRepeat->name : null;
-                    $exist_repeat->process = $processRepeat ? $processRepeat->name : null;
-                    $exist_repeat->area = $areaRepeat ? $areaRepeat->name : null;
-                    $exist_repeat->fields_adds = $add_fields_repeat ? implode($add_fields_repeat, ',') : null;
-                    $exist_repeat->send_emails = $mails_notify ? implode($mails_notify, ',') : null;
-                    $exist_repeat->qualification_date = $qualification_date;
-                    $exist_repeat->repeat_date = $request->repeat_date;
-                    $exist_repeat->update(); 
-                }
-                else
-                {
-                    $repeat = new QualificationRepeat;
-                    $repeat->inspection_id = $request->inspection_id;
-                    $repeat->user_id = $this->user->id;
-                    $repeat->regional = $regionalRepeat->name;
-                    $repeat->headquarter = $headquarterRepeat ? $headquarterRepeat->name : null;
-                    $repeat->process = $processRepeat ? $processRepeat->name : null;
-                    $repeat->area = $areaRepeat ? $areaRepeat->name : null;
-                    $repeat->fields_adds = $add_fields_repeat ? implode($add_fields_repeat, ',') : null;
-                    $repeat->send_emails = $mails_notify ? implode($mails_notify, ',') : null;
-                    $repeat->qualification_date = $qualification_date_verify;
-                    $repeat->repeat_date = $request->repeat_date;
-                    $repeat->save();
-                }                
-            }
-
 
             if ($request->has('firms') && $request->firms)
             {
@@ -331,7 +365,7 @@ class InspectionRoadSafetyController extends ApiController
                         {
                             if ($firms['image'])
                             {
-                                $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
+                                $exist_firm = InspectionFirm::where('inspection_qualification_id', $qualified->id)->where('identification', $firms['identification'])->first();
 
                                 if ($exist_firm)
                                 {
@@ -345,7 +379,7 @@ class InspectionRoadSafetyController extends ApiController
                                     $exist_firm->name = $firms['name'];
                                     $exist_firm->state = 'Ingresada';
                                     $exist_firm->identification = $firms['identification'];
-                                    $exist_firm->qualification_date = $qualification_date_verify;
+                                    $exist_firm->inspection_qualification_id = $qualified->id;
                                     $exist_firm->update();
                                 }
                                 else
@@ -363,7 +397,7 @@ class InspectionRoadSafetyController extends ApiController
                                     $exist_firm->state = 'Ingresada';
                                     $exist_firm->identification = $firms['identification'];
                                     $exist_firm->company_id = $request->company_id;
-                                    $exist_firm->qualification_date = $qualification_date_verify;
+                                    $exist_firm->inspection_qualification_id = $qualified->id;
                                     $exist_firm->save();
                                 }
 
@@ -382,7 +416,7 @@ class InspectionRoadSafetyController extends ApiController
                             $exist_firm->company_id = $request->company_id;
                             $exist_firm->user_id = $user_solicitud->id;
                             $exist_firm->identification = $user_solicitud->document;
-                            $exist_firm->qualification_date = $qualification_date_verify;
+                            $exist_firm->inspection_qualification_id = $qualified->id;
                             $exist_firm->save();
 
                             $response['firms']['firmsAdd'][$key] = [
@@ -394,7 +428,7 @@ class InspectionRoadSafetyController extends ApiController
                     {
                         if ($firms['image'])
                         {
-                            $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
+                            $exist_firm = InspectionFirm::where('inspection_qualification_id', $qualified->id)->where('identification', $firms['identification'])->first();
 
                             if ($exist_firm)
                             {
@@ -408,7 +442,7 @@ class InspectionRoadSafetyController extends ApiController
                                 $exist_firm->name = $firms['name'];
                                 $exist_firm->state = 'Ingresada';
                                 $exist_firm->identification = $firms['identification'];
-                                $exist_firm->qualification_date = $qualification_date_verify;
+                                $exist_firm->inspection_qualification_id = $qualified->id;
                                 $exist_firm->update();
                             }
                             else
@@ -426,7 +460,7 @@ class InspectionRoadSafetyController extends ApiController
                                 $exist_firm->state = 'Ingresada';
                                 $exist_firm->identification = $firms['identification'];
                                 $exist_firm->company_id = $request->company_id;
-                                $exist_firm->qualification_date = $qualification_date_verify;
+                                $exist_firm->inspection_qualification_id = $qualified->id;
                                 $exist_firm->save();
                             }
 
