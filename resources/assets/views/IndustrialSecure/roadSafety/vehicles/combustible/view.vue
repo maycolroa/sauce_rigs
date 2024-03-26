@@ -12,6 +12,7 @@
               :url="`/industrialSecurity/roadsafety/vehiclesCombustible/${this.$route.params.id}`"
               :combustible="data"
               :view-only="true"
+			  :vehicle="data.vehicle_id"
               :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles-combustible'}"/>
         </b-card-body>
       </b-card>

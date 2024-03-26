@@ -84,7 +84,7 @@ class Vehicle extends Model
     public function multiselect()
     {
         return [
-            'name' => $this->registration_number,
+            'name' => $this->plate,
             'value' => $this->id
         ];
     }

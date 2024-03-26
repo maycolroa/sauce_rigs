@@ -176,9 +176,10 @@ export default {
             
         },
         getInfoVehicle() {
+            console.log(this.vehicle)
             axios.get(`/industrialSecurity/roadsafety/vehicles/${this.vehicle}`)
             .then(response => {
-                this.plate_vehicle = response.data.data.registration_number;
+                this.plate_vehicle = response.data.data.plate;
             })
             .catch(error => {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
@@ -187,7 +188,9 @@ export default {
         }
     },
     created() {
-        this.getInfoVehicle()
+        setTimeout(() => {
+          this.getInfoVehicle()
+      }, 5000)
     }
 }
 </script>

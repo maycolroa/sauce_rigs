@@ -12,6 +12,7 @@
 						:url="`/industrialSecurity/roadsafety/vehiclesMaintenance/${this.$route.params.id}`"
 						method="PUT"
 						:maintenance="data"
+						:vehicle="data.vehicle_id"
                 		:is-edit="true"
 						:cancel-url="{ name: 'industrialsecure-roadsafety-vehicles-maintenance'}"/>
 				</b-card-body>

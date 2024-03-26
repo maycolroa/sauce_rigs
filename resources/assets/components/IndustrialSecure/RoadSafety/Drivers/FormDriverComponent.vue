@@ -34,8 +34,8 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.type_license" name="type_license" :error="form.errorsFor('type_license')" label="Tipo de licencia" placeholder="Seleccione el tipo" :url="typeLicenseDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-      </vue-ajax-advanced-select-tag-unic>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_license_id" name="type_license" :error="form.errorsFor('type_license_id')" label="Tipo de licencia" placeholder="Seleccione el tipo" :url="typeLicenseDataUrl" :multiple="false" :allowEmpty="true" :selected-object="form.multiselect_type_license">
+      </vue-ajax-advanced-select>
       <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_license" label="Vigencia de licencia" :full-month-name="true" placeholder="Vigencia de licencia" :error="form.errorsFor('date_license')" name="date_license">
                 </vue-datepicker>
     </b-form-row>
@@ -111,7 +111,7 @@ export default {
         return {
             employee_id: '',
             responsible_id: '',
-            type_license: '',
+            type_license_id: '',
             date_license: '',
             vehicle_id: '',
             documents: [],

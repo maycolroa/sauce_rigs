@@ -50,6 +50,7 @@ class DriversController extends Controller
     {
         $drivers = Driver::selectRaw(
             'sau_rs_drivers.*,
+            sau_rs_tag_type_license.name AS type_license,
             sau_employees.name,
             GROUP_CONCAT(CONCAT(" ", sau_rs_vehicles.registration_number) ORDER BY sau_rs_vehicles.registration_number ASC) as registration_number,
             sau_employees_regionals.name as regional,
@@ -58,6 +59,7 @@ class DriversController extends Controller
             sau_employees_areas.name as area'
         )
         ->join('sau_employees', 'sau_employees.id', 'sau_rs_drivers.employee_id')
+        ->leftJoin('sau_rs_tag_type_license', 'sau_rs_tag_type_license.id', 'sau_rs_drivers.type_license_id')
         ->leftJoin('sau_rs_driver_vehicles', 'sau_rs_driver_vehicles.driver_id', 'sau_rs_drivers.id')
         ->leftJoin('sau_rs_vehicles', 'sau_rs_vehicles.id', 'sau_rs_driver_vehicles.vehicle_id')
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
@@ -83,16 +85,13 @@ class DriversController extends Controller
 
         try
         {
-            $type_license = $this->tagsPrepare($request->get('type_license'));
-            $this->tagsSave($type_license, TagsTypeLicense::class);
-
             $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
 
             $driver = new Driver;
             $driver->employee_id = $request->employee_id;
             $driver->responsible_id = $request->responsible_id;
             //$driver->vehicle_id = $request->vehicle_id 
-            $driver->type_license = $type_license->implode(',');
+            $driver->type_license_id = $request->type_license_id;
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
             if (!$driver->save())
@@ -203,7 +202,7 @@ class DriversController extends Controller
             $vehicles = [];
 
             $driver->multiselect_employee = $driver->employee->multiselect();
-            //$driver->multiselect_vehicle = $driver->vehicle->multiselect();
+            $driver->multiselect_type_license = $driver->typeLicense ? $driver->typeLicense->multiselect() : [];
             $driver->multiselect_responsible = $driver->responsible->multiselect();
 
             $driver->documents = $this->getFiles($driver->id);
@@ -237,15 +236,12 @@ class DriversController extends Controller
 
         try
         {
-            $type_license = $this->tagsPrepare($request->get('type_license'));
-            $this->tagsSave($type_license, TagsTypeLicense::class);
-
             $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
 
             $driver->employee_id = $request->employee_id;
             $driver->responsible_id = $request->responsible_id;
             //$driver->vehicle_id = $request->vehicle_id;
-            $driver->type_license = $type_license->implode(',');
+            $driver->type_license_id = $request->type_license_id;
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
             if(!$driver->update()){

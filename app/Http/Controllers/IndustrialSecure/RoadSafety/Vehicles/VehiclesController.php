@@ -132,8 +132,8 @@ class VehiclesController extends Controller
 
         try
         {
-            $plate = $this->tagsPrepare($request->get('plate'));
-            $this->tagsSave($plate, TagsPlate::class);
+            /*$plate = $this->tagsPrepare($request->get('plate'));
+            $this->tagsSave($plate, TagsPlate::class);*/
 
             $name_propietary = $this->tagsPrepare($request->get('name_propietary'));
             $this->tagsSave($name_propietary, TagsNamePropietary::class);
@@ -160,7 +160,7 @@ class VehiclesController extends Controller
             $vehicle->company_id = $this->company;
 
             ///General
-            $vehicle->plate = $plate->implode(',');
+            $vehicle->plate = $request->plate;//$plate->implode(',');
             $vehicle->name_propietary = $name_propietary->implode(',');
             $vehicle->registration_number = $request->registration_number;
             $vehicle->registration_number_date = $request->registration_number_date ? (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d') : null;
@@ -295,8 +295,8 @@ class VehiclesController extends Controller
 
         try
         {
-            $plate = $this->tagsPrepare($request->get('plate'));
-            $this->tagsSave($plate, TagsPlate::class);
+            /*$plate = $this->tagsPrepare($request->get('plate'));
+            $this->tagsSave($plate, TagsPlate::class);*/
 
             $name_propietary = $this->tagsPrepare($request->get('name_propietary'));
             $this->tagsSave($name_propietary, TagsNamePropietary::class);
@@ -320,7 +320,7 @@ class VehiclesController extends Controller
             $this->tagsSave($loading_capacity, TagsCapacityLoading::class);
 
             ///General
-            $vehicle->plate = $plate->implode(',');
+            $vehicle->plate = $request->plate;//$plate->implode(',');
             $vehicle->name_propietary = $name_propietary->implode(',');
             $vehicle->registration_number = $request->registration_number;
             $vehicle->registration_number_date = $request->registration_number_date ? (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d') : null;

@@ -29,14 +29,14 @@ class VehicleRequest extends FormRequest
 
     public function sanitize()
     {
-        if ($this->has('plate') && $this->plate)
+        /*if ($this->has('plate') && $this->plate)
         {
             foreach ($this->input('plate') as $key => $value)
             {
                 $data['plate'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
-        }
+        }*/
 
         if ($this->has('name_propietary') && $this->name_propietary)
         {
@@ -121,7 +121,7 @@ class VehicleRequest extends FormRequest
         $id = $this->input('id');
 
         $rules = [
-            'plate' => 'required',
+            'plate' => 'required|string|unique:sau_rs_vehicles,plate,'.$id.',id,company_id,'.Session::get('company_id'),
             'name_propietary' => 'required',
             'registration_number' => 'required',
             'registration_number_date' => 'required',

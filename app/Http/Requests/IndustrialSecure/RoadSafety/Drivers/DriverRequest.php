@@ -64,15 +64,6 @@ class DriverRequest extends FormRequest
             ]);
         }
 
-        if ($this->has('type_license') && $this->type_license)
-        {
-            foreach ($this->input('type_license') as $key => $value)
-            {
-                $data['type_license'][$key] = json_decode($value, true);
-                $this->merge($data);
-            }
-        }
-
         return $this->all();
     }
 
@@ -89,7 +80,7 @@ class DriverRequest extends FormRequest
             'employee_id' => 'required',
             'documents' => 'nullable|array',
             'responsible_id' => 'required',
-            'type_license' => 'required',
+            'type_license_id' => 'required',
             'date_license' => 'required'
         ];
     }

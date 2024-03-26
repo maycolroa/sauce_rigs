@@ -11,7 +11,7 @@ class Driver extends Model
     
     protected $fillable = [
         'employee_id',
-        'type_license',
+        'type_license_id',
         'date_license',
         //'vehicle_id',
         'responsible_id'
@@ -20,6 +20,11 @@ class Driver extends Model
     public function employee()
     {
         return $this->belongsTo('App\Models\Administrative\Employees\Employee', 'employee_id');
+    }
+
+    public function typeLicense()
+    {
+        return $this->belongsTo(TagsTypeLicense::class, 'type_license_id');
     }
 
     public function responsible()

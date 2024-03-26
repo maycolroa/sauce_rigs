@@ -4,8 +4,7 @@
     <b-card border-variant="primary" title="General" class="mb-3 box-shadow-none">
         <b-card-body>
           <b-form-row>
-            <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.plate" name="plate" :error="form.errorsFor('plate')" label="Placa" placeholder="Seleccione la placa" :url="tagsPlateDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-            </vue-ajax-advanced-select-tag-unic>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.plate" label="Placa" type="text" name="plate" :error="form.errorsFor('plate')" placeholder="Placa"></vue-input>
             <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.name_propietary" name="name_propietary" :error="form.errorsFor('name_propietary')" label="Nombre del propietario" placeholder="Seleccione el propietario" :url="tagsNamePropietaryDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
             </vue-ajax-advanced-select-tag-unic>
           </b-form-row>
@@ -442,7 +441,6 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
-      tagsPlateDataUrl: '/selects/tagsRsPlate',
       tagsColorDataUrl: '/selects/tagsRsColor',
       tagsLineDataUrl: '/selects/tagsRsLine',
       tagsModelDataUrl: '/selects/tagsRsModel',

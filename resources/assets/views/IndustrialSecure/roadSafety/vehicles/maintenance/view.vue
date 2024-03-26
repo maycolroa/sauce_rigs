@@ -11,7 +11,8 @@
             <maintenance-form
               :url="`/industrialSecurity/roadsafety/vehiclesMaintenance/${this.$route.params.id}`"
               :maintenance="data"
-                :view-only="true"
+			  :vehicle="data.vehicle_id"
+              :view-only="true"
               :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles-maintenance'}"/>
         </b-card-body>
       </b-card>
@@ -40,6 +41,7 @@ export default {
 		axios.get(`/industrialSecurity/roadsafety/vehiclesMaintenance/${this.$route.params.id}`)
 		.then(response => {
 			this.data = response.data.data;
+			console.log(this.data.vehicle_id)
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
