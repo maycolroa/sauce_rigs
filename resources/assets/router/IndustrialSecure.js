@@ -1444,7 +1444,6 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/drivers/view')
         }
       ]),
-
       ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
         {
           name: 'industrialsecure-roadsafety-vehicles-combustible',
@@ -1605,5 +1604,37 @@ export default [{
 					import('@/views/IndustrialSecure/roadSafety/inspections/reportGestion')
 				}
       ]),*/
+      ...middleware({ 'check-permission': 'roadsafety_drivers_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-infraction',
+          path: 'roadsafety/drivers/infraction/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/infraction/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_drivers_c' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-infraction-create',
+          path: 'roadsafety/drivers/infraction/create/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/infraction/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'roadsafety_drivers_u' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-infraction-edit',
+          path: 'roadsafety/drivers/infraction/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/infraction/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_drivers_r' }, [
+        {
+          name: 'industrialsecure-roadsafety-drivers-infraction-view',
+          path: 'roadsafety/drivers/infraction/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/drivers/infraction/view')
+        }
+      ]),
     ]
   }]

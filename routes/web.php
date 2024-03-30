@@ -322,6 +322,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselect');
         Route::post('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselect');
 
+        Route::post('typeInfraction', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@multiselectType');
+
+        Route::post('typeInfractionCode', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@multiselectTypeCode');
+
         Route::post('roadSafety/inspections', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectInspection');
         Route::post('roadSafety/themes', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectThemes');
         Route::post('roadSafety/items', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectItems');
@@ -589,6 +593,12 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController');
         Route::post('drivers/getDocuments', 'IndustrialSecure\RoadSafety\Drivers\DriversController@getDocuments');
         Route::get('drivers/download/{driverDocument}', 'IndustrialSecure\RoadSafety\Drivers\DriversController@downloadFile');
+        
+        ////Infracciones////
+
+        Route::post('driverInfractions/data', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@data');
+        Route::ApiResource('driverInfractions', 'IndustrialSecure\RoadSafety\Drivers\InfractionController');
+        Route::get('driverInfractions/download/{driverInfraction}', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@downloadFile');
 
         ///Ayudas///
         Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');

@@ -53,6 +53,15 @@ class CreateSauRsDriverInfractionsTable extends Migration
             $table->foreign('infraction_id')->references('id')->on('sau_rs_driver_infractions')->onDelete('cascade');
             $table->foreign('code_id')->references('id')->on('sau_rs_infractions_type_codes')->onDelete('cascade');
         });
+
+        Schema::create('sau_rs_driver_infractionse_files', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('infraction_id');
+            $table->string('file');
+            $table->timestamps();
+
+            $table->foreign('infraction_id')->references('id')->on('sau_rs_driver_infractions')->onDelete('cascade');
+        });
     }
 
     /**
@@ -62,6 +71,7 @@ class CreateSauRsDriverInfractionsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('sau_rs_driver_infractionse_files');
         Schema::dropIfExists('sau_rs_driver_infractions_codes');
         Schema::dropIfExists('sau_rs_driver_infractions');
         Schema::dropIfExists('sau_rs_infractions_type_codes');

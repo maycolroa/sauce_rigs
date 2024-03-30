@@ -2899,7 +2899,33 @@ export default [
                 id: 'id',
             },
             permission: 'roadsafety_drivers_r'
-          }]
+          },
+          {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Registrar infracción'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-roadsafety-drivers-infraction-create' },
+                    id: 'id',
+                },
+                permission: 'roadsafety_drivers_c'
+          },
+          {
+                config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-list',
+                        title: 'Ver infracción Registradas'
+                    },
+                    data: {
+                        routePush: { name: 'industrialsecure-roadsafety-drivers-infraction' },
+                        id: 'id',
+                    },
+                    permission: 'roadsafety_drivers_r'
+          },]
       },
       {
         type: 'base',
@@ -3165,6 +3191,62 @@ export default [
         urlData: '/industrialSecurity/roadsafety/inspection/qualification/data',
         filterColumns: true,
         configNameFilter: 'roadSafety-inspections-qualification'
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-infraction',
+    fields: [
+        { name: 'sau_rs_driver_infractions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_driver_infractions.date_simit', data: 'date_simit', title: 'Fecha de la consulta inicial en el simit', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_driver_infractions.date', data: 'date', title: 'Fecha de infraccion', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_vehicles.plate', data: 'vehicle', title: 'Placa de vehiculo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_infractions_type.type', data: 'type', title: 'Tipo de infracción', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_infractions_type_codes.code', data: 'code', title: 'Códigos de infracción', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-drivers-infraction-edit' },
+            id: 'id',
+        },
+        permission: 'roadsafety_drivers_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-drivers-infraction-view' },
+            id: 'id',
+        },
+        permission: 'roadsafety_drivers_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/roadsafety/driversInfractions/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la carga de combustible con fecha __date__'
+        },
+        permission: 'roadsafety_drivers_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/driverInfractions/data',
+        filterColumns: true,
     }
 },
 ];

@@ -52,7 +52,7 @@ class DriversController extends Controller
             'sau_rs_drivers.*,
             sau_rs_tag_type_license.name AS type_license,
             sau_employees.name,
-            GROUP_CONCAT(CONCAT(" ", sau_rs_vehicles.registration_number) ORDER BY sau_rs_vehicles.registration_number ASC) as registration_number,
+            GROUP_CONCAT(CONCAT(" ", sau_rs_vehicles.plate) ORDER BY sau_rs_vehicles.plate ASC) as registration_number,
             sau_employees_regionals.name as regional,
             sau_employees_headquarters.name as headquarter,
             sau_employees_processes.name as process,
