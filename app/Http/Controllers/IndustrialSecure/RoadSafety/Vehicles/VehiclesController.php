@@ -650,10 +650,10 @@ class VehiclesController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $vehicles = Vehicle::select("id", "registration_number as name")
+            $vehicles = Vehicle::select("id", "plate as name")
                 ->where('company_id', $this->company)
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('registration_number', 'like', $keyword);
+                    $query->orWhere('plate', 'like', $keyword);
                 })
                 ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
@@ -666,7 +666,7 @@ class VehiclesController extends Controller
         {
             $vehicles = Vehicle::selectRaw("
                 sau_rs_vehicles.id as id,
-                sau_rs_vehicles.registration_number as name
+                sau_rs_vehicles.plate as name
             ")
             ->where('company_id', $this->company)
             ->orderBy('name')
