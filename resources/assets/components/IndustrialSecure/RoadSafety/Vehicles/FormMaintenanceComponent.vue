@@ -28,7 +28,7 @@
                         <b-form-row>
                             <div class="col-md-12">
                                 <div class="float-right">
-                                    <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                    <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle" v-if="!viewOnly"></span></b-btn>
                                 </div>
                             </div>
                         </b-form-row>

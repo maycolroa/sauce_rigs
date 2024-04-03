@@ -1,6 +1,9 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
         <b-form-row>
+            <vue-input :disabled="true" class="col-md-12" v-model="driver_info" label="Nombre del Conductor" type="text" name="driver_info" :error="form.errorsFor('driver_info')" placeholder="Nombre del Conductor"></vue-input> 
+        </b-form-row>
+        <b-form-row>
             <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_simit" label="Fecha de la consulta inicial en el simit" :full-month-name="true" placeholder="Fecha de la consulta inicial en el simit" :error="form.errorsFor('date_simit')" name="date_simit" :disabled-dates="disabledExpirationDateFrom()">
                       </vue-datepicker>
             <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha de infracciones" :full-month-name="true" placeholder="Fecha de infracciones" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledExpirationDateFrom()">
@@ -47,7 +50,7 @@
                         <b-form-row>
                             <div class="col-md-12">
                                 <div class="float-right">
-                                    <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                    <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)" v-if="!viewOnly"><span class="ion ion-md-close-circle"></span></b-btn>
                                 </div>
                             </div>
                         </b-form-row>
@@ -134,7 +137,7 @@ export default {
         return {
             loading: this.isEdit,
             form: Form.makeFrom(this.infraction, this.method),
-            id_driver: '',
+            driver_info: '',
             vehiclesDataUrl: "/selects/vehicles",
             typeInfractionDataUrl: "/selects/typeInfraction",
             typeInfractionCodeDataUrl: "/selects/typeInfractionCode",
@@ -203,10 +206,21 @@ export default {
             }
             
         },
+        getInfoDriver() {
+            axios.get(`/industrialSecurity/roadsafety/drivers/${this.driver ? this.driver : this.form.driver_id}`)
+            .then(response => {
+                this.driver_info = response.data.data.employee.name;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+        }
     },
     created() {
         setTimeout(() => {
-      }, 5000)
+            this.getInfoDriver()
+      }, 4000)
     }
 }
 </script>
