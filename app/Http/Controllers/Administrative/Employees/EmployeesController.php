@@ -86,6 +86,10 @@ class EmployeesController extends Controller
         $employee->company_id = $this->company;
         $employee->income_date = (Carbon::createFromFormat('D M d Y',$employee->income_date))->format('Ymd');
 
+        $token = Hash::make($request->email.$request->identification);
+        $tok = str_replace("/", "a", $token);
+        $employee->token = $tok;
+
         if ($employee->date_of_birth)
             $employee->date_of_birth = (Carbon::createFromFormat('D M d Y',$employee->date_of_birth))->format('Ymd');
 

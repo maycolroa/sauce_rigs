@@ -3249,4 +3249,135 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-roadsafety-trainings',
+    fields: [
+        { name: 'sau_rs_trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rs_trainings.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_trainings.active', data: 'active', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_trainings.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-trainings-edit' },
+            id: 'id',
+        },
+        permission: 'roadsafety_trainings_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-roadsafety-trainings-view' },
+            id: 'id',
+        },
+        permission: 'roadsafety_trainings_r'
+        },{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Ver Capacitaciones Realizadas'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-roadsafety-trainings-employees' },
+                id: 'id',
+            },
+            permission: 'roadsafety_trainings_u'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/roadsafety/training/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la capacitación __name__'
+            },
+            permission: 'roadsafety_trainings_d'
+        },
+        {
+            name: 'switchStatus',
+            config: {
+                color: 'outline-danger',
+                borderless: true,
+                icon: 'fas fa-sync',
+                title: 'Cambiar Estado'
+            },
+            data: {
+                action: '/industrialSecurity/roadsafety/training/switchStatus/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+            },
+            permission: 'roadsafety_trainings_u'
+        },
+        {
+            name: 'retrySendMail',
+            config: {
+                color: 'outline-danger',
+                borderless: true,
+                icon: 'ion ion-ios-mail',
+                title: 'Enviar Capacitación'
+            },
+            data: {
+                action: '/industrialSecurity/roadsafety/training/sendNotification/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de enviar la capacitación'
+            },
+            permission: 'roadsafety_trainings_u'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/training/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-trainings-employees',
+    fields: [
+        { name: 'sau_rs_training_employee_attempts.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees.name', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_training_employee_attempts.attempt', data: 'attempt', title: 'Número de intento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_training_employee_attempts.state', data: 'state_attempts', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+          config: {
+              color: 'outline-info',
+              borderless: true,
+              icon: 'ion ion-md-eye',
+              title: 'Ver'
+          },
+          data: {
+              routePush: { name: 'industrialsecure-roadsafety-trainings-employee-view' },
+              id: 'id',
+          },
+          permission: 'roadsafety_trainings_r'
+          }]
+      },
+      {
+          type: 'base',
+          buttons: [],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/training/dataEmployee',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-evaluations-contracts'
+    }
+},
 ];

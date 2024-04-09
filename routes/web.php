@@ -26,6 +26,13 @@ Route::prefix('training')->group(function () {
   Route::post('response', 'LegalAspects\Contracs\TrainingEmployeeController@saveTraining');
   Route::get('download/file/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@download');
 });
+Route::prefix('roadSafety')->group(function () {
+  Route::prefix('training')->group(function () {
+    Route::get('{training}/{token}', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@index');
+    Route::post('response', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@saveTraining');
+    Route::get('download/file/{id}', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@download');
+  });
+});
 
 Route::prefix('epp')->group(function () {
   Route::get('{transaction}/{employee}', 'IndustrialSecure\EPP\TransactionFirmController@index');
@@ -572,10 +579,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('vehicles/downloadPolicy/{vehicle}', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@downloadPolicy');
 
         ///Historiales Vehiculos///
-
         Route::post('vehicles/historySoatdata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataSoat');
         Route::post('vehicles/historyMechanicaldata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataMechanical');
         Route::post('vehicles/historyResponsabilitydata', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@dataResponsability');
+
 
         ///Mantenimiento///
         Route::post('vehiclesMaintenance/data', 'IndustrialSecure\RoadSafety\Vehicles\MaintenanceController@data');
@@ -593,17 +600,19 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController');
         Route::post('drivers/getDocuments', 'IndustrialSecure\RoadSafety\Drivers\DriversController@getDocuments');
         Route::get('drivers/download/{driverDocument}', 'IndustrialSecure\RoadSafety\Drivers\DriversController@downloadFile');
+
         
         ////Infracciones////
-
         Route::post('driverInfractions/data', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@data');
         Route::ApiResource('driverInfractions', 'IndustrialSecure\RoadSafety\Drivers\InfractionController');
         Route::get('driverInfractions/download/{driverInfraction}', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@downloadFile');
+
 
         ///Ayudas///
         Route::post('helpers/data', 'IndustrialSecure\RoadSafety\Helpers\HelperController@data');
         Route::ApiResource('helpers', 'IndustrialSecure\RoadSafety\Helpers\HelperController');
 
+        
         //Inspecciones//// 
         Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@toggleState');
         Route::post('inspections/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@data');
@@ -618,6 +627,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/qualification/data', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@data');
         Route::ApiResource('inspection/qualification', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController');
         Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\RoadSafety\Inspections\InspectionQualificationController@downloadPdf');
+
+
+        /////Capacitaciones///
+        Route::post('training/data', 'IndustrialSecure\RoadSafety\Training\TrainingController@data');
+        Route::ApiResource('training', 'IndustrialSecure\RoadSafety\Training\TrainingController');
+        Route::post('training/switchStatus/{training}', 'IndustrialSecure\RoadSafety\Training\TrainingController@toggleState');
+        Route::get('training/download/{file}', 'IndustrialSecure\RoadSafety\Training\TrainingController@download');
+        Route::post('training/sendNotification/{training}', 'IndustrialSecure\RoadSafety\Training\TrainingController@sendNotification');
+
+        Route::post('training/dataEmployee', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@dataEmployee');
+        Route::get('training/showEmployee/{id}', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@showEmployee');
+
       });
 
 //tags

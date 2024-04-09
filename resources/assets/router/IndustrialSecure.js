@@ -1636,5 +1636,53 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/drivers/infraction/view')
         }
       ]),
+			...middleware({ 'check-permission': 'roadsafety_trainings_r' }, [
+				{
+					name: 'industrialsecure-roadsafety-trainings',
+					path: 'roadsafety/trainings',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'roadsafety_trainings_c' }, [
+				{
+					name: 'industrialsecure-roadsafety-trainings-create',
+					path: 'roadsafety/trainings/create',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'roadsafety_trainings_u' }, [
+				{
+					name: 'industrialsecure-roadsafety-trainings-edit',
+					path: 'roadsafety/trainings/edit/:id',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'roadsafety_trainings_r' }, [
+				{
+					name: 'industrialsecure-roadsafety-trainings-view',
+					path: 'roadsafety/trainings/view/:id',
+					component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/view')
+				}
+      ]),
+      ...middleware({ 'check-permission': 'roadsafety_trainings_r' }, [
+				{
+				name: 'industrialsecure-roadsafety-trainings-employees',
+				path: 'roadsafety/trainings/employee/:id',
+				component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/indexEmployee')
+						}
+			]),
+			...middleware({ 'check-permission': 'roadsafety_trainings_r' }, [
+				{
+				name: 'industrialsecure-roadsafety-trainings-employee-view',
+				path: 'roadsafety/trainings/employee/view/:id',
+				component: () =>
+					import('@/views/IndustrialSecure/roadSafety/trainings/viewEmployee')
+						}
+			])
     ]
   }]

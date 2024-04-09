@@ -538,6 +538,22 @@
                     {
                         "name": "roadsafety_inspections_qualifications_d",
                         "display_name": "Seguridad Vial - inspecciones calificadas borrar"
+                    },
+                    {
+                        "name": "roadsafety_trainings_c",
+                        "display_name": "Seguridad Vial - Capacitaciones crear"
+                    },
+                    {
+                        "name": "roadsafety_trainings_r",
+                        "display_name": "Seguridad Vial - Capacitaciones ver"
+                    },
+                    {
+                        "name": "roadsafety_trainings_u",
+                        "display_name": "Seguridad Vial - Capacitaciones actualizar"
+                    },
+                    {
+                        "name": "roadsafety_trainings_d",
+                        "display_name": "Seguridad Vial - Capacitaciones borrar"
                     }
                 ]
             }
