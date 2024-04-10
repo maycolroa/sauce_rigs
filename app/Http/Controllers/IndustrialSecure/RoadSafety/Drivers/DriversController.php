@@ -131,7 +131,7 @@ class DriversController extends Controller
                     if (isset($value['id']))
                     {
                         $fileUpload = DriverDocument::findOrFail($value['id']);
-                        $fileUpload->expiration_date = (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d');
+                        $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
 
                         if ($value['old_name'] == $value['file'] )
                             $create_file = false;
@@ -141,7 +141,7 @@ class DriversController extends Controller
                         $fileUpload = new DriverDocument();                    
                         $fileUpload->driver_id = $driver->id;
                         $fileUpload->name = $value['name'];
-                        $fileUpload->expiration_date = (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d');
+                        $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
                     }
 
                     if ($create_file)
@@ -175,7 +175,7 @@ class DriversController extends Controller
                 $get_file->key = Carbon::now()->timestamp + rand(1,10000);
                 $get_file->name = $get_file->name;
                 $get_file->old_name = $get_file->file;
-                $get_file->expiration_date = $get_file->expiration_date ? (Carbon::createFromFormat('Y-m-d', $get_file->expiration_date))->format('D M d Y') : null;;
+                $get_file->expiration_date = $get_file->expiration_date ? (Carbon::createFromFormat('Y-m-d', $get_file->expiration_date))->format('D M d Y') : NULL;;
 
                 return $get_file;
             });

@@ -554,6 +554,10 @@
                     {
                         "name": "roadsafety_trainings_d",
                         "display_name": "Seguridad Vial - Capacitaciones borrar"
+                    },
+                    {
+                        "name": "roadsafety_receive_notifications",
+                        "display_name": "Seguridad Vial - Recibir Notificaciones"
                     }
                 ]
             }

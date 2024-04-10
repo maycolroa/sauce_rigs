@@ -778,7 +778,7 @@ class VuetableColumnManager
             ['name' => 'sau_rs_drivers.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Conductor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_rs_drivers.type_license', 'data'=> 'type_license', 'title'=> 'Tipo de licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_rs_drivers.date_license', 'data'=> 'date_license', 'title'=> 'Vigenvia Licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_drivers.date_license', 'data'=> 'date_license', 'title'=> 'Vigencia Licencia', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());

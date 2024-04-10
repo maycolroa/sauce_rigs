@@ -47,7 +47,7 @@ class TrainingRsSendNotificationJob implements ShouldQueue
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->withoutGlobalScopes()
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', '39');
+            ->where('sau_license_module.module_id', '38');
 
       if ($this->company_id)
         $companies->where('sau_licenses.company_id', $this->company_id);

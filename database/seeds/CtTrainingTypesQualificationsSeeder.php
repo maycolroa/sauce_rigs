@@ -25,10 +25,6 @@ class CtTrainingTypesQualificationsSeeder extends Seeder
                 'name' => 'selection_multiple',
                 'description' => 'Selección múltiple'
             ],
-            [
-                'name' => 'yes_no',
-                'description' => 'Sí y No'
-            ],
         ];
 
         DB::beginTransaction();
