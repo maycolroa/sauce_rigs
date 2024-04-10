@@ -45,6 +45,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\SendNewsletterEmail',
         'App\Console\Commands\UpdateEmployeeContratFilesExpired',
         'App\Console\Commands\NotificationSendContract',
+        'App\Console\Commands\NotifyNextMaintenanceVehicle',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -69,6 +70,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('days-alert-expiration-date-contract-files-upload')
             ->timezone('America/Bogota')
             ->dailyAt('01:00');
+
+        $schedule->command('notify-next-maintenance-vehicle')
+            ->timezone('America/Bogota')
+            ->dailyAt('06:00');
 
         /*$schedule->command('checkLastLoginNotification')
             ->timezone('America/Bogota')
