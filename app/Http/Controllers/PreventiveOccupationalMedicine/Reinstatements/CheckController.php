@@ -218,11 +218,8 @@ class CheckController extends Controller
      */
     public function store(CheckRequest $request)
     {
-        \Log::info($request);
         $this->validate($request, CheckManager::getProcessRules($request));
 
-        \Log::info($request);
-        
         try
         {
             DB::beginTransaction();
