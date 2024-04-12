@@ -218,7 +218,10 @@ class CheckController extends Controller
      */
     public function store(CheckRequest $request)
     {
+        \Log::info($request);
         $this->validate($request, CheckManager::getProcessRules($request));
+
+        \Log::info($request);
         
         try
         {
@@ -252,13 +255,6 @@ class CheckController extends Controller
                     }    
                 }
             }
-            /*else if ($formModel == 'mitsubishi')
-            {
-                $check['cie10_code_2_id'] = $request['cie10_code_2_id'];
-                $check['laterality_2'] = $request['laterality_2'];
-                $check['cie10_code_3_id'] = $request['cie10_code_3_id'];
-                $check['laterality_3'] = $request['laterality_3'];
-            }*/
 
             if (!$check->save())
                 return $this->respondHttp500();

@@ -201,7 +201,7 @@ class ContractLesseeController extends Controller
                 $log_modify->company_id = $this->company;
                 $log_modify->modifier_user = $this->user->id;
                 $log_modify->modified_user = $user->id;
-                $log_modify->modification = 'Se asigno como usuario rsponsable de la contratista '.$contract->social_reason;
+                $log_modify->modification = 'Se asigno como usuario responsable de la contratista '.$contract->social_reason;
                 $log_modify->save();
             }
 

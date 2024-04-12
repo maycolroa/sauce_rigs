@@ -13,6 +13,7 @@ use App\Jobs\Administrative\Employees\EmpployeeImportJob;
 use App\Jobs\Administrative\Employees\EmployeeImportInactiveJob;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+use Hash;
 use Datetime;
 
 class EmployeesController extends Controller

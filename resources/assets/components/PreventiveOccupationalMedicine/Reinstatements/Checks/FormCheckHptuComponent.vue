@@ -615,7 +615,8 @@ export default {
           oldLaborNotes: [],
           new_labor_notes_relations: [],
           oldLaborNotesRelations: [],
-          files: []
+          files: [],
+          refund_classification: ''
         };
       }
     }
