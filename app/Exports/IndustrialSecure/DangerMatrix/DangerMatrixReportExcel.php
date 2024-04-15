@@ -70,7 +70,11 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         {
           foreach ($itemMatrix->activities as $keyActivity => $itemActivity)
           {
-            $activity_dangers = $itemActivity->dangers()->inDangers($this->filters['dangers'], $this->filters['filtersType']['dangers'])->inDangerDescription($this->filters['dangerDescription'], $this->filters['filtersType']['dangerDescription'])->get();
+            $activity_dangers = $itemActivity->dangers()->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
+            ->inDangers($this->filters['dangers'], $this->filters['filtersType']['dangers'])
+            ->inDangerDescription($this->filters['dangerDescription'], $this->filters['filtersType']['dangerDescription'])
+            ->inPositions($this->filters['positions'], $this->filters['filtersType']['positions'])
+            ->get();
 
             foreach ($activity_dangers as $keyDanger => $itemDanger)
             {

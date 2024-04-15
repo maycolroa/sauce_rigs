@@ -173,6 +173,16 @@ class DangerMatrixController extends Controller
                         $qualificationsData[$itemQ->type_id] = ["value_id"=>$itemQ->value_id, "type_id"=>$itemQ->type_id];
                     }
 
+                    $positions = [];
+
+                    foreach ($itemDanger->positions as $key => $value)
+                    {                
+                        array_push($positions, $value->multiselect());
+                    }
+
+                    $itemDanger->multiselect_cargo = $positions;
+                    $itemDanger->position_id = $positions;
+
                     $itemDanger->qualificationsData = $qualificationsData;
                     $itemDanger->actionPlan = ActionPlan::model($itemDanger)->prepareDataComponent();
                 }
@@ -654,6 +664,13 @@ class DangerMatrixController extends Controller
 
                     if(!$danger->save()){
                         return $this->respondHttp500();
+                    }
+
+                    if (isset($itemD['position_id']))
+                    {
+                        $positions = $this->getValuesForMultiselect($itemD['position_id']);
+
+                        $danger->positions()->sync($positions);
                     }
 
                     $qualification_old_value = $danger->qualification;

@@ -100,6 +100,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             'sau_dm_activity_danger.student_quantity',
             'sau_dm_activity_danger.esc_quantity',            
             'sau_dm_activity_danger.observations',
+            'GROUP_CONCAT(sau_employees_positions.name) AS cargos',
             'sau_dm_activity_danger.existing_controls_engineering_controls',
             'sau_dm_activity_danger.existing_controls_substitution',
             'sau_dm_activity_danger.existing_controls_warning_signage',
@@ -127,7 +128,11 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
             ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
             ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
+            ->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
+            ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_dm_activity_danger_positions.employee_position_id')
             ->where('sau_dangers_matrix.id', $this->danger_matrix_id);
+
+        $dangerMatrix->groupBy('sau_dangers_matrix.id','sau_dangers_matrix.name','sau_dm_activities.id','sau_dm_activities.name','sau_danger_matrix_activity.type_activity','sau_dm_activity_danger.id','sau_dm_dangers.id','sau_dm_dangers.name', 'sau_users.name');
 
         if (!isset($this->configurations['show_action_plans']) || ( isset($this->configurations['show_action_plans']) && $this->configurations['show_action_plans'] == 'SI') )
         {
@@ -143,7 +148,8 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             $dangerMatrix
                 ->leftJoin('sau_action_plans_activity_module', 'sau_action_plans_activity_module.item_id', 'sau_dm_activity_danger.id')
                 ->leftJoin('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
-                ->leftJoin('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id');
+                ->leftJoin('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+                ->groupBy('sau_dangers_matrix.id','sau_dangers_matrix.name','sau_dm_activities.id','sau_dm_activities.name','sau_danger_matrix_activity.type_activity','sau_dm_activity_danger.id','sau_dm_dangers.id','sau_dm_dangers.name','sau_action_plans_activities.description', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'sau_action_plans_activities.state', 'sau_action_plans_activities.observation', 'sau_users.name');
         }
 
         $dangerMatrix->selectRaw(implode(",", $selecs));
@@ -200,6 +206,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             (String) $data->visitor_quantity,
             (String) $data->student_quantity,
             (String) $data->esc_quantity,
+            $data->cargos,
             str_replace('=', '', $data->observations),
             $data->existing_controls_engineering_controls,
             $data->existing_controls_substitution,
@@ -284,6 +291,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             'Expuestos - Visitantes',
             'Expuestos - Estudiantes',
             'Expuestos - Arrendatarios',
+            'Cargos',
             'Observaciones',
             'Controles Existentes - Controles de ingenieria',
             'Controles Existentes - Sustitución',

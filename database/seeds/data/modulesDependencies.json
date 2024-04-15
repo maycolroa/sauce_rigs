@@ -60,7 +60,9 @@
             "dangers",
             "configurations",
             "actionPlans",
-            "customLabels"
+            "customLabels",
+            "positions",
+            "logos"
         ]
     },
     {

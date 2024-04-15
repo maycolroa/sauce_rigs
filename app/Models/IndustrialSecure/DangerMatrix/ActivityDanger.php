@@ -52,6 +52,23 @@ class ActivityDanger extends Model
         return $this->hasMany(QualificationDanger::class, 'activity_danger_id');
     }
 
+    public function positions()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Positions\EmployeePosition', 'sau_dm_activity_danger_positions', 'activity_danger_id');
+    }
+
+    public function scopeInPositions($query, $positions, $typeSearch = 'IN')
+    {
+        if (COUNT($positions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+        }
+    }
+
     /**
      * filters checks through the given dangers
      * @param  Illuminate\Database\Eloquent\Builder $query

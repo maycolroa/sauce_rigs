@@ -42,6 +42,10 @@
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esc_quantity" label="Arrendatarios" type="number" name="esc_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esc_quantity`)" placeholder="0"></vue-input>
                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.observations" label="Observaciones" name="observations" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.observations`)" placeholder="Observaciones"></vue-textarea>
                 </b-form-row>
+                <b-form-row>
+                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="danger.position_id" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.position_id`)" :selected-object="danger.multiselect_cargo" name="position_id" :label="keywordCheck('positions')" placeholder="Seleccione una opción" :url="positionsDataUrl" :multiple="true">
+                  </vue-ajax-advanced-select>
+                </b-form-row>
               </b-card>
             </tab-content>
 
@@ -232,6 +236,7 @@ export default {
             visitor_quantity: '',
             student_quantity: '',
             esc_quantity: '',
+            position_id: '',
             observations: '',
             existing_controls_engineering_controls: '',
             existing_controls_substitution: '',
@@ -276,7 +281,8 @@ export default {
       tagsAdministrativeControlsDataUrl: '/selects/tagsAdministrativeControls',
       tagsEppDataUrl: '/selects/tagsEpp',
       tagsSubstitutionDataUrl: '/selects/tagsSubstitution',
-      tagsDangerDescriptionDataUrl: '/selects/tagsDangerDescription'
+      tagsDangerDescriptionDataUrl: '/selects/tagsDangerDescription',
+      positionsDataUrl: '/selects/positions'
     };
   },
   methods: {

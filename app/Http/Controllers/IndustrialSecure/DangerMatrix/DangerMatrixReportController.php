@@ -81,6 +81,9 @@ class DangerMatrixReportController extends Controller
             
             $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
             //$matrix = $this->getValuesForMultiselect($request->matrix);
+
+            $positions = !$init ? $this->getValuesForMultiselect($request->positions) : (isset($filters['positions']) ? $this->getValuesForMultiselect($filters['positions']) : []);
+
             $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
             /***********************************************/
 
@@ -99,7 +102,10 @@ class DangerMatrixReportController extends Controller
             {
                 foreach ($itemMatrix->activities as $keyActivity => $itemActivity)
                 {
-                    $activity_dangers = $itemActivity->dangers()->inDangers($dangers, $filtersType['dangers'])->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])->get();
+                    $activity_dangers = $itemActivity->dangers()->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
+                    ->inDangers($dangers, $filtersType['dangers'])->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
+                    ->inPositions($positions, isset($filtersType['positions']) ? $filtersType['positions'] : 'IN')
+                    ->get();
 
                     foreach ($activity_dangers as $keyDanger => $itemDanger)
                     {
@@ -232,6 +238,9 @@ class DangerMatrixReportController extends Controller
         $dangers = !$init ? $this->getValuesForMultiselect($request->dangers) : (isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : []);
         
         $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
+
+        $positions = !$init ? $this->getValuesForMultiselect($request->positions) : (isset($filters['positions']) ? $this->getValuesForMultiselect($filters['positions']) : []);
+
         //$matrix = $this->getValuesForMultiselect($request->matrix);
         $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
         /***********************************************/
@@ -256,11 +265,13 @@ class DangerMatrixReportController extends Controller
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
+        ->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
         ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->inPositions($positions, isset($filtersType['positions']) ? $filtersType['positions'] : 'IN')
         //->inMatrix($matrix, $filtersType['matrix'])
         ->inDangers($dangers, $filtersType['dangers'])
         ->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
@@ -285,6 +296,7 @@ class DangerMatrixReportController extends Controller
                 "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
                 "dangers" => $this->getValuesForMultiselect($request->dangers),
                 "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
+                "positions" => $this->getValuesForMultiselect($request->positions),
                 //"matrix" => $this->getValuesForMultiselect($request->matrix),
                 "row" => $request->row,
                 "col" => $request->col,

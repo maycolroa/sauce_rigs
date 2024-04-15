@@ -49,7 +49,13 @@ export default [
           key: 'years',
           type: 'select',
           label: 'Año'
-        }
+        },
+        {
+          url: '/selects/positions',
+          key: 'positions',
+          type: 'select',
+          label: 'positions'
+        },
       ]
     },
     {

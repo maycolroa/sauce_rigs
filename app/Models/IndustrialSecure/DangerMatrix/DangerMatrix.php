@@ -240,6 +240,20 @@ class DangerMatrix extends Model
         return $query;
     }
 
+    public function scopeInPositions($query, $positions, $typeSearch = 'IN')
+    {
+        if (COUNT($positions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+        }
+
+        return $query;
+    }
+
     public function scopeInYears($query, $year, $typeSearch = 'IN')
     {
         if (COUNT($year) > 0)

@@ -30,7 +30,8 @@ class DangerMatrixHistoryController extends Controller
             'sau_dm_change_histories.*',
             'sau_users.name as name'
         )
-        ->join('sau_users', 'sau_users.id', 'sau_dm_change_histories.user_id');
+        ->join('sau_users', 'sau_users.id', 'sau_dm_change_histories.user_id')
+        ->orderBy('id', 'DESC');
 
         if ($request->has('modelId') && $request->get('modelId'))
             $histories->where('sau_dm_change_histories.danger_matrix_id', '=', $request->get('modelId'));
