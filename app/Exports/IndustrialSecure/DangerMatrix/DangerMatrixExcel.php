@@ -132,7 +132,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_dm_activity_danger_positions.employee_position_id')
             ->where('sau_dangers_matrix.id', $this->danger_matrix_id);
 
-        $dangerMatrix->groupBy('sau_dangers_matrix.id','sau_dangers_matrix.name','sau_dm_activities.id','sau_dm_activities.name','sau_danger_matrix_activity.type_activity','sau_dm_activity_danger.id','sau_dm_dangers.id','sau_dm_dangers.name', 'sau_users.name');
+        $dangerMatrix->groupBy('sau_dangers_matrix.id','sau_dangers_matrix.name','sau_dm_activities.id','sau_dm_activities.name','sau_danger_matrix_activity.type_activity','sau_dm_activity_danger.id','sau_dm_dangers.id','sau_dm_dangers.name');
 
         if (!isset($this->configurations['show_action_plans']) || ( isset($this->configurations['show_action_plans']) && $this->configurations['show_action_plans'] == 'SI') )
         {
