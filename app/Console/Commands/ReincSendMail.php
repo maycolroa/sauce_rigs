@@ -144,8 +144,8 @@ class ReincSendMail extends Command
                             ]);
                         }
 
-                        if ($user->email == 'santiago.cuartas@floreseltrigal.com' || $user->email == 'laura.bajonero@floresdelhato.com')
-                        {
+                        /*if ($user->email == 'santiago.cuartas@floreseltrigal.com' || $user->email == 'laura.bajonero@floresdelhato.com')
+                        {*/
 
                             NotificationMail::
                                 subject('Reincorporaciones: Eventos pendientes')
@@ -157,7 +157,7 @@ class ReincSendMail extends Command
                                 ->table($table)
                                 ->company($company)
                                 ->send();
-                        }
+                        //}
                     }     
                 });
         }

@@ -47,7 +47,7 @@ class NotifyNextMaintenanceVehicle extends Command
         ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
         ->withoutGlobalScopes()
         ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-        ->where('sau_license_module.module_id', 39 /*32 prod, 34 local*/);
+        ->where('sau_license_module.module_id', 39 /*39 prod, 38 local*/);
 
         $companies = $companies->pluck('sau_licenses.company_id');
 
@@ -61,7 +61,7 @@ class NotifyNextMaintenanceVehicle extends Command
             $users = $users->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
-                return $user->can('roadsafety_receive_notifications', $company);// && !$user->isSuperAdmin($company);
+                return $user->can('roadsafety_receive_notifications', $company) && !$user->isSuperAdmin($company);
             });
 
 
@@ -73,7 +73,6 @@ class NotifyNextMaintenanceVehicle extends Command
 
             foreach ($vehicles as $key => $vehicle) 
             {
-                \Log::info($vehicle->id);
                 $maintenance = Maintenance::select('*')
                 ->where('vehicle_id', $vehicle->id)
                 ->whereRaw('CURDATE() = DATE_ADD(sau_rs_vehicle_maintenance.next_date, INTERVAL -5 DAY)')
@@ -83,7 +82,6 @@ class NotifyNextMaintenanceVehicle extends Command
 
                 if ($maintenance)
                 {
-                    \Log::info($maintenance);
                     array_push($table, [
                         'placa' => $vehicle->plate,
                         'Fecha de mantenimiento' => $maintenance->next_date
@@ -91,11 +89,8 @@ class NotifyNextMaintenanceVehicle extends Command
                 }
             }
 
-            \Log::info($table);
-
             if (COUNT($users) > 0)
             {
-                \Log::info($users);
                 foreach ($users as $key => $user) 
                 {
                     NotificationMail::
