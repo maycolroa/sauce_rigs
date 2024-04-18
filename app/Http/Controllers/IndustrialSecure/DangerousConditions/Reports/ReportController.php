@@ -220,8 +220,6 @@ class ReportController extends Controller
             $report->locations = $this->prepareDataLocationForm($report);
             $report->type_condition = $report->condition->condition_type_id;
 
-            \Log::info($report->type_condition);
-
             return $this->respondHttp200([
                 'data' => $report,
             ]);

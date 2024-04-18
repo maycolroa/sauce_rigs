@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixExcel;
+use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixPruebaExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 
 class DangerMatrixExportJob implements ShouldQueue

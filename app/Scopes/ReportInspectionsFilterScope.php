@@ -49,22 +49,46 @@ class ReportInspectionsFilterScope implements Scope
             if ($locationLevelForm == 'Regional')
             {
                 if (count($regionals) > 0)
-                  $builder->whereIn('sau_employees_regionals.id', $regionals);
+                {
+                  $builder->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+                  ->whereIn('sau_employees_regionals.id', $regionals);
+                }
             }
             else if ($locationLevelForm == 'Sede')
             {
               if (count($regionals) > 0 && count($headquarters) > 0)
-                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters);
+              {
+                $builder->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+                ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+                ->whereIn('sau_employees_regionals.id', $regionals)
+                ->whereIn('sau_employees_headquarters.id', $headquarters);
+              }
             }
             else if ($locationLevelForm == 'Proceso')
             {
               if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
-                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters)->whereIn('sau_employees_processes.id', $processes);
+              {
+                $builder->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+                ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+                ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
+                ->whereIn('sau_employees_regionals.id', $regionals)
+                ->whereIn('sau_employees_headquarters.id', $headquarters)
+                ->whereIn('sau_employees_processes.id', $processes);
+              }
             }
             else if ($locationLevelForm == 'Área')
             {                        
               if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
-                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters)->whereIn('sau_employees_processes.id', $processes)->whereIn('sau_employees_areas.id', $areas);
+              {
+                $builde->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+                ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+                ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
+                ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+                ->whereIn('sau_employees_regionals.id', $regionals)
+                ->whereIn('sau_employees_headquarters.id', $headquarters)
+                ->whereIn('sau_employees_processes.id', $processes)
+                ->whereIn('sau_employees_areas.id', $areas);
+              }
             }
           }
         }
