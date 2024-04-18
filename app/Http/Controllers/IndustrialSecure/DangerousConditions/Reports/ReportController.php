@@ -206,7 +206,7 @@ class ReportController extends Controller
     {
         try
         {
-            $report = Report::findOrFail($id);
+            $report = Report::withoutGlobalScopes()->findOrFail($id);
 
             $report->user;
             $report->multiselect_condition = $report->condition ? $report->condition->multiselect() : [];
