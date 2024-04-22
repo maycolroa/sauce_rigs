@@ -141,4 +141,13 @@ class Driver extends Model
 
         return $query;
     }
+
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_rs_drivers.date_license', $dates);
+            return $query;
+        }
+    }
 }

@@ -964,6 +964,11 @@ export default [
           key: 'typeLicense',
           type: 'select',
           label: 'Tipo de licencia'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Vigencia de licencia',
         }
       ]
     },

@@ -93,6 +93,18 @@ class DriversController extends Controller
                 $drivers->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
         }
 
+        $dates_request = isset($filters["dateRange"]) ? explode('/', $filters["dateRange"]) : [];
+
+        $dates = [];
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, $this->formatDateToSave($dates_request[0]));
+            array_push($dates, $this->formatDateToSave($dates_request[1]));
+        }
+            
+        $drivers->betweenDate($dates);
+
         return Vuetable::of($drivers)
                     ->make();
     }
