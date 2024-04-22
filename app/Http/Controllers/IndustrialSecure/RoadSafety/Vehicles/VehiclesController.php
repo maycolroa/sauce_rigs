@@ -18,10 +18,12 @@ use App\Models\IndustrialSecure\RoadSafety\HistoryChanges;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Vehicles\VehicleRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\Filtertrait;
 use DB;
 
 class VehiclesController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -64,6 +66,60 @@ class VehiclesController extends Controller
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rs_vehicles.employee_area_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rs_vehicles.employee_process_id')
         ->orderBy('id', 'DESC');
+
+        $url = "/industrialsecure/roadsafety/vehicles";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["typeVehicle"]))
+                $vehicles->inTypeVehicle($this->getValuesForMultiselect($filters["typeVehicle"]), $filters['filtersType']['typeVehicle']);
+
+            if (isset($filters["regionals"]))
+                $vehicles->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+            if (isset($filters["headquarters"]))
+                $vehicles->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+            if (isset($filters["processes"]))
+                $vehicles->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            
+            if (isset($filters["areas"]))
+                $vehicles->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            $dates_request_soat = explode('/', $filters["dateRangeSoat"]);
+            $dates_request_tm = explode('/', $filters["dateRangeTm"]);
+            $dates_request_rc = explode('/', $filters["dateRangeRc"]);
+
+            $dates_soat = [];
+            $dates_tm = [];
+            $dates_rc = [];
+
+            if (COUNT($dates_request_soat) == 2)
+            {
+                array_push($dates_soat, $this->formatDateToSave($dates_request_soat[0]));
+                array_push($dates_soat, $this->formatDateToSave($dates_request_soat[1]));
+            }
+                
+            $vehicles->betweenDateSoat($dates_soat);
+
+            if (COUNT($dates_request_tm) == 2)
+            {
+                array_push($dates_tm, $this->formatDateToSave($dates_request_tm[0]));
+                array_push($dates_tm, $this->formatDateToSave($dates_request_tm[1]));
+            }
+                
+            $vehicles->betweenDateTm($dates_tm);
+
+            if (COUNT($dates_request_rc) == 2)
+            {
+                array_push($dates_rc, $this->formatDateToSave($dates_request_rc[0]));
+                array_push($dates_rc, $this->formatDateToSave($dates_request_rc[1]));
+            }
+                
+            $vehicles->betweenDateRc($dates_rc);
+        }
 
         return Vuetable::of($vehicles)
                     ->make();
@@ -545,6 +601,18 @@ class VehiclesController extends Controller
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($tags)
             ]);
+        }
+        else
+        {
+            $tags = TagsTypeVehicle::selectRaw("
+                sau_rs_tag_type_vehicles.id as id,
+                sau_rs_tag_type_vehicles.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
         }
     }
 

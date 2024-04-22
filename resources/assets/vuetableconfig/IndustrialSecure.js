@@ -2773,7 +2773,7 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/roadsafety/vehicles/data',
         filterColumns: true,
-        //configNameFilter: 'dangerousconditions-inspections'
+        configNameFilter: 'industrialsecure-roadsafety-vehicles'
     }
 },
 {

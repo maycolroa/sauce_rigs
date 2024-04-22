@@ -882,4 +882,54 @@ export default [
         }
       ]
     },
+    {
+      name: 'industrialsecure-roadsafety-vehicles',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/tagsRsTypeVehicle',
+          key: 'typeVehicle',
+          type: 'select',
+          label: 'Tipo de vehiculo'
+        },
+        {
+          key: 'dateRangeSoat',
+          type: 'dateRange',
+          label: 'Fecha de vencimiento SOAT',
+        },
+        {
+          key: 'dateRangeTm',
+          type: 'dateRange',
+          label: 'Fecha de vencimiento Tecno Mecanica',
+        },
+        {
+          key: 'dateRangeRc',
+          type: 'dateRange',
+          label: 'Fecha de vencimiento Poliza de responsabilidad civil',
+        }
+      ]
+    },
 ];
