@@ -594,7 +594,7 @@
                 </tr>
                 @foreach($check->laborNotes as $labor)
                 <tr>
-                    <td>{{$labor->madeBy ? $tracing->madeBy->name : ''}}</td>
+                    <td>{{$labor->madeBy ? $labor->madeBy->name : ''}}</td>
                     <td>{{date('Y-m-d', strtotime($labor->created_at))}}</td>
                     <td>{{$labor->description}}</td>
                 </tr>
