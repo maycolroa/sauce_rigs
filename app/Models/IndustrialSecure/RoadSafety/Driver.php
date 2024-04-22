@@ -44,4 +44,101 @@ class Driver extends Model
             'value' => $this->id
         ];
     }
+
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_regional_id', $regionals);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given headquarters
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $headquarters
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if (COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_headquarter_id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given processes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $processes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_process_id', $processes);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given areas
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $areas
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    public function scopeInTypeLicenses($query, $typeLicenses, $typeSearch = 'IN')
+    {
+        if (COUNT($typeLicenses) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_rs_drivers.type_license_id', $typeLicenses);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_rs_drivers.type_license_id', $typeLicenses);
+        }
+
+        return $query;
+    }
 }

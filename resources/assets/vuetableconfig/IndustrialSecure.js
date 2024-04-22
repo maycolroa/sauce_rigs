@@ -2944,7 +2944,7 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/roadsafety/drivers/data',
         filterColumns: true,
-        //configNameFilter: 'dangerousconditions-inspections'
+        configNameFilter: 'industrialsecure-roadsafety-drivers'
     }
 },
 {

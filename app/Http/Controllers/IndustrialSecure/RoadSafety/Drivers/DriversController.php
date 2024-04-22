@@ -13,11 +13,13 @@ use App\Models\IndustrialSecure\RoadSafety\TagsTypeLicense;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Drivers\DriverRequest;
 use App\Models\Administrative\Positions\EmployeePosition;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
 
 class DriversController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -68,6 +70,28 @@ class DriversController extends Controller
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')
         ->groupBy('sau_rs_drivers.id')
         ->orderBy('id', 'DESC');
+
+        $url = "/industrialsecure/roadsafety/drivers";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["typeLicense"]))
+                $drivers->inTypeLicenses($this->getValuesForMultiselect($filters["typeLicense"]), $filters['filtersType']['typeLicense']);
+
+            if (isset($filters["regionals"]))
+                $drivers->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+            if (isset($filters["headquarters"]))
+                $drivers->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+            if (isset($filters["processes"]))
+                $drivers->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            
+            if (isset($filters["areas"]))
+                $drivers->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+        }
 
         return Vuetable::of($drivers)
                     ->make();
@@ -340,6 +364,18 @@ class DriversController extends Controller
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($tags)
             ]);
+        }
+        else
+        {
+            $tags = TagsTypeLicense::selectRaw("
+                sau_rs_tag_type_license.id as id,
+                sau_rs_tag_type_license.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($tags);
         }
     }
 
