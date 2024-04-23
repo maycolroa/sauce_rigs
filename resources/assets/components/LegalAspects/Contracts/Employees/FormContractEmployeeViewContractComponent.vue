@@ -7,13 +7,45 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"/>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
+      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_of_birth" label="Fecha de nacimiento" :full-month-name="true" placeholder="Seleccione la fecha de nacimiento" :error="form.errorsFor('date_of_birth')" name="date_of_birth" :disabled-dates="disabledDatesBirth">
+          </vue-datepicker>
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.sex" :error="form.errorsFor('sex')" :multiple="false" :options="sexs" :hide-selected="false" name="sex" label="Sexo" placeholder="Seleccione el sexo">
+          </vue-advanced-select>
     </b-form-row>
+
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione una opción" :url="afpDataUrl">
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.phone_residence" label="Teléfono de residencia" type="text" name="phone_residence" :error="form.errorsFor('phone_residence')" placeholder="Teléfono de residencia"/>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.phone_movil" label="Teléfono de movil" type="text" name="phone_movil" :error="form.errorsFor('phone_movil')" placeholder="Teléfono de movil"/>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.direction" label="Dirección" type="text" name="direction" :error="form.errorsFor('direction')" placeholder="Dirección"/>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"/>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condicion de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')">
+                                    </vue-radio>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact" label="Contacto de eergencia" type="text" name="emergency_contact" :error="form.errorsFor('emergency_contact')" placeholder="Contacto de eergencia"/>
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rh" :error="form.errorsFor('rh')" :multiple="false" :options="rhOptions" :hide-selected="false" name="rh" label="Tipo de Sangre" placeholder="Seleccione el tipo">
+          </vue-advanced-select>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.salary" label="Salario" type="number" name="salary" :error="form.errorsFor('salary')" placeholder="Salario"/>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione una opción" :url="afpDataUrl">
       </vue-ajax-advanced-select>
     </b-form-row>
+
+    <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')" placeholder="Seleccione una opción" :url="epsDataUrl">
+          </vue-ajax-advanced-select>
+    </b-form-row>
+
     <div class="col-md-12">
       <blockquote class="blockquote text-center">
           <p class="mb-0">Actividades</p>
@@ -142,6 +174,7 @@ import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
 
@@ -152,7 +185,8 @@ export default {
     VueInput,
     VueDatepicker,
     PerfectScrollbar,
-    VueAdvancedSelect
+    VueAdvancedSelect,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -168,6 +202,12 @@ export default {
         return [];
       }
     },
+    sexs: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     employee: {
       default() {
         return {
@@ -175,7 +215,17 @@ export default {
             identification: '',
             position: '',
             email: '',
-            employee_afp_id: '',          
+            employee_afp_id: '',   
+            employee_eps_id: '',  
+            sex:'',    
+            phone_residence: '',
+            phone_movil: '',
+            direction: '',
+            disability_condition: '',
+            emergency_contact: '',
+            rh:'',
+            salary: '',
+            date_of_birth: '',       
             activities: [],
             delete: {
               files: []
@@ -201,7 +251,29 @@ export default {
         to: new Date()
       },
       ready: false,
-      cancelUrl: { name: 'legalaspects-contracts-employees-view-contract', id: this.contract_id}
+      cancelUrl: { name: 'legalaspects-contracts-employees-view-contract', id: this.contract_id},
+      disabledDatesBirth: {
+        from: new Date()
+      },
+      siNo: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
+      epsDataUrl: '/selects/eps',
+      rhOptions: [
+          {name: 'A', value: 'A'},
+          {name: 'B', value: 'B'},
+          {name: 'O', value: 'O'},
+          {name: 'AB', value: 'AB'},
+          {name: 'A+', value: 'A+'},
+          {name: 'A-', value: 'A-'},
+          {name: 'B+', value: 'B+'},
+          {name: 'B-', value: 'B-'},
+          {name: 'O+', value: 'O+'},
+          {name: 'O-', value: 'O-'},
+          {name: 'AB+', value: 'AB+'},
+          {name: 'AB-', value: 'AB-'},
+        ],
     };
   },
   methods: {

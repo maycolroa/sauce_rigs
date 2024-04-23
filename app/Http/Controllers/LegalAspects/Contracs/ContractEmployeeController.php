@@ -136,6 +136,7 @@ class ContractEmployeeController extends Controller
             $employee->token = Hash::make($employee->email.$employee->identification);
             $tok = str_replace("/", "a", $employee->token);
             $employee->token = $tok;
+            $employee->date_of_birth = isset($request->date_of_birth) ? (Carbon::createFromFormat('D M d Y',$request->date_of_birth))->format('Ymd') : NULL;
 
             if (!$employee->save())
                 return $this->respondHttp500();
@@ -185,6 +186,8 @@ class ContractEmployeeController extends Controller
         {
             $contractEmployee = ContractEmployee::findOrFail($id);
             $contractEmployee->multiselect_afp = $contractEmployee->afp ? $contractEmployee->afp->multiselect() : [];
+            $contractEmployee->multiselect_eps = $contractEmployee->eps ? $contractEmployee->eps->multiselect() : [];
+            $contractEmployee->date_of_birth = $contractEmployee->date_of_birth ? (Carbon::createFromFormat('Y-m-d',$contractEmployee->date_of_birth))->format('D M d Y') : NULL;
 
             $activities = $contractEmployee->activities->transform(function($activity, $index) use ($contractEmployee) {
                 $activity->key = Carbon::now()->timestamp + rand(1,10000);
@@ -205,6 +208,7 @@ class ContractEmployeeController extends Controller
                 'data' => $contractEmployee,
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -239,6 +243,7 @@ class ContractEmployeeController extends Controller
         try
         {
             $employeeContract->fill($request->all());
+            $employeeContract->date_of_birth = isset($request->date_of_birth) ? (Carbon::createFromFormat('D M d Y',$request->date_of_birth))->format('Ymd') : NULL;
 
             if (!$employeeContract->token)
                 $employeeContract->token = Hash::make($employeeContract->email.$employeeContract->identification);

@@ -5,6 +5,7 @@ namespace App\Models\LegalAspects\Contracts;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 use App\Models\Administrative\Employees\EmployeeAFP;
+use App\Models\Administrative\Employees\EmployeeEPS;
 
 class ContractEmployee extends Model
 {
@@ -21,7 +22,17 @@ class ContractEmployee extends Model
         'company_id',
         'token',
         'employee_afp_id',
-        'state'
+        'state',
+        'employee_eps_id',
+        'sex',    
+        'phone_residence',
+        'phone_movil',
+        'direction',
+        'disability_condition',
+        'emergency_contact',
+        'rh',
+        'salary',
+        'date_of_birth'
     ];
 
     public function contract()
@@ -37,5 +48,10 @@ class ContractEmployee extends Model
     public function afp()
     {
         return $this->belongsTo(EmployeeAFP::class, 'employee_afp_id');
+    }
+
+    public function eps()
+    {
+        return $this->belongsTo(EmployeeEPS::class, 'employee_eps_id');
     }
 }

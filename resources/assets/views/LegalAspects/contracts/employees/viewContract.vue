@@ -11,7 +11,10 @@
             <form-contract-employee-view
                 :employee="data"
                 :view-only="true"
+                :sexs="sexs"
                 :contract_id="contract_id"
+                activitiesUrl="/selects/contracts/ctActivitiesContracts"
+                afp-data-url="/selects/afp"
                 :states="states"/>
         </b-card-body>
       </b-card>
@@ -36,6 +39,7 @@ export default {
     return {
       data: [],
       contract_id: '',
+			sexs: [],
       states: []
     }
   },
@@ -50,6 +54,7 @@ export default {
     });
 
     this.fetchSelect('states', '/selects/contracts/statesFile')
+    this.fetchSelect('sexs', '/selects/sexs')
   },
   methods: {
     fetchSelect(key, url)
