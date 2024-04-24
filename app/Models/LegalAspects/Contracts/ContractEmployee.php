@@ -32,7 +32,9 @@ class ContractEmployee extends Model
         'emergency_contact',
         'rh',
         'salary',
-        'date_of_birth'
+        'date_of_birth',
+        'disability_description',
+        'emergency_contact_phone',
     ];
 
     public function contract()

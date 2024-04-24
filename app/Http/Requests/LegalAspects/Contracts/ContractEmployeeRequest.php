@@ -4,9 +4,13 @@ namespace App\Http\Requests\LegalAspects\Contracts;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Session;
+use App\Traits\ContractTrait;
+use Illuminate\Support\Facades\Auth;
 
 class ContractEmployeeRequest extends FormRequest
 {
+    use ContractTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -71,12 +75,27 @@ class ContractEmployeeRequest extends FormRequest
     public function rules()
     {
         $id = $this->input('id');
+        $contract = $this->getContractUser(Auth::user()->id, Session::get('company_id'));
 
         return [
-            'identification' => 'required',
+            'identification' => 'required|string|unique:sau_ct_contract_employees,identification,'.$id.',id,contract_id,'.$contract->id,
             'email' => 'required|email',
             'name' => 'required',
             'position' => 'required',
+            'employee_afp_id' => 'required',
+            'employee_eps_id' => 'required',
+            'sex' => 'required',    
+            'phone_residence' => 'required',
+            'phone_movil' => 'required',
+            'direction' => 'required',
+            'disability_condition' => 'required',
+            'disability_description' => 'required_if:disability_condition,SI',
+            'emergency_contact' => 'required',
+            'emergency_contact_phone' => 'required',
+            'rh' => 'required',
+            'salary' => 'required',
+            'date_of_birth' => 'required',
+            'activities' => 'required|array',
             'activities.*.selected' => 'required',
             'activities.*.documents.*.files.*.name' => 'required',
             'activities.*.documents.*.files.*.file' => 'required'

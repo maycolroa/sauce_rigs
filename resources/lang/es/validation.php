@@ -405,7 +405,17 @@ return [
       'policy_number' => 'Número de póliza',
       'policy_entity' => 'Entidad que expide',
       'expedition_date_policy' => 'Fecha de expedición',
-      'due_date_policy' => 'Fecha de vencimiento',
+      'due_date_policy' => 'Fecha de vencimiento',      
+      'employee_afp_id' => 'AFP',
+      'phone_residence' => 'Teléfono de residencia',
+      'phone_movil' => 'Teléfono movil',
+      'direction' => 'Dirección',
+      'disability_condition' => 'Condicion de discapacidad',
+      'disability_description' => 'Descripción Condicion de discapacidad',
+      'emergency_contact' => 'Contacto de emergencia',
+      'emergency_contact_phone' => 'Telefono de contacto de emergencia',
+      'salary' => 'Salario',
+      'rh' => 'Tipo de sangre'
     ],
 
 ];
