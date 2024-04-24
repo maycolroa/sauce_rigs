@@ -21,6 +21,10 @@ use App\Models\LegalAspects\Contracts\ListCheckQualification;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\LegalAspects\Contracts\TagsSocialSecurityPaymentOperator;
+use App\Models\LegalAspects\Contracts\TagsIps;
+use App\Models\LegalAspects\Contracts\TagsArl;
+use App\Models\LegalAspects\Contracts\TagsHeightTrainingCenter;
 use App\Models\Administrative\Users\LogUserModify;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
@@ -417,6 +421,7 @@ class ContractLesseeController extends Controller
      */
     public function update(ContractRequest $request, ContractLesseeInformation $contract)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "documents.*.files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -435,6 +440,18 @@ class ContractLesseeController extends Controller
 
         DB::beginTransaction();
 
+        $arl = $this->tagsPrepare($request->get('arl'));
+        $this->tagsSave($arl, TagsArl::class);
+
+        $social_security_payment_operator = $this->tagsPrepare($request->get('social_security_payment_operator'));
+        $this->tagsSave($social_security_payment_operator , TagsSocialSecurityPaymentOperator::class);
+
+        $ips = $this->tagsPrepare($request->get('ips'));
+        $this->tagsSave($ips, TagsIps::class);
+
+        $height_training_centers = $this->tagsPrepare($request->get('height_training_centers'));
+        $this->tagsSave($height_training_centers, TagsHeightTrainingCenter::class);
+
         try
         {
             if ($request->active == 'SI' && ($request->active != $contract->active))
@@ -451,6 +468,11 @@ class ContractLesseeController extends Controller
             if ($request->has('isInformation'))
             {
                 $contract->completed_registration = 'SI';
+
+                $contract->arl = $arl->implode(',');
+                $contract->social_security_payment_operator = $social_security_payment_operator->implode(',');
+                $contract->ips = $ips->implode(',');
+                $contract->height_training_centers = $height_training_centers->implode(',');
 
                 if ($request->has('documents') && COUNT($request->documents) > 0)
                     $this->saveDocumentsContracts($contract, $request->documents);
@@ -1755,5 +1777,125 @@ class ContractLesseeController extends Controller
             $data = [];
 
         return  $data;
+    }
+
+    public function multiselectSocialSecurity(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsSocialSecurityPaymentOperator::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsSocialSecurityPaymentOperator::selectRaw("
+                sau_ct_tag_social_security_payment_operator.id as id,
+                sau_ct_tag_social_security_payment_operator.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
+    }
+
+    public function multiselectIps(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsIps::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsIps::selectRaw("
+                sau_ct_tag_ips.id as id,
+                sau_ct_tag_ips.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
+    }
+
+    public function multiselectHeightTrainingCenter(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsHeightTrainingCenter::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsHeightTrainingCenter::selectRaw("
+                sau_ct_tag_height_training_centers.id as id,
+                sau_ct_tag_height_training_centers.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
+    }
+
+    public function multiselectArl(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsArl::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsArl::selectRaw("
+                sau_ct_tag_arl.id as id,
+                sau_ct_tag_arl.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
     }
 }

@@ -68,7 +68,9 @@
 
                     <b-form-row>
                         <vue-input class="col-md-6" v-model="form.economic_activity_of_company" label="Actividad económica de la empresa" type="text" name="economic_activity_of_company" :error="form.errorsFor('economic_activity_of_company')" placeholder="Actividad económica de la empresa"></vue-input>
-                        <vue-input class="col-md-6" v-model="form.arl" label="Arl" type="text" name="arl" :error="form.errorsFor('arl')" placeholder="Arl"></vue-input>
+						
+						<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.arl" name="arl" :error="form.errorsFor('arl')" label="ARL" placeholder="Seleccione la ARL" :url="tagsCtArlDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
                     </b-form-row>
 
 					<b-form-row>
@@ -79,6 +81,17 @@
 
 					<b-form-row>
 						<vue-input class="col-md-6" v-model="form.email_training_employee"  type="text" :error="form.errorsFor('email_training_employee')" name="email_training_employee" label="Correo para envio de capacitaciones de los empleados (Opcional)" placeholder="Correo para envio de capacitaciones de los empleados"></vue-input>
+
+						<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro" :url="tagsCtHeightTrainingCenterDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+                    </b-form-row>
+
+					<b-form-row>
+						<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.social_security_payment_operator" name="social_security_payment_operator" :error="form.errorsFor('social_security_payment_operator')" label="Operador de pago seguridad social" placeholder="Seleccione el operador" :url="tagsCtSocialSecurityDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+
+						<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
                     </b-form-row>
 
             	</b-card>
@@ -160,6 +173,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 
@@ -168,7 +182,8 @@ export default {
 		VueAdvancedSelect,
 		VueInput,
 		VueDatepicker,
-		VueFileSimple
+		VueFileSimple,
+		VueAjaxAdvancedSelectTagUnic
 	},
 	props: {
 		url: { type: String },
@@ -214,7 +229,11 @@ export default {
 			contract_select: '',
 			disabledDates: {
 		        to: new Date()
-		    }
+		    },
+			tagsCtHeightTrainingCenterDataUrl: '/selects/tagsCtHeightTrainingCenter',
+			tagsCtSocialSecurityDataUrl: '/selects/tagsCtSocialSecurity',
+			tagsCtIpsDataUrl: '/selects/tagsCtIps',
+			tagsCtArlDataUrl: '/selects/tagsCtArl',
 		};
 	},
 	methods: {

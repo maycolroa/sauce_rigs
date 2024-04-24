@@ -31,7 +31,10 @@ class ContractLesseeInformation extends Model
         'number_workers',
         'high_risk_work',
         'social_reason',
-		'email_training_employee'
+		'email_training_employee',
+        'social_security_payment_operator',
+        'ips',
+        'height_training_centers'
     ];
 
     /*public function users(){

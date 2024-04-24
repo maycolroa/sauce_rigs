@@ -308,6 +308,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reportDinamic/years', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectYears');
         Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
         Route::post('qualificationMasiveInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectQualification');
+
+
+        Route::post('tagsCtSocialSecurity', 'LegalAspects\Contracs\ContractLesseeController@multiselectSocialSecurity');
+        Route::post('tagsCtIps', 'LegalAspects\Contracs\ContractLesseeController@multiselectIps');
+        Route::post('tagsCtHeightTrainingCenter', 'LegalAspects\Contracs\ContractLesseeController@multiselectHeightTrainingCenter');
+        Route::post('tagsCtArl', 'LegalAspects\Contracs\ContractLesseeController@multiselectArl');
+
+
         Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
         Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
         Route::post('classElement', 'IndustrialSecure\EPP\ElementController@multiselectClassElement');

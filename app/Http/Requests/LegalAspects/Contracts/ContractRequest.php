@@ -58,6 +58,42 @@ class ContractRequest extends FormRequest
             $this->merge($data);
         }
 
+        if ($this->has('arl') && $this->arl)
+        {
+            foreach ($this->input('arl') as $key => $value)
+            {
+                $data['arl'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        if ($this->has('ips') && $this->ips)
+        {
+            foreach ($this->input('ips') as $key => $value)
+            {
+                $data['ips'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        if ($this->has('social_security_payment_operator') && $this->social_security_payment_operator)
+        {
+            foreach ($this->input('social_security_payment_operator') as $key => $value)
+            {
+                $data['social_security_payment_operator'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        if ($this->has('height_training_centers') && $this->height_training_centers)
+        {
+            foreach ($this->input('height_training_centers') as $key => $value)
+            {
+                $data['height_training_centers'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
@@ -68,6 +104,7 @@ class ContractRequest extends FormRequest
      */
     public function rules()
     {
+        \Log::info($this);
         $id = $this->input('id');
 
         if (!$this->has('isInformation'))
@@ -100,7 +137,7 @@ class ContractRequest extends FormRequest
                 'SG_SST_name' => 'required|string',
                 'environmental_management_name' => 'required|string',
                 'economic_activity_of_company' => 'required|string',
-                'arl' => 'required|string',
+                'arl' => 'required|array',
                 'number_workers' => 'required|integer|min:0',
                 'risk_class' => 'required',
                 'documents.*.files.*.name' => 'required',
