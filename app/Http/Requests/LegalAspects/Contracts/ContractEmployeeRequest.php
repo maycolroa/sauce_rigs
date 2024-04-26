@@ -85,7 +85,7 @@ class ContractEmployeeRequest extends FormRequest
             'employee_afp_id' => 'required',
             'employee_eps_id' => 'required',
             'sex' => 'required',    
-            'phone_residence' => 'required',
+            'phone_residence' => 'nullable',
             'phone_movil' => 'required',
             'direction' => 'required',
             'disability_condition' => 'required',

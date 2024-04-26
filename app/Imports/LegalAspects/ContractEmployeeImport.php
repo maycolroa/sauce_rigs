@@ -170,7 +170,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
             'eps' => 'required|exists:sau_employees_eps,id',
             'fecha_nacimiento'=> 'required|date',
             'sexo' => 'required',
-            'tel_residencia' => 'required',
+            'tel_residencia' => 'nullable',
             'tel_movil' => 'required',
             'direccion' => 'required',
             'discapacidad' => 'required',
