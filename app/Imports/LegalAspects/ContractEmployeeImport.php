@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
 use App\Models\Administrative\Employees\EmployeeAFP;
+use App\Models\Administrative\Employees\EmployeeEPS;
 use App\Models\General\Team;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
@@ -18,7 +19,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
 use App\Models\General\Company;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
-use App\Exports\LegalAspects\Contracts\Contractor\ContractsEmployeeImportErrorExcel;
+use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeeImportErrorExcel;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -46,6 +47,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
       $this->user = $user;
       $this->company_id = $company_id;
       $this->afp_data = EmployeeAFP::pluck('id', 'code');
+      $this->eps_data = EmployeeEPS::pluck('id', 'code');
       $this->contract = $contract;
     }
 
@@ -83,7 +85,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $nameExcel = 'export/1/contracts_employee_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
-                    Excel::store(new ContractsEmployeeImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    Excel::store(new ContractsEmployeeImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id, $this->contract->id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
             
                     NotificationMail::
@@ -122,13 +124,41 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
         $data = [
             'nombre_empleado' => $row[0],
             'documento_empleado' => $row[1],
-            'email_empleado' => $row[2],
-            'posicion' => ucfirst($row[3]),
-            'afp' => $row[4],
-            'actividades' => explode(",", $row[5])
+            'fecha_nacimiento'=> $row[2],
+            'sexo' => $row[3],
+            'tel_residencia' => $row[4],
+            'tel_movil' => $row[5],
+            'direccion' => $row[6],
+            'email_empleado' => $row[7],
+            'posicion' => ucfirst($row[8]),
+            'discapacidad' => strtoupper($row[9]),
+            'descrip_discapacidad' => $row[10],
+            'contacto_emergencia' => $row[11],
+            'tel_contacto_emergencia' => $row[12],
+            'rh' => $row[13],
+            'salario' => $row[14],
+            'afp' => $row[15],
+            'eps' => $row[16],
+            'actividades' => explode(",", $row[17])
         ];
 
+        $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
+
         $data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
+
+        $data['eps'] = $data['eps'] ? (isset($this->eps_data[$data['eps']]) ? $this->eps_data[$data['eps']] : -1) : null;
+
+        $id = NULL;
+
+        $employee_exist = ContractEmployee::where('identification', $data['documento_empleado'])->where('company_id', $this->company_id)->where('contract_id', $this->contract->id)->first();
+
+        if ($employee_exist)
+        {
+            $this->setError('La identificacion del empleado ya existe');
+            $this->setErrorData($row);
+
+            return null;
+        }
 
         $rules = [
             'nombre_empleado' => 'required|string',
@@ -136,7 +166,19 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
             'email_empleado' => 'required|email',
             'posicion' => 'required|string',
             'actividades' => 'required',
-            'afp' => 'nullable|exists:sau_employees_afp,id'    
+            'afp' => 'required|exists:sau_employees_afp,id',
+            'eps' => 'required|exists:sau_employees_eps,id',
+            'fecha_nacimiento'=> 'required|date',
+            'sexo' => 'required',
+            'tel_residencia' => 'required',
+            'tel_movil' => 'required',
+            'direccion' => 'required',
+            'discapacidad' => 'required',
+            'descrip_discapacidad' => 'nullable',
+            'contacto_emergencia' => 'required',
+            'tel_contacto_emergencia' => 'required',
+            'rh' => 'required',
+            'salario' => 'required',
         ];
 
 
@@ -169,6 +211,18 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->contract_id = $this->contract->id;
                     $employee->token = Hash::make($data['email_empleado'].$data['documento_empleado']);
                     $employee->employee_afp_id = $data['afp'];
+                    $employee->employee_eps_id = $data['eps'];
+                    $employee->sex = $data['sexo'];
+                    $employee->phone_residence = $data['tel_residencia'];
+                    $employee->phone_movil = $data['tel_movil'];
+                    $employee->direction = $data['direccion'];
+                    $employee->disability_condition = $data['discapacidad'];
+                    $employee->emergency_contact = $data['contacto_emergencia'];
+                    $employee->rh = $data['rh'];
+                    $employee->salary = $data['salario'];
+                    $employee->date_of_birth = $data['fecha_nacimiento'];
+                    $employee->disability_description = $data['descrip_discapacidad'];
+                    $employee->emergency_contact_phone = $data['tel_contacto_emergencia'];
                     $employee->save();
 
                     $employee->activities()->sync($data['actividades']);
@@ -202,5 +256,18 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
     {
         $this->errors_data[] = $row;
         $this->key_row++;
+    }
+
+    private function validateDate($date)
+    {
+        try
+        {
+            $d = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($date);
+        }
+        catch (\Exception $e) {
+            return $date;
+        }
+
+        return $d ? $d : null;
     }
 }

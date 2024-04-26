@@ -115,7 +115,6 @@ class LawImport implements ToCollection, WithCalculatedFormulas
 
     private function checkLaw($row, $fila)
     {
-        \Log::info('entro '.$fila);
         $data = [
             'name' => $row[0],
             'number' => $row[1],
@@ -168,7 +167,6 @@ class LawImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         {
-            \Log::info('valido');
             $this->type = $this->checkType($data['type']);
             $this->system_apply = $this->checkSystem($data['system_apply']);
             $this->risk_aspect = $this->checkRiskAspect($data['risk_aspect']);

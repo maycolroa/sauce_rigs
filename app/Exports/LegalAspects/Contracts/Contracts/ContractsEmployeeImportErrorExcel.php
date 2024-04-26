@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesTemplate;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorListExcel;
 
-class ContractsImportErrorExcel implements WithMultipleSheets
+class ContractsEmployeeImportErrorExcel implements WithMultipleSheets
 {
     use Exportable;
 
@@ -15,11 +15,12 @@ class ContractsImportErrorExcel implements WithMultipleSheets
     protected $data;
     protected $company_id;
     
-    public function __construct($data, $errors, $company_id)
+    public function __construct($data, $errors, $company_id, $contract_id)
     {
         $this->data = $data;
         $this->errors = $errors;
         $this->company_id = $company_id;
+        $this->contract_id = $contract_id;
     }
 
     /**
@@ -29,7 +30,7 @@ class ContractsImportErrorExcel implements WithMultipleSheets
     {
         $sheets = [];
         
-        $sheets[] = new ContractsEmployeesTemplate($this->data, $this->company_id);        
+        $sheets[] = new ContractsEmployeesTemplate($this->data, $this->company_id, $this->contract_id);        
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
        
         return $sheets;
