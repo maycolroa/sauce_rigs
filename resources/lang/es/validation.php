@@ -415,7 +415,8 @@ return [
       'emergency_contact' => 'Contacto de emergencia',
       'emergency_contact_phone' => 'Telefono de contacto de emergencia',
       'salary' => 'Salario',
-      'rh' => 'Tipo de sangre'
+      'rh' => 'Tipo de sangre',
+      'activities' => 'Actividades'
     ],
 
 ];

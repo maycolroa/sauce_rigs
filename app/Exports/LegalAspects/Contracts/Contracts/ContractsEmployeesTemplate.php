@@ -59,14 +59,33 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
       $columns = [
         'Nombre (*)',
         'Identificación (*)',
+        'Fecha Nacimiento (YYYY-MM-DD) (*)',
+        'Sexo (Masculino, Femenino, Sin Sexo)*',
+        'Teléfono de residencia (*)',
+        'Teléfono movil (*)',
+        'Dirección (*)',
         'Email (*)',
         'Cargo (*)',
+        'Condición de discapacidad (SI, NO) (*)',
+        'Descripción Condicion de discapacidad (Solo si Condición de discapacidad es SI)',
+        'Contacto de emergencia (*)',
+        'Teléfono Contacto de emergencia (*)',
+        'Tipo de sangre (Tomar el tipo de la pestaña Tipos de sangre) (*)',
+        'Salario (*)',
         'AFP (Tomar el código de la pestaña AFP) (*)',
+        'EPS (Tomar el código de la pestaña EPS) (*)',
         'Actividades (Tomar el código de la actividad a asignar al empleado de la pestaña Actividades, de ser varias actividades debe separar los códigos por coma (,))'
       ];
 
       return $columns;
 
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+        ];
     }
 
     public static function afterSheet(AfterSheet $event)

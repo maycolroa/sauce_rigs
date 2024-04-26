@@ -28,20 +28,24 @@
       <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condicion de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')">
                                     </vue-radio>
     </b-form-row>
+    
+    <b-form-row v-if="form.disability_condition == 'SI'">
+        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.disability_description" label="Descripción condición de discapacidad" name="disability_description" placeholder="Descripción" rows="3" :error="form.errorsFor('disability_description')"></vue-textarea>
+    </b-form-row>
 
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact" label="Contacto de emergencia" type="text" name="emergency_contact" :error="form.errorsFor('emergency_contact')" placeholder="Contacto de emergencia"/>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact" label="Contacto de emergencia" type="text" name="emergency_contact" :error="form.errorsFor('emergency_contact')" placeholder="Contacto de emergencia"/><vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact_phone" label="Telefono contacto de emergencia" type="text" name="emergency_contact_phone" :error="form.errorsFor('emergency_contact_phone')" placeholder="Telefono contacto de emergencia"/>
+    </b-form-row>
+
+    <b-form-row>
       <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rh" :error="form.errorsFor('rh')" :multiple="false" :options="rhOptions" :hide-selected="false" name="rh" label="Tipo de Sangre" placeholder="Seleccione el tipo">
           </vue-advanced-select>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.salary" label="Salario" type="number" name="salary" :error="form.errorsFor('salary')" placeholder="Salario"/>
     </b-form-row>
 
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.salary" label="Salario" type="number" name="salary" :error="form.errorsFor('salary')" placeholder="Salario"/>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione una opción" :url="afpDataUrl">
       </vue-ajax-advanced-select>
-    </b-form-row>
-
-    <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')" placeholder="Seleccione una opción" :url="epsDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>

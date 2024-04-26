@@ -25,17 +25,17 @@
 
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
-      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condicion de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')">
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condición de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')">
                                     </vue-radio>
     </b-form-row>
 
     <b-form-row v-if="form.disability_condition == 'SI'">
-        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.disability_description" label="Descripción Condicion de discapacidad" name="disability_description" placeholder="Descripción" rows="3" :error="form.errorsFor('disability_description')"></vue-textarea>
+        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.disability_description" label="Descripción condición de discapacidad" name="disability_description" placeholder="Descripción" rows="3" :error="form.errorsFor('disability_description')"></vue-textarea>
     </b-form-row>
 
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact" label="Contacto de emergencia" type="text" name="emergency_contact" :error="form.errorsFor('emergency_contact')" placeholder="Contacto de emergencia"/>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact_phone" label="Telefono cntacto de emergencia" type="text" name="emergency_contact_phone" :error="form.errorsFor('emergency_contact_phone')" placeholder="Telefono contacto de emergencia"/>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emergency_contact_phone" label="Telefono contacto de emergencia" type="text" name="emergency_contact_phone" :error="form.errorsFor('emergency_contact_phone')" placeholder="Telefono contacto de emergencia"/>
     </b-form-row>
 
     <b-form-row>
