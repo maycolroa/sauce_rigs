@@ -47,6 +47,11 @@ class ContractEmployee extends Model
         return $this->belongsToMany(ActivityContract::class, 'sau_ct_contract_employee_activities', 'employee_id', 'activity_contract_id');
     }
 
+    public function proyects()
+    {
+        return $this->belongsToMany(ProyectContract::class, 'sau_ct_contract_employee_proyects', 'employee_id', 'proyect_contract_id');
+    }
+
     public function afp()
     {
         return $this->belongsTo(EmployeeAFP::class, 'employee_afp_id');

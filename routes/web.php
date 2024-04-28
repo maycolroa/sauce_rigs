@@ -368,6 +368,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');          
           Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');
           Route::post('ctActivitiesContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselect');
+
+          Route::post('ctProyects', 'LegalAspects\Contracs\ContractProyectController@multiselect');
+          Route::post('ctProyectsContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselectProyect');
+
           Route::post('ctTrainingTypeQuestions', 'LegalAspects\Contracs\ContractTrainingController@multiselectTypeQuestion');          
           Route::post('statesFile', 'General\MultiSelectRadioController@ctFileStates');
         });
@@ -978,6 +982,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
       Route::post('activityContract/data', 'LegalAspects\Contracs\ContractActivityController@data');
       Route::ApiResource('activityContract', 'LegalAspects\Contracs\ContractActivityController');
+
+      Route::post('proyectContract/data', 'LegalAspects\Contracs\ContractProyectController@data');
+      Route::ApiResource('proyectContract', 'LegalAspects\Contracs\ContractProyectController');
+
       Route::get('trainingContract/download/{file}', 'LegalAspects\Contracs\ContractTrainingController@download');
       Route::post('trainingContract/data', 'LegalAspects\Contracs\ContractTrainingController@data');
 

@@ -772,6 +772,22 @@
                     {
                         "name": "contracts_informs_report_export",
                         "display_name": "Contratistas/Informes mensuales - exportar reportes"
+                    },
+                    {
+                        "name": "contracts_proyects_c",
+                        "display_name": "Contratistas/Proyectos - crear"
+                    },
+                    {
+                        "name": "contracts_proyects_r",
+                        "display_name": "Contratistas/Proyectos - ver"
+                    },
+                    {
+                        "name": "contracts_proyects_u",
+                        "display_name": "Contratistas/Proyectos - editar"
+                    },
+                    {
+                        "name": "contracts_proyects_d",
+                        "display_name": "Contratistas/Proyectos - eliminar"
                     }
                 ]
             },

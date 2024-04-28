@@ -73,12 +73,25 @@ class ViewService
             return $configuration->value;
     }
 
+    public function getProyectContract()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
     public function allAuthData()
     {
         return [
             'can' => $this->getCan(), 
             'hasRole' => $this->getHasRole(), 
             'inventaryEpp' => $this->getInventaryEpp(), 
+            'proyectContract' => $this->getProyectContract(), 
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),

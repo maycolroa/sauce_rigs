@@ -1051,6 +1051,38 @@ export default [
 					import('@/views/LegalAspects/contracts/sendNotification/switchStatus')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_proyects_r' }, [
+				{
+					name: 'legalaspects-contracts-proyects',
+					path: 'proyects',
+					component: () =>
+					import('@/views/LegalAspects/contracts/proyects/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_proyects_c' }, [
+				{
+					name: 'legalaspects-contracts-proyects-create',
+					path: 'proyects/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/proyects/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_proyects_u' }, [
+				{
+					name: 'legalaspects-contracts-proyects-edit',
+					path: 'proyects/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/proyects/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_proyects_r' }, [
+				{
+					name: 'legalaspects-contracts-proyects-view',
+					path: 'proyects/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/proyects/view')
+				}
+			]),
 		]
 	}
 ];

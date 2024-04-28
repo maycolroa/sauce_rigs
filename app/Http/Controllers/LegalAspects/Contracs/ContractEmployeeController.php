@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeRequest;
 use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\LegalAspects\Contracts\ProyectContract;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
@@ -150,6 +151,12 @@ class ContractEmployeeController extends Controller
                 $documents_complets = $this->documentscomplets($employee, $request->activities, $activities['files']);
             }
 
+            if($request->has('proyects_id'))
+            {
+                $proyects = $this->getDataFromMultiselect($request->proyects_id);
+                $employee->proyects()->sync($proyects);
+            }
+
             $employee->activities()->sync($activities['activities']->values());
 
             $employee->update(
@@ -200,6 +207,17 @@ class ContractEmployeeController extends Controller
             });
 
             $contractEmployee->activities = $activities;
+
+            $proyects_id = [];
+
+            foreach ($contractEmployee->proyects as $key => $value)
+            {                
+                array_push($proyects_id, $value->multiselect());
+            }
+
+            $contractEmployee->multiselect_proyect = $proyects_id;
+            $contractEmployee->proyects_id = $proyects_id;
+
             $contractEmployee->delete = [
                 'files' => []
             ];
@@ -262,6 +280,13 @@ class ContractEmployeeController extends Controller
             }
 
             $employeeContract->activities()->sync($activities['activities']->values());
+
+
+            if($request->has('proyects_id'))
+            {
+                $proyects = $this->getDataFromMultiselect($request->proyects_id);
+                $employeeContract->proyects()->sync($proyects);
+            }
 
             $employeeContract->update(
                 [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
@@ -515,6 +540,40 @@ class ContractEmployeeController extends Controller
             $activities = ActivityContract::selectRaw("id, name")
             ->join('sau_ct_contracts_activities', 'sau_ct_activities.id','sau_ct_contracts_activities.activity_id' )
             ->where('sau_ct_contracts_activities.contract_id', $contract->id)
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($activities);
+        }
+    }
+
+    public function multiselectProyect(Request $request)
+    {
+
+        $contract = $this->getContractUser($this->user->id, $this->company);
+
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $activities = ProyectContract::select("id", "name")
+                ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id')
+                ->where('sau_ct_contracts_proyects.contract_id', $contract->id)
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_ct_proyects.name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($activities)
+            ]);
+        }
+        else
+        {
+            $activities = ProyectContract::selectRaw("id, name")
+            ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )
+            ->where('sau_ct_contracts_proyects.contract_id', $contract->id)
             ->orderBy('name')
             ->pluck('id', 'name');
         

@@ -78,7 +78,8 @@ class ConfigurationsCompany
             'users_notify_report_license' => 'Usuarios a notificar el reporte de licencias',
             'filters_date_license' => 'Filtros de fechas a aplicar para el envio del reporte de licencias',
             'license_reports_sends' => 'Reportes seleccionados para realizar el envio',
-            'roles_newsletter' => 'Roles a los cuales se les enviara el boletin'
+            'roles_newsletter' => 'Roles a los cuales se les enviara el boletin',
+            'contracts_use_proyect' => 'Activar el uso de proyectos para contratistas'
         ];
     }
 

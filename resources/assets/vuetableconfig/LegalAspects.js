@@ -2147,5 +2147,57 @@ export default [
             urlData: '/legalAspects/notificationSend/data',
             filterColumns: true,
         }
-    }
+    },
+    {
+        name: 'legalaspects-contracts-proyects',
+        fields: [
+            { name: 'sau_ct_proyects.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_proyects.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-proyects-edit' },
+                id: 'id',
+            },
+            permission: 'contracts_proyects_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-proyects-view' },
+                id: 'id',
+            },
+            permission: 'contracts_proyects_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/proyectContract/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el proyecto __name__'
+            },
+            permission: 'contracts_proyects_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/proyectContract/data',
+            filterColumns: true,
+        }
+    },
 ]

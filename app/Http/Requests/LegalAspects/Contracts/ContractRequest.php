@@ -58,7 +58,7 @@ class ContractRequest extends FormRequest
             $this->merge($data);
         }
 
-        if ($this->has('arl') && $this->arl)
+        if ($this->has('arl') && $this->arl && is_array($this->arl))
         {
             foreach ($this->input('arl') as $key => $value)
             {
@@ -67,7 +67,7 @@ class ContractRequest extends FormRequest
             }
         }
 
-        if ($this->has('ips') && $this->ips)
+        if ($this->has('ips') && $this->ips && is_array($this->ips))
         {
             foreach ($this->input('ips') as $key => $value)
             {
@@ -76,7 +76,7 @@ class ContractRequest extends FormRequest
             }
         }
 
-        if ($this->has('social_security_payment_operator') && $this->social_security_payment_operator)
+        if ($this->has('social_security_payment_operator') && $this->social_security_payment_operator && is_array($this->social_security_payment_operator))
         {
             foreach ($this->input('social_security_payment_operator') as $key => $value)
             {
@@ -85,7 +85,7 @@ class ContractRequest extends FormRequest
             }
         }
 
-        if ($this->has('height_training_centers') && $this->height_training_centers)
+        if ($this->has('height_training_centers') && $this->height_training_centers && is_array($this->height_training_centers))
         {
             foreach ($this->input('height_training_centers') as $key => $value)
             {
@@ -104,7 +104,6 @@ class ContractRequest extends FormRequest
      */
     public function rules()
     {
-        \Log::info($this);
         $id = $this->input('id');
 
         if (!$this->has('isInformation'))

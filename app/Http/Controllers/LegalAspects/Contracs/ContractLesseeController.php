@@ -163,6 +163,13 @@ class ContractLesseeController extends Controller
 
             $contract->activities()->sync($activitiesContract);
 
+            $proyectsContract = [];
+
+            if($request->has('proyects_id'))
+                $proyectsContract = $this->getDataFromMultiselect($request->proyects_id);
+
+            $contract->activities()->sync($proyectsContract);
+
             /*if ($request->has('documents'))
                 $this->saveDocuments($request->documents, $contract);*/
 
@@ -272,6 +279,16 @@ class ContractLesseeController extends Controller
 
             $contract->multiselect_activity = $activity_id;
             $contract->activity_id = $activity_id;
+
+            $proyects_id = [];
+
+            foreach ($contract->proyects as $key => $value)
+            {                
+                array_push($proyects_id, $value->multiselect());
+            }
+
+            $contract->multiselect_proyect = $proyects_id;
+            $contract->proyects_id = $proyects_id;
 
             $users_responsibles = [];
 
@@ -421,7 +438,6 @@ class ContractLesseeController extends Controller
      */
     public function update(ContractRequest $request, ContractLesseeInformation $contract)
     {
-        \Log::info($request);
         Validator::make($request->all(), [
             "documents.*.files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -440,18 +456,6 @@ class ContractLesseeController extends Controller
 
         DB::beginTransaction();
 
-        $arl = $this->tagsPrepare($request->get('arl'));
-        $this->tagsSave($arl, TagsArl::class);
-
-        $social_security_payment_operator = $this->tagsPrepare($request->get('social_security_payment_operator'));
-        $this->tagsSave($social_security_payment_operator , TagsSocialSecurityPaymentOperator::class);
-
-        $ips = $this->tagsPrepare($request->get('ips'));
-        $this->tagsSave($ips, TagsIps::class);
-
-        $height_training_centers = $this->tagsPrepare($request->get('height_training_centers'));
-        $this->tagsSave($height_training_centers, TagsHeightTrainingCenter::class);
-
         try
         {
             if ($request->active == 'SI' && ($request->active != $contract->active))
@@ -468,6 +472,18 @@ class ContractLesseeController extends Controller
             if ($request->has('isInformation'))
             {
                 $contract->completed_registration = 'SI';
+
+                $arl = $this->tagsPrepare($request->get('arl'));
+                $this->tagsSave($arl, TagsArl::class);
+
+                $social_security_payment_operator = $this->tagsPrepare($request->get('social_security_payment_operator'));
+                $this->tagsSave($social_security_payment_operator , TagsSocialSecurityPaymentOperator::class);
+
+                $ips = $this->tagsPrepare($request->get('ips'));
+                $this->tagsSave($ips, TagsIps::class);
+
+                $height_training_centers = $this->tagsPrepare($request->get('height_training_centers'));
+                $this->tagsSave($height_training_centers, TagsHeightTrainingCenter::class);
 
                 $contract->arl = $arl->implode(',');
                 $contract->social_security_payment_operator = $social_security_payment_operator->implode(',');
@@ -503,6 +519,13 @@ class ContractLesseeController extends Controller
                     $activitiesContract = $this->getDataFromMultiselect($request->activity_id);
 
                 $contract->activities()->sync($activitiesContract);
+
+                $proyectsContract = [];
+
+                if($request->has('proyects_id'))
+                    $proyectsContract = $this->getDataFromMultiselect($request->proyects_id);
+
+                $contract->proyects()->sync($proyectsContract);
 
                 $responsibles = [];
                 

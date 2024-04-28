@@ -35,6 +35,12 @@
 						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades a asignar" :url="activitiesUrl">
 						</vue-ajax-advanced-select>
 					</b-form-row>
+
+					<b-form-row v-if="auth.proyectContract == 'SI'">
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.proyects_id" :error="form.errorsFor('proyects_id')" :selected-object="form.multiselect_proyect" :multiple="true" :allowEmpty="true" name="proyects_id" label="Proyectos" placeholder="Seleccione las proyectos a asignar" :url="proyectsUrl">
+						</vue-ajax-advanced-select>
+					</b-form-row>
+
 					<b-form-row v-if="isEdit || viewOnly">
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
 					</b-form-row>
@@ -139,7 +145,8 @@ export default {
 					high_risk_work: '',
 					high_risk_type_id: [],
 					users_responsibles: [],
-					activity_id: []
+					activity_id: [],
+					proyects_id: []
 				};
 			}
 		}
@@ -154,6 +161,7 @@ export default {
 		return {
 			loading: this.isEdit,
 			form: Form.makeFrom(this.contract, this.method),
+			proyectsUrl: '/selects/contracts/ctProyects'
 		};
 	},
 	methods: {

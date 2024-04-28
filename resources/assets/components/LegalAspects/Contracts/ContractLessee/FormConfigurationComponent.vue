@@ -7,6 +7,11 @@
         </vue-radio>
     </b-form-row> 
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.contracts_use_proyect" class="col-md-12" v-model="form.contracts_use_proyect" :options="siNo" name="contracts_use_proyect" :error="form.errorsFor('contracts_use_proyect')" label="¿Desea usar proyectos?">
+        </vue-radio>
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -38,6 +43,7 @@ export default {
       default() {
         return {
           contracts_delete_file_upload: '',
+          contracts_use_proyect: ''
         };
       }
     }
@@ -61,6 +67,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
+          window.location = "/legalaspects/contracts"
         })
         .catch(error => {
           this.loading = false;
