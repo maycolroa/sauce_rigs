@@ -61,4 +61,18 @@ class ContractEmployee extends Model
     {
         return $this->belongsTo(EmployeeEPS::class, 'employee_eps_id');
     }
+
+    public function scopeInProyects($query, $proyects, $typeSearch = 'IN')
+    {
+        if (COUNT($proyects) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_contract_employee_proyects.proyect_contract_id', $proyects);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_contract_employee_proyects.proyect_contract_id', $proyects);
+        }
+
+        return $query;
+    }
 }

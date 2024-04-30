@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="INSPECCIONES"
+      title="CONTRATISTAS"
       subtitle="CONFIGURACIONES"
       url="legalaspects"
     />

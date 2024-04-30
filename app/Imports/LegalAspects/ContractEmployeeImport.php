@@ -139,7 +139,8 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
             'salario' => $row[14],
             'afp' => $row[15],
             'eps' => $row[16],
-            'actividades' => explode(",", $row[17])
+            'actividades' => explode(",", $row[17]),
+            'proyectos' => isset($row[18]) && $row[18] ? explode(",", $row[18]) : []
         ];
 
         $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
@@ -226,6 +227,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->save();
 
                     $employee->activities()->sync($data['actividades']);
+                    $employee->proyects()->sync($data['proyectos']);
 
                     TrainingSendNotificationJob::dispatch($this->company_id, '', $employee->id);
                 }

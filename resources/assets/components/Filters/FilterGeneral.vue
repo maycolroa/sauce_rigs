@@ -128,6 +128,7 @@ export default {
                     for(var i in this.config.filters)
                     {
                         let item = this.config.filters[i]
+                        console.log(item.key)
 
                         if (item.key == 'regionals' && inputs.regional == 'NO')
                             continue;
@@ -138,6 +139,9 @@ export default {
                         if (item.key == 'macroprocesses' && inputs.process == 'NO')
                             continue;
                         if (item.key == 'areas' && inputs.area == 'NO')
+                            continue;
+                        
+                        if(item.key == 'proyects' && auth.proyectContract == 'NO')
                             continue;
 
                         if (item.permission != undefined && item.permission)

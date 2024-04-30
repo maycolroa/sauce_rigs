@@ -8,6 +8,7 @@ use App\Models\General\Team;
 use App\Traits\LocationFormTrait;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 class VuetableColumnManager
 {
@@ -18,6 +19,7 @@ class VuetableColumnManager
     protected $company;
     protected $user;
     protected $keywords;
+    protected $configuration;
 
     /**
      * defines the availables tables
@@ -58,7 +60,8 @@ class VuetableColumnManager
         'industrialsecureroadsafetydrivers',
         'industrialsecureroadsafetyinspections',
         'roadsafetyinspectionsqualification',
-
+        'legalaspectscontractsemployees',
+        'legalaspectscontractsemployeesviewcontractor'
     ];
 
     protected $customColumnsName;
@@ -74,6 +77,10 @@ class VuetableColumnManager
         $this->company = Session::get('company_id');
         $this->user = Auth::user();
         $this->keywords = $this->user->getKeywords();
+
+        $this->configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect');
+        $this->configuration->company_scope = $this->company;
+        $this->configuration = $this->configuration->first();
     }
 
     /**
@@ -816,6 +823,55 @@ class VuetableColumnManager
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function legalaspectscontractsemployees()
+    {
+
+        \Log::info($this->configuration);
+
+        $colums = [
+            ['name' => 'sau_ct_contract_employees.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            [ 'name' => 'sau_ct_contract_employees.identification', 'data' => 'identification', 'title' => 'Identificación', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.name', 'data' => 'name', 'title' => 'Nombre', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.position', 'data' => 'position', 'title' => 'Cargo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.email', 'data' => 'email', 'title' => 'Email', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.state', 'data' => 'state', 'title' => 'Estado Documentos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function legalaspectscontractsemployeesviewcontractor()
+    {
+        $colums = [
+            ['name' => 'sau_ct_contract_employees.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            [ 'name' => 'sau_ct_contract_employees.identification', 'data' => 'identification', 'title' => 'Identificación', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.name', 'data' => 'name', 'title' => 'Nombre', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.position', 'data' => 'position', 'title' => 'Cargo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.email', 'data' => 'email', 'title' => 'Email', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.state', 'data' => 'state', 'title' => 'Estado Documentos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);

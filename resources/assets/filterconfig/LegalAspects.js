@@ -348,5 +348,17 @@ export default [
           label: 'Rango de fecha',
         }
       ]
-    }
+    },
+
+    {
+      name: 'legalaspects-contract-employee',
+      filters: [
+        {
+          url: '/selects/contracts/ctProyectsContracts',
+          key: 'proyects',
+          type: 'select',
+          label: 'Proyectos'
+        },
+      ]
+    },
 ];

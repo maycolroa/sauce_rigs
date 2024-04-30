@@ -23,6 +23,7 @@
         <b-card-body>
              <vue-table
                 configName="legalaspects-contracts-employees"
+                :customColumnsName="true" 
                 v-if="auth.can['contracts_employee_r']"
                 ></vue-table>
         </b-card-body>

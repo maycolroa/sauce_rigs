@@ -825,11 +825,11 @@ export default [
         name: 'legalaspects-contracts-employees',
         fields: [
             { name: 'sau_ct_contract_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+            /*{ name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado Documentos', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado Documentos', sortable: true, searchable: true, detail: false, key: false },*/
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -875,17 +875,18 @@ export default [
         configuration: {
             urlData: '/legalAspects/employeeContract/data',
             filterColumns: true,
+            configNameFilter: 'legalaspects-contract-employee'
         }
     },
     {
         name: 'legalaspects-contracts-employees-view-contractor',
         fields: [
             { name: 'sau_ct_contract_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+            /*{ name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },*/
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -911,6 +912,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/employeeContract/dataContract',
             filterColumns: true,
+            //configNameFilter: 'legalaspects-contract-employee'
         }
     },
     {

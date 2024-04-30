@@ -26,12 +26,14 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
     protected $data;
     protected $company_id;
     protected $contract;
+    protected $proyect;
 
-    public function __construct($data, $company_id, $contract)
+    public function __construct($data, $company_id, $contract, $proyect)
     {
       $this->data = $data;
       $this->company_id = $company_id;
       $this->contract = $contract;
+      $this->proyect = $proyect;
     }
 
     /**
@@ -76,6 +78,13 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
         'EPS (Tomar el código de la pestaña EPS) (*)',
         'Actividades (Tomar el código de la actividad a asignar al empleado de la pestaña Actividades, de ser varias actividades debe separar los códigos por coma (,))'
       ];
+
+      if ($this->proyect == 'SI')
+      {
+        array_merge($columns, [
+          'Proyectos (Tomar el código del proyecto a asignar al empleado de la pestaña Proyectos, de ser varios proyectos debe separar los códigos por coma (,))'
+        ]);
+      }
 
       return $columns;
 

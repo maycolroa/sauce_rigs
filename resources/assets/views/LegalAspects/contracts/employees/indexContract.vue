@@ -11,6 +11,7 @@
         <b-card-body>
              <vue-table
                 configName="legalaspects-contracts-employees-view-contractor"
+                :customColumnsName="true" 
                 :modelId="this.$route.params.id"
                 ></vue-table>
         </b-card-body>      

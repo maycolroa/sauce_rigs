@@ -18,6 +18,7 @@ use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesImport;
 use App\Jobs\LegalAspects\Contracts\Employees\ContractEmployeeImportJob;
 use App\Traits\ContractTrait;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use Validator;
 use Hash;
@@ -25,7 +26,7 @@ use DB;
 
 class ContractEmployeeController extends Controller
 {
-    use ContractTrait;
+    use ContractTrait, Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -62,9 +63,24 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.email AS email',
             'sau_ct_contract_employees.position AS position',
             'sau_ct_contract_employees.identification AS identification',
-            'sau_ct_contract_employees.state as state'
+            'sau_ct_contract_employees.state as state',
+            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
         )
-        ->orderBy('sau_ct_contract_employees.id', 'DESC');
+        ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+        ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
+        ->orderBy('sau_ct_contract_employees.id', 'DESC')
+        ->groupBy('sau_ct_contract_employees.id');
+
+        $url = "/legalaspects/employees";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["proyects"]))
+                $employees->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
+        }
+
 
         if ($request->has('modelId') && $request->get('modelId'))
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
@@ -86,8 +102,23 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.email AS email',
             'sau_ct_contract_employees.position AS position',
             'sau_ct_contract_employees.identification AS identification',
-            'sau_ct_contract_employees.state as state'
-        );
+            'sau_ct_contract_employees.state as state',
+            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
+        )
+        ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+        ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
+        ->groupBy('sau_ct_contract_employees.id')
+        ->orderBy('sau_ct_contract_employees.id', 'DESC');
+
+        /*$url = "/legalaspects/employees/view/contract/".$request->get('modelId');
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["proyects"]))
+                $employees->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
+        }*/
 
         if ($request->has('modelId') && $request->get('modelId'))
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));

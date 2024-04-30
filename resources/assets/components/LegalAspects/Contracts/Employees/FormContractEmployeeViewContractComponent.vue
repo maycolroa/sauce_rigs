@@ -50,6 +50,11 @@
           </vue-ajax-advanced-select>
     </b-form-row>
 
+     <b-form-row v-if="auth.proyectContract == 'SI'">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.proyects_id" :error="form.errorsFor('proyects_id')" :selected-object="form.multiselect_proyect" :multiple="true" :allowEmpty="true" name="proyects_id" label="Proyectos" placeholder="Seleccione las proyectos a asignar" :url="proyectsUrl">
+      </vue-ajax-advanced-select>
+    </b-form-row>
+
     <div class="col-md-12">
       <blockquote class="blockquote text-center">
           <p class="mb-0">Actividades</p>
@@ -264,6 +269,7 @@ export default {
         {text: 'NO', value: 'NO'}
       ],
       epsDataUrl: '/selects/eps',
+			proyectsUrl: '/selects/contracts/ctProyectsContracts',
       rhOptions: [
           {name: 'A', value: 'A'},
           {name: 'B', value: 'B'},
