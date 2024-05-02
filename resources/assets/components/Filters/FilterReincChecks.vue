@@ -118,7 +118,7 @@ export default {
     created(){
         if (this.config.filters != undefined)
         {
-            axios.post(`/configurableForm/formModel`, {key: 'table_check'})
+            axios.post(`/configurableForm/formModel`, {key: 'form_check'})
             .then(response => {
 
                 this.form = response.data;
@@ -129,9 +129,7 @@ export default {
 
                     if (item.key == 'nextFollowDays' && this.form != 'misionEmpresarial')
                         continue;
-                    
-                    if ((item.key == 'sveAssociateds' || item.key == 'medicalCertificates' || item.key == 'relocatedTypes') 
-                        && this.form != 'vivaAir')
+                    if ((item.key == 'sveAssociateds' || item.key == 'medicalCertificates' || item.key == 'relocatedTypes') && this.form != 'vivaAir')
                         continue;
 
                     if (item.permission != undefined && item.permission)
@@ -171,7 +169,6 @@ export default {
 
             axios.post('/administration/configurations/locationLevelForms/getConfModule')
             .then(data => {
-                console.log('entro')
                 if (Object.keys(data.data).length > 0)
                 {
                     let inputs = data.data
@@ -189,6 +186,10 @@ export default {
                         if (item.key == 'macroprocesses' && inputs.process == 'NO')
                             continue;
                         if (item.key == 'areas' && inputs.area == 'NO')
+                            continue;
+                        if (item.key == 'nextFollowDays' && this.form != 'misionEmpresarial')
+                            continue;
+                        if ((item.key == 'sveAssociateds' || item.key == 'medicalCertificates' || item.key == 'relocatedTypes') && this.form != 'vivaAir')
                             continue;
 
                         if (item.permission != undefined && item.permission)

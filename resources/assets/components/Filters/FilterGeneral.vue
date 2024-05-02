@@ -128,7 +128,6 @@ export default {
                     for(var i in this.config.filters)
                     {
                         let item = this.config.filters[i]
-                        console.log(item.key)
 
                         if (item.key == 'regionals' && inputs.regional == 'NO')
                             continue;
