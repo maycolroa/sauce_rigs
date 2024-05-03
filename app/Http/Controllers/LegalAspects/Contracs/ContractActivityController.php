@@ -78,6 +78,7 @@ class ContractActivityController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
             //return $e->getMessage();
         }

@@ -13,7 +13,8 @@ class ActivityDocument extends Model
     protected $fillable = [
         'activity_id',
         'name',
-        'type'
+        'type',
+        'class'
     ];
 
 

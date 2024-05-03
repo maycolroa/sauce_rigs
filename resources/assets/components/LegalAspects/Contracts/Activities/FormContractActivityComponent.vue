@@ -19,7 +19,9 @@
               </div>
               <vue-input class="col-md-6" v-model="document.name" label="Nombre" name="name" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
               <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="document.type" :error="form.errorsFor(`documents.${index}.type`)" :multiple="false" :options="typeDocument" :hide-selected="false" name="type" label="Tipo" placeholder="Seleccione el tipo">
-          </vue-advanced-select>
+              </vue-advanced-select>
+              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="document.class" :error="form.errorsFor(`documents.${index}.class`)" :multiple="false" :options="classDocument" :hide-selected="false" name="class" label="Clase" placeholder="Seleccione la clase">
+              </vue-advanced-select>
           </b-form-row>
       </div>
     </template>
@@ -27,6 +29,12 @@
     <b-form-row style="padding-bottom: 20px;">
       <div class="col-md-12" v-if="!viewOnly">
           <center><b-btn variant="primary" @click.prevent="addDocument()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Documento</b-btn></center>
+      </div>
+    </b-form-row>
+
+    <b-form-row style="padding-bottom: 20px;" v-if="message_validation">
+      <div class="col-md-12" v-if="!viewOnly">
+          <center><label style="color:#f0635f">No puede haber 2 documentos de la misma clase en la actividad</label></center>
       </div>
     </b-form-row>
 
@@ -81,6 +89,21 @@ export default {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.activity, this.method),
+      classDocument: [
+          {name: 'Seguridad social', value: 'Seguridad social'},
+          {name: 'Inducción', value: 'Inducción'},
+          {name: 'Examen médico', value: 'Examen médico'},
+          {name: 'Certificado', value: 'Certificado'},
+          {name: 'Otros', value: 'Otros'},
+      ],
+      message_validation: false,
+      social_security: 0,
+      induction: 0,
+      medical_exam: 0,
+      certificate: 0,
+      others: 0,
+      romper: false,
+      verify: false
     };
   },
   methods: {
@@ -97,17 +120,86 @@ export default {
 
       this.form.documents.splice(index, 1)
     },
+    verifyClassDocument(documents)
+    {
+      this.social_security = 0;
+      this.induction = 0;
+      this.medical_exam = 0;
+      this.certificate = 0;
+      this.others = 0;
+      this.romper = false;
+
+      _.forIn(documents, (document) => {
+        if(document.class == 'Seguridad social')
+        {
+          if(this.social_security > 0)
+          {
+            this.romper = true;
+          }
+          else
+          {
+            this.social_security = 1
+          }
+        }
+        else if(document.class == 'Inducción')
+        {
+          if(this.induction > 0)
+          {
+            this.romper = true;
+          }
+          else
+          {
+            this.induction = 1
+          }
+        }
+        else if(document.class == 'Examen médico')
+        {
+          if(this.medical_exam > 0)
+          {
+            this.romper = true;
+          }
+          else
+          {
+            this.medical_exam = 1
+          }
+        }
+        else if(document.class == 'Certificado')
+        {
+          if(this.certificate > 0)
+          {
+            this.romper = true;
+          }
+          else
+          {
+            this.certificate = 1
+          }
+        }
+      });
+
+      return this.romper;
+    },
     submit(e) {
       this.loading = true;
-      this.form
-        .submit(e.target.action)
-        .then(response => {
-          this.loading = false;
-          this.$router.push({ name: "legalaspects-contracts-activities" });
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+      this.verify = this.verifyClassDocument(this.form.documents)
+
+      if (this.verify)
+      {
+        this.message_validation = true;
+        this.loading = false;
+      }
+      else
+      {
+        this.message_validation = false;
+        this.form
+          .submit(e.target.action)
+          .then(response => {
+            this.loading = false;
+            this.$router.push({ name: "legalaspects-contracts-activities" });
+          })
+          .catch(error => {
+            this.loading = false;
+          });
+      }
     }
   }
 };
