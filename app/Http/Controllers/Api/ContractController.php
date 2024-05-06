@@ -48,10 +48,6 @@ class ContractController extends ApiController
 
         $employee = ContractEmployee::withoutGlobalScopes()->where('identification', $request->identification)->where('contract_id', $contract->id)->first();
 
-        $employee->entidad_eps = $employee->eps->name;
-        $employee->codigo_eps = $employee->eps->code;
-        $employee->arl = $contract->arl;
-
         $info_employee = [
           "documento" => $employee->identification,
           "nombre" => $employee->name,
@@ -96,6 +92,40 @@ class ContractController extends ApiController
 
       return $this->respondHttp200([
           'data' => $info_employee
+      ]);
+    }
+
+    public function getContract(Request $request)
+    {        
+      try {
+        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->first();
+
+        if (!$contract)
+          return $this->respondWithError('Contratista no encontrado');
+
+        $info_contract = [
+          "id" => $contract->id,
+          "empresa_id" => $contract->company_id,
+          "nombre" => $contract->social_reason,
+          "nombre_comercial" => $contract->business_name,
+          "nit" => $contract->nit,
+          "direccion" => $contract->address,
+          "telefono" => $contract->phone,
+          "arl" => $contract->arl,
+          "actividad_economica" => $contract->economic_activity_of_company,
+          "nivel_riesgo" => $contract->risk_class,
+          "fecha_creacion_empresa" => Carbon::createFromFormat('Y-m-d H:i:s', $contract->created_at)->format('Y-m-d'),
+          "centro_entrenamiento" => $contract->height_training_centers,
+          "representante_legal" => $contract->legal_representative_name
+        ];
+
+      } catch (\Exception $e) {
+          \Log::info($e->getMessage());
+          return $this->respondHttp500();
+      }
+
+      return $this->respondHttp200([
+          'data' => $info_contract
       ]);
     }
 
