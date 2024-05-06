@@ -83,6 +83,11 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
             Route::post('imageItem', 'Api\InspectionRoadSafetyController@imageItemRs');
         });
     });
+
+
+    Route::group(['prefix'=>'contract'], function () {
+        Route::post('employee', 'Api\ContractController@getEmployee');
+    });
 });
 
 Route::post('amazon-sns/notifications', 'Api\AmazonController@handleBounceOrComplaint');

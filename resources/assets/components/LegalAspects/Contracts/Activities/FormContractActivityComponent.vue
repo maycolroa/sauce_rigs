@@ -94,6 +94,7 @@ export default {
           {name: 'Inducción', value: 'Inducción'},
           {name: 'Examen médico', value: 'Examen médico'},
           {name: 'Certificado', value: 'Certificado'},
+          {name: 'Cursos', value: 'Cursos'},
           {name: 'Otros', value: 'Otros'},
       ],
       message_validation: false,
@@ -126,6 +127,7 @@ export default {
       this.induction = 0;
       this.medical_exam = 0;
       this.certificate = 0;
+      this.cursos = 0;
       this.others = 0;
       this.romper = false;
 
@@ -172,6 +174,17 @@ export default {
           else
           {
             this.certificate = 1
+          }
+        }
+        else if(document.class == 'Cursos')
+        {
+          if(this.cursos > 0)
+          {
+            this.romper = true;
+          }
+          else
+          {
+            this.cursos = 1
           }
         }
       });
