@@ -842,6 +842,7 @@ class VuetableColumnManager
             [ 'name' => 'sau_ct_contract_employees.position', 'data' => 'position', 'title' => 'Cargo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.email', 'data' => 'email', 'title' => 'Email', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.state', 'data' => 'state', 'title' => 'Estado Documentos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.state_employee', 'data' => 'state_employee', 'title' => 'Estado Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
         ];
 
         if ($this->configuration && $this->configuration->value == 'SI')
@@ -865,6 +866,7 @@ class VuetableColumnManager
             [ 'name' => 'sau_ct_contract_employees.position', 'data' => 'position', 'title' => 'Cargo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.email', 'data' => 'email', 'title' => 'Email', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.state', 'data' => 'state', 'title' => 'Estado Documentos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_contract_employees.state_employee', 'data' => 'state_employee', 'title' => 'Estado Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
         ];
 
         if ($this->configuration && $this->configuration->value == 'SI')

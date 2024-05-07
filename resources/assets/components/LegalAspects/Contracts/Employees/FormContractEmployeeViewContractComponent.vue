@@ -19,8 +19,15 @@
     </b-form-row>
 
     <b-form-row>
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.civil_status" :error="form.errorsFor('civil_status')" :multiple="false" :options="stateCivilOption" :hide-selected="false" name="civil_status" label="Estado civil" placeholder="Seleccione el estado civil">
+          </vue-advanced-select>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.direction" label="Dirección" type="text" name="direction" :error="form.errorsFor('direction')" placeholder="Dirección"/>
+    </b-form-row>
+
+    <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"/>
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.workday" :error="form.errorsFor('workday')" :multiple="false" :options="workdayOption" :hide-selected="false" name="workday" label="Jornada laboral" placeholder="Seleccione la Jornada laboral">
+          </vue-advanced-select>
     </b-form-row>
 
     <b-form-row>
@@ -283,6 +290,16 @@ export default {
           {name: 'O-', value: 'O-'},
           {name: 'AB+', value: 'AB+'},
           {name: 'AB-', value: 'AB-'},
+        ],
+        stateCivilOption: [
+          {name: 'Soltero', value: 'Soltero'},
+          {name: 'Casado', value: 'Casado'},
+        ],
+        workdayOption: [
+          {name: 'Jornada Normal', value: 'Jornada Normal'},
+          {name: 'Jornada Nocturna', value: 'Jornada Nocturna'},
+          {name: 'Jornada Mixta', value: 'Jornada Mixta'},
+          {name: 'Jornada Diurna', value: 'Jornada Diurna'},
         ],
     };
   },

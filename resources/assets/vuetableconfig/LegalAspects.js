@@ -862,7 +862,23 @@ export default [
         },
         {
             type: 'base',
-            buttons: [{
+            buttons: [
+                {
+                    name: 'switchStatus',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar Estado'
+                    },
+                    data: {
+                        action: '/legalAspects/employeeContract/switchStatus/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                    },
+                    permission: 'contracts_employee_u'
+                },
+                {
             name: 'delete',
             data: {
                 action: '/legalAspects/employeeContract/',

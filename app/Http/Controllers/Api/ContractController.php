@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 use App\Http\Requests\Api\ContractRequest;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\LegalAspects\Contracts\ActivityDocument;
+use App\Models\LegalAspects\Contracts\FileUpload;
 
 class ContractController extends ApiController
 {
@@ -48,6 +51,17 @@ class ContractController extends ApiController
 
         $employee = ContractEmployee::withoutGlobalScopes()->where('identification', $request->identification)->where('contract_id', $contract->id)->first();
 
+        $parafiscales = false;
+        $certificaciones = false;
+        $induccion = false;
+        $cursos = false;
+        $habilitado = 0;
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          
+        }
+
         $info_employee = [
           "documento" => $employee->identification,
           "nombre" => $employee->name,
@@ -77,12 +91,13 @@ class ContractController extends ApiController
           "venc_seguridad_social" => "",
           "fecha_venc_examedico" => "",
           "fecha_venc_certificacion" => "",
-          "estado_civil" => "",
-          "escolaridad" => "",
-          "estado" => "",
+          "estado_civil" => $employee->civil_status,
+          "jornada_laboral" => $employee->workday,
+          "estado" => $employee->state_employee ? 'Activo' : 'Inactivo',
+          /*"escolaridad" => "",
           "tipo_vinculacion" => "",
           "fecha_revision" => "",
-          "fecha_ultima_encuesta" => "",
+          "fecha_ultima_encuesta" => "",*/
         ];
 
       } catch (\Exception $e) {
@@ -93,6 +108,36 @@ class ContractController extends ApiController
       return $this->respondHttp200([
           'data' => $info_employee
       ]);
+    }
+
+    public function getFilesByActivity($activity, $employee_id, $contract_id, $class)
+    {
+        $acepted = false;
+
+        $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->where('class', $class)->get();
+
+        if ($documents->count() > 0)
+        {
+            $contract = $contract_id;
+            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id) {
+                $document->files = [];
+
+                $files = FileUpload::select('sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->where('sau_ct_file_upload_contract.contract_id', $contract)
+                ->where('sau_ct_file_document_employee.document_id', $document->id)
+                ->where('sau_ct_file_document_employee.employee_id', $employee_id)
+                ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate > curdate()")
+                ->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
+                ->get();
+
+                if ($files && $files->count() > 0)
+                  $acepted = true;
+            });
+        }
+
+        return $acepted;
     }
 
     public function getContract(Request $request)
