@@ -116,7 +116,8 @@ class ContractController extends ApiController
           "nivel_riesgo" => $contract->risk_class,
           "fecha_creacion_empresa" => Carbon::createFromFormat('Y-m-d H:i:s', $contract->created_at)->format('Y-m-d'),
           "centro_entrenamiento" => $contract->height_training_centers,
-          "representante_legal" => $contract->legal_representative_name
+          "representante_legal" => $contract->legal_representative_name,
+          "correo" => $contract->email_contract
         ];
 
       } catch (\Exception $e) {

@@ -34,7 +34,8 @@ class ContractLesseeInformation extends Model
 		'email_training_employee',
         'social_security_payment_operator',
         'ips',
-        'height_training_centers'
+        'height_training_centers',
+        'email_contract'
     ];
 
     /*public function users(){
