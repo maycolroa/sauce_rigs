@@ -51,15 +51,141 @@ class ContractController extends ApiController
 
         $employee = ContractEmployee::withoutGlobalScopes()->where('identification', $request->identification)->where('contract_id', $contract->id)->first();
 
+
+        $parafis = collect([]);
+        $cert = collect([]);
+        $induc = collect([]);
+        $curs = collect([]);
+        $medic = collect([]);
+
         $parafiscales = false;
         $certificaciones = false;
         $induccion = false;
         $cursos = false;
+
+        $parafiscales_date = false;
+        $certificaciones_date = false;
+
         $habilitado = 0;
 
         foreach ($employee->activities as $key => $activity) 
         {
-          
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Seguridad social');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                $parafis->push($content[0]);
+                $parafiscales = true;
+                $habilitado++;
+                $parafiscales_date = false;
+                break;
+              }
+              else
+              {
+                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Seguridad social');
+
+                if ($content && COUNT($content) > 0)
+                {
+                  if ($content[0])
+                  {
+                    $parafis->push($content[0]);
+                    $parafiscales_date = true;
+                  }
+                }
+              }
+            }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                $cert->push($content[0]);
+                $certificaciones = true;
+                $habilitado++;
+                break;
+              }
+              else
+              {
+                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Certificado');
+
+                if ($content && COUNT($content) > 0)
+                {
+                  if ($content[0])
+                  {
+                    $cert->push($content[0]);
+                    $certificaciones_date = true;
+                  }
+                }
+              }
+            }
+            
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Inducción');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                $induc->push($content[0]);
+                $induccion = true;
+                $habilitado++;
+                break;
+              }
+            }
+
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+            $content  = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Cursos');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                $curs->push($content[0]);
+                $cursos = true;
+                $habilitado++;
+                break;
+              }
+            }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+            $content  = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen médico');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                $medic->push($content[0]);
+                break;
+              }
+              else
+              {
+                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Examen médico');
+
+                if ($content && COUNT($content) > 0)
+                {
+                  if ($content[0])
+                  {
+                    $medic->push($content[0]);
+                  }
+                }
+              }
+            }
+            
         }
 
         $info_employee = [
@@ -83,14 +209,14 @@ class ContractController extends ApiController
           "nit_contratista" => $contract->nit,
           "centro_entrenamiento" =>  $contract->height_training_centers,
           "representante_legal" =>  $contract->legal_representative_name,
-          "ok_habilitado" => "",
-          "ok_parafiscales" => "",
-          "ok_certificaciones" => "",
-          "ok_induccion" => "",
-          "ok_cursos" => "",
-          "venc_seguridad_social" => "",
-          "fecha_venc_examedico" => "",
-          "fecha_venc_certificacion" => "",
+          "ok_habilitado" => $habilitado > 3 ? 1 : 0,
+          "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 1 : 0,
+          "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 1 : 0,
+          "ok_induccion" => $induccion ? 1 : 0,
+          "ok_cursos" => $cursos ? 1 : 0,
+          "venc_seguridad_social" => $parafis->count() > 0 ? $parafis[0]->expirationDate : '',
+          "fecha_venc_examedico" => $medic->count() > 0 ? $medic[0]->expirationDate : '',
+          "fecha_venc_certificacion" => $cert->count() > 0 ? $cert[0]->expirationDate : '',
           "estado_civil" => $employee->civil_status,
           "jornada_laboral" => $employee->workday,
           "estado" => $employee->state_employee ? 'Activo' : 'Inactivo',
@@ -112,32 +238,68 @@ class ContractController extends ApiController
 
     public function getFilesByActivity($activity, $employee_id, $contract_id, $class)
     {
-        $acepted = false;
-
         $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->where('class', $class)->get();
+
+        $files_class = collect([]);
 
         if ($documents->count() > 0)
         {
             $contract = $contract_id;
-            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id) {
-                $document->files = [];
+            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id, &$files_class) {
 
-                $files = FileUpload::select('sau_ct_file_upload_contracts_leesse.id')
+                $files = FileUpload::select(
+                  'sau_ct_file_upload_contracts_leesse.id',
+                  'sau_ct_file_upload_contracts_leesse.name',
+                  'sau_ct_file_upload_contracts_leesse.expirationDate'
+                )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
                 ->where('sau_ct_file_upload_contract.contract_id', $contract)
                 ->where('sau_ct_file_document_employee.document_id', $document->id)
                 ->where('sau_ct_file_document_employee.employee_id', $employee_id)
                 ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate > curdate()")
-                ->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
-                ->get();
+                //->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
+                //->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC')
+                ->first();
 
-                if ($files && $files->count() > 0)
-                  $acepted = true;
+                $files_class->push($files);
             });
         }
 
-        return $acepted;
+        return $files_class;
+    }
+
+    public function getFilesByActivityVencidos($activity, $employee_id, $contract_id, $class)
+    {
+        $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->where('class', $class)->get();
+
+        $files_class = collect([]);
+
+        if ($documents->count() > 0)
+        {
+            $contract = $contract_id;
+            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id, &$files_class) {
+
+                $files = FileUpload::select(
+                  'sau_ct_file_upload_contracts_leesse.id',
+                  'sau_ct_file_upload_contracts_leesse.name',
+                  'sau_ct_file_upload_contracts_leesse.expirationDate'
+                )
+                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->where('sau_ct_file_upload_contract.contract_id', $contract)
+                ->where('sau_ct_file_document_employee.document_id', $document->id)
+                ->where('sau_ct_file_document_employee.employee_id', $employee_id)
+                //->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate > curdate()")
+                //->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
+                ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC')
+                ->first();
+
+                $files_class->push($files);
+            });
+        }
+
+        return $files_class;
     }
 
     public function getContract(Request $request)

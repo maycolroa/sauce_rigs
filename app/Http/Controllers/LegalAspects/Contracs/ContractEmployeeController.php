@@ -465,18 +465,20 @@ class ContractEmployeeController extends Controller
 
                     foreach ($document['files'] as $key => $file) 
                     {
-                        
-                        $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
+                        if (isset($documents[$file['key']]))
+                        {
+                            $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
 
-                        if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
-                        {
-                            if ($fileUpload->state == 'ACEPTADO')
-                                $count_aprobe++;
-                        }
-                        else if (!$fileUpload->expirationDate)
-                        {
-                            if ($fileUpload->state == 'ACEPTADO')
-                                $count_aprobe++;
+                            if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                            {
+                                if ($fileUpload->state == 'ACEPTADO')
+                                    $count_aprobe++;
+                            }
+                            else if (!$fileUpload->expirationDate)
+                            {
+                                if ($fileUpload->state == 'ACEPTADO')
+                                    $count_aprobe++;
+                            }
                         }
                     }
 
@@ -488,7 +490,6 @@ class ContractEmployeeController extends Controller
             if ($documents_counts > $count)
                 return false;
         }
-
 
         return true;
     }
