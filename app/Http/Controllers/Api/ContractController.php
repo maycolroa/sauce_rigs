@@ -67,125 +67,207 @@ class ContractController extends ApiController
         $certificaciones_date = false;
 
         $habilitado = 0;
+        $required_habilitado = 1;
+
+        $class_document = [];
+
+
+        if (in_array('Seguridad social', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Certificado', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Inducción', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Cursos', $class_document))
+          $required_habilitado++;
+
+        foreach ($employee->activities as $key => $activity) 
+        {          
+          $class_document = array_merge($class_document, $activity->documents->pluck('class')->toArray());
+        }
+
+          $now = Carbon::now();
 
         foreach ($employee->activities as $key => $activity) 
         {
+          if (in_array('Seguridad social', $class_document))
+          {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Seguridad social');
 
             if ($content && COUNT($content) > 0)
             {
               if ($content[0])
               {
-                $parafis->push($content[0]);
-                $parafiscales = true;
-                $habilitado++;
-                $parafiscales_date = false;
-                break;
-              }
-              else
-              {
-                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Seguridad social');
-
-                if ($content && COUNT($content) > 0)
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
                 {
-                  if ($content[0])
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $parafis->push($content[0]);
+                    $parafiscales = true;
+                    $habilitado++;
+                    $parafiscales_date = false;
+                    break;
+                  }
+                  else
                   {
                     $parafis->push($content[0]);
                     $parafiscales_date = true;
                   }
                 }
+                else
+                {
+                  $parafis->push($content[0]);
+                  $parafiscales = true;
+                  $parafiscales_date = false;
+                  $habilitado++;
+                }
               }
             }
+          }
         }
 
         foreach ($employee->activities as $key => $activity) 
         {
+          if (in_array('Certificado', $class_document))
+          {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado');
 
             if ($content && COUNT($content) > 0)
             {
               if ($content[0])
               {
-                $cert->push($content[0]);
-                $certificaciones = true;
-                $habilitado++;
-                break;
-              }
-              else
-              {
-                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Certificado');
-
-                if ($content && COUNT($content) > 0)
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
                 {
-                  if ($content[0])
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $cert->push($content[0]);
+                    $certificaciones = true;
+                    $habilitado++;
+                    $certificaciones_date = false;
+                    break;
+                  }
+                  else
                   {
                     $cert->push($content[0]);
                     $certificaciones_date = true;
                   }
                 }
+                else
+                {
+                  $cert->push($content[0]);
+                  $certificaciones = true;
+                  $certificaciones_date = false;
+                  $habilitado++;
+                }
               }
             }
-            
+          }            
         }
 
         foreach ($employee->activities as $key => $activity) 
         {
+          if (in_array('Inducción', $class_document))
+          {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Inducción');
 
             if ($content && COUNT($content) > 0)
             {
               if ($content[0])
               {
-                $induc->push($content[0]);
-                $induccion = true;
-                $habilitado++;
-                break;
-              }
-            }
-
-        }
-
-        foreach ($employee->activities as $key => $activity) 
-        {
-            $content  = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Cursos');
-
-            if ($content && COUNT($content) > 0)
-            {
-              if ($content[0])
-              {
-                $curs->push($content[0]);
-                $cursos = true;
-                $habilitado++;
-                break;
-              }
-            }
-        }
-
-        foreach ($employee->activities as $key => $activity) 
-        {
-            $content  = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen médico');
-
-            if ($content && COUNT($content) > 0)
-            {
-              if ($content[0])
-              {
-                $medic->push($content[0]);
-                break;
-              }
-              else
-              {
-                $content = $this->getFilesByActivityVencidos($activity->id, $employee->id, $contract->id, 'Examen médico');
-
-                if ($content && COUNT($content) > 0)
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
                 {
-                  if ($content[0])
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $induc->push($content[0]);
+                    $induccion = true;
+                    $habilitado++;
+                    break;
+                  }
+                }
+                else
+                {
+                  $induc->push($content[0]);
+                  $induccion = true;
+                  $habilitado++;
+                }
+              }
+            }
+          }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Cursos', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Cursos');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $curs->push($content[0]);
+                    $cursos = true;
+                    $habilitado++;
+                    break;
+                  }
+                }
+                else
+                {
+                  $curs->push($content[0]);
+                  $cursos = true;
+                  $habilitado++;
+                }
+              }
+            }
+          }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Examen médico', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen médico');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $medic->push($content[0]);
+                    break;
+                  }
+                  else
                   {
                     $medic->push($content[0]);
                   }
                 }
+                else
+                {
+                  $medic->push($content[0]);
+                }
               }
             }
-            
+          }
         }
 
         $info_employee = [
@@ -209,11 +291,11 @@ class ContractController extends ApiController
           "nit_contratista" => $contract->nit,
           "centro_entrenamiento" =>  $contract->height_training_centers,
           "representante_legal" =>  $contract->legal_representative_name,
-          "ok_habilitado" => $habilitado > 3 ? 1 : 0,
-          "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 1 : 0,
-          "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 1 : 0,
-          "ok_induccion" => $induccion ? 1 : 0,
-          "ok_cursos" => $cursos ? 1 : 0,
+          "ok_habilitado" => $habilitado < 1 ? 'NO' : ($habilitado >= $required_habilitado ? 'SI' : 'NO'),
+          "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 'SI' : 'NO',
+          "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 'SI' : 'NO',
+          "ok_induccion" => $induccion ? 'SI' : 'NO',
+          "ok_cursos" => $cursos ? 'SI' : 'NO',
           "venc_seguridad_social" => $parafis->count() > 0 ? $parafis[0]->expirationDate : '',
           "fecha_venc_examedico" => $medic->count() > 0 ? $medic[0]->expirationDate : '',
           "fecha_venc_certificacion" => $cert->count() > 0 ? $cert[0]->expirationDate : '',
@@ -257,41 +339,8 @@ class ContractController extends ApiController
                 ->where('sau_ct_file_upload_contract.contract_id', $contract)
                 ->where('sau_ct_file_document_employee.document_id', $document->id)
                 ->where('sau_ct_file_document_employee.employee_id', $employee_id)
-                ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate > curdate()")
-                //->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
-                //->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC')
-                ->first();
-
-                $files_class->push($files);
-            });
-        }
-
-        return $files_class;
-    }
-
-    public function getFilesByActivityVencidos($activity, $employee_id, $contract_id, $class)
-    {
-        $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->where('class', $class)->get();
-
-        $files_class = collect([]);
-
-        if ($documents->count() > 0)
-        {
-            $contract = $contract_id;
-            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id, &$files_class) {
-
-                $files = FileUpload::select(
-                  'sau_ct_file_upload_contracts_leesse.id',
-                  'sau_ct_file_upload_contracts_leesse.name',
-                  'sau_ct_file_upload_contracts_leesse.expirationDate'
-                )
-                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                ->where('sau_ct_file_upload_contract.contract_id', $contract)
-                ->where('sau_ct_file_document_employee.document_id', $document->id)
-                ->where('sau_ct_file_document_employee.employee_id', $employee_id)
                 //->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate > curdate()")
-                //->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
+                ->whereRaw("sau_ct_file_upload_contracts_leesse.state = 'ACEPTADO'")
                 ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC')
                 ->first();
 
@@ -336,50 +385,4 @@ class ContractController extends ApiController
           'data' => $info_contract
       ]);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return $this->responderError('No encontrado');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        return $this->responderError('No encontrado');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        return $this->responderError('No encontrado');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        return $this->responderError('No encontrado');
-    }
-
   }

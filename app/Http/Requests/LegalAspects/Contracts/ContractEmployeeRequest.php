@@ -98,7 +98,8 @@ class ContractEmployeeRequest extends FormRequest
             'activities' => 'required|array',
             'activities.*.selected' => 'required',
             'activities.*.documents.*.files.*.name' => 'required',
-            'activities.*.documents.*.files.*.file' => 'required'
+            'activities.*.documents.*.files.*.file' => 'required',
+            'activities.*.documents.*.files.*.expirationDate' => 'required_if:activities.*.documents.*.files.*.required_expiration_date,SI'
         ];
     }
 
@@ -107,7 +108,9 @@ class ContractEmployeeRequest extends FormRequest
         return [
             'activities.*.selected' => 'Actividad',
             'activities.*.documents.*.files.*.name' => 'Nombre',
-            'activities.*.documents.*.files.*.file' => 'Archivo'
+            'activities.*.documents.*.files.*.file' => 'Archivo',
+            'activities.*.documents.*.files.*.expirationDate' => 'Fecha de vencimiento',
+            'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador'
         ];
     }
 }

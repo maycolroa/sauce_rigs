@@ -416,7 +416,9 @@ return [
       'emergency_contact_phone' => 'Telefono de contacto de emergencia',
       'salary' => 'Salario',
       'rh' => 'Tipo de sangre',
-      'activities' => 'Actividades'
+      'activities' => 'Actividades',
+      'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador',
+      'activities.*.documents.*.files.*.required expiration date' => 'Marcador'
     ],
 
 ];

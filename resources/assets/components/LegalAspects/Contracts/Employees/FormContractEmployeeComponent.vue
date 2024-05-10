@@ -156,7 +156,7 @@
                                     </vue-radio>
                                   </b-form-row>
                                   <b-form-row  v-if="file.required_expiration_date == 'SI'">
-                                    <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
+                                    <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
                                   </b-form-row>
 
                                   <b-form-row>
