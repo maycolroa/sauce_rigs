@@ -86,7 +86,9 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
 
         $dataMatriz = $this->getCollection();
 
-        $this->matrix_name = DangerMatrix::find($this->danger_matrix_id);
+        $this->matrix_name = DangerMatrix::where('id', $this->danger_matrix_id);
+        $this->matrix_name->company_scope = $this->company_id;
+        $this->matrix_name = $this->matrix_name->first();
 
         $this->matrizPeligro = collect([]);
 
