@@ -80,6 +80,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
+          Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
           this.$router.push({ name: "industrialsecure-dangermatrix" });
         })
         .catch(error => {
