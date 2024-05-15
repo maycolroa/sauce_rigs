@@ -563,6 +563,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/reportHistory', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@report');
       Route::post('dangersMatrix/reportHistoryExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportExport');
       Route::get('dangersMatrix/download/{dangersMatrix}', 'IndustrialSecure\DangerMatrix\DangerMatrixController@download');
+
+      Route::post('dangersMatrix/downloadMasive', 'IndustrialSecure\DangerMatrix\DangerMatrixController@downloadMasive');
       Route::post('dangersMatrix/import', 'IndustrialSecure\DangerMatrix\DangerMatrixController@import');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 

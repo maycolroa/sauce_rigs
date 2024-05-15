@@ -32,7 +32,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
+class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
 {
     use RegistersEventListeners;
     use LocationFormTrait;
@@ -51,11 +51,16 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
     protected $add_fields_ids;
     protected $matrizPeligro;
     protected $headingsPeligros;
+    protected $source;
+    protected $observations;
+    protected $matrix_name;
 
-    public function __construct($company_id, $danger_matrix_id)
+    public function __construct($company_id, $danger_matrix_id, $source, $observations)
     {
         $this->company_id = $company_id;
         $this->danger_matrix_id = $danger_matrix_id;
+        $this->source = $source;
+        $this->observations = $observations;
         $this->confLocation = $this->getLocationFormConfModule($this->company_id);
         $this->keywords = $this->getKeywordQueue($this->company_id);
 
@@ -81,14 +86,14 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
 
         $dataMatriz = $this->getCollection();
 
+        $this->matrix_name = DangerMatrix::find($this->danger_matrix_id)->name;
+
 
         $this->matrizPeligro = collect([]);
 
         foreach ($dataMatriz as $key => $danger) {
             $this->matrizPeligro->push($this->getMap($danger));
         }
-
-        \Log::info($dataMatriz);
 
         $this->headingsPeligros = $this->getHeadings();
     }
@@ -175,8 +180,6 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
         $dangerMatrix->selectRaw(implode(",", $selecs));
 
         $dangerMatrix->company_scope = $this->company_id;
-
-        \Log::info($dangerMatrix->get());
 
         return $dangerMatrix->get();
     }
@@ -361,7 +364,7 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:AZ1',
+        'A5:AZ5',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
@@ -380,7 +383,7 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
     */
     public function title(): string
     {
-        return 'Matriz de Peligros';
+        return $this->matrix_name;
     }
 
     public function view(): View
@@ -392,7 +395,10 @@ class DangerMatrixPruebaExcel implements FromView, WithEvents, WithTitle
       return view('exports.IndustrialSecure.DangerMatrix.dangerMatrixc', [
           'data' => $this->matrizPeligro,
           'headings' => $this->headingsPeligros,
-          'logo' => $logo
+          'matrix_name' => $this->matrix_name,
+          'logo' => $logo,
+          'source' => $this->source,
+          'observations' => $this->observations
       ]);
     }
 }

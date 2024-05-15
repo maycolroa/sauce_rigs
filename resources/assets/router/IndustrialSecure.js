@@ -171,6 +171,14 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/indexLogQualification')
         }
       ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [ 
+        {
+          name: 'industrialsecure-dangermatrix-export-masive',
+          path: 'dangermatrix/exportMasive',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/exportMasive')
+        }
+      ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
           name: 'industrialsecure-dangermatrix-tags-administrative-controls',

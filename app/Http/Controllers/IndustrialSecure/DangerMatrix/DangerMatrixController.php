@@ -29,6 +29,7 @@ use App\Models\IndustrialSecure\DangerMatrix\QualificationType;
 use App\Models\IndustrialSecure\DangerMatrix\HistoryQualificationChange;
 use App\Http\Requests\IndustrialSecure\DangerMatrix\AddFieldsRequest;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportMasiveJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
 use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportTemplateExcel;
@@ -870,6 +871,33 @@ class DangerMatrixController extends Controller
         try
         {
             DangerMatrixExportJob::dispatch($this->user, $this->company, $dangersMatrix->id);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+
+    public function downloadMasive(Request $request)
+    {
+        try
+        {
+            if ($request->has('danger_matrix_id') && $request->get('danger_matrix_id'))
+            {
+                foreach ($request->get('danger_matrix_id') as $key => $value)
+                {
+                    $data4['danger_matrix_id'][$key] = json_decode($value, true);
+                    $request->merge($data4);
+                }
+            }
+
+            $data = [
+                'dangerMatrix' => $this->getValuesForMultiselect($request->danger_matrix_id),
+                'source' => $request->source,
+                'observations' => $request->observations
+            ];
+
+            DangerMatrixExportMasiveJob::dispatch($this->user, $this->company, $data);
 
             return $this->respondHttp200();
         } catch(Exception $e) {

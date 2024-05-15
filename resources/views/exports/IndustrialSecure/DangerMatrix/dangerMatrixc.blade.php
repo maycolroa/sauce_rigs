@@ -2,14 +2,15 @@
     <thead>
         <tr>
             @if ($logo)
-            <th rowspan="3" style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="50px" height="50px"/></th>
+            <th rowspan="3" style='border: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="50px" height="50px"/></th>
             @endif
-            <th rowspan="3" colspan="4" style='padding: 1px; width: 20%'>
-                <p>Nombre de la matriz de peligros</p>
-                <p>Fuente: SAUCE </p>
-                <p>Generado en atencion a solicitud de prueba</p>
+            <th rowspan="3" colspan="10" style='padding: 1px; width: 20%'>
+                <p>Nombre: {{$matrix_name}}</p>
+                <p>Fuente: {{$source}} </p>
+                <p>Observaciones: {{$observations}}</p>
             </th>
         </tr>
+        <tr></tr>
         <tr></tr>
     </thead>
 </table>
