@@ -86,8 +86,7 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
 
         $dataMatriz = $this->getCollection();
 
-        $this->matrix_name = DangerMatrix::find($this->danger_matrix_id)->name;
-
+        $this->matrix_name = DangerMatrix::find($this->danger_matrix_id);
 
         $this->matrizPeligro = collect([]);
 
@@ -383,7 +382,7 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
     */
     public function title(): string
     {
-        return $this->matrix_name ? $this->matrix_name : 'Matriz de peligros';
+        return $this->matrix_name ? $this->matrix_name->name : 'Matriz de peligros';
     }
 
     public function view(): View
@@ -395,7 +394,7 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
       return view('exports.IndustrialSecure.DangerMatrix.dangerMatrixc', [
           'data' => $this->matrizPeligro,
           'headings' => $this->headingsPeligros,
-          'matrix_name' => $this->matrix_name ? $this->matrix_name : 'Matriz de peligros',
+          'matrix_name' => $this->matrix_name ? $this->matrix_name->name : 'Matriz de peligros',
           'logo' => $logo,
           'source' => $this->source,
           'observations' => $this->observations
