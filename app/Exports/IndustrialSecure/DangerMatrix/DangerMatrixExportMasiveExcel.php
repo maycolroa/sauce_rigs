@@ -383,7 +383,7 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
     */
     public function title(): string
     {
-        return $this->matrix_name;
+        return $this->matrix_name ? $this->matrix_name : 'Matriz de peligros';
     }
 
     public function view(): View
@@ -395,7 +395,7 @@ class DangerMatrixExportMasiveExcel implements FromView, WithEvents, WithTitle
       return view('exports.IndustrialSecure.DangerMatrix.dangerMatrixc', [
           'data' => $this->matrizPeligro,
           'headings' => $this->headingsPeligros,
-          'matrix_name' => $this->matrix_name,
+          'matrix_name' => $this->matrix_name ? $this->matrix_name : 'Matriz de peligros',
           'logo' => $logo,
           'source' => $this->source,
           'observations' => $this->observations
