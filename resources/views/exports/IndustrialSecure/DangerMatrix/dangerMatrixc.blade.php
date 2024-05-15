@@ -2,7 +2,7 @@
     <thead>
         <tr>
             @if ($logo)
-            <th rowspan="3" style='border: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="50px" height="50px"/></th>
+            <th rowspan="3" colspan="2" style='border: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="50px" height="50px"/></th>
             @endif
             <th rowspan="3" colspan="10" style='padding: 1px; width: 20%'>
                 <p>Nombre: {{$matrix_name}}</p>
