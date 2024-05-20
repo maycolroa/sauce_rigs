@@ -3380,4 +3380,120 @@ export default [
         //configNameFilter: 'legalaspects-evaluations-contracts'
     }
 },
+{
+    name: 'industrialsecure-complementary-methodology',
+    fields: [
+        { name: 'sau_dm_complementary_methodologies.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_complementary_methodologies.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodologies.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodologies.observations', data: 'observations', title: 'Observaciones', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario Creador', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodologies.created_at', data: 'created_at', title: 'Fecha de creacion', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [
+        {
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-complementary-methodology-edit' },
+                id: 'id',
+            },
+            permission: 'dangerMatrix_methodology_u'
+        }, 
+        {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-complementary-methodology-view' },
+                id: 'id',
+            },
+            permission: 'dangerMatrix_methodology_r'
+        },
+        {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Historico'
+            },
+            data: {
+                routePush: { name: 'industrialsecure-complementary-methodology-history' },
+                id: 'id',
+            },
+            permission: 'roadsafety_inspections_r'
+        }]
+    },
+    {
+        type: 'simpleDownload',
+        buttons: [{
+        name: 'downloadFile',
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-cloud-download',
+          title: 'Descargar archivo'
+        },
+        data: {
+          action: '/industrialSecurity/complementaryMethodology/download/',
+          id: 'id'
+        },
+        permission: 'roadsafety_inspections_r'
+        }],
+  },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/complementaryMethodology/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la metodologia __name__'
+        },
+        permission: 'dangerMatrix_methodology_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/complementaryMethodology/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-complementary-methodology-history',
+    fields: [
+        { name: 'sau_dm_complementary_methodology_log_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_complementary_methodology_log_histories.type_old', data: 'type_old', title: 'Tipo anterior', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.type_new', data: 'type_new', title: 'Tipo nuevo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.name_old', data: 'name_old', title: 'Nombre anterior', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.name_new', data: 'name_new', title: 'Nombre nuevo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.observations_old', data: 'observations_old', title: 'Observaciones anteriorer', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.observations_new', data: 'observations_new', title: 'Observaciones nuevas', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario Creador', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_complementary_methodology_log_histories.created_at', data: 'created_at', title: 'Fecha de cambio', sortable: true, searchable: true, detail: false, key: false },
+        //{ name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [
+        ]
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/complementaryMethodology/history',
+        filterColumns: true,
+    }
+},
 ];

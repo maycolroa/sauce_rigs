@@ -574,6 +574,12 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/searchKeyword/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@searchKeyword');
 
+
+      Route::post('complementaryMethodology/data', 'IndustrialSecure\DangerMatrix\ComplementaryMethodologyController@data');
+      Route::post('complementaryMethodology/history', 'IndustrialSecure\DangerMatrix\ComplementaryMethodologyController@history');
+      Route::ApiResource('complementaryMethodology', 'IndustrialSecure\DangerMatrix\ComplementaryMethodologyController');
+      Route::get('complementaryMethodology/download/{complementaryMethodology}', 'IndustrialSecure\DangerMatrix\ComplementaryMethodologyController@download');
+
       Route::prefix('dangersMatrix')->group(function () {
 
         Route::post('helpers/data', 'IndustrialSecure\DangerMatrix\HelperController@data');

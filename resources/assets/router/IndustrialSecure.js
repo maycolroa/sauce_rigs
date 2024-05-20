@@ -1691,6 +1691,46 @@ export default [{
 				component: () =>
 					import('@/views/IndustrialSecure/roadSafety/trainings/viewEmployee')
 						}
-			])
+			]),
+      ...middleware({ 'check-permission': 'dangerMatrix_methodology_r' }, [
+        {
+          name: 'industrialsecure-complementary-methodology',
+          path: 'complementaryMethodology',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'dangerMatrix_methodology_c' }, [
+        {
+          name: 'industrialsecure-complementary-methodology-create',
+          path: 'complementaryMethodology/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'dangerMatrix_methodology_u' }, [
+        {
+          name: 'industrialsecure-complementary-methodology-edit',
+          path: 'complementaryMethodology/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_methodology_r' }, [
+        {
+          name: 'industrialsecure-complementary-methodology-view',
+          path: 'complementaryMethodology/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_methodology_r' }, [
+        {
+          name: 'industrialsecure-complementary-methodology-history',
+          path: 'complementaryMethodology/history/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/indexHistory')
+        }
+      ]),
     ]
   }]

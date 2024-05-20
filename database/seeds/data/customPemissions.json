@@ -306,6 +306,22 @@
                     {
                         "name": "dangerMatrix_approved_matrix",
                         "display_name": "Matriz de peligro - Aprobar matrices"
+                    },
+                    {
+                        "name": "dangerMatrix_methodology_c",
+                        "display_name": "Matriz de peligro - Metodologias crear"
+                    },
+                    {
+                        "name": "dangerMatrix_methodology_r",
+                        "display_name": "Matriz de peligro - Metodologias ver"
+                    },
+                    {
+                        "name": "dangerMatrix_methodology_u",
+                        "display_name": "Matriz de peligro - Metodologias editar"
+                    },
+                    {
+                        "name": "dangerMatrix_methodology_d",
+                        "display_name": "Matriz de peligro - Metodologias eliminar"
                     }
                 ]
             },
