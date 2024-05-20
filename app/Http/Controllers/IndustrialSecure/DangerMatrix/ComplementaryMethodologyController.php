@@ -136,7 +136,7 @@ class ComplementaryMethodologyController extends Controller
       }
 
       return $this->respondHttp200([
-        'message' => 'Se cargo el la metodologia correctamente'
+        'message' => 'Se cargo la metodologia correctamente'
       ]);
     }
 
@@ -218,7 +218,7 @@ class ComplementaryMethodologyController extends Controller
       }
 
       return $this->respondHttp200([
-        'message' => 'Se actualizo el archivo correctamente'
+        'message' => 'Se actualizo la metodologia correctamente'
       ]);
     }
 

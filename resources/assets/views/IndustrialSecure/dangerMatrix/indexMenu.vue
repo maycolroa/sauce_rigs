@@ -37,7 +37,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 c ol-lg-6 align-items-center" v-if="auth.can['dangerMatrix_methodology_r']">
+							<div class="d-flex col-sm-6 col-md-4 c ol-lg-6 align-items-center" v-if="auth.can['dangerMatrix_methodology_r'] && (auth.company_id == 409 || auth.company_id == 1 || auth.company_id == 130)">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-complementary-methodology'}"  >
 									<i class="ion ion-md-settings display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
