@@ -261,7 +261,9 @@ class ComplementaryMethodologyController extends Controller
     public function download(ComplementaryMethodology $complementaryMethodology)
     {
       $name = $complementaryMethodology->name;
+      $extencion = explode('.', $complementaryMethodology->file);
+      $nombre = $name.'.'.$extencion[1];
 
-      return Storage::disk('s3')->download('industrialSecure/complementaryMethodology/files/'. $complementaryMethodology->file, $name);
+      return Storage::disk('s3')->download('industrialSecure/complementaryMethodology/files/'. $complementaryMethodology->file, $nombre);
     }
 }
