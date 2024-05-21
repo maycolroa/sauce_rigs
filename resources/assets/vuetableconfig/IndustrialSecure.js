@@ -3431,7 +3431,7 @@ export default [
                 routePush: { name: 'industrialsecure-complementary-methodology-history' },
                 id: 'id',
             },
-            permission: 'roadsafety_inspections_r'
+            permission: 'dangerMatrix_methodology_r'
         }]
     },
     {
@@ -3448,7 +3448,7 @@ export default [
           action: '/industrialSecurity/complementaryMethodology/download/',
           id: 'id'
         },
-        permission: 'roadsafety_inspections_r'
+        permission: 'dangerMatrix_methodology_r'
         }],
   },
     {
