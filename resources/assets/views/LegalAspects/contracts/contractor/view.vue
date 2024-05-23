@@ -45,7 +45,8 @@ export default {
             contractClassifications: [],
             siNo: [],
             usersResponsibles: [],
-            usersContract: []
+            usersContract: [],
+            kindsRisks: []
         }
     },
     created(){
