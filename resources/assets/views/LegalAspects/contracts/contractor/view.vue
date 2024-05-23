@@ -16,6 +16,7 @@
                 :contract-classifications="contractClassifications"
                 :users-responsibles="usersResponsibles"
                 :usersContract="usersContract"
+				:kindsRisks="kindsRisks"
                 :cancel-url="{ name: 'legalaspects-contractor'}"
                 :si-no="siNo"/>
         </b-card-body>
@@ -62,6 +63,7 @@ export default {
         this.fetchSelect('contractClassifications', '/selects/ctContractClassifications')
         this.fetchSelect('siNo', '/radios/siNo')
 		this.fetchSelect('usersResponsibles', '/selects/contracts/usersResponsibles')
+		this.fetchSelect('kindsRisks', '/selects/ctkindsRisks') 
     },
 	methods: {
 		fetchSelect(key, url)

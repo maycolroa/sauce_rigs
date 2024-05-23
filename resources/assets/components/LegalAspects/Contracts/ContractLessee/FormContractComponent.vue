@@ -50,6 +50,53 @@
 					</b-form-row>
             	</b-card>
 
+				<b-card border-variant="primary" class="mb-3 box-shadow-none">
+                    <b-form-row>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.address" label="Dirección" type="text" name="address" :error="form.errorsFor('address')" placeholder="Ej: Calle 123 #12-34"></vue-input>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.phone" label="Teléfono" type="number" name="phone" :error="form.errorsFor('phone')" placeholder="Teléfono"></vue-input>
+                    </b-form-row>
+
+					<b-form-row>
+						<vue-input :disabled="true" class="col-md-6" v-model="form.email_contract" label="Email Contratista" type="text" name="email_contract" :error="form.errorsFor('email_contract')" placeholder="Email Contratista"></vue-input>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.legal_representative_name" label="Nombre del representante legal" type="text" name="legal_representative_name" :error="form.errorsFor('legal_representative_name')" placeholder="Nombre del representante legal"></vue-input>
+                    </b-form-row>
+
+					<b-form-row>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.SG_SST_name" label="Nombre del responsable del SG-SST" type="text" name="SG_SST_name" :error="form.errorsFor('SG_SST_name')" placeholder="Nombre del responsable del SG-SST"></vue-input>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.environmental_management_name" label="Nombre del encargado de gestión ambiental" type="text" name="environmental_management_name" :error="form.errorsFor('environmental_management_name')" placeholder="Nombre del encargado de gestión ambiental"></vue-input>
+                    </b-form-row>
+
+                    <b-form-row>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.human_management_coordinator" label="Coordinador de gestión humana" type="text" name="human_management_coordinator" :error="form.errorsFor('human_management_coordinator')" placeholder="Coordinador de gestión humana"></vue-input>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.economic_activity_of_company" label="Actividad económica de la empresa" type="text" name="economic_activity_of_company" :error="form.errorsFor('economic_activity_of_company')" placeholder="Actividad económica de la empresa"></vue-input>
+                    </b-form-row>
+
+					<b-form-row>
+						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.arl" name="arl" :error="form.errorsFor('arl')" label="ARL" placeholder="Seleccione la ARL" :url="tagsCtArlDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+						<vue-input :disabled="true" class="col-md-6" v-model="form.number_workers"  type="number" :error="form.errorsFor('number_workers')" name="number_workers" label="Número de trabajadores" placeholder="Número de trabajadores"></vue-input>
+                    </b-form-row>
+
+					<b-form-row>
+                        <vue-advanced-select :disabled="true" class="col-md-6" v-model="form.risk_class" :error="form.errorsFor('risk_class')" name="risk_class" label="Clase de riesgo" placeholder="Seleccione la clase riesgo" :options="kindsRisks">
+                        </vue-advanced-select>
+						<vue-input :disabled="true" class="col-md-6" v-model="form.email_training_employee"  type="text" :error="form.errorsFor('email_training_employee')" name="email_training_employee" label="Correo para envio de capacitaciones de los empleados (Opcional)" placeholder="Correo para envio de capacitaciones de los empleados"></vue-input>
+                    </b-form-row>
+
+					<b-form-row>
+						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro" :url="tagsCtHeightTrainingCenterDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.social_security_payment_operator" name="social_security_payment_operator" :error="form.errorsFor('social_security_payment_operator')" label="Operador de pago seguridad social" placeholder="Seleccione el operador" :url="tagsCtSocialSecurityDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+                    </b-form-row>
+
+					<b-form-row>
+						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select-tag-unic>
+                    </b-form-row>
+
+            	</b-card>
+
 				<b-card border-variant="primary" v-show="isEdit || viewOnly" title="Usuarios del contratista" class="mb-3 box-shadow-none">
 					<table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
 						<tbody>
@@ -83,6 +130,8 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
+import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -91,7 +140,9 @@ export default {
 		VueAjaxAdvancedSelect,
 		VueInput,
 		VueCheckboxSimple,
-		VueRadio
+		VueRadio,
+		VueAjaxAdvancedSelectTagUnic,
+		VueDatepicker
 	},
 	props: {
 		url: { type: String },
@@ -101,6 +152,12 @@ export default {
 		viewOnly: { type: Boolean, default: false },
 		highRiskTypeUrl: { type: String, default: "" },		
 		activitiesUrl: { type: String, default: "" },
+		kindsRisks: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
 		roles: {
 			type: Array,
 			default: function() {
@@ -161,7 +218,11 @@ export default {
 		return {
 			loading: this.isEdit,
 			form: Form.makeFrom(this.contract, this.method),
-			proyectsUrl: '/selects/contracts/ctProyects'
+			proyectsUrl: '/selects/contracts/ctProyects',
+			tagsCtHeightTrainingCenterDataUrl: '/selects/tagsCtHeightTrainingCenter',
+			tagsCtSocialSecurityDataUrl: '/selects/tagsCtSocialSecurity',
+			tagsCtIpsDataUrl: '/selects/tagsCtIps',
+			tagsCtArlDataUrl: '/selects/tagsCtArl',
 		};
 	},
 	methods: {

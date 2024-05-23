@@ -21,6 +21,7 @@
                 activitiesUrl="/selects/contracts/ctActivities"
                 :users-responsibles="usersResponsibles"
                 :usersContract="usersContract"
+						    :kindsRisks="kindsRisks"
                 :si-no="siNo"/>
         </b-card-body>
       </b-card>
@@ -66,6 +67,7 @@ export default {
     this.fetchSelect('contractClassifications', '/selects/ctContractClassifications')
     this.fetchSelect('siNo', '/radios/siNo')
 		this.fetchSelect('usersResponsibles', '/selects/contracts/usersResponsibles')
+		this.fetchSelect('kindsRisks', '/selects/ctkindsRisks') 
   },
 	methods: {
 		fetchSelect(key, url)
