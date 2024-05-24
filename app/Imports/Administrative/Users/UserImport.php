@@ -182,7 +182,8 @@ class UserImport implements ToCollection, WithCalculatedFormulas
                         ->company($this->company_id)
                         ->send();
 
-                    $user->attachRole($this->getIdRole($this->role_id), $team);
+                    //$user->attachRole($this->getIdRole($this->role_id), $team);
+                    $user->attachRoles($this->role_id, $team);
 
                     DB::commit();
                 }
@@ -214,7 +215,8 @@ class UserImport implements ToCollection, WithCalculatedFormulas
                         ->company($this->company_id)
                         ->send();
 
-                    $user->attachRole($this->getIdRole($this->role_id), $team);
+                    //$user->attachRole($this->getIdRole($this->role_id), $team);
+                    $user->attachRoles($this->role_id, $team);
                     
                     DB::commit();
                 }

@@ -1141,7 +1141,9 @@ class UserController extends Controller
     {
       try
       {
-        UserImportJob::dispatch($request->file, $request->role_id, $this->company, $this->user);
+        $roles = $this->getDataFromMultiselect($request->role_id);
+        
+        UserImportJob::dispatch($request->file, $roles, $this->company, $this->user);
       
         return $this->respondHttp200();
 

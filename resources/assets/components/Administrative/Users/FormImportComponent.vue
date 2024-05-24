@@ -4,9 +4,9 @@
 
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-body>
-        <p><b>Estimado usuario solo podra seleccionar un rol por cada importación que realice, el rol que seleccione se le asignara a todos los usuarios del listado</b></p>
+        <p><b>Estimado usuario los roles que seleccione se le asignara a todos los usuarios del listado</b></p>
         <b-form-row>
-          <vue-ajax-advanced-select class="col-md-12" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl" :multiple="false"></vue-ajax-advanced-select>
+          <vue-ajax-advanced-select class="col-md-12" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl" :multiple="true"></vue-ajax-advanced-select>
           <vue-file-simple class="col-md-12" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
         </b-form-row>
       </b-card-body>
