@@ -168,7 +168,7 @@ class ContractLesseeController extends Controller
             if($request->has('proyects_id'))
                 $proyectsContract = $this->getDataFromMultiselect($request->proyects_id);
 
-            $contract->activities()->sync($proyectsContract);
+            $contract->proyects()->sync($proyectsContract);
 
             /*if ($request->has('documents'))
                 $this->saveDocuments($request->documents, $contract);*/
