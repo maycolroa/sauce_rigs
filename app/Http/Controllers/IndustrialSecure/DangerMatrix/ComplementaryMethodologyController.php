@@ -13,6 +13,7 @@ use App\Models\IndustrialSecure\DangerMatrix\ComplementaryMethodology;
 use App\Models\IndustrialSecure\DangerMatrix\ComplementaryMethodologyLogHistories;
 use App\Http\Requests\IndustrialSecure\Documents\DocumentRequest;
 use DB;
+use Validator;
 
 class ComplementaryMethodologyController extends Controller
 {
@@ -102,13 +103,24 @@ class ComplementaryMethodologyController extends Controller
      */
     public function store(DocumentRequest $request)
     {
+      Validator::make($request->all(), [
+        "file" => [
+            function ($attribute, $value, $fail)
+            {
+                if ($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    $fail('Archivo debe ser un xlsx');
+            },
+          ],
+          "observations" => 'required'
+      ])->validate();
+
       DB::beginTransaction();
 
       try
       {
         $complementaryMethodology = new ComplementaryMethodology();
         $file = $request->file;
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
         
         $file->storeAs('industrialSecure/complementaryMethodology/files/', $nameFile,'s3');
 
@@ -185,11 +197,15 @@ class ComplementaryMethodologyController extends Controller
      */
     public function update(DocumentRequest $request, ComplementaryMethodology $complementaryMethodology)
     {
+      Validator::make($request->all(), [
+          "observations" => 'required'
+      ])->validate();
+
+
       DB::beginTransaction();
 
       try
       {
-        //$complementaryMethodology = ComplementaryMethodology::find($complementaryMethodology->id);
         $beforeFile= $complementaryMethodology;
 
 
