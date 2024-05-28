@@ -454,7 +454,7 @@ class AccidentsController extends ApiController
                 'name' => $accident->nombres_apellidos_responsable_informe,
                 'cedula' => $accident->identificacion_responsable_informe,
                 'cargo' => $accident->cargo_responsable_informe,
-                'image' => $fileUpload_firm->path_image(),
+                'image' => isset($fileUpload_firm) && $fileUpload_firm ? $fileUpload_firm->path_image() : NULL,
             ]);
 
             foreach ($accident->personas as $key => $value) 
