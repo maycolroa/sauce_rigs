@@ -135,19 +135,20 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'nombre_empresa' => $row[5],
             'nit' => $row[6],
             'razon_social' => $row[7],
-            'trabajo_alto_riesgo' => strtolower($row[8]),
+            'trabajo_alto_riesgo' => strtoupper($row[8]),
             'tipo_trabajo_alto_riesgo' => array_map('trim', explode(",", strtolower($row[9]))),            
-            'direccion' => $row[10],
-            'telefono' => $row[11],
-            'nombre_representante_legal' => $row[12],
-            'nombre_encargado_sst' => $row[13],
-            'nombre_encargado_ambiental' => $row[14],
-            'actividad_economica_empresa' => $row[15],
-            'arl' => $row[16],
-            'numero_trabajadores' => $row[17],
-            'clase_riesgo' => strtolower($row[18]),
-            'actividades' => explode(",", $row[19]),
-            'proyectos' => isset($row[20]) && $row[20] ? explode(",", $row[20]) : []
+            'actividades' => explode(",", $row[10]),
+            'proyectos' => isset($row[11]) && $row[11] ? explode(",", $row[11]) : [],
+            'responsables' => strpos($row[12], '.') ? explode(".", $row[12]) : explode(",", $row[12]),
+            'direccion' => $row[13],
+            'telefono' => $row[14],
+            'nombre_representante_legal' => $row[15],
+            'nombre_encargado_sst' => $row[16],
+            'nombre_encargado_ambiental' => $row[17],
+            'actividad_economica_empresa' => $row[18],
+            'arl' => $row[19],
+            'numero_trabajadores' => $row[20],
+            'clase_riesgo' => strtolower($row[21]),
         ];
 
         $highRisk = HighRiskType::selectRaw("LOWER(name) AS name")->pluck('name')->implode(',');
@@ -241,6 +242,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->highRiskType()->sync($risks);
                 $contracts->activities()->sync($data['actividades']);
                 $contracts->proyects()->sync($data['proyectos']);
+                $contracts->responsibles()->sync($data['responsables']);
 
                 ///////////////////Creacion Usiario//////////////////
 
