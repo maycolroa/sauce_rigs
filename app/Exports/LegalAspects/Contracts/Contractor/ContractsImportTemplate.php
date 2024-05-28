@@ -6,16 +6,21 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportLeyendTemplate;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
+use App\Exports\LegalAspects\Contracts\Contractor\ActivityTemplate;
+use App\Exports\LegalAspects\Contracts\Contractor\ProyectTemplate;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 class ContractsImportTemplate implements WithMultipleSheets
 {
     use Exportable;
     
     protected $data;
+    protected $company_id;
 
-    public function __construct()
+    public function __construct($company_id)
     {
         $this->data = collect([]);
+        $this->company_id = $company_id;
 
         $leyends = [
             'Los * significan campos obligatorios',
@@ -35,10 +40,18 @@ class ContractsImportTemplate implements WithMultipleSheets
      */
     public function sheets(): array
     {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect');
+        $configuration->company_scope = $this->company_id;
+        $configuration = $configuration->first();
+
         $sheets = [];
 
-        $sheets[] = new ContractsImportTemplateExcel(collect([]));
+        $sheets[] = new ContractsImportTemplateExcel(collect([]), $configuration ? $configuration->value : 'NO');
         $sheets[] = new ContractsImportLeyendTemplate($this->data);
+        $sheets[] = new ActivityTemplate($this->company_id);
+
+        if ($configuration && $configuration->value == 'SI')
+            $sheets[] = new ProyectTemplate($this->company_id);
 
         return $sheets;
     }

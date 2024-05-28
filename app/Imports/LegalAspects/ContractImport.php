@@ -20,6 +20,8 @@ use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\LegalAspects\Contracts\ProyectContract;
 use Validator;
 use Exception;
 use DB;
@@ -143,7 +145,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'actividad_economica_empresa' => $row[15],
             'arl' => $row[16],
             'numero_trabajadores' => $row[17],
-            'clase_riesgo' => strtolower($row[18])
+            'clase_riesgo' => strtolower($row[18]),
+            'actividades' => explode(",", $row[19]),
+            'proyectos' => isset($row[20]) && $row[20] ? explode(",", $row[20]) : []
         ];
 
         $highRisk = HighRiskType::selectRaw("LOWER(name) AS name")->pluck('name')->implode(',');
@@ -235,6 +239,8 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $risks = $this->checkHighRiskWork($data['tipo_trabajo_alto_riesgo']);
 
                 $contracts->highRiskType()->sync($risks);
+                $contracts->activities()->sync($data['actividades']);
+                $contracts->proyects()->sync($data['proyectos']);
 
                 ///////////////////Creacion Usiario//////////////////
 
@@ -356,6 +362,20 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             })->toArray();
 
         $ids = HighRiskType::select('id')->whereIn('name', $risks)->get();
+
+        return $ids;
+    }
+
+    private function checkActivities($data)
+    {
+        $ids = ActivityContract::select('id')->whereIn('id', $data)->get()->pluck('id');
+
+        return $ids;
+    }
+
+    private function checkProyects($data)
+    {
+        $ids = ProyectContract::select('id')->whereIn('id', $data)->get()->pluck('id');
 
         return $ids;
     }

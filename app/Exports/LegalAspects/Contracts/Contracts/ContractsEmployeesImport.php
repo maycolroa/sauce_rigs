@@ -50,13 +50,13 @@ class ContractsEmployeesImport implements WithMultipleSheets
 
         $sheets = [];
 
-        $sheets[] = new ContractsEmployeesTemplate(collect([]), $this->company_id, $this->contract, $configuration ? $configuration : 'NO');
+        $sheets[] = new ContractsEmployeesTemplate(collect([]), $this->company_id, $this->contract, $configuration ? $configuration->value : 'NO');
         $sheets[] = new ActivityContractTemplate($this->contract,$this->company_id);
         $sheets[] = new AfpTemplateExcel($this->company_id);
         $sheets[] = new EpsTemplateExcel($this->company_id);
         $sheets[] = new RhTemplate($this->data);
 
-        if ($configuration && $configuration == 'SI')
+        if ($configuration && $configuration->value == 'SI')
             $sheets[] = new ProyectContractTemplate($this->contract,$this->company_id);
 
         return $sheets;

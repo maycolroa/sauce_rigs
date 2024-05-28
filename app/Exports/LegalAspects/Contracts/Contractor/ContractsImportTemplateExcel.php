@@ -26,10 +26,12 @@ class ContractsImportTemplateExcel implements FromCollection, WithHeadings, With
     use UtilsTrait;
 
     protected $data;
+    protected $proyect;
 
-    public function __construct($data)
+    public function __construct($data, $proyect)
     {
       $this->data = $data;
+      $this->proyect = $proyect;
     }
 
     /**
@@ -54,28 +56,57 @@ class ContractsImportTemplateExcel implements FromCollection, WithHeadings, With
 
     public function headings(): array
     {
-      $columns = [
-        'Nombre (*)',
-        'Documento de identificación (*)',
-        'Email (*)',
-        'Tipo de empresa (*) (Contratista, Arrendatario o Proveedor)',
-        'Clasificación (Unidad de Produccion Agropecuaria, Empresa)',
-        'Nombre de la empresa (*)',
-        'Nit (*)',
-        'Razón social (*)',
-        '¿La empresa realiza tareas de alto riesgo? (SI, NO)(*)',
-        'Tareas de riesgos (Trabajo en alturas, Energias peligrosas, Trabajos en caliente, Espacios confinados) (Separados por “,”si son varios)',
-        'Dirección',
-        'Teléfono',
-        'Nombre del representante legal',
-        'Nombre del responsable del SG-SST',
-        'Nombre del encargado de gestión ambiental',
-        'Actividad económica de la empresa',
-        'Arl',
-        'Número de trabajadores',
-        'Clase de riesgo (Clase de riesgo I, Clase de riesgo II, Clase de riesgo III, Clase de riesgo IV, Clase de riesgo V)'
-
-      ];
+      if ($this->proyect == 'SI')
+      {
+        $columns = [
+          'Nombre (*)',
+          'Documento de identificación (*)',
+          'Email (*)',
+          'Tipo de empresa (*) (Contratista, Arrendatario o Proveedor)',
+          'Clasificación (Unidad de Produccion Agropecuaria, Empresa)',
+          'Nombre de la empresa (*)',
+          'Nit (*)',
+          'Razón social (*)',
+          '¿La empresa realiza tareas de alto riesgo? (SI, NO)(*)',
+          'Tareas de riesgos (Trabajo en alturas, Energias peligrosas, Trabajos en caliente, Espacios confinados) (Separados por “,”si son varios)',
+          'Dirección',
+          'Teléfono',
+          'Nombre del representante legal',
+          'Nombre del responsable del SG-SST',
+          'Nombre del encargado de gestión ambiental',
+          'Actividad económica de la empresa',
+          'Arl',
+          'Número de trabajadores',
+          'Clase de riesgo (Clase de riesgo I, Clase de riesgo II, Clase de riesgo III, Clase de riesgo IV, Clase de riesgo V)',
+          'Actividades (Tomar el código de la actividad a asignar al contratista de la pestaña Actividades, de ser varias actividades debe separar los códigos por coma (,))',
+          'Proyectos (Tomar el código del proyecto a asignar al contratista de la pestaña Proyectos, de ser varios proyectos debe separar los códigos por coma (,))'
+        ];
+      }
+      else 
+      {
+        $columns = [
+          'Nombre (*)',
+          'Documento de identificación (*)',
+          'Email (*)',
+          'Tipo de empresa (*) (Contratista, Arrendatario o Proveedor)',
+          'Clasificación (Unidad de Produccion Agropecuaria, Empresa)',
+          'Nombre de la empresa (*)',
+          'Nit (*)',
+          'Razón social (*)',
+          '¿La empresa realiza tareas de alto riesgo? (SI, NO)(*)',
+          'Tareas de riesgos (Trabajo en alturas, Energias peligrosas, Trabajos en caliente, Espacios confinados) (Separados por “,”si son varios)',
+          'Dirección',
+          'Teléfono',
+          'Nombre del representante legal',
+          'Nombre del responsable del SG-SST',
+          'Nombre del encargado de gestión ambiental',
+          'Actividad económica de la empresa',
+          'Arl',
+          'Número de trabajadores',
+          'Clase de riesgo (Clase de riesgo I, Clase de riesgo II, Clase de riesgo III, Clase de riesgo IV, Clase de riesgo V)',
+          'Actividades (Tomar el código de la actividad a asignar al contratista de la pestaña Actividades, de ser varias actividades debe separar los códigos por coma (,))'
+        ];  
+      }
 
       return $columns;
 
@@ -135,7 +166,7 @@ class ContractsImportTemplateExcel implements FromCollection, WithHeadings, With
       );
 
       $event->sheet->styleCells(
-        'K1:S1',
+        'K1:U1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
