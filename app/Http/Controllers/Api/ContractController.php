@@ -411,7 +411,6 @@ class ContractController extends ApiController
           "tel_residencia" => $employee->phone_residence,
           "tel_movil" => $employee->phone_movil,
           "fecha_nacimiento" => $employee->date_of_birth,
-          "cargo" => $employee->position,
           "codigo_eps" => $employee->eps ? $employee->eps->code : '',
           "entidad_eps" => $employee->eps ? $employee->eps->name : '',
           "condicion_discapacidad" => $employee->disability_condition,
@@ -420,7 +419,6 @@ class ContractController extends ApiController
           "telefono_emergencia" => $employee->emergency_contact_phone,
           "salario" => $employee->salary,
           "estado_civil" => $employee->civil_status,
-          "jornada_laboral" => $employee->workday,
           "estado" => $employee->state_employee ? 'Activo' : 'Inactivo'
         ];
 
