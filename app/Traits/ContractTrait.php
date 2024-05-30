@@ -11,6 +11,7 @@ use App\Models\Administrative\Users\User;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use DB;
 //use App\Models\LegalAspects\Contracts\LiskCheckResumen;
 
 trait ContractTrait
@@ -127,7 +128,12 @@ trait ContractTrait
             ->active()
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-            //->where('sau_company_user.company_id', $company_id)
+            ->leftJoin('sau_role_user', function($q) use ($company_id) { 
+                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                ->on('sau_role_user.team_id', '=', DB::raw($company_id));
+            })
+            ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->whereNotIn('sau_roles.id', [8,9,5])
             ->whereNull('sau_user_information_contract_lessee.information_id')
             ->orderBy('name');
             //->get();

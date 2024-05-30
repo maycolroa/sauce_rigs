@@ -88,6 +88,7 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::group(['prefix'=>'contract'], function () {
         Route::post('employee', 'Api\ContractController@getEmployee');
         Route::post('contract', 'Api\ContractController@getContract');
+        Route::post('employeeSimple', 'Api\ContractController@getEmployeeIdentification');
     });
 });
 

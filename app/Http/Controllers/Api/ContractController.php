@@ -385,4 +385,289 @@ class ContractController extends ApiController
           'data' => $info_contract
       ]);
     }
+
+    public function getEmployeeIdentification(Request $request)
+    {        
+
+      if (!$request->has('identification'))
+        return $this->respondWithError('Debe ingresar la identificación');
+
+      try {
+
+        $employee = ContractEmployee::withoutGlobalScopes()
+        ->where('identification', $request->identification)
+        ->where('company_id', 130)
+        ->orderBy('id', 'DESC')
+        ->first();
+
+        if (!$employee)
+          return $this->respondWithError('La identificación no existe en nuestro sistema');
+
+        
+        $contract = ContractLesseeInformation::withoutGlobalScopes()->find($employee->contract_id);
+
+        if (!$contract)
+          return $this->respondWithError('La contratista asociada al empleado no existe o no esta activo dentro del sistema en nuestro sistema');
+
+        $parafis = collect([]);
+        $cert = collect([]);
+        $induc = collect([]);
+        $curs = collect([]);
+        $medic = collect([]);
+
+        $parafiscales = false;
+        $certificaciones = false;
+        $induccion = false;
+        $cursos = false;
+
+        $parafiscales_date = false;
+        $certificaciones_date = false;
+
+        $habilitado = 0;
+        $required_habilitado = 1;
+
+        $class_document = [];
+
+
+        if (in_array('Seguridad social', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Certificado', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Inducción', $class_document))
+          $required_habilitado++;
+
+        if (in_array('Cursos', $class_document))
+          $required_habilitado++;
+
+        foreach ($employee->activities as $key => $activity) 
+        {          
+          $class_document = array_merge($class_document, $activity->documents->pluck('class')->toArray());
+        }
+
+          $now = Carbon::now();
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Seguridad social', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Seguridad social');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $parafis->push($content[0]);
+                    $parafiscales = true;
+                    $habilitado++;
+                    $parafiscales_date = false;
+                    break;
+                  }
+                  else
+                  {
+                    $parafis->push($content[0]);
+                    $parafiscales_date = true;
+                  }
+                }
+                else
+                {
+                  $parafis->push($content[0]);
+                  $parafiscales = true;
+                  $parafiscales_date = false;
+                  $habilitado++;
+                }
+              }
+            }
+          }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Certificado', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $cert->push($content[0]);
+                    $certificaciones = true;
+                    $habilitado++;
+                    $certificaciones_date = false;
+                    break;
+                  }
+                  else
+                  {
+                    $cert->push($content[0]);
+                    $certificaciones_date = true;
+                  }
+                }
+                else
+                {
+                  $cert->push($content[0]);
+                  $certificaciones = true;
+                  $certificaciones_date = false;
+                  $habilitado++;
+                }
+              }
+            }
+          }            
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Inducción', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Inducción');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $induc->push($content[0]);
+                    $induccion = true;
+                    $habilitado++;
+                    break;
+                  }
+                }
+                else
+                {
+                  $induc->push($content[0]);
+                  $induccion = true;
+                  $habilitado++;
+                }
+              }
+            }
+          }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Cursos', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Cursos');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $curs->push($content[0]);
+                    $cursos = true;
+                    $habilitado++;
+                    break;
+                  }
+                }
+                else
+                {
+                  $curs->push($content[0]);
+                  $cursos = true;
+                  $habilitado++;
+                }
+              }
+            }
+          }
+        }
+
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Examen médico', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen médico');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $medic->push($content[0]);
+                    break;
+                  }
+                  else
+                  {
+                    $medic->push($content[0]);
+                  }
+                }
+                else
+                {
+                  $medic->push($content[0]);
+                }
+              }
+            }
+          }
+        }
+
+        $info_employee = [
+          "documento" => $employee->identification,
+          "nombre" => $employee->name,
+          "direccion" => $employee->direction,
+          "genero" => $employee->sex,
+          "tel_residencia" => $employee->phone_residence,
+          "tel_movil" => $employee->phone_movil,
+          "fecha_nacimiento" => $employee->date_of_birth,
+          "cargo" => $employee->position,
+          "codigo_eps" => $employee->eps ? $employee->eps->code : '',
+          "entidad_eps" => $employee->eps ? $employee->eps->name : '',
+          "condicion_discapacidad" => $employee->disability_condition,
+          "rh" => $employee->rh,
+          "contacto_emergencia" => $employee->emergency_contact,
+          "telefono_emergencia" => $employee->emergency_contact_phone,
+          "salario" => $employee->salary,
+          "arl" => $contract->arl,
+          "nombre_contratista" => $contract->business_name,
+          "nit_contratista" => $contract->nit,
+          "centro_entrenamiento" =>  $contract->height_training_centers,
+          "representante_legal" =>  $contract->legal_representative_name,
+          "ok_habilitado" => $habilitado < 1 ? 'NO' : ($habilitado >= $required_habilitado ? 'SI' : 'NO'),
+          "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 'SI' : 'NO',
+          "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 'SI' : 'NO',
+          "ok_induccion" => $induccion ? 'SI' : 'NO',
+          "ok_cursos" => $cursos ? 'SI' : 'NO',
+          "venc_seguridad_social" => $parafis->count() > 0 ? $parafis[0]->expirationDate : '',
+          "fecha_venc_examedico" => $medic->count() > 0 ? $medic[0]->expirationDate : '',
+          "fecha_venc_certificacion" => $cert->count() > 0 ? $cert[0]->expirationDate : '',
+          "estado_civil" => $employee->civil_status,
+          "jornada_laboral" => $employee->workday,
+          "estado" => $employee->state_employee ? 'Activo' : 'Inactivo'
+        ];
+
+      } catch (\Exception $e) {
+          \Log::info($e->getMessage());
+          return $this->respondHttp500();
+      }
+
+      return $this->respondHttp200([
+          'data' => $info_employee
+      ]);
+    }
   }

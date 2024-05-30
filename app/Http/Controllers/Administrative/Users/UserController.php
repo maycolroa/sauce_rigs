@@ -829,24 +829,6 @@ class UserController extends Controller
         else if ($request->has('employee_area_id'))
             $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
 
-        /*if ($request->has('employee_regional_id'))
-            $regionals = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_regional_id')));
-
-
-
-        if ($request->has('employee_headquarter_id'))
-            $headquarters = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
-
-
-
-        if ($request->has('employee_process_id'))
-            $processes = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_process_id')));
-
-
-
-        if ($request->has('employee_area_id'))
-            $areas = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_area_id')));*/
-
         $user->headquartersFilter()->sync($this->builderArrayFilter($headquarters));
         $user->regionals()->sync($this->builderArrayFilter($regionals));
         $user->processes()->sync($this->builderArrayFilter($processes));
@@ -904,6 +886,8 @@ class UserController extends Controller
 
     public function multiselectUsers()
     {
+        $team = $this->team;
+
         $users_ids = User::select('sau_users.*')
                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->pluck('id')
@@ -928,6 +912,12 @@ class UserController extends Controller
                     ->active()
                     ->withoutGlobalScopes()
                     ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                    ->leftJoin('sau_role_user', function($q) use ($team) { 
+                        $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                          ->on('sau_role_user.team_id', '=', DB::raw($team));
+                    })
+                    ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+                    ->whereNotIn('sau_roles.id', [8,9,5])
                     ->whereNotIn('sau_users.id', $users_ids)
                     ->whereIn('sau_company_user.company_id', $companies_ids)
                     ->groupBy('id')
@@ -960,21 +950,7 @@ class UserController extends Controller
                     sau_users.name as name
                 ")->active();
 
-        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-        {
-            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
-        }
-        else
-        {*/
-            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->leftJoin('sau_role_user', function($q) use ($team) { 
-                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
-                  ->on('sau_role_user.team_id', '=', DB::raw($team));
-            })
-            ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->whereNotIn('sau_roles.id', [8,9]);
-        //}
+        $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
         if($request->has('keyword'))
         {
@@ -983,7 +959,6 @@ class UserController extends Controller
             $users = $users->where(function ($query) use ($keyword) {
                         $query->orWhere('sau_users.name', 'like', $keyword);
                     })->get();
-                    //->take(30)->pluck('id', 'name');
 
             $isSuper = $this->user->hasRole('Superadmin', $this->team);
 
@@ -1035,12 +1010,7 @@ class UserController extends Controller
         }
         else
         {
-            $users/*->selectRaw("
-                sau_users.id as id,
-                Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
-            ")*/
-            //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             ->Join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_user_information_contract_lessee.information_id')
             ->where('sau_ct_information_contract_lessee.company_id', $this->company);
         }
@@ -1053,7 +1023,6 @@ class UserController extends Controller
                         $query->orWhere('sau_users.name', 'like', $keyword)                     
                         ->orWhere('sau_ct_information_contract_lessee.social_reason', 'like', $keyword);
                     })->get();
-                    //->take(30)->pluck('id', 'name');
 
             $isSuper = $this->user->hasRole('Superadmin', $this->team);
 
