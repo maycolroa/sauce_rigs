@@ -417,9 +417,7 @@ class ContractController extends ApiController
           "rh" => $employee->rh,
           "contacto_emergencia" => $employee->emergency_contact,
           "telefono_emergencia" => $employee->emergency_contact_phone,
-          "salario" => $employee->salary,
-          "estado_civil" => $employee->civil_status,
-          "estado" => $employee->state_employee ? 'Activo' : 'Inactivo'
+          "estado_civil" => $employee->civil_status
         ];
 
       } catch (\Exception $e) {

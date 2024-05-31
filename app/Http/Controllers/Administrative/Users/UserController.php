@@ -912,10 +912,7 @@ class UserController extends Controller
                     ->active()
                     ->withoutGlobalScopes()
                     ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                    ->leftJoin('sau_role_user', function($q) use ($team) { 
-                        $q->on('sau_role_user.user_id', '=', 'sau_users.id')
-                          ->on('sau_role_user.team_id', '=', DB::raw($team));
-                    })
+                    ->leftJoin('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
                     ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
                     ->whereNotIn('sau_roles.id', [8,9,5])
                     ->whereNotIn('sau_users.id', $users_ids)
