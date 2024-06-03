@@ -1156,6 +1156,14 @@ Route::middleware(['auth'])->group(function () {
       Route::post('helpers/data', 'System\Helpers\HelperController@data');
       Route::ApiResource('helpers', 'System\Helpers\HelperController');
       Route::get('helpers/download/{id}', 'System\Helpers\HelperController@download');
+
+
+      Route::post('employeeEps/data', 'System\Eps\EpsController@data');
+      Route::ApiResource('employeeEps', 'System\Eps\EpsController');
+
+
+      Route::post('employeeArl/data', 'System\Arl\ArlController@data');
+      Route::ApiResource('employeeArl', 'System\Arl\ArlController');
     });
 
 

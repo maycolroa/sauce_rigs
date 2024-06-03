@@ -702,4 +702,112 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-eps',
+        fields: [
+            { name: 'sau_employees_eps.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_employees_eps.code', data: 'code', title: 'Codigo', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_employees_eps.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'system-eps-edit' },
+                    id: 'id',
+                },
+                permission: 'licenses_u'
+            }, 
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'system-eps-view' },
+                    id: 'id',
+                },
+                permission: 'licenses_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [/*{
+                name: 'delete',
+                data: {
+                    action: '/system/employeeEps/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la ayuda __title__'
+                },
+                permission: 'helpers_d'
+                }*/],
+        }],
+        configuration: {
+            urlData: '/system/employeeEps/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'system-arl',
+        fields: [
+            { name: 'sau_employees_arl.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_employees_arl.code', data: 'code', title: 'Codigo', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_employees_arl.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'system-arl-edit' },
+                    id: 'id',
+                },
+                permission: 'licenses_u'
+            }, 
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'system-arl-view' },
+                    id: 'id',
+                },
+                permission: 'licenses_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [/*{
+                name: 'delete',
+                data: {
+                    action: '/system/employeeEps/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la ayuda __title__'
+                },
+                permission: 'helpers_d'
+                }*/],
+        }],
+        configuration: {
+            urlData: '/system/employeeArl/data',
+            filterColumns: true,
+        }
+    },
 ]

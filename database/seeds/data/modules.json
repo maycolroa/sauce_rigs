@@ -240,6 +240,18 @@
                 "display_name": "Configurar ayudas",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "eps",
+                "display_name": "EPS",
+                "main": "NO",
+                "logo": null
+            },
+            {
+                "name": "arl",
+                "display_name": "ARL",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

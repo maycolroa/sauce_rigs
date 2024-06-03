@@ -363,5 +363,69 @@ export default [{
             import('@/views/System/helpers/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'licenses_r' }, [
+        {
+          name: 'system-eps',
+          path: 'eps',
+          component: () =>
+            import('@/views/System/eps/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'licenses_c' }, [
+        {
+          name: 'system-eps-create',
+          path: 'eps/create',
+          component: () =>
+            import('@/views/System/eps/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'licenses_u' }, [
+        {
+          name: 'system-eps-edit',
+          path: 'eps/edit/:id',
+          component: () =>
+            import('@/views/System/eps/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'licenses_r' }, [
+        {
+          name: 'system-eps-view',
+          path: 'eps/view/:id',
+          component: () =>
+            import('@/views/System/eps/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'licenses_r' }, [
+        {
+          name: 'system-arl',
+          path: 'arl',
+          component: () =>
+            import('@/views/System/arl/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'licenses_c' }, [
+        {
+          name: 'system-arl-create',
+          path: 'arl/create',
+          component: () =>
+            import('@/views/System/arl/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'licenses_u' }, [
+        {
+          name: 'system-arl-edit',
+          path: 'arl/edit/:id',
+          component: () =>
+            import('@/views/System/arl/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'licenses_r' }, [
+        {
+          name: 'system-arl-view',
+          path: 'arl/view/:id',
+          component: () =>
+            import('@/views/System/arl/view')
+        }
+      ]),
     ]
   }]

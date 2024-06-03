@@ -8,6 +8,10 @@ class EmployeeEPS extends Model
 {
     protected $table = 'sau_employees_eps';
 
+    protected $fillable = [
+        'name',
+        'code',
+    ];
     public function multiselect()
     {
         return [
