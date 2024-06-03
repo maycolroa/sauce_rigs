@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\Administrative\Employees\EmployeeEPS;
+use App\Models\General\Departament;
+use App\Models\General\Municipality;
 
 class ContractEmployee extends Model
 {
@@ -37,8 +39,21 @@ class ContractEmployee extends Model
         'emergency_contact_phone',
         'workday',
         'civil_status',
-        'state_employee'
+        'state_employee',
+        'departament_id',
+        'city_id',
+        'income_date'
     ];
+
+    public function departament()
+    {
+        return $this->belongsTo(Departament::class, 'departament_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(Municipality::class, 'city_id');
+    }
 
     public function contract()
     {

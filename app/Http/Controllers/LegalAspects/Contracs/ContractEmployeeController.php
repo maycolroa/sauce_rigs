@@ -170,6 +170,7 @@ class ContractEmployeeController extends Controller
             $tok = str_replace("/", "a", $employee->token);
             $employee->token = $tok;
             $employee->date_of_birth = isset($request->date_of_birth) ? (Carbon::createFromFormat('D M d Y',$request->date_of_birth))->format('Ymd') : NULL;
+            $employee->income_date = isset($request->income_date) ? (Carbon::createFromFormat('D M d Y',$request->income_date))->format('Ymd') : NULL;
 
             if (!$employee->save())
                 return $this->respondHttp500();
@@ -227,6 +228,11 @@ class ContractEmployeeController extends Controller
             $contractEmployee->multiselect_afp = $contractEmployee->afp ? $contractEmployee->afp->multiselect() : [];
             $contractEmployee->multiselect_eps = $contractEmployee->eps ? $contractEmployee->eps->multiselect() : [];
             $contractEmployee->date_of_birth = $contractEmployee->date_of_birth ? (Carbon::createFromFormat('Y-m-d',$contractEmployee->date_of_birth))->format('D M d Y') : NULL;
+            $contractEmployee->income_date = $contractEmployee->income_date ? (Carbon::createFromFormat('Y-m-d',$contractEmployee->income_date))->format('D M d Y') : NULL;
+
+            $contractEmployee->multiselect_departament = $contractEmployee->departament ? $contractEmployee->departament->multiselect() : [];
+
+            $contractEmployee->multiselect_city = $contractEmployee->city ? $contractEmployee->city->multiselect() : [];
 
             $activities = $contractEmployee->activities->transform(function($activity, $index) use ($contractEmployee) {
                 $activity->key = Carbon::now()->timestamp + rand(1,10000);
@@ -294,6 +300,7 @@ class ContractEmployeeController extends Controller
         {
             $employeeContract->fill($request->all());
             $employeeContract->date_of_birth = isset($request->date_of_birth) ? (Carbon::createFromFormat('D M d Y',$request->date_of_birth))->format('Ymd') : NULL;
+            $employeeContract->income_date = isset($request->income_date) ? (Carbon::createFromFormat('D M d Y',$request->income_date))->format('Ymd') : NULL;
 
             if (!$employeeContract->token)
                 $employeeContract->token = Hash::make($employeeContract->email.$employeeContract->identification);

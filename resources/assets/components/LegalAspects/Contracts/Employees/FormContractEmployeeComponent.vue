@@ -32,13 +32,19 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
-      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condición de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')">
-                                    </vue-radio>
+    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.departament_id" :selected-object="form.multiselect_departament" name="departament_id" :error="form.errorsFor('departament_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
+    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.city_id" :selected-object="form.multiselect_city" name="city_id" :error="form.errorsFor('city_id')" label="Municipio" placeholder="Seleccione el municipio" :url="minicipalitiessUrl" :parameters="{departament: form.departament_id }"></vue-ajax-advanced-select>
     </b-form-row>
 
-    <b-form-row v-if="form.disability_condition == 'SI'">
-        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.disability_description" label="Descripción condición de discapacidad" name="disability_description" placeholder="Descripción" rows="3" :error="form.errorsFor('disability_description')"></vue-textarea>
+    <b-form-row>
+      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.income_date" label="Fecha de ingreso" :full-month-name="true" placeholder="Seleccione la fecha de ingreso" :error="form.errorsFor('income_date')" name="income_date">
+          </vue-datepicker>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
+    </b-form-row>
+
+    <b-form-row >
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.disability_condition" :options="siNo" name="disability_condition" label="Condición de discapacidad" :checked="form.disability_condition" :error="form.errorsFor('disability_condition')"></vue-radio>
+      <vue-textarea v-if="form.disability_condition == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.disability_description" label="Descripción condición de discapacidad" name="disability_description" placeholder="Descripción" rows="3" :error="form.errorsFor('disability_description')"></vue-textarea>
     </b-form-row>
 
     <b-form-row>
@@ -250,7 +256,10 @@ export default {
             },
             disability_description: '',
             emergency_contact_phone: '',
-            proyects_id: []
+            proyects_id: [],
+            departament_id: '',
+            city_id: '',
+            income_date: ''
         };
       }
     }
@@ -276,6 +285,8 @@ export default {
       ],
       epsDataUrl: '/selects/eps',
 			proyectsUrl: '/selects/contracts/ctProyectsContracts',
+      departamentsUrl: '/selects/departaments',
+      minicipalitiessUrl: '/selects/municipalities',
       rhOptions: [
           {name: 'A', value: 'A'},
           {name: 'B', value: 'B'},
