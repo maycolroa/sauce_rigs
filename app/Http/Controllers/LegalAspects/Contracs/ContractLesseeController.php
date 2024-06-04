@@ -511,10 +511,13 @@ class ContractLesseeController extends Controller
             }
             else
             {
+
+                \Log::info('1');
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
 
                 $activitiesContract = [];
+                \Log::info('2');
 
                 if($request->has('activity_id'))
                     $activitiesContract = $this->getDataFromMultiselect($request->activity_id);
@@ -522,6 +525,7 @@ class ContractLesseeController extends Controller
                 $contract->activities()->sync($activitiesContract);
 
                 $proyectsContract = [];
+                \Log::info('3');
 
                 if($request->has('proyects_id'))
                     $proyectsContract = $this->getDataFromMultiselect($request->proyects_id);
@@ -529,11 +533,13 @@ class ContractLesseeController extends Controller
                 $contract->proyects()->sync($proyectsContract);
 
                 $responsibles = [];
+                \Log::info('4');
                 
                 if($request->has('users_responsibles'))
                     $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
 
                 $contract->responsibles()->sync($responsibles);
+                \Log::info('5');
             }
 
             if (!$contract->update())
