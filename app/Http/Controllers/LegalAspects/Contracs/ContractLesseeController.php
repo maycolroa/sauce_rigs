@@ -470,8 +470,8 @@ class ContractLesseeController extends Controller
             if ($request->type == 'Arrendatario')
                 $contract->classification = NULL;
 
-            if ($request->has('isInformation'))
-            {
+            /*if ($request->has('isInformation'))
+            {*/
                 $contract->completed_registration = 'SI';
 
                 $arl = $this->tagsPrepare($request->get('arl'));
@@ -491,26 +491,29 @@ class ContractLesseeController extends Controller
                 $contract->ips = $ips->implode(',');
                 $contract->height_training_centers = $height_training_centers->implode(',');
 
-                if ($request->has('documents') && COUNT($request->documents) > 0)
-                    $this->saveDocumentsContracts($contract, $request->documents);
-
-                if ($request->has('delete') && COUNT($request->delete) > 0)
+                if ($request->has('isInformation'))
                 {
-                    foreach ($request->delete['files'] as $id)
+                    if ($request->has('documents') && COUNT($request->documents) > 0)
+                        $this->saveDocumentsContracts($contract, $request->documents);
+
+                    if ($request->has('delete') && COUNT($request->delete) > 0)
                     {
-                        $file_delete = FileUpload::find($id);
-    
-                        if ($file_delete)
+                        foreach ($request->delete['files'] as $id)
                         {
-                            $path = $file_delete->file;
-                            $file_delete->delete();
-                            Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                            $file_delete = FileUpload::find($id);
+        
+                            if ($file_delete)
+                            {
+                                $path = $file_delete->file;
+                                $file_delete->delete();
+                                Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                            }
                         }
                     }
                 }
-            }
+            /*}
             else
-            {
+            {*/
 
                 \Log::info('1');
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
@@ -540,7 +543,7 @@ class ContractLesseeController extends Controller
 
                 $contract->responsibles()->sync($responsibles);
                 \Log::info('5');
-            }
+            //}
 
             if (!$contract->update())
                 return $this->respondHttp500();
