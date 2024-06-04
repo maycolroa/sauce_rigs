@@ -260,9 +260,13 @@ class AccidentsController extends ApiController
                 $employee->save();
             }
 
+            if (!$employee->employee_position_id)
+                return $this->respondWithError('El cargo del empleado no ha sido encontrado');
+
             $position_employee = EmployeePosition::where('id', $employee->employee_position_id);
             $position_employee->company_scope = $request->company_id;
             $position_employee = $position_employee->first();
+
 
             $accident->employee_id = $employee->id;
             $accident->tipo_identificacion_persona = 'CC';
