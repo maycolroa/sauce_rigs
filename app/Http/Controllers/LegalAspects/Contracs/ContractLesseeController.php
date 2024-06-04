@@ -438,6 +438,7 @@ class ContractLesseeController extends Controller
      */
     public function update(ContractRequest $request, ContractLesseeInformation $contract)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "documents.*.files.*.file" => [
                 function ($attribute, $value, $fail)
