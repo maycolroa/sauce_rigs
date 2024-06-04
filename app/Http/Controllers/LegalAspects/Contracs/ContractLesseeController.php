@@ -539,6 +539,8 @@ class ContractLesseeController extends Controller
             if (!$contract->update())
                 return $this->respondHttp500();
 
+                \Log::info('aqui');
+
             $users = $this->getUsersContract($contract->id);
 
             foreach ($users as $user)
