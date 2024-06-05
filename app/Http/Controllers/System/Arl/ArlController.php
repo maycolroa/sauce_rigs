@@ -38,7 +38,10 @@ class ArlController extends Controller
     */
     public function data(Request $request)
     {
-        $arl = EmployeeARL::select('*')
+        $arl = EmployeeARL::selectRaw(
+            "sau_employees_arl.*,
+            if(sau_employees_arl.state, 'SI', 'NO') AS state"
+        )
         ->orderBy('sau_employees_arl.id', 'DESC');
 
         return Vuetable::of($arl)
@@ -147,6 +150,20 @@ class ArlController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se elimino la ARL'
+        ]);
+    }
+
+    public function toggleState(EmployeeARL $arl)
+    {
+        $newState = !$arl->state;
+        $data = ['state' => $newState];
+
+        if (!$arl->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado de la ARL'
         ]);
     }
 }

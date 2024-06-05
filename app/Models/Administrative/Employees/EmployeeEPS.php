@@ -11,7 +11,9 @@ class EmployeeEPS extends Model
     protected $fillable = [
         'name',
         'code',
+        'state'
     ];
+    
     public function multiselect()
     {
         return [

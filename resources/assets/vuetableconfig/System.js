@@ -708,6 +708,7 @@ export default [
             { name: 'sau_employees_eps.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_employees_eps.code', data: 'code', title: 'Codigo', sortable: true, searchable: false, detail: false, key: false },
             { name: 'sau_employees_eps.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_employees_eps.state', data: 'state', title: '¿Activa?', sortable: true, searchable: false, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -741,7 +742,23 @@ export default [
         },
         {
             type: 'base',
-            buttons: [/*{
+            buttons: [
+                {
+                    name: 'switchStatus',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar Estado'
+                    },
+                    data: {
+                        action: '/system/employeeEps/switchStatus/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                    },
+                    permission: 'licenses_r'
+                }
+                /*{
                 name: 'delete',
                 data: {
                     action: '/system/employeeEps/',
@@ -762,6 +779,7 @@ export default [
             { name: 'sau_employees_arl.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_employees_arl.code', data: 'code', title: 'Codigo', sortable: true, searchable: false, detail: false, key: false },
             { name: 'sau_employees_arl.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_employees_arl.state', data: 'state', title: '¿Activa?', sortable: true, searchable: false, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -795,7 +813,23 @@ export default [
         },
         {
             type: 'base',
-            buttons: [/*{
+            buttons: [
+                {
+                    name: 'switchStatus',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar Estado'
+                    },
+                    data: {
+                        action: '/system/employeeArl/switchStatus/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                    },
+                    permission: 'licenses_r'
+                } 
+                /*{
                 name: 'delete',
                 data: {
                     action: '/system/employeeEps/',

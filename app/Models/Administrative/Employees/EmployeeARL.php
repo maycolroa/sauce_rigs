@@ -8,6 +8,12 @@ class EmployeeARL extends Model
 {
     protected $table = 'sau_employees_arl';
 
+    protected $fillable = [
+        'name',
+        'code',
+        'state'
+    ];
+    
     public function multiselect()
     {
         return [

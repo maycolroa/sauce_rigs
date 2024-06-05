@@ -38,7 +38,10 @@ class EpsController extends Controller
     */
     public function data(Request $request)
     {
-        $eps = EmployeeEPS::select('*')
+        $eps = EmployeeEPS::selectRaw(
+            "sau_employees_eps.*,
+            if(sau_employees_eps.state, 'SI', 'NO') AS state"
+        )
         ->orderBy('sau_employees_eps.id', 'DESC');
 
         return Vuetable::of($eps)
@@ -146,6 +149,20 @@ class EpsController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se elimino la EPS'
+        ]);
+    }
+
+    public function toggleState(EmployeeEPS $eps)
+    {
+        $newState = !$eps->state;
+        $data = ['state' => $newState];
+
+        if (!$eps->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado de la EPS'
         ]);
     }
 }

@@ -149,6 +149,7 @@ class ApplicationController extends Controller
                     $query->orWhere('name', 'like', $keyword);
                     $query->orWhere('code', 'like', $keyword);
                 })
+                ->where('state', true)
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -160,7 +161,9 @@ class ApplicationController extends Controller
             $eps = EmployeeEPS::selectRaw("
                 sau_employees_eps.id as id,
                 CONCAT(sau_employees_eps.code, ' - ', sau_employees_eps.name) as name
-            ")->pluck('id', 'name');
+            ")
+            ->where('state', true)
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($eps);
         }
@@ -223,6 +226,7 @@ class ApplicationController extends Controller
                     $query->orWhere('name', 'like', $keyword);
                     $query->orWhere('code', 'like', $keyword);
                 })
+                ->where('state', true)
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -234,7 +238,9 @@ class ApplicationController extends Controller
             $arl = EmployeeARL::selectRaw("
                 sau_employees_arl.id as id,
                 CONCAT(sau_employees_arl.code, ' - ', sau_employees_arl.name) as name
-            ")->pluck('id', 'name');
+            ")
+            ->where('state', true)
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($arl);
         }
