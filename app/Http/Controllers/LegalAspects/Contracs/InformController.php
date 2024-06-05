@@ -203,21 +203,34 @@ class InformController extends Controller
      */
     public function destroy(Inform $inform)
     {
-        if (count($inform->informContracts) > 0)
-        {
-            return $this->respondWithError('No se puede eliminar el informe porque ya existen informes realizados asociados a el');
-        }
+        DB::beginTransaction();
 
-        $this->saveLogDelete('Contratistas - Informes mensuales', 'Se elimino el formato de informe '.$inform->name);
-
-        if(!$inform->delete())
+        try
         {
+            if (count($inform->informContracts) > 0)
+            {
+                return $this->respondWithError('No se puede eliminar el informe porque ya existen informes realizados asociados a el');
+            }
+
+            $this->saveLogDelete('Contratistas - Informes mensuales', 'Se elimino el formato de informe '.$inform->name);
+
+            if(!$inform->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+            
+            return $this->respondHttp200([
+                'message' => 'Se elimino el informe'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
+            //return $e->getMessage();
         }
-        
-        return $this->respondHttp200([
-            'message' => 'Se elimino el informe'
-        ]);
     }
 
     private function saveThemes($inform, $themes)
