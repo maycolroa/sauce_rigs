@@ -21,6 +21,7 @@ use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryCompany;
 use App\Models\IndustrialSecure\WorkAccidents\SectionCategoryItemsCompany;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
+use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentInvestigationRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Models\General\Company;
@@ -181,7 +182,6 @@ class AccidentsWorkController extends Controller
             $accident = new Accident();
             $accident->company_id = $this->company;
             $accident->user_id = $this->user->id;
-            //$accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
 
             ///////////////Empleado//////////////
 
@@ -261,12 +261,6 @@ class AccidentsWorkController extends Controller
             $accident->info_sede_principal_misma_centro_trabajo = $request->info_sede_principal_misma_centro_trabajo == 'SI' ? true : false;
             $accident->centro_trabajo_secundary_id = $request->centro_trabajo_secundary_id && $request->centro_trabajo_secundary_id != '{}' ? $request->centro_trabajo_secundary_id : null;
 
-
-            /*///////////////////////////////Informacion basica///////////////////////
-            $accident->tiene_seguro_social = $request->tiene_seguro_social == 'SI' ? true : false;
-            $accident->nombre_seguro_social = $request->nombre_seguro_social;*/
-
-
             ////////////////////Informacion accidente //////////////////////////
             $accident->nivel_accidente = $request->nivel_accidente;
             $accident->fecha_accidente = $request->fecha_accidente;
@@ -318,60 +312,11 @@ class AccidentsWorkController extends Controller
             $accident->identificacion_responsable_informe = $request->identificacion_responsable_informe;
             $accident->fecha_diligenciamiento_informe = (Carbon::createFromFormat('D M d Y',$request->fecha_diligenciamiento_informe))->format('Ymd');
 
-            ///////////////////Observaciones y archivos
-            //$accident->observaciones_empresa = $request->observaciones_empresa;
-
-
             $accident->consolidado = false;
             
             if(!$accident->save()){
                 return $this->respondHttp500();
             }
-
-            /*$accident->partsBody()->sync($request->parts_body);
-            $accident->lesionTypes()->sync($request->lesions_id);*/
-
-            /*foreach ($request->persons['persons'] as $key => $value) {
-                $person = new Person;
-                $person->name = $value['name'];
-                $person->position = $value['position'];
-                $person->type_document = $value['type_document'];
-                $person->document = $value['document'];
-                $person->form_accident_id = $accident->id;
-                $person->rol = $value['rol'];
-                $person->save();
-            }
-
-            foreach ($request->participants_investigations['persons'] as $key => $value) {
-
-                $type_rol = $this->tagsPrepare($value['type_rol']);
-                $this->tagsSaveSystemCompany($mark, TagsRolesParticipant::class);
-
-                $person = new Person;
-                $person->name = $value['name'];
-                $person->position = $value['position'];
-                $person->type_document = $value['type_document'];
-                $person->document = $value['document'];
-                $person->form_accident_id = $accident->id;
-                $person->rol = $value['rol'];
-                $person->type_rol = $type_rol->implode(',');
-                $person->save();
-            }
-
-            $detail_procedence = 'Formulario de accidente o incidente del empleado '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente;
-
-            ActionPlan::user($this->user)
-                    ->module('accidentsWork')
-                    ->url(url('/administrative/actionplans'))
-                    ->model($accident)
-                    ->detailProcedence($detail_procedence)
-                    ->activities($request->actionPlan)
-                    ->save();
-
-            if (count($request->files) > 0)
-            {
-                $this->processFiles($request->get('files'), $accident->id);
-            }*/
             
             $this->saveLogActivitySystem('Investigación de accidentes', 'Se creo el registro de accidente del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
 
@@ -497,12 +442,6 @@ class AccidentsWorkController extends Controller
             $accident->multiselect_municipality_accident = $accident->ciudad_accidente ? $accident->ciudadAccident->multiselect() : [];
             $accident->multiselect_center = $accident->centro_trabajo_secundary_id ? $accident->centroEmployee->multiselect() : [];
 
-            /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.id');
-            $accident->lesions_id = $values;
-
-            $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.id');
-            $accident->parts_body = $values2;*/
-
             $accident->multiselect_eps = $accident->eps ? $accident->eps->multiselect() : [];
             $accident->multiselect_afp = $accident->afp ? $accident->afp->multiselect() : [];
             $accident->multiselect_arl = $accident->arl ? $accident->arl->multiselect() : [];
@@ -532,12 +471,6 @@ class AccidentsWorkController extends Controller
                 $accident->multiselect_employee = $employee->multiselect();
                 $accident->employee_regional_id = $employee->employee_regional_id;
 
-                /*if (!$employee->employee_regional_id)
-                {
-                    \Log::info('error');
-                    return $this->respondHttp422('Debe completar la informacion del empleado '.$employee->name);
-                    //return $this->respondWithError('Debe completar la informacion del empleado '.$employee->name);
-                }*/
             }
 
             $accident->firm_image =  '';
@@ -654,8 +587,6 @@ class AccidentsWorkController extends Controller
 
         try 
         {
-            //$accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
-
             ///////////////Empleado//////////////
 
             if ($request->tipo_vinculador_laboral == "Empleado")
@@ -734,10 +665,6 @@ class AccidentsWorkController extends Controller
             $accident->info_sede_principal_misma_centro_trabajo = $request->info_sede_principal_misma_centro_trabajo == 'SI' ? true : false;
             $accident->centro_trabajo_secundary_id = $request->centro_trabajo_secundary_id;
 
-            /*///////////////////////////////Informacion basica///////////////////////
-            $accident->tiene_seguro_social = $request->tiene_seguro_social == 'SI' ? true : false;
-            $accident->nombre_seguro_social = $request->nombre_seguro_social;*/
-
 
             ////////////////////Informacion accidente //////////////////////////
             $accident->nivel_accidente = $request->nivel_accidente;
@@ -799,77 +726,6 @@ class AccidentsWorkController extends Controller
                 return $this->respondHttp500();
             }
 
-            /*$accident->partsBody()->sync($request->parts_body);
-            $accident->lesionTypes()->sync($request->lesions_id);*/
-
-            /*foreach ($request->persons['persons'] as $key => $value) 
-            {
-                if (isset($value['id']))
-                    $person = Person::find($value['id']);
-                else
-                    $person = new Person;
-
-                $person->name = $value['name'];
-                $person->position = $value['position'];
-                $person->type_document = $value['type_document'];
-                $person->document = $value['document'];
-                $person->form_accident_id = $accident->id;
-                $person->rol = $value['rol'];
-                $person->save();
-            }
-
-            foreach ($request->persons['delete'] as $key => $value) {
-
-                if (isset($value['id']))
-                {
-                    $person = Person::find($value['id']);
-                    $person->delete();
-                }
-            }
-
-            foreach ($request->participants_investigations['persons'] as $key => $value) 
-            {
-                $type_rol = $this->tagsPrepare($value['type_rol']);
-                $this->tagsSaveSystemCompany($type_rol, TagsRolesParticipant::class);
-
-                if (isset($value['id']))
-                    $person = Person::find($value['id']);
-                else
-                    $person = new Person;
-
-                $person->name = $value['name'];
-                $person->position = $value['position'];
-                $person->type_document = $value['type_document'];
-                $person->document = $value['document'];
-                $person->form_accident_id = $accident->id;
-                $person->rol = $value['rol'];
-                $person->type_rol = $type_rol->implode(',');
-                $person->save();
-            }
-            foreach ($request->participants_investigations['delete'] as $key => $value) {
-
-                if (isset($value['id']))
-                {
-                    $person = Person::find($value['id']);
-                    $person->delete();
-                }
-            }
-
-            $detail_procedence = 'Formulario de accidente o incidente del empleado '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente;
-
-            ActionPlan::user($this->user)
-                    ->module('accidentsWork')
-                    ->url(url('/administrative/actionplans'))
-                    ->model($accident)
-                    ->detailProcedence($detail_procedence)
-                    ->activities($request->actionPlan)
-                    ->save();
-
-            if (count($request->files) > 0)
-            {
-                $this->processFiles($request->get('files'), $accident->id);
-            }*/
-
             $this->saveLogActivitySystem('Investigación de accidentes', 'Se edito el registro de accidente del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
 
             DB::commit();
@@ -927,7 +783,7 @@ class AccidentsWorkController extends Controller
         
     }
 
-    public function investigation(AccidentRequest $request)
+    public function investigation(AccidentInvestigationRequest $request)
     {        
         DB::beginTransaction();
 
@@ -988,6 +844,7 @@ class AccidentsWorkController extends Controller
                 $person->type_rol = $type_rol->implode(',');
                 $person->save();
             }
+
             foreach ($request->participants_investigations['delete'] as $key => $value) {
 
                 if (isset($value['id']))
@@ -1012,7 +869,7 @@ class AccidentsWorkController extends Controller
                 $this->processFiles($request->get('files'), $accident->id);
             }
 
-            $this->saveCauses($request->causes, $accident->id, $request->delete_causes);
+            $this->saveCauses($request->causes, $accident->id, $request->delete);
 
             $this->saveLogActivitySystem('Investigación de accidentes', 'Se realizo la investigacion del evento del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
 
@@ -1321,8 +1178,6 @@ class AccidentsWorkController extends Controller
                     $query->where('system', true);
                     $query->orWhere('company_id', $this->company);
                 })
-                /*->where('system', true)
-                ->orWhere('company_id', $this->company)*/
                 ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
@@ -1447,7 +1302,6 @@ class AccidentsWorkController extends Controller
                 ], 
                 [
                     'id' => $id,
-                    //'description' => $tertiary['description'],
                     'secondary_cause_id' => $secondary->id,
                     'category_id' => $tertiary['category_id'],
                     'item_id' => $tertiary['item_id']
@@ -1458,94 +1312,28 @@ class AccidentsWorkController extends Controller
 
     public function getCauses($accident_id)
     {
-        /*$isEdit = false;
-        $id_tree = 0;
-        $id_tree++;
-
-        $tree = [
-            "children" => [],
-            'name' => "Causas",
-            'value' => 15,
-            'type' => "black",
-            'level' => "orange",
-        ];*/
-
         $causes = MainCause::where('accident_id', $accident_id)->get();
 
         if ($causes->count() > 0)
         {
             foreach ($causes as $key => $cause) 
             {
-                /*$id_tree++;
-            
-                $principal = [
-                    "children" => [],
-                    'name' => $cause->description,
-                    'value' => 10,
-                    'type' => "grey",
-                    'level' => "red"
-                ];*/
-
                 foreach ($cause->secondary as $secondary)
                 {
-                    /*$id_tree++;
-
-                    $secundaria = [
-                        "children" => [],
-                        'name' => $secondary->description,
-                        'value' => 7,
-                        'type' => "grey",
-                        'level' => "purple"
-                    ];*/
-
                     $secondary->key = Carbon::now()->timestamp + rand(1,10000);
                     $secondary->description = $secondary->description ? $secondary->description : $secondary->section->section_name;
 
                     foreach ($secondary->tertiary as $indexLevel => $tertiary)
                     {
-                        /*$id_tree++;
-
-                        $terciaria = [
-                            "children" => [],
-                            'name' => $tertiary->description,
-                            'value' => 5,
-                            'type' => "grey",
-                            'level' => "blue",
-                            'isPar' => ($indexLevel % 2) == 0
-                        ];
-
-                        array_push($secundaria['children'], $terciaria);*/
-
                         $tertiary->key = Carbon::now()->timestamp + rand(1,10000);
                         $tertiary->multiselect_category_id = $tertiary->category_id ? $tertiary->category->multiselect() : [];
                         $tertiary->multiselect_item_id = $tertiary->item_id ? $tertiary->item->multiselect() : [];
                     }
-
-                    //array_push($principal['children'], $secundaria);
                 }
-
-                //array_push($tree['children'], $principal);
             }
 
             $isEdit = true;
         }
-
-        /*$data = [
-            'delete' => [
-                'causes' => [],
-                'secondary' => [],
-                'tertiary' => []
-            ],
-            'causes' => $causes,
-            'accident_id' => $request->id,
-            'isEdit' => $isEdit,
-            'treeData' => $tree
-        ];
-
-        if ($request->has('no_encrypt'))
-            return $data;
-        else
-            return $this->respondHttp200($data);*/
 
             return $causes;
 

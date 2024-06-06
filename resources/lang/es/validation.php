@@ -418,7 +418,9 @@ return [
       'rh' => 'Tipo de sangre',
       'activities' => 'Actividades',
       'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador',
-      'activities.*.documents.*.files.*.required expiration date' => 'Marcador'
+      'activities.*.documents.*.files.*.required expiration date' => 'Marcador',
+      'causes.*.secondary' => 'Causas secundarias',
+      'causes.*.secondary.*.tertiary' => 'Causas'
     ],
 
 ];

@@ -5,7 +5,7 @@ namespace App\Http\Requests\IndustrialSecure\AccidentWork;
 use Illuminate\Foundation\Http\FormRequest;
 use Session;
 
-class AccidentRequest extends FormRequest
+class AccidentInvestigationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -66,6 +66,15 @@ class AccidentRequest extends FormRequest
             $this->merge([
                 'actionPlan' => json_decode($this->input('actionPlan'), true)
             ]);
+        }
+
+        if ($this->has('causes'))
+        {
+            foreach ($this->input('causes') as $key => $value)
+            {
+                $data['causes'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
         }
 
         return $this->all();
@@ -164,6 +173,9 @@ class AccidentRequest extends FormRequest
             //'observaciones_empresa' => 'required|string',s
             'files' => 'nullable',
             'participants_investigations' => 'required|array',
+            'causes.*.secondary.*.tertiary' => 'required|array',
+            'causes.*.secondary.*.tertiary.*.category_id' => 'required',
+            'causes.*.secondary.*.tertiary.*.item_id' => 'required',
         ];
 
         return $rules;

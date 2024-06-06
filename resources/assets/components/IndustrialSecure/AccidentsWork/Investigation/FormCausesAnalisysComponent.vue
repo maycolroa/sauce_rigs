@@ -23,16 +23,6 @@
                     </b-card-header>
                     <b-collapse :id="`accordion${cause.key}-1`" visible :accordion="`accordion-123`">
                     <b-card-body>
-                        <!--<b-form-row>
-                            <vue-textarea class="col-md-12" v-model="causes[index].description" disabled name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.description`)" rows="1"></vue-textarea>
-                        </b-form-row>
-                        <b-form-row>
-                            <div class="col-md-12">
-                                <div class="float-right" style="padding-top: 10px;">
-                                <b-btn variant="primary" @click.prevent="addCauseSecondary(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Causa Secundaria</b-btn>
-                                </div>
-                            </div>
-                        </b-form-row>-->
                         <b-form-row style="padding-top: 15px;">
                             <b-form-feedback class="d-block" v-if="form.errorsFor(`causes.${index}.secondary`)" style="padding-bottom: 10px;">
                                 {{ form.errorsFor(`causes.${index}.secondary`) }}
@@ -48,13 +38,6 @@
                                                        <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + secondaryCause.key+'-1'" variant="link">
                                                         <span class="collapse-icon"></span>
                                                         </b-btn>
-                                                        <!-- <b-btn @click.prevent="removeCauseSecondary(index, index2)" 
-                                                        
-                                                        size="sm" 
-                                                        variant="secondary icon-btn borderless"
-                                                        v-b-tooltip.top title="Eliminar Causa Secundaria">
-                                                            <span class="ion ion-md-close-circle"></span>
-                                                        </b-btn>-->
                                                     </b-button-group>
                                                 </div>
                                             </b-col>
@@ -62,9 +45,6 @@
                                     </b-card-header>
                                     <b-collapse :id="`accordion${secondaryCause.key}-1`" visible :accordion="`accordion-1234`">
                                         <b-card-body>
-                                            <!--<b-form-row>
-                                                <vue-textarea class="col-md-12" v-model="causes[index].secondary[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`causes.${index}.secondary.${index2}.description`)" disabled rows="1"></vue-textarea>
-                                            </b-form-row>-->
                                             <b-form-row>
                                                 <div class="col-md-12">
                                                     <div class="float-right" style="padding-top: 10px;">
@@ -87,7 +67,7 @@
                                                             </div>
                                                             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="causes[index].secondary[index2].tertiary[index3].category_id" :error="form.errorsFor(`causes.${index}.secondary.${index2}.tertiary.${index3}.category_id`)" label="Categoria" name="category_id" placeholder="Seleccione la categoria" :url="awCategoriesData" :parameters="{section: causes[index].secondary[index2].section_id}" :multiple="false" :selected-object="causes[index].secondary[index2].tertiary[index3].multiselect_category_id">
                                                                             </vue-ajax-advanced-select>
-                                                            <vue-ajax-advanced-select :disabled="viewOnly || !causes[index].secondary[index2].tertiary[index3].category_id" class="col-md-6" v-model="causes[index].secondary[index2].tertiary[index3].item_id" :error="form.errorsFor(`causes.${index}.secondary.${index2}.tertiary.${index3}.items_id`)" label="Item" name="item_id" placeholder="Seleccione el item" :url="awCategoriesItemsData" :parameters="{category: causes[index].secondary[index2].tertiary[index3].category_id}" :multiple="false" :selected-object="causes[index].secondary[index2].tertiary[index3].multiselect_item_id">
+                                                            <vue-ajax-advanced-select :disabled="viewOnly || !causes[index].secondary[index2].tertiary[index3].category_id" class="col-md-6" v-model="causes[index].secondary[index2].tertiary[index3].item_id" :error="form.errorsFor(`causes.${index}.secondary.${index2}.tertiary.${index3}.item_id`)" label="Item" name="item_id" placeholder="Seleccione el item" :url="awCategoriesItemsData" :parameters="{category: causes[index].secondary[index2].tertiary[index3].category_id}" :multiple="false" :selected-object="causes[index].secondary[index2].tertiary[index3].multiselect_item_id">
                                                                             </vue-ajax-advanced-select>
                                                         </b-form-row>
                                                     </div>
@@ -196,7 +176,8 @@ export default {
         {
             this.causes[indexObj].secondary[indexSub].tertiary.push({
                 key: new Date().getTime(),
-                description: ''
+                category_id: '',
+                item_id: ''
             })
         },
         removeTertiary(indexObj, indexSub, index)

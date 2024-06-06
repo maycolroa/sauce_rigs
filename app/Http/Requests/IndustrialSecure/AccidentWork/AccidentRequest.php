@@ -56,9 +56,9 @@ class AccidentRequest extends FormRequest
             }
         }
         
-        if ($this->has('delete_causes'))
+        if ($this->has('delete'))
         {
-            $data['delete_causes'] = json_decode($this->input('delete_causes'), true);
+            $data['delete'] = json_decode($this->input('delete'), true);
             $this->merge($data);
         }
 
