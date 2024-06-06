@@ -832,9 +832,6 @@ class VuetableColumnManager
 
     public function legalaspectscontractsemployees()
     {
-
-        \Log::info($this->configuration);
-
         $colums = [
             ['name' => 'sau_ct_contract_employees.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             [ 'name' => 'sau_ct_contract_employees.identification', 'data' => 'identification', 'title' => 'Identificación', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],

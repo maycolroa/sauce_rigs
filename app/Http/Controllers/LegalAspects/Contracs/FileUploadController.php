@@ -317,6 +317,7 @@ class FileUploadController extends Controller
     public function updateEmployee($file_id)
     {
         $file = DB::table('sau_ct_file_document_employee')->where('file_id', $file_id)->first();
+        $pendiente = false;
         
         if ($file)
         {
@@ -324,13 +325,14 @@ class FileUploadController extends Controller
           
           foreach ($employee->activities as $activity)
           {
-            $activity->documents = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
+            $activity->documents_files = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
 
             $documents_counts = $activity->documents->count();
             $count = 0;
-            foreach ($activity->documents as $document)
+            foreach ($activity->documents_files as $document)
             {
-                if (COUNT($document['files']) > 0)
+              $count_files = COUNT($document['files']);
+                if ($count_files > 0)
                 {
                     $count_aprobe = 0;
 
@@ -357,6 +359,7 @@ class FileUploadController extends Controller
 
             if ($documents_counts > $count)
             {
+                $pendiente = true;
                 $employee->update(
                   [ 'state' => 'Pendiente']
                 );
@@ -364,9 +367,12 @@ class FileUploadController extends Controller
             }
           }
 
-          $employee->update(
-            [ 'state' => 'Aprobado']
-          );
+          if(!$pendiente)
+          {
+            $employee->update(
+              [ 'state' => 'Aprobado']
+            );
+          }
         }
     }
 
