@@ -318,6 +318,7 @@ class FileUploadController extends Controller
     {
         $file = DB::table('sau_ct_file_document_employee')->where('file_id', $file_id)->first();
         $pendiente = false;
+        $rejected = false;
         
         if ($file)
         {
@@ -327,8 +328,11 @@ class FileUploadController extends Controller
           {
             $activity->documents_files = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
 
-            $documents_counts = $activity->documents->count();
+            $documents_counts = ActivityDocument::where('activity_id', $activity->id)->where('type', 'Empleado')->get();
+
+            $documents_counts = $documents_counts->count();
             $count = 0;
+
             foreach ($activity->documents_files as $document)
             {
               $count_files = COUNT($document['files']);
@@ -344,11 +348,15 @@ class FileUploadController extends Controller
                         {
                             if ($fileUpload->state == 'ACEPTADO')
                                 $count_aprobe++;
+                            else if ($fileUpload->state == 'RECHAZADO')
+                              $rejected = true;
                         }
                         else if (!$fileUpload->expirationDate)
                         {
                             if ($fileUpload->state == 'ACEPTADO')
                                 $count_aprobe++;
+                            else if ($fileUpload->state == 'RECHAZADO')
+                              $rejected = true;
                         }
                     }
 
@@ -357,7 +365,14 @@ class FileUploadController extends Controller
                 }
             }
 
-            if ($documents_counts > $count)
+            if ($rejected)
+            {
+              $employee->update(
+                [ 'state' => 'Rechazado']
+              );
+              break;
+            }
+            else if ($documents_counts > $count)
             {
                 $pendiente = true;
                 $employee->update(
@@ -367,7 +382,7 @@ class FileUploadController extends Controller
             }
           }
 
-          if(!$pendiente)
+          if(!$pendiente && !$rejected)
           {
             $employee->update(
               [ 'state' => 'Aprobado']
@@ -487,44 +502,6 @@ class FileUploadController extends Controller
 
       return true;
     }
-
-    /*private function sendNotification($fileUpload, $type_action = 'creado')
-    {
-      if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
-      {
-        $subject = "Contratistas - Archivo Cargado";
-        $message = "Un(a) arrendatario/contratista ha $type_action un archivo, para porder verlo haga click en el botón que se encuentra abajo";
-        $recipients = $this->getUsersMasterContract();
-      }
-      else 
-      {
-        $subject = "Contratistas - Archivo Compartido";
-        $message = "Se ha $type_action un archivo compartido con su contratista, para porder verlo haga click en el botón que se encuentra abajo";
-
-        $recipients = new Collection();
-
-        foreach ($fileUpload->contracts as $contract)
-        {
-          $recipients = $recipients->merge($this->getUsersContract($contract->id));
-        }
-      }
-
-      $recipients = $recipients->filter(function ($recipient, $index) {
-        return $recipient->can('contracts_receive_notifications', $this->company);
-      });
-
-      if (!$recipients->isEmpty())
-      {
-        NotificationMail::
-          subject($subject)
-          ->recipients($recipients)
-          ->message($message)
-          ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
-          ->module('contracts')
-          ->company($this->company)
-          ->send();
-      }
-    }*/
 
      /**
      * Display the specified resource.

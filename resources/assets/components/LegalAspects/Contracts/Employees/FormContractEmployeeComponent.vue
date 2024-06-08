@@ -122,13 +122,15 @@
                   <b-col>
                     <div class="col-md-12">
                       <b-form-row>
-                        <div class="col-md-12" v-if="!viewOnly">
+                        <vue-radio :disabled="viewOnly" :checked="document.apply_file" class="col-md-12" v-model="document.apply_file" :options="siNo" :name="`apply_file${document.id}`" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.apply_file`)" label="¿Aplica el documento para este empleado?">
+                        </vue-radio>
+                        <div class="col-md-12" v-if="!viewOnly && document.apply_file == 'SI'">
                           <div class="float-right" style="padding-top: 10px;">
                             <b-btn variant="primary" @click.prevent="addFile(document)"><span class="ion ion-md-add-circle"></span> Añadir archivo</b-btn>
                           </div>
                         </div>
                       </b-form-row>
-                      <b-form-row style="padding-top: 15px;">
+                      <b-form-row v-if="document.apply_file == 'SI'" style="padding-top: 15px;">
                         <template v-for="(file, indexFile) in document.files">
                           <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
                             <b-card-header class="bg-secondary">
@@ -174,6 +176,9 @@
                             </b-collapse>
                           </b-card>
                         </template>
+                      </b-form-row>
+                      <b-form-row v-if="document.apply_file == 'NO'">
+						            <vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
                       </b-form-row>
                     </div>
                   </b-col>
@@ -347,13 +352,6 @@ export default {
     },
     removeActivity(index)
     {
-      /*if (this.form.activities[index].id != undefined)
-      {
-        _.forIn(this.form.activities[index].documents, (documento, key) => {
-            this.removeFile(documento, key);
-        });
-      }*/
-
       this.form.activities.splice(index, 1)
     },
     updateActivityNameTab(values, index) {

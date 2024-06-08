@@ -116,53 +116,36 @@
                 <b-row>
                   <b-col>
                     <div class="col-md-12">
-                      <b-form-row>
-                        <div class="col-md-12" v-if="!viewOnly">
-                          <div class="float-right" style="padding-top: 10px;">
-                            <b-btn variant="primary" @click.prevent="addFile(document)"><span class="ion ion-md-add-circle"></span> Añadir archivo</b-btn>
-                          </div>
-                        </div>
-                      </b-form-row>
                       <b-form-row style="padding-top: 15px;">
                         <template v-for="(file, indexFile) in document.files">
                           <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
                             <b-card-header class="bg-secondary">
                               <b-row>
                                 <b-col cols="10" class="d-flex justify-content-between"> Archivo #{{ indexFile + 1 }}</b-col>
-                                <b-col cols="2">
-                                  <div class="float-right">
-                                    <b-button-group>
-                                      <b-btn href="javascript:void(0)" v-b-toggle="'accordion'+ file.key +'-1'" variant="link">
-                                        <span class="collapse-icon"></span>
-                                      </b-btn>
-                                      <b-btn @click.prevent="removeFile(document, indexFile)"
-                                        v-if="!viewOnly"
-                                        size="sm" 
-                                        variant="secondary icon-btn borderless"
-                                        v-b-tooltip.top title="Eliminar Archivo">
-                                        <span class="ion ion-md-close-circle"></span>
-                                      </b-btn>
-                                    </b-button-group>
-                                  </div>
-                                </b-col>
                               </b-row>
                             </b-card-header>
                             <b-collapse :id="`accordion${file.key}-1`" visible :accordion="`accordion-activities.${index}.documents.${indexDocument}`">
                               <b-card-body border-variant="primary" class="mb-3 box-shadow-none">
-                                <div class="rounded ui-bordered p-3 mb-3">
-                        
-                                  <b-form-row>
-                                    <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)"/>
-                                    <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
-                                  </b-form-row>
+                                <div class="rounded ui-bordered p-3 mb-3">    
+                                  <div v-if="document.apply_file == 'SI'">
+                                    <b-form-row>
+                                      <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)"/>
+                                      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
+                                    </b-form-row>
 
+                                    <b-form-row>
+                                      <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                    </b-form-row>
+                                  </div>
+                                  <div v-if="document.apply_file == 'NO'">
+                                    <b-form-row>
+                                      <vue-textarea class="col-md-12" v-model="file.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+                                    </b-form-row>
+                                  </div>
                                   <b-form-row>
-                                    <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
-                                  </b-form-row>
-                                  <b-form-row>
-                                    <vue-advanced-select class="col-md-6" v-model="file.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" @input="documentAprobe(file.id, file.state, file.reason_rejection)" :multiple="false" :allow-empty="false">
+                                    <vue-advanced-select class="col-md-6" v-model="file.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" @input="documentAprobe(file.id, file.state, file.reason_rejection)" :multiple="false" :allow-empty="false">
                                     </vue-advanced-select>
-                                    <vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" @onBlur="documentAprobe(file.id, file.state, file.reason_rejection)"></vue-textarea>
+                                    <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo" @onBlur="documentAprobe(file.id, file.state, file.reason_rejection)"></vue-textarea>
                                   </b-form-row>
                                 </div>
                               </b-card-body>
@@ -199,6 +182,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
   components: {
@@ -208,7 +192,8 @@ export default {
     VueDatepicker,
     PerfectScrollbar,
     VueAdvancedSelect,
-    VueRadio
+    VueRadio,
+    VueTextarea
   },
   props: {
     url: { type: String },
