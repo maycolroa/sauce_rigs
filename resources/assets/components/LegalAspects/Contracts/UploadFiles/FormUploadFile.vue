@@ -8,16 +8,24 @@
                             </vue-ajax-advanced-select>
 					</b-form-row>
 
-					<b-form-row>
-						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-						<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento" :error="form.errorsFor('expirationDate')" name="expirationDate" :disabled-dates="disabledDates">
-						</vue-datepicker>
-					</b-form-row>
+					<div v-if="form.apply_file == 'SI'">
+						<b-form-row>
+							<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+							<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento" :error="form.errorsFor('expirationDate')" name="expirationDate" :disabled-dates="disabledDates">
+							</vue-datepicker>
+						</b-form-row>
 
-                    <b-form-row>
-						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
-						<vue-file-simple v-else :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
-                    </b-form-row>
+						<b-form-row>
+							<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+							<vue-file-simple v-else :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+						</b-form-row>
+					</div>
+
+					<div v-if="form.apply_file == 'NO'">
+						<b-form-row>
+							<vue-textarea class="col-md-12" v-model="form.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica" :disabled="true"></vue-textarea>
+						</b-form-row>
+					</div>
 
                     <b-form-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
 						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false" :disabled="viewOnly">
