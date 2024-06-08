@@ -20,7 +20,7 @@
               <vue-input class="col-md-6" v-model="document.name" label="Nombre" name="name" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
               <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="document.type" :error="form.errorsFor(`documents.${index}.type`)" :multiple="false" :options="typeDocument" :hide-selected="false" name="type" label="Tipo" placeholder="Seleccione el tipo">
               </vue-advanced-select>
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="document.class" :error="form.errorsFor(`documents.${index}.class`)" :multiple="false" :options="classDocument" :hide-selected="false" name="class" label="Clase" placeholder="Seleccione la clase">
+              <vue-advanced-select v-if="auth.integrationContract == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="document.class" :error="form.errorsFor(`documents.${index}.class`)" :multiple="false" :options="classDocument" :hide-selected="false" name="class" label="Clase" placeholder="Seleccione la clase">
               </vue-advanced-select>
           </b-form-row>
       </div>

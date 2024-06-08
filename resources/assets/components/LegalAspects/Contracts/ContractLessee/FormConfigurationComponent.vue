@@ -12,6 +12,11 @@
         </vue-radio>
     </b-form-row> 
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.company_there_integration_contract" class="col-md-12" v-model="form.company_there_integration_contract" :options="siNo" name="company_there_integration_contract" :error="form.errorsFor('company_there_integration_contract')" label="¿Desea usar integración?">
+        </vue-radio>
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -43,7 +48,8 @@ export default {
       default() {
         return {
           contracts_delete_file_upload: '',
-          contracts_use_proyect: ''
+          contracts_use_proyect: '',
+          company_there_integration_contract: ''
         };
       }
     }
