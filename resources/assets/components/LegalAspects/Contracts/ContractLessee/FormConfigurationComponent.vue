@@ -3,6 +3,11 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
     <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.validate_qualification_list_check" class="col-md-12" v-model="form.validate_qualification_list_check" :options="siNo" name="validate_qualification_list_check" :error="form.errorsFor('validate_qualification_list_check')" label="Validar calificaciones de lista de chequeo">
+        </vue-radio>
+    </b-form-row>
+
+    <b-form-row>
       <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.contracts_delete_file_upload" class="col-md-12" v-model="form.contracts_delete_file_upload" :options="siNo" name="contracts_delete_file_upload" :error="form.errorsFor('contracts_delete_file_upload')" label="¿Permitir eliminar archivos aprobados o rechazados?">
         </vue-radio>
     </b-form-row> 
@@ -47,6 +52,7 @@ export default {
     configuration: {
       default() {
         return {
+          validate_qualification_list_check: '',
           contracts_delete_file_upload: '',
           contracts_use_proyect: '',
           company_there_integration_contract: ''
