@@ -16,7 +16,7 @@
               <vue-input v-if="infor.estaba_realizando_labor_habitual == 'NO'" :disabled="viewOnly" class="col-md-4" v-model="infor.otra_labor_habitual" label="¿Cuál?" type="text" name="otra_labor_habitual" :error="form.errorsFor('otra_labor_habitual')" placeholder="¿Cuál?"></vue-input>
             </b-form-row>
             <b-form-row>
-              <vue-input v-if="infor.nivel_accidente != 'Incidente'" :disabled="viewOnly" class="col-md-6" v-model="infor.total_tiempo_laborado" label="Total tiempo laborado previo al accidente" type="time" name="total_tiempo_laborado" :error="form.errorsFor('total_tiempo_laborado')" placeholder="Ej 5:40" help-text="Coloque el numero de horas seguido del numero de minutos separandolos con dos puntos"></vue-input>
+              <vue-input v-if="infor.nivel_accidente != 'Incidente'" :disabled="viewOnly" class="col-md-6" v-model="infor.total_tiempo_laborado" label="Horas laboradas previas al accidente" type="number" name="total_tiempo_laborado" :error="form.errorsFor('total_tiempo_laborado')"></vue-input>
               <vue-radio :disabled="viewOnly" :checked="infor.accidente_ocurrio_dentro_empresa" class="col-md-6" v-model="infor.accidente_ocurrio_dentro_empresa" :options="companyAccident" name="accidente_ocurrio_dentro_empresa" :error="form.errorsFor('accidente_ocurrio_dentro_empresa')" label="Lugar donde ocurrió el accidente"></vue-radio>
             </b-form-row>
             <b-form-row v-if="infor.nivel_accidente != 'Incidente'" >
