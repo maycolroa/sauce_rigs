@@ -118,13 +118,6 @@ class InspectionController extends ApiController
      */
     public function create(InspectionsCreateRequest $request)
     {
-        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }*/
-
         $inspection = Inspection::query();
         $inspection->company_scope = $request->company_id;
         $inspection = $inspection->find($request->inspection_id);
@@ -173,14 +166,7 @@ class InspectionController extends ApiController
      * @return \Illuminate\Http\Response
      */
     public function qualificationsList()
-    {
-        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }*/
-        
+    {        
         $qualifications = Qualifications::all();
 
         $data = [];
@@ -312,6 +298,8 @@ class InspectionController extends ApiController
         try
         {
             DB::beginTransaction();
+
+            \Log::info($request);
 
             $qualifier_id = $this->user->id;
             $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;

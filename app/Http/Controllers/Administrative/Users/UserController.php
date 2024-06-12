@@ -402,9 +402,12 @@ class UserController extends Controller
                         array_push($roles_new, json_decode($value)->name);
                     }
 
-                    foreach ($request->multiselect_role as $value) 
+                    if ($request->has('multiselect_role'))
                     {
-                        array_push($roles_old, json_decode($value)->name);
+                        foreach ($request->multiselect_role as $value) 
+                        {
+                            array_push($roles_old, json_decode($value)->name);
+                        }
                     }
 
                     if ($roles_old != $roles_new)
