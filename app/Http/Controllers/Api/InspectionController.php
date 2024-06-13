@@ -15,6 +15,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectio
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSendPdf;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
@@ -27,9 +28,11 @@ use App\Http\Requests\Api\InspectionsCreateRequest;
 use App\Http\Requests\Api\InspectionQualificationsRequest;
 use App\Http\Requests\Api\ImageInspectionRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use App\Facades\Mail\Facades\NotificationMail;
 use Validator;
 use Carbon\Carbon;
 use DB;
+use Hash;
 
 class InspectionController extends ApiController
 {
@@ -298,8 +301,6 @@ class InspectionController extends ApiController
         try
         {
             DB::beginTransaction();
-
-            \Log::info($request);
 
             $qualifier_id = $this->user->id;
             $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
@@ -643,6 +644,37 @@ class InspectionController extends ApiController
                 }
 
                 $response['firms']['firmsRemoved'] = [];
+
+                if ($request->has('send_pdf_emails') && $request->send_pdf_emails)
+                {
+                    foreach ($request->send_pdf_emails['emailsAdd'] as $key => $pdf) 
+                    { 
+                        $token = Hash::make($pdf['email'] . str_random(30));
+                        $token = str_replace("/", "a", $token);
+                        $token = str_replace(".", "b", $token);
+
+                        $record = new InspectionSendPdf;
+                        $record->token = $token;
+                        $record->email = $pdf['email'];
+                        $record->company_id = $request->company_id;
+                        $record->qualification_date = $qualification_date_verify;
+                        $record->save();
+
+                        $url = action('IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationSendPdfController@index', ['token' => $token]);
+
+                        $recipient = new User(["email" => $record->email]); 
+
+                        NotificationMail::
+                            subject('Registro de calificaciónn de inspección')
+                            ->recipients($recipient)
+                            ->message('Se ha generado una calificacion de inspecciones planeadas.')
+                            ->buttons([['text'=>'Descargar', 'url'=>url($url)]])
+                            ->module('dangerousConditions')
+                            ->event('Mobile: SendPdfInspectionQualification')
+                            ->company($request->company_id)
+                            ->send();
+                    }
+                }
             }
             
             DB::commit();

@@ -34,6 +34,10 @@ Route::prefix('roadSafety')->group(function () {
   });
 });
 
+Route::prefix('inspections')->group(function () {
+  Route::get('qualification/{token}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationSendPdfController@index');
+});
+
 Route::prefix('epp')->group(function () {
   Route::get('{transaction}/{employee}', 'IndustrialSecure\EPP\TransactionFirmController@index');
   Route::post('firm', 'IndustrialSecure\EPP\TransactionFirmController@saveFirm');
