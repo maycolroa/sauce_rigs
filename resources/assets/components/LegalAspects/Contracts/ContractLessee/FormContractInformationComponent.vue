@@ -102,14 +102,18 @@
                 		<b-row>
                  			<b-col>
                     			<div class="col-md-12">
+									<b-form-row>
+										<vue-radio :checked="document.apply_file" class="col-md-12" v-model="document.apply_file" :options="siNo" :name="`apply_file${document.id}`" :error="form.errorsFor(`documents.${index}.apply_file`)" label="¿Aplica el documento para este empleado?">
+										</vue-radio>
+									</b-form-row>
                     				<b-form-row>
-								        <div class="col-md-12">
+								        <div class="col-md-12" v-if="document.apply_file == 'SI'">
 				                          <div class="float-right" style="padding-top: 10px;">
 				                            <b-btn variant="primary" @click.prevent="addFile(document)"><span class="ion ion-md-add-circle"></span> Añadir archivo</b-btn>
 				                          </div>
 				                        </div>
 			                    	</b-form-row>
-			                        <b-form-row style="padding-top: 15px;">
+			                        <b-form-row style="padding-top: 15px;" v-if="document.apply_file == 'SI'">
 				                        <template v-for="(file, indexFile) in document.files">
 				                          <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
 				                            <b-card-header class="bg-secondary">
@@ -151,6 +155,9 @@
 				                          </b-card>
 				                        </template>
 				                    </b-form-row>
+									<b-form-row v-if="document.apply_file == 'NO'">
+						            	<vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+                      				</b-form-row>
 				    			</div>
 				    		</b-col>
                 		</b-row>
@@ -177,6 +184,8 @@ import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
+import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
 	components: {
@@ -184,7 +193,9 @@ export default {
 		VueInput,
 		VueDatepicker,
 		VueFileSimple,
-		VueAjaxAdvancedSelectTagUnic
+		VueAjaxAdvancedSelectTagUnic,
+		VueRadio,
+		VueTextarea
 	},
 	props: {
 		url: { type: String },
@@ -235,6 +246,10 @@ export default {
 			tagsCtSocialSecurityDataUrl: '/selects/tagsCtSocialSecurity',
 			tagsCtIpsDataUrl: '/selects/tagsCtIps',
 			tagsCtArlDataUrl: '/selects/tagsCtArl',
+			siNo: [
+				{text: 'SI', value: 'SI'},
+				{text: 'NO', value: 'NO'}
+			],
 		};
 	},
 	methods: {
