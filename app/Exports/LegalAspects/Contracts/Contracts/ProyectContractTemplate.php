@@ -54,7 +54,7 @@ class ProyectContractTemplate implements FromQuery, WithMapping, WithHeadings, W
     public function query()
     {
       $proyects = ProyectContract::selectRaw("id, name")
-            ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.activity_id' )
+            ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )
             ->where('sau_ct_contracts_proyects.contract_id', $this->contract->id);
 
       $proyects->company_scope = $this->company_id;
