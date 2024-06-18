@@ -90,7 +90,9 @@ export default {
 					expirationDate: '',
 					file: '',
 					state:'',
-					reason_rejection: ''
+					reason_rejection: '',
+					apply_file: 'SI',
+					apply_motive: ''
 				};
 			}
 		}
