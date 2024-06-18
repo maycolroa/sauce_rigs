@@ -84,6 +84,14 @@ class FileUploadController extends Controller
           $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
           $files->betweenCreated($filters["dateCreate"]);
           $files->betweenUpdated($filters["dateUpdate"]);
+
+          if (isset($filters["proyects"]))
+          {
+            $files->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
+            ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_contracts_proyects.proyect_id');
+
+            $files->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
+          }
         }
 
         if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))

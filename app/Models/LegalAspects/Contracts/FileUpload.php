@@ -91,6 +91,20 @@ class FileUpload extends Model
         return $query;
     }
 
+    public function scopeInProyects($query, $proyects, $typeSearch = 'IN')
+    {
+        if (COUNT($proyects) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_contracts_proyects.proyect_id', $proyects);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_contracts_proyects.proyect_id', $proyects);
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

@@ -694,6 +694,7 @@ class ContractEmployeeController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_ct_proyects.name', 'like', $keyword);
                 })
+                ->where('company_id', $this->company)
                 ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
@@ -703,11 +704,14 @@ class ContractEmployeeController extends Controller
         }
         else
         {
-            $activities = ProyectContract::selectRaw("id, name")
-            ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )
-            ->where('sau_ct_contracts_proyects.contract_id', $contract->id)
-            ->orderBy('name')
-            ->pluck('id', 'name');
+            $activities = ProyectContract::selectRaw("id, name")->where('company_id', $this->company);
+
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            {
+                $activities->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )->where('sau_ct_contracts_proyects.contract_id', $contract->id);
+            }
+
+            $activities = $activities->orderBy('name')->pluck('id', 'name');
         
             return $this->multiSelectFormat($activities);
         }
