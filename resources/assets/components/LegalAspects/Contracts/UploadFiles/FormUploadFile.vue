@@ -37,6 +37,16 @@
 						</vue-advanced-select>
 						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" :disabled="true"></vue-textarea>
 					</b-form-row>
+					<b-form-row v-if="form.file && form.type == 'pdf'">
+						<b-card border-variant="primary" class="mb-3 box-shadow-none" style="width: 100%;">
+							<iframe style="width: 100%; height: 700px;" frameborder="0" id="frame_imprimir_rendicion" title="Archivo" :src="form.path"></iframe>
+						</b-card>
+					</b-form-row>
+					<b-form-row v-if="form.file && (form.type == 'png' || form.type == 'jpg' || form.type == 'jpeg')">
+						<b-card border-variant="primary" class="mb-3 box-shadow-none" style="width: 100%;">
+						 	<img class="mw-100" :src="`${form.path}`" alt="Max-width 100%">
+						</b-card>
+					</b-form-row>
 
             	</b-card>
 				<div class="row float-right pt-10 pr-10">
