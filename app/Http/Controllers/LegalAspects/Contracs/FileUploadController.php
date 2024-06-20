@@ -247,7 +247,7 @@ class FileUploadController extends Controller
         $fileUpload->name = $request->name;
         $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');        
         $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
-        $fileUpload->reason_rejection = $request->reason_rejection;
+        $fileUpload->reason_rejection = $request->state == 'RECHAZADO' ? $request->reason_rejection : NULL;
         
         if(!$fileUpload->save()) {
           return $this->respondHttp500();
@@ -626,7 +626,7 @@ class FileUploadController extends Controller
         $beforeFile= $file;
 
         $file->state = $request->state == null ? 'PENDIENTE' : $request->state;
-        $file->reason_rejection = $request->reason_rejection;
+        $file->reason_rejection = $request->state == 'RECHAZADO' ? $request->reason_rejection : NULL;;
         $contract = $file->contracts;
         
         if(!$file->save()) {
