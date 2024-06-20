@@ -45,11 +45,24 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
      */
     public function handle()
     {
-        $companies = ConfigurationsCompany::findAllCompanyByKey('days_alert_expiration_date_contract_file_upload');
+        $date = Carbon::now()->subDay()->format('Y-m-d');
+
+        $companies = License::selectRaw('DISTINCT company_id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->withoutGlobalScopes()
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', '16');
+
+        $companies = $companies->pluck('sau_licenses.company_id');
 
         foreach ($companies as $key => $value)
         {
             $company_id = $value['company_id'];
+
+            $configDay = $this->getConfig($company_id);
+
+            if (!$configDay)
+                continue;
 
             $contracts = ContractLesseeInformation::where('company_id', $company_id)
             ->withoutGlobalScopes()->isActive()->get();
@@ -176,5 +189,18 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
         }
         
         return $result;
+    }
+
+    public function getConfig($company_id)
+    {
+        $key = 'days_alert_expiration_date_contract_file_upload';
+
+        try
+        {
+            return ConfigurationsCompany::company($company_id)->findByKey($key);
+            
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

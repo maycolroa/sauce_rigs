@@ -122,6 +122,15 @@
                             <b-card-header class="bg-secondary">
                               <b-row>
                                 <b-col cols="10" class="d-flex justify-content-between"> Archivo #{{ indexFile + 1 }}</b-col>
+                                <b-col cols="2">
+                                  <div class="float-right">
+                                    <b-button-group>
+                                      <b-btn href="javascript:void(0)" v-b-toggle="'accordion'+ file.key +'-1'" variant="link">
+                                        <span class="collapse-icon"></span>
+                                      </b-btn>
+                                    </b-button-group>
+                                  </div>
+                                </b-col>
                               </b-row>
                             </b-card-header>
                             <b-collapse :id="`accordion${file.key}-1`" visible :accordion="`accordion-activities.${index}.documents.${indexDocument}`">

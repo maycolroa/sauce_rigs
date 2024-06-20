@@ -57,7 +57,7 @@ class FileUploadController extends Controller
         $files = FileUpload::selectRaw(
             "sau_ct_file_upload_contracts_leesse.*,
              sau_users.name as user_name,
-             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
+             GROUP_CONCAT(distinct sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
              sau_ct_section_category_items.item_name AS item_name,
              IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module,
              sau_ct_contract_employees.name AS employee_name"
@@ -69,7 +69,7 @@ class FileUploadController extends Controller
           ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
           ->leftJoin('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->leftJoin('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
-          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name')
+          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_document_employee.file_id')
           ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');
 
         $url = "/legalaspects/upload-files";
@@ -87,8 +87,7 @@ class FileUploadController extends Controller
 
           if (isset($filters["proyects"]))
           {
-            $files->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
-            ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_contracts_proyects.proyect_id');
+            $files->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id');
 
             $files->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
           }
@@ -282,15 +281,28 @@ class FileUploadController extends Controller
             {
               if (!$this->user->hasRole('Arrendatario', $this->company) || !$this->user->hasRole('Contratista', $this->company))
               {
-                //notificar creador
-                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
-                [
-                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
-                  'file_id' => $fileUpload->id,
-                  'module' => 'Subida de Archivos',
-                  'state' => 'MODIFICADO CONTRATANTE',
-                  'date' => date('Y-m-d')
-                ]);
+                if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'ACEPTADO')
+                {
+                  //notificar creador
+                  FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                  [
+                    'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                    'file_id' => $fileUpload->id,
+                    'module' => 'Subida de Archivos',
+                    'state' => 'ACEPTADO',
+                    'date' => date('Y-m-d')
+                  ]);
+                }
+                else {
+                  FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                  [
+                    'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                    'file_id' => $fileUpload->id,
+                    'module' => 'Subida de Archivos',
+                    'state' => 'MODIFICADO CONTRATANTE',
+                    'date' => date('Y-m-d')
+                  ]);
+                }
               }
               else
               {
@@ -304,6 +316,20 @@ class FileUploadController extends Controller
                   'date' => date('Y-m-d')
                 ]);
               }
+            }
+            else {
+              if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'ACEPTADO')
+                {
+                  //notificar creador
+                  FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                  [
+                    'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                    'file_id' => $fileUpload->id,
+                    'module' => 'Subida de Archivos',
+                    'state' => 'ACEPTADO',
+                    'date' => date('Y-m-d')
+                  ]);
+                }
             }
           }
 
