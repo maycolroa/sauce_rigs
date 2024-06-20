@@ -77,19 +77,17 @@ class NotifyRejectedDocumentsContracts extends Command
                     'sau_users.email AS email',
                     'sau_ct_file_upload_contracts_leesse.reason_rejection AS motivo'
                 )
-                ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_upload_contract.file_id')
                 ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_module_state.file_id')
+                ->join('sau_ct_file_upload_contract', 'sau_ct_file_upload_contract.file_upload_id', 'sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_users', 'sau_users.id', 'sau_ct_file_upload_contracts_leesse.user_id')
                 ->where('date', $date)
-                ->where('.sau_ct_file_upload_contracts_leessecontract_id', $contract->id)
+                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
                 ->where('sau_ct_file_module_state.contract_id', $contract->id)
                 ->whereIN('sau_ct_file_upload_contracts_leesse.state', ['RECHAZADO', 'ACEPTADO'])
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)
                 {
-                    //\Log::info($uploadDocuments); 
-
                     foreach ($uploadDocuments as $document)
                     {
                         $data->put($document->email, collect([]));
@@ -97,7 +95,7 @@ class NotifyRejectedDocumentsContracts extends Command
 
                     foreach ($uploadDocuments as $document)
                     {
-                        $iter = $data->get($keyUser);
+                        $iter = $data->get($document->email);
                         $iter->push([
                             'Código' => $document->id,
                             'Documento' => $document->name,
@@ -108,18 +106,25 @@ class NotifyRejectedDocumentsContracts extends Command
                     }
 
                     foreach ($data as $key => $iter)
-                    {                
-                        $recipient = new User(["email" => $key]); 
+                    {          
+                        $recipient = User::where('email', $key)->first();
 
-                        NotificationMail::
-                            subject('Sauce - Contratistas Carga de archivos')
-                            ->recipients($recipient)
-                            ->message("Listado de archivos rechazados o modificados por su contratante el dia de ayer")
-                            ->module('contracts')
-                            ->event('Tarea programada: NotifyRejectedDocumentsContracts')
-                            ->table($iter->toArray())
-                            ->company($company)
-                            ->send();             
+                        try
+                        {         
+                            NotificationMail::
+                                subject('Sauce - Contratistas Carga de archivos')
+                                ->recipients($recipient)
+                                ->message("Listado de archivos rechazados o modificados por su contratante el dia de ayer")
+                                ->module('contracts')
+                                ->event('Tarea programada: NotifyRejectedDocumentsContracts')
+                                ->table($iter->toArray())
+                                ->company($company)
+                                ->send();
+                                
+                        } catch (\Exception $e) {
+                            \Log::info($e->getMessage());
+                            continue;
+                        }         
                     }                            
                 }
                 else
