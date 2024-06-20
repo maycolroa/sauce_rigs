@@ -67,6 +67,8 @@ class NotifyRejectedDocumentsContracts extends Command
 
             foreach ($contracts as $key => $contract) 
             {
+                $data = collect([]);
+
                 $uploadDocuments = FileModuleState::select(
                     'sau_ct_file_upload_contracts_leesse.id AS id',
                     'sau_ct_file_upload_contracts_leesse.state AS state',
@@ -88,22 +90,26 @@ class NotifyRejectedDocumentsContracts extends Command
                 {
                     //\Log::info($uploadDocuments); 
 
-                    /*foreach ($uploadDocuments as $document)
+                    foreach ($uploadDocuments as $document)
                     {
-                        $usersCreator->put($document->email, collect([]));
-                    }*/
+                        $data->put($document->email, collect([]));
+                    }
 
                     foreach ($uploadDocuments as $document)
                     {
-                        $recipient = new User(["email" => $document->email]); 
-
-                        $iter = [
+                        $iter = $data->get($keyUser);
+                        $iter->push([
                             'Código' => $document->id,
                             'Documento' => $document->name,
                             'Módulo' => $document->module,
                             'Estado' => $document->state,
                             'Motivo del rechazo' => $document->motivo
-                        ];
+                        ]);
+                    }
+
+                    foreach ($data as $key => $data)
+                    {                
+                        $recipient = new User(["email" => $key]); 
 
                         NotificationMail::
                             subject('Sauce - Contratistas Carga de archivos')
@@ -111,41 +117,15 @@ class NotifyRejectedDocumentsContracts extends Command
                             ->message("Listado de archivos rechazados o modificados por su contratante el dia de ayer")
                             ->module('contracts')
                             ->event('Tarea programada: NotifyRejectedDocumentsContracts')
-                            ->table($data->toArray())
+                            ->table($iter->toArray())
                             ->company($company)
-                            ->send();
-                        /*foreach ($usersCreator as $keyUser => $user)
-                        {
-                            $iter = $usersCreator->get($keyUser);
-                            $iter->push([
-                                'Código' => $document->id,
-                                'Documento' => $document->name,
-                                'Módulo' => $document->module,
-                                'Estado' => $document->state,
-                                'Motivo del rechazo' => $document->motivo
-                            ]);
-                        }*/
-                    }                                         
+                            ->send();             
+                    }                            
                 }
                 else
                     continue;
 
             }
-
-            /*foreach ($usersCreator as $key => $data)
-            {                
-                $recipient = new User(["email" => $key]); 
-
-                NotificationMail::
-                    subject('Sauce - Contratistas Carga de archivos')
-                    ->recipients($recipient)
-                    ->message("Listado de archivos rechazados o modificados por su contratante el dia de ayer")
-                    ->module('contracts')
-                    ->event('Tarea programada: NotifyRejectedDocumentsContracts')
-                    ->table($data->toArray())
-                    ->company($company)
-                    ->send();
-            }*/
         }
     }
 }
