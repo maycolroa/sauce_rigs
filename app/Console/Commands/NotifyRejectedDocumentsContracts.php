@@ -107,7 +107,7 @@ class NotifyRejectedDocumentsContracts extends Command
                         ]);
                     }
 
-                    foreach ($data as $key => $data)
+                    foreach ($data as $key => $iter)
                     {                
                         $recipient = new User(["email" => $key]); 
 
