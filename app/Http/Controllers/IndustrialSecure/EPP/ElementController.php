@@ -144,6 +144,7 @@ class ElementController extends Controller
         $element->company_id = $this->company;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
+        $element->cost = $request->cost;
         
         if(!$element->save())
             return $this->respondHttp500();
@@ -323,6 +324,7 @@ class ElementController extends Controller
         $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
+        $element->cost = $request->cost;
         
         if(!$element->update()){
           return $this->respondHttp500();

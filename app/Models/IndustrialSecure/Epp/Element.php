@@ -32,7 +32,8 @@ class Element extends Model
         'days_expired',
         'size',
         'data_sheet',
-        'user_manual'
+        'user_manual',
+        'cost'
     ];
 
     public function multiselect()
