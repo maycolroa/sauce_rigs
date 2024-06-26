@@ -43,7 +43,7 @@
 									</b-form-row>
 
 									<b-form-row>
-										<vue-file-simple :disabled="viewOnly" :help-text="value[index].id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${value[index].id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="value[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)" :maxFileSize="20"></vue-file-simple>
+										<vue-file-simple :disabled="viewOnly" :help-text="value[index].id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${value[index].id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="value[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)" :maxFileSize="20"></vue-file-simple>
 									</b-form-row>
 									
 								</div>
