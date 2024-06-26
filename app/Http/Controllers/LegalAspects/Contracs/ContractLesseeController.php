@@ -1314,13 +1314,16 @@ class ContractLesseeController extends Controller
                     }
                     else
                     {
-                        $state = new FileModuleState;
-                        $state->contract_id = $contract->id;
-                        $state->file_id = $fileUpload->id;
-                        $state->module = 'Documentos globales';
-                        $state->state = 'CREADO';                        
-                        $state->date = date('Y-m-d');
-                        $state->save();
+                        if ($create_file)
+                        {
+                            $state = new FileModuleState;
+                            $state->contract_id = $contract->id;
+                            $state->file_id = $fileUpload->id;
+                            $state->module = 'Documentos globales';
+                            $state->state = 'CREADO';                        
+                            $state->date = date('Y-m-d');
+                            $state->save();
+                        }
                     }
 
                     $fileUpload->contracts()->sync([$contract->id]);
@@ -1339,7 +1342,6 @@ class ContractLesseeController extends Controller
             {
                 if (COUNT($document['files']) > 0)
                 {
-                    \Log::info('entro');
                     foreach ($document['files'] as $keyF => $file) 
                     {
                         if (isset($file['id']))
