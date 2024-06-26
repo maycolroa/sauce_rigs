@@ -243,4 +243,41 @@ class ContractActivityController extends Controller
             return $this->multiSelectFormat($activities);
         }
     }
+
+    public function multiselectAll(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $activities = ActivityContract::select("id", "name")
+                ->where('company_id', $this->company)
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)                
+                ->get();
+
+            $activities->push(['id' => 'Todas', 'name' => 'Todas']);
+                
+            $activities = $activities->pluck('id', 'name');
+
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($activities)
+            ]);
+        }
+        else
+        {
+            $activities = ActivityContract::selectRaw("
+                sau_ct_activities.id as id,
+                sau_ct_activities.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($activities);
+        }
+    }
 }

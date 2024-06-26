@@ -370,7 +370,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
           Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
           Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');          
-          Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');
+          Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');      
+          Route::post('ctActivitiesAll', 'LegalAspects\Contracs\ContractActivityController@multiselectAll');
           Route::post('ctActivitiesContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselect');
 
           Route::post('ctProyects', 'LegalAspects\Contracs\ContractProyectController@multiselect');

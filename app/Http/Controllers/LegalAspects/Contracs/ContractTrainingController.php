@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
 use App\Models\LegalAspects\Contracts\Training;
 use App\Http\Requests\LegalAspects\Contracts\TrainingRequest;
+use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
 use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
 use App\Models\LegalAspects\Contracts\TrainingFiles;
@@ -96,7 +97,32 @@ class ContractTrainingController extends Controller
             if (!$training->save())
                 return $this->respondHttp500();
 
-            $activities = $this->getDataFromMultiselect($request->activity_id);
+            $activity_all = '';
+
+            if ($request->has('activity_id'))
+            {
+                if (count($request->activity_id) > 1)
+                {
+                    foreach ($request->activity_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todas')
+                        {
+                            $activity_all = 'Todas';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->activity_id) == 1)
+                    $activity_all =  json_decode($request->activity_id[0])->value;
+            }
+
+            if ($activity_all == 'Todas')
+                $activities = $this->getActivitiesValues();
+            else
+                $activities = $this->getDataFromMultiselect($request->activity_id);
+
             $training->activities()->sync($activities);
 
             $this->saveFile($training, $request->get('files'));
@@ -207,7 +233,30 @@ class ContractTrainingController extends Controller
             if (!$trainingContract->update())
                 return $this->respondHttp500();
 
-            $activitiesTraining = $this->getDataFromMultiselect($request->activity_id);
+            if ($request->has('activity_id'))
+            {
+                if (count($request->activity_id) > 1)
+                {
+                    foreach ($request->activity_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todas')
+                        {
+                            $activity_all = 'Todas';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->activity_id) == 1)
+                    $activity_all =  json_decode($request->activity_id[0])->value;
+            }
+
+            if ($activity_all == 'Todas')
+                $activitiesTraining = $this->getActivitiesValues();
+            else
+                $activitiesTraining = $this->getDataFromMultiselect($request->activity_id);
+
             $trainingContract->activities()->sync($activitiesTraining);
 
             $this->saveFile($trainingContract, $request->get('files'));
@@ -232,6 +281,17 @@ class ContractTrainingController extends Controller
         return $this->respondHttp200([
             'message' => 'Se actualizo la capacitación'
         ]);
+    }
+
+    private function getActivitiesValues()
+    {
+        $activities = ActivityContract::selectRaw(
+            "sau_ct_activities.id as id")
+        ->where('company_id', $this->company)
+        ->pluck('id')
+        ->toArray();
+
+        return $activities;
     }
 
     /**

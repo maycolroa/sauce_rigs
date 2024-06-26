@@ -13,7 +13,7 @@
                 url="/legalAspects/trainingContract"
                 method="POST"
                 :cancel-url="{ name: 'legalaspects-contracts-trainings-virtual'}"                
-                activitiesUrl="/selects/contracts/ctActivities"
+                activitiesUrl="/selects/contracts/ctActivitiesAll"
                 typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
         </b-card-body>
       </b-card>
