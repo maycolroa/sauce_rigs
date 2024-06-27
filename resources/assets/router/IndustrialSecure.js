@@ -1732,5 +1732,13 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/complementaryMethodology/indexHistory')
         }
       ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-settings',
+          path: 'dangermatrix/configurations',  
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/configurations/index')
+        }
+      ]),
     ]
   }]

@@ -80,7 +80,8 @@ class ConfigurationsCompany
             'license_reports_sends' => 'Reportes seleccionados para realizar el envio',
             'roles_newsletter' => 'Roles a los cuales se les enviara el boletin',
             'contracts_use_proyect' => 'Activar el uso de proyectos para contratistas',
-            'company_there_integration_contract' => 'La compañia utiliza integracion en el modulo de contratistas'
+            'company_there_integration_contract' => 'La compañia utiliza integracion en el modulo de contratistas',
+            'danger_matrix_block_old_year' => 'Bloquea las matrices de peligros pertenecientes a años anteriores al actual'
         ];
     }
 

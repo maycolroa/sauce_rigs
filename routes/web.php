@@ -589,6 +589,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('helpers/data', 'IndustrialSecure\DangerMatrix\HelperController@data');
         Route::ApiResource('helpers', 'IndustrialSecure\DangerMatrix\HelperController');
+
+
+        Route::post('configuration', 'IndustrialSecure\DangerMatrix\ConfigurationController@store');
+        Route::get('configuration/view', 'IndustrialSecure\DangerMatrix\ConfigurationController@show');
       });
 
       Route::prefix('roadsafety')->group(function () {

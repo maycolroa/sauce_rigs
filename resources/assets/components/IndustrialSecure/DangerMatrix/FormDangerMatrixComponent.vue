@@ -257,6 +257,7 @@ export default {
               employee_process_id: ''
             },
             add_fields: '',
+            year: '',
             name: '',
             approved: '',
             participants: '',
@@ -302,40 +303,50 @@ export default {
       this.loading = true;
       this.form.add_fields = this.fields;
       this.form.historial = redirect;
+      let now_year = new Date().getFullYear()
+      console.log(this.auth.dangerMatrixBlock)
 
-      this.form
-        .submit(this.url)
-        .then(response => {
-          this.loading = false;
+      if (this.isEdit && (this.form.year > 0 && this.form.year < now_year) && this.auth.dangerMatrixBlock == 'SI')
+      {
+        this.loading = false;
+        Alerts.error('Error', 'La configuración del modulo no permite la edicion de matrices pertenecientes a años anteriores al año actual');
+      }
+      else
+      {
+        this.form
+          .submit(this.url)
+          .then(response => {
+            this.loading = false;
 
-          if (redirect)
-            this.$router.push({ name: "industrialsecure-dangermatrix" });
-          else
-          {
-            _.forIn(response.data.data.original.data, (value, key) => {
-                this.form[key] = value
-            })
+            if (redirect)
+              this.$router.push({ name: "industrialsecure-dangermatrix" });
+            else
+            {
+              _.forIn(response.data.data.original.data, (value, key) => {
+                  this.form[key] = value
+              })
 
-            _.forIn(response.data.data.original.data, (value, key) => {
-              if (key == 'participants')
-              {
-                let arrayP = value.split(',');
+              _.forIn(response.data.data.original.data, (value, key) => {
+                if (key == 'participants')
+                {
+                  let arrayP = value.split(',');
 
-                _.forIn(arrayP, (value2) => {
-                  this.part.push({
-                    name: value2, value: value2
+                  _.forIn(arrayP, (value2) => {
+                    this.part.push({
+                      name: value2, value: value2
+                    })
                   })
-                })
-              }
-                this.form.participants = this.part
-            })
+                }
+                  this.form.participants = this.part
+              })
 
-            this.clearAllErrors();
-          }
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+              this.clearAllErrors();
+            }
+          })
+          .catch(error => {
+            this.loading = false;
+          });
+      }
     },
     clearAllErrors() {
       _.forIn(this.form.errors.errors, (value, key) => {

@@ -97,6 +97,18 @@ class ViewService
             return $configuration->value;
     }
 
+    public function getDangerMatrixBlock()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'danger_matrix_block_old_year');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
     public function allAuthData()
     {
         return [
@@ -105,6 +117,7 @@ class ViewService
             'inventaryEpp' => $this->getInventaryEpp(), 
             'proyectContract' => $this->getProyectContract(), 
             'integrationContract' => $this->getIntegrationContract(), 
+            'dangerMatrixBlock' => $this->getDangerMatrixBlock(), 
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),
