@@ -40,8 +40,6 @@ class ConfigurationController extends Controller
     {
         $request = $request->except('_method');
 
-        \Log::info($request);
-
         foreach ($request as $key => $value)
         {
             if ($value)
