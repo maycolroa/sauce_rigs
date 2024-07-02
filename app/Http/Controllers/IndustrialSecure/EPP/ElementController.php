@@ -1301,8 +1301,6 @@ class ElementController extends Controller
             ];
 
             $location->push(['totals' => $content]);
-            \Log::info($key);
-            \Log::info($location);
         }
 
 
