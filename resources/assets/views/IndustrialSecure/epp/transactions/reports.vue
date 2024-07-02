@@ -166,6 +166,53 @@
               </b-col>
             </b-row>
           </b-tab>
+          <b-tab>
+            <template slot="title">
+                <strong>Reporte Ubicación - Costos</strong> 
+            </template>
+            <b-row>
+              <b-col>
+                <b-card border-variant="primary" title="Ubicación - Costos" class="mb-3 box-shadow-none">
+                  <br>
+                  <template v-for="(location, index4) in eppCostData">
+                    <b-row  style="margin-top: 20px; margin-bottom: 20px" :key="index4">
+                      <b-col>
+                        <h4>{{index4}}</h4>
+                        <br>
+                        <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; margin-bottom: 0px">
+                            <thead>
+                              <tr>
+                                  <th scope="col" class="text-center align-middle">Elemento</th>
+                                  <th scope="col" class="text-center align-middle">Cantidad</th>
+                                  <th scope="col" class="text-center align-middle">Costo</th>
+                                  <th scope="col" class="text-center align-middle">Subtotal</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <template v-for="(loc, index5) in location">
+                                <tr :key="index5">
+                                    <td class="align-middle">{{loc.element}}</td>
+                                    <td class="align-middle">{{loc.cantidad}}</td>
+                                    <td class="align-middle">{{loc.cost}}</td>
+                                    <td class="align-middle">{{loc.subtotal}}</td>
+                                </tr>
+                                <tr :key="index5" v-if="index5 == (location.length-1)">
+                                    <td class="align-middle"><b>Total</b></td>
+                                    <td class="align-middle">{{loc.totals.total_cantidad}}</td>
+                                    <td class="align-middle">{{loc.totals.total_cost}}</td>
+                                    <td class="align-middle"><b>{{loc.totals.total}}</b></td>
+                                </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                         <br>
+                      </b-col>
+                    </b-row>
+                  </template>
+                </b-card>
+              </b-col>
+            </b-row>
+          </b-tab>
         </b-tabs>
     </b-card>
     </div>
@@ -207,7 +254,8 @@ export default {
         eppTopData: {
             labels: [],
             datasets: []
-        }
+        },
+        eppCostData: {}
       }
     },
     watch: {
@@ -254,6 +302,15 @@ export default {
             axios.post('/industrialSecurity/epp/element/reportElementTop', postData)
                 .then(response => {
                     this.eppTopData = response.data;
+                    console.log(this.eppTopData);
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+
+            axios.post('/industrialSecurity/epp/element/reportElementCost', postData)
+                .then(response => {
+                    this.eppCostData = response.data;
                     console.log(this.eppTopData);
                 })
                 .catch(error => {

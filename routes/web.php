@@ -824,6 +824,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
+
+
+        ///Reportes
         Route::post('element/reportBalance', 'IndustrialSecure\EPP\ElementController@reportBalance');
         Route::post('element/reportEmployee', 'IndustrialSecure\EPP\ElementController@reportEmployee');
         Route::post('element/reportEmployeeHistory', 'IndustrialSecure\EPP\ElementController@reportEmployeeHistory');
@@ -831,7 +834,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('element/reportEmployeeTotals', 'IndustrialSecure\EPP\ElementController@reportEmployeeTotals');
         Route::post('element/reportEmployeeTotalsHistory', 'IndustrialSecure\EPP\ElementController@reportEmployeeTotalsHistory');
         Route::post('element/reportElementTop', 'IndustrialSecure\EPP\ElementController@reportElementTop');
-        Route::post('element/reportStockMinimun', 'IndustrialSecure\EPP\ElementController@reportBalanceStockMinimun');        
+        Route::post('element/reportElementCost', 'IndustrialSecure\EPP\ElementController@reportElementCost');
+        Route::post('element/reportStockMinimun', 'IndustrialSecure\EPP\ElementController@reportBalanceStockMinimun');
+        
+        
+
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
         Route::get('element/downloadDataSheet/{element}', 'IndustrialSecure\EPP\ElementController@downloadDataSheet');
         Route::get('element/downloadUserManual/{element}', 'IndustrialSecure\EPP\ElementController@downloadUserManual');

@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\TagsMark;
 use App\Models\IndustrialSecure\Epp\TagsType;
+use App\Models\IndustrialSecure\Epp\Location;
 use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\TagsApplicableStandard;
 use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
@@ -1212,5 +1213,99 @@ class ElementController extends Controller
                 'count' => $total
             ]
         ]);
+    }
+
+    public function reportElementCost(Request $request)
+    {
+        $report = ElementTransactionEmployee::selectRaw("
+            sau_epp_elements.id as id,
+            sau_epp_elements.name as element,
+            sau_epp_locations.name as location,
+            sau_epp_locations.id as id_location,
+            sau_epp_elements.cost as cost,
+            count(sau_epp_elements_balance_specific.id) as cantidad,
+            (sau_epp_elements.cost*count(sau_epp_elements_balance_specific.id)) as subtotal
+        ")
+        ->join('sau_employees', 'sau_employees.id', 'sau_epp_transactions_employees.employee_id')
+        ->join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
+        ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_specific.location_id')
+        ->where('sau_epp_elements.company_id', $this->company)
+        ->where('sau_epp_transactions_employees.type', 'Entrega')
+        ->whereNull('sau_epp_transactions_employees.state')
+        ->groupBy('sau_epp_elements.id', 'sau_epp_elements.name','sau_epp_locations.name', 'sau_epp_locations.id');
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+
+            if (isset($filters["employee"]))
+                $report->inEmployee($this->getValuesForMultiselect($filters["employee"]), $filters['filtersType']['employee']);
+                
+            if (isset($filters["dateRange"]))
+            {
+                $dates_request = explode('/', $filters["dateRange"]);
+    
+                $dates = [];
+    
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $this->formatDateToSave($dates_request[0]));
+                    array_push($dates, $this->formatDateToSave($dates_request[1]));
+                }
+                    
+                $report->betweenDate($dates);
+            }
+        }
+        
+        $report = $report->get()->groupBy('location');
+
+        foreach ($report as $key => $location) 
+        {
+            $content = [
+                'total_cantidad' => $location->sum('cantidad'),
+                'total_cost' => $location->sum('cost'),
+                'total' => $location->sum('subtotal')
+            ];
+
+            $location->push(['totals' => $content]);
+            \Log::info($key);
+            \Log::info($location);
+        }
+
+
+        return $report;
     }
 }
