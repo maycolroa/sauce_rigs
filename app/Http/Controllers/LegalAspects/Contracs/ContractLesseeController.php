@@ -494,51 +494,50 @@ class ContractLesseeController extends Controller
 
             /*if ($request->has('isInformation'))
             {*/
-                $contract->completed_registration = 'SI';
+            $contract->completed_registration = 'SI';
 
-                $arl = $this->tagsPrepare($request->get('arl'));
-                $this->tagsSave($arl, TagsArl::class);
+            $arl = $this->tagsPrepare($request->get('arl'));
+            $this->tagsSave($arl, TagsArl::class);
 
-                $social_security_payment_operator = $this->tagsPrepare($request->get('social_security_payment_operator'));
-                $this->tagsSave($social_security_payment_operator , TagsSocialSecurityPaymentOperator::class);
+            $social_security_payment_operator = $this->tagsPrepare($request->get('social_security_payment_operator'));
+            $this->tagsSave($social_security_payment_operator , TagsSocialSecurityPaymentOperator::class);
 
-                $ips = $this->tagsPrepare($request->get('ips'));
-                $this->tagsSave($ips, TagsIps::class);
+            $ips = $this->tagsPrepare($request->get('ips'));
+            $this->tagsSave($ips, TagsIps::class);
 
-                $height_training_centers = $this->tagsPrepare($request->get('height_training_centers'));
-                $this->tagsSave($height_training_centers, TagsHeightTrainingCenter::class);
+            $height_training_centers = $this->tagsPrepare($request->get('height_training_centers'));
+            $this->tagsSave($height_training_centers, TagsHeightTrainingCenter::class);
 
-                $contract->arl = $arl->implode(',');
-                $contract->social_security_payment_operator = $social_security_payment_operator->implode(',');
-                $contract->ips = $ips->implode(',');
-                $contract->height_training_centers = $height_training_centers->implode(',');
+            $contract->arl = $arl->implode(',');
+            $contract->social_security_payment_operator = $social_security_payment_operator->implode(',');
+            $contract->ips = $ips->implode(',');
+            $contract->height_training_centers = $height_training_centers->implode(',');
 
-                if ($request->has('isInformation'))
+            if ($request->has('isInformation'))
+            {
+                if ($request->has('documents') && COUNT($request->documents) > 0)
+                    $this->saveDocumentsContracts($contract, $request->documents);
+
+                if ($request->has('delete') && COUNT($request->delete) > 0)
                 {
-                    if ($request->has('documents') && COUNT($request->documents) > 0)
-                        $this->saveDocumentsContracts($contract, $request->documents);
-
-                    if ($request->has('delete') && COUNT($request->delete) > 0)
+                    if (COUNT($request->delete['files']) > 0)
                     {
-                        if (COUNT($request->delete['files']) > 0)
+                        foreach ($request->delete['files'] as $id)
                         {
-                            foreach ($request->delete['files'] as $id)
+                            $file_delete = FileUpload::find($id);
+        
+                            if ($file_delete)
                             {
-                                $file_delete = FileUpload::find($id);
-            
-                                if ($file_delete)
-                                {
-                                    $path = $file_delete->file;
-                                    $file_delete->delete();
-                                    Storage::disk('s3')->delete('legalAspects/files/'. $path);
-                                }
+                                $path = $file_delete->file;
+                                $file_delete->delete();
+                                Storage::disk('s3')->delete('legalAspects/files/'. $path);
                             }
                         }
                     }
                 }
-            /*}
+            }
             else
-            {*/
+            {
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
 
@@ -562,7 +561,7 @@ class ContractLesseeController extends Controller
                     $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
 
                 $contract->responsibles()->sync($responsibles);
-            //}
+            }
 
             if (!$contract->update())
                 return $this->respondHttp500();
