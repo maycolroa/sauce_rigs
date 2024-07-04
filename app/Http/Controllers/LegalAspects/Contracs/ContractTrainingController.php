@@ -233,6 +233,8 @@ class ContractTrainingController extends Controller
             if (!$trainingContract->update())
                 return $this->respondHttp500();
 
+            $activity_all = '';
+
             if ($request->has('activity_id'))
             {
                 if (count($request->activity_id) > 1)
