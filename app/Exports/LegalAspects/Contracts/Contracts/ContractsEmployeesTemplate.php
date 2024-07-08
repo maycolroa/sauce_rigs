@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -81,7 +82,7 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
 
       if ($this->proyect == 'SI')
       {
-        array_merge($columns, [
+        $columns = array_merge($columns, [
           'Proyectos (Tomar el código del proyecto a asignar al empleado de la pestaña Proyectos, de ser varios proyectos debe separar los códigos por coma (,))'
         ]);
       }
