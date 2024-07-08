@@ -43,7 +43,6 @@ class ContractsEmployeesImport implements WithMultipleSheets
      */
     public function sheets(): array
     {        
-
         $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect');
         $configuration->company_scope = $this->company_id;
         $configuration = $configuration->first();

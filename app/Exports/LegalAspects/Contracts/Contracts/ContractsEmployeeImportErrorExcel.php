@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesTemplate;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorListExcel;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 class ContractsEmployeeImportErrorExcel implements WithMultipleSheets
 {
@@ -27,10 +28,14 @@ class ContractsEmployeeImportErrorExcel implements WithMultipleSheets
      * @return array
      */
     public function sheets(): array
-    {
+    {    
+        $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect');
+        $configuration->company_scope = $this->company_id;
+        $configuration = $configuration->first();
+
         $sheets = [];
         
-        $sheets[] = new ContractsEmployeesTemplate($this->data, $this->company_id, $this->contract_id);        
+        $sheets[] = new ContractsEmployeesTemplate($this->data, $this->company_id, $this->contract_id, $configuration ? $configuration->value : 'NO');        
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
        
         return $sheets;
