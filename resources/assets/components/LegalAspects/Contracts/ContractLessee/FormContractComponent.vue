@@ -84,15 +84,15 @@
                     </b-form-row>
 
 					<b-form-row>
-						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro" :url="tagsCtHeightTrainingCenterDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-						</vue-ajax-advanced-select-tag-unic>
+						<vue-ajax-advanced-select :disabled="true" class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro"  :url="tagsCtHeightTrainingCenterDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select>
 						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.social_security_payment_operator" name="social_security_payment_operator" :error="form.errorsFor('social_security_payment_operator')" label="Operador de pago seguridad social" placeholder="Seleccione el operador" :url="tagsCtSocialSecurityDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
 						</vue-ajax-advanced-select-tag-unic>
                     </b-form-row>
 
 					<b-form-row>
-						<vue-ajax-advanced-select-tag-unic :disabled="true" class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-						</vue-ajax-advanced-select-tag-unic>
+						<vue-ajax-advanced-select :disabled="true" class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select>
                     </b-form-row>
 
             	</b-card>

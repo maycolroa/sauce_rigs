@@ -345,6 +345,7 @@ class ContractLesseeController extends Controller
                         $doc_act_id->push($value2->id);
                     }
                 }
+                
                 $high_risk_type_id = [];
 
                 foreach ($contract->highRiskType as $key => $value)

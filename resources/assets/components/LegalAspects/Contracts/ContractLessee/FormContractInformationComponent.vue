@@ -84,15 +84,15 @@
                     </b-form-row>
 
 					<b-form-row>
-						<vue-ajax-advanced-select-tag-unic class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro" :url="tagsCtHeightTrainingCenterDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-						</vue-ajax-advanced-select-tag-unic>
+						<vue-ajax-advanced-select class="col-md-6" v-model="form.height_training_centers" name="height_training_centers" :error="form.errorsFor('height_training_centers')" label="Centro de entrenamiento de alturas" placeholder="Seleccione el centro" :url="tagsCtHeightTrainingCenterDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select>
 						<vue-ajax-advanced-select-tag-unic class="col-md-6" v-model="form.social_security_payment_operator" name="social_security_payment_operator" :error="form.errorsFor('social_security_payment_operator')" label="Operador de pago seguridad social" placeholder="Seleccione el operador" :url="tagsCtSocialSecurityDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
 						</vue-ajax-advanced-select-tag-unic>
                     </b-form-row>
 
 					<b-form-row>
-						<vue-ajax-advanced-select-tag-unic class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-						</vue-ajax-advanced-select-tag-unic>
+						<vue-ajax-advanced-select class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+						</vue-ajax-advanced-select>
                     </b-form-row>
 
             	</b-card>
@@ -182,6 +182,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import VueRadio from "@/components/Inputs/VueRadio.vue";
@@ -195,7 +196,8 @@ export default {
 		VueFileSimple,
 		VueAjaxAdvancedSelectTagUnic,
 		VueRadio,
-		VueTextarea
+		VueTextarea,
+		VueAjaxAdvancedSelect
 	},
 	props: {
 		url: { type: String },
