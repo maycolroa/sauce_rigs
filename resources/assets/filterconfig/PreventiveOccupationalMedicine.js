@@ -227,6 +227,18 @@ export default [
           type: 'dateRange',
           label: 'Rango de fecha',
         },
+        {
+          url: '/selects/siNoFiltro',
+          key: 'haveRecommendations',
+          type: 'select',
+          label: '¿Tiene recomendaciones?'
+        },
+        {
+          url: '/selects/siNoFiltro',
+          key: 'expiratedRecommendations',
+          type: 'select',
+          label: '¿Recomendaciones vencidas?'
+        }
       ]
     },
     {

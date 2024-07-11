@@ -653,4 +653,45 @@ class Check extends Model
 
         return $query;
     }
+
+    public function scopeInHaveRecommendations($query, $options, $typeSearch = 'IN')
+    {
+        if (COUNT($options) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.has_recommendations', $options);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.has_recommendations', $options);
+        }
+
+        return $query;
+    }
+
+    public function scopeInExpiratedRecommendations($query, $options, $typeSearch = 'IN')
+    {
+        if (COUNT($options) > 0)
+        {
+            $now = Carbon::now()->format('Y-m-d');
+
+            if ($typeSearch == 'IN')
+            {
+                if ($options[0] == 'SI')
+                    $query->whereRaw("$now < sau_reinc_checks.end_recommendations");
+                else if ($options[0] == 'NO')
+                    $query->whereRaw("$now > sau_reinc_checks.end_recommendations");
+                
+            }
+            else if ($typeSearch == 'NOT IN')
+            {
+                if ($options[0] == 'SI')
+                    $query->whereRaw("$now > sau_reinc_checks.end_recommendations");
+                else if ($options[0] == 'NO')
+                    $query->whereRaw("$now < sau_reinc_checks.end_recommendations");
+                
+            }
+        }
+
+        return $query;
+    }
 }

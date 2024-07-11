@@ -111,6 +111,12 @@ class CheckController extends Controller
 
             if (isset($filters["relocatedTypes"]))
                 $checks->inRelocatedTypes($this->getValuesForMultiselect($filters["relocatedTypes"]), $filters['filtersType']['relocatedTypes']);
+
+            if (isset($filters["haveRecommendations"]))
+                $checks->inHaveRecommendations($this->getValuesForMultiselect($filters["haveRecommendations"]), $filters['filtersType']['haveRecommendations']);
+
+            if (isset($filters["expiratedRecommendations"]))
+                $checks->inExpiratedRecommendations($this->getValuesForMultiselect($filters["expiratedRecommendations"]), $filters['filtersType']['expiratedRecommendations']);
                 
             $dates_request = explode('/', $filters["dateRange"]);
 
