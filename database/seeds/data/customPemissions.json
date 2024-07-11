@@ -209,6 +209,10 @@
                         "display_name": "Reincorporaciones/Reportes - visor"
                     },
                     {
+                        "name": "reinc_checks_visor_recommendations",
+                        "display_name": "Reincorporaciones/Reportes - Visor recomendaciones"
+                    },
+                    {
                         "name": "reinc_checks_configuration",
                         "display_name": "Reincorporaciones/Reportes - Configuracion"
                     }

@@ -452,6 +452,20 @@ export default [
             id: 'id'
         },
         permission: 'reinc_checks_visor'
+      },{
+        config: {
+            name: 'viewVisorRecommendations',
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver Reporte'
+        },
+        data: {
+            routePush: { name: 'reinstatements-checks-visor-recomendations' },
+            //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+            id: 'id'
+        },
+        permission: 'reinc_checks_visor_recommendations'
       }]
   },
   {
