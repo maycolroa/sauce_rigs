@@ -165,20 +165,26 @@ class CheckController extends Controller
                         else
                             return false;
                     })
+                    ->addColumn('viewVisorRecommendations', function ($check) {
+                       if ($this->user->hasRole('Rol Visor Reincorporaciones Recomendaciones', $this->team) || $this->user->hasRole('Superadmin', $this->team))
+                            return true;
+                        else
+                            return false;
+                    })
                     ->addColumn('reinstatements-checks-view', function ($check) {
-                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Rol Visor Reincorporaciones Recomendaciones', $this->team))
                             return false;
                         else
                             return true;
                     })
                     ->addColumn('downloadFile', function ($check) {
-                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Rol Visor Reincorporaciones Recomendaciones', $this->team))
                             return false;
                         else
                             return true;
                     })
                     ->addColumn('reinstatements-checks-letter', function ($check) {
-                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Rol Visor Reincorporaciones Recomendaciones', $this->team))
                             return false;
                         else
                             return true;
