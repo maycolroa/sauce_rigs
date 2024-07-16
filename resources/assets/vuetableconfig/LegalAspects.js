@@ -834,36 +834,53 @@ export default [
         ],
         'controlls': [{
             type: 'push',
-            buttons: [{
-            config: {
-                color: 'outline-success',
-                borderless: true,
-                icon: 'ion ion-md-create',
-                title: 'Editar'
-            },
-            data: {
-                routePush: { name: 'legalaspects-contracts-employees-edit' },
-                id: 'id',
-            },
-            permission: 'contracts_employee_u'
-            }, {
-            config: {
-                color: 'outline-info',
-                borderless: true,
-                icon: 'ion ion-md-eye',
-                title: 'Ver'
-            },
-            data: {
-                routePush: { name: 'legalaspects-contracts-employees-view' },
-                id: 'id',
-            },
-            permission: 'contracts_employee_r'
-            }]
+            buttons: [
+                {
+                    config: {
+                        color: 'outline-success',
+                        borderless: true,
+                        icon: 'ion ion-md-create',
+                        title: 'Editar'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-contracts-employees-edit' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_employee_u'
+                }, 
+                {
+                    config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-eye',
+                        title: 'Ver'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-contracts-employees-view' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_employee_r'
+                },
+                {
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar estado'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-contracts-employees-switchStatus' },
+                        //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                        id: 'id'
+                    },
+                    permission: 'contracts_employee_u'
+                  }
+            ]
         },
         {
             type: 'base',
             buttons: [
-                {
+                /*{
                     name: 'switchStatus',
                     config: {
                         color: 'outline-danger',
@@ -877,16 +894,17 @@ export default [
                         messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                     },
                     permission: 'contracts_employee_u'
-                },
+                },*/
                 {
-            name: 'delete',
-            data: {
-                action: '/legalAspects/employeeContract/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de borrar el empleado __name__'
-            },
-            permission: 'contracts_employee_d'
-            }],
+                    name: 'delete',
+                    data: {
+                        action: '/legalAspects/employeeContract/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de borrar el empleado __name__'
+                    },
+                    permission: 'contracts_employee_d'
+                }
+            ],
         }],
         configuration: {
             urlData: '/legalAspects/employeeContract/data',

@@ -42,7 +42,10 @@ class ContractEmployee extends Model
         'state_employee',
         'departament_id',
         'city_id',
-        'income_date'
+        'income_date',
+        'deadline',
+        'motive_inactivation',
+        'file_inactivation'
     ];
 
     public function departament()

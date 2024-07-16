@@ -22,6 +22,11 @@
         </vue-radio>
     </b-form-row> 
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.contract_validate_inactive_employee" class="col-md-12" v-model="form.contract_validate_inactive_employee" :options="siNo" name="contract_validate_inactive_employee" :error="form.errorsFor('contract_validate_inactive_employee')" label="¿Se obliga motivo y archivo anexo para la inactivación de empleados?">
+        </vue-radio>
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -55,7 +60,8 @@ export default {
           validate_qualification_list_check: '',
           contracts_delete_file_upload: '',
           contracts_use_proyect: '',
-          company_there_integration_contract: ''
+          company_there_integration_contract: '',
+          contract_validate_inactive_employee: ''
         };
       }
     }

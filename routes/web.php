@@ -1023,7 +1023,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/files', 'LegalAspects\Contracs\ContractEmployeeController@getFilesForm');
       Route::post('employeeContract/filesAprobe', 'LegalAspects\Contracs\FileUploadController@aproveFile');
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
-      Route::post('employeeContract/switchStatus/{employeeContract}', 'LegalAspects\Contracs\ContractEmployeeController@toggleState');
+      Route::post('employeeContract/switchStatus', 'LegalAspects\Contracs\ContractEmployeeController@toggleState');
       Route::post('employeeContract/dataContract', 'LegalAspects\Contracs\ContractEmployeeController@dataContract');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');

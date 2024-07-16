@@ -341,6 +341,14 @@ export default [
 					import('@/views/LegalAspects/contracts/employees/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_employee_u' }, [
+				{
+				  name: 'legalaspects-contracts-employees-switchStatus',
+				  path: 'legalaspects/contracts/employees/switchStatus/:id',
+				  component: () =>
+					import('@/views/LegalAspects/contracts/employees/switchStatus')
+				}
+			  ]),
 			...middleware({ 'check-permission': 'contracts_c' }, [
 				{
 					name: 'legalaspects-contracts-documents',
