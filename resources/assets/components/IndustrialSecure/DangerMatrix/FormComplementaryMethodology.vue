@@ -84,7 +84,8 @@ export default {
 			form: Form.makeFrom(this.document, this.method),
 			typeOptions: [
 				{name: 'Psicosocial', value: 'Psicosocial'},
-				{name: 'Carga fisica', value: 'Carga fisica'}
+				{name: 'Carga fisica', value: 'Carga fisica'},
+				{name: 'Químico', value: 'Químico'}
 			]
 		};
 	},
