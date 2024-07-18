@@ -409,7 +409,7 @@ class ContractEmployeeController extends Controller
                         }
 
                         $fileUpload->name = $file['name'];
-                        $fileUpload->expirationDate = $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+                        $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
@@ -816,20 +816,32 @@ class ContractEmployeeController extends Controller
             $employeeContract = ContractEmployee::find($request->id);
             $nameFile = NULL;
 
-            if ($request->file)
+            if ($employeeContract->state_employee)
             {
-                $file_tmp = $request->file;
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
-                $fileUpload->file = $nameFile;
-            }
+                if ($request->file)
+                {
+                    $file_tmp = $request->file;
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                    $fileUpload->file = $nameFile;
+                }
 
-            $data = [
-                'state_employee' => !$employeeContract->state_employee,
-                'deadline' => (Carbon::createFromFormat('D M d Y',$request->deadline))->format('Ymd'),
-                'motive_inactivation' => $request->motive_inactivation,
-                'file_inactivation' => $nameFile
-            ];
+                $data = [
+                    'state_employee' => !$employeeContract->state_employee,
+                    'deadline' => (Carbon::createFromFormat('D M d Y',$request->deadline))->format('Ymd'),
+                    'motive_inactivation' => $request->motive_inactivation,
+                    'file_inactivation' => $nameFile
+                ];
+            }
+            else
+            {
+                $data = [
+                    'state_employee' => !$employeeContract->state_employee,
+                    'deadline' => NULL,
+                    'motive_inactivation' => NULL,
+                    'file_inactivation' => NULL
+                ];
+            }
 
             if (!$employeeContract->update($data)) {
                 return $this->respondHttp500();

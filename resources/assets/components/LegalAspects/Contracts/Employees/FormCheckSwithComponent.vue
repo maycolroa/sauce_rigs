@@ -8,7 +8,7 @@
     </div>
     <div class="col-md-12">
       <center>
-        <b-form-row>
+        <b-form-row v-if="form.state_employee">
           <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de inactivacion" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline">
                 </vue-datepicker>
         </b-form-row>
@@ -18,7 +18,7 @@
         </b-form-row>
 
         <b-form-row  v-if="form.state_employee">
-          <vue-file-simple class="col-md-12" v-model="form.file_inactivation" label="Soporte" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="form.file_inactivation ? `Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'"/>
+          <vue-file-simple class="col-md-12" v-model="form.file_inactivation" label="Liquidación" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="form.file_inactivation ? `Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'"/>
         </b-form-row>
       </center>
     </div>  
@@ -55,7 +55,9 @@ export default {
       default() {
         return {
             state: '',
-            deadline: ''
+            deadline: '',
+            motive_inactivation: '',
+            file_inactivation: ''
         };
       }
     }

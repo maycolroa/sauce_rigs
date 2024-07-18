@@ -31,7 +31,7 @@ class ContractEmployeeInactiveRequest extends FormRequest
         $configuration->company_scope = Session::get('company_id');
         $configuration = $configuration->first();
 
-        if ($configuration && $configuration->value == 'SI')
+        if ($configuration && $configuration->value == 'SI' && $this->state_employee)
         {
             $rules = [
                 "deadline" => "required|date",
@@ -41,11 +41,22 @@ class ContractEmployeeInactiveRequest extends FormRequest
         }
         else
         {
-            $rules = [
-                "deadline" => "required||date",
-                "file_inactivation" => "nullable|max:20480",
-                "motive_inactivation" => "nullable"
-            ];
+            if ($this->state_employee)
+            {
+                $rules = [
+                    "deadline" => "required||date",
+                    "file_inactivation" => "nullable|max:20480",
+                    "motive_inactivation" => "nullable"
+                ];
+            }
+            else
+            {
+                $rules = [
+                    "deadline" => "nullable||date",
+                    "file_inactivation" => "nullable|max:20480",
+                    "motive_inactivation" => "nullable"
+                ];
+            }
         }
 
         return $rules;
