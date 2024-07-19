@@ -113,8 +113,12 @@ class InformContractController extends Controller
         $valid = InformContract::where('contract_id', $request->contract_id)
             ->where('year', $request->year)
             ->where('inform_id', $request->inform_id)
-            ->where('month', $request->month)
-            ->exists();
+            ->where('month', $request->month);
+
+        if ($this->proyectContract == 'SI')
+            $valid->where('proyect_id', $request->proyect_id);
+        
+        $valid = $valid->exists();
 
         if ($valid)
         {
@@ -139,7 +143,6 @@ class InformContractController extends Controller
                         
                         $fail('Archivo debe ser png, jpg, jpeg, pdf, doc, docx, xlsx, xls, ppt, pptx');
                 },
-
             ]
         ])->validate();
 
@@ -151,6 +154,9 @@ class InformContractController extends Controller
             $inform_contract->company_id = $this->company;
             $inform_contract->inform_date = date('Y-m-d H:i:s');
             $inform_contract->evaluator_id = $this->user->id;
+
+            if ($this->proyectContract == 'SI')
+                $inform_contract->proyect_id = $request->proyect_id;
             
             if(!$inform_contract->save()){
                 return $this->respondHttp500();
@@ -218,6 +224,8 @@ class InformContractController extends Controller
         {
             $informContract->fill($request->all());
 
+            if ($this->proyectContract == 'SI')
+                $informContract->proyect_id = $request->proyect_id;
             if(!$informContract->update()){
                 return $this->respondHttp500();
             }
@@ -380,6 +388,8 @@ class InformContractController extends Controller
     {
         $informContract = InformContract::findOrFail($id);
         $informContract->multiselect_contract_id = $informContract->contract->multiselect(); 
+
+        $informContract->multiselect_proyect = $informContract->proyect_id ? $informContract->proyect->multiselect() : NULL; 
         
         $inform_base = $this->getInform($informContract->inform_id);
         $informContract->inform = $this->setValuesInform($informContract, $inform_base);
@@ -616,6 +626,7 @@ class InformContractController extends Controller
         $informContract = InformContract::findOrFail($id);
         $informContract->evaluator;
         $informContract->contract;
+        $informContract->proyect;
         $inform_base = $this->getInform($informContract->inform_id);
 
         $informContract->inform = $this->setValuesInform($informContract, $inform_base);
@@ -701,8 +712,12 @@ class InformContractController extends Controller
         ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
         ->where('sau_ct_inform_contract.year', $request->year)
         ->where('sau_ct_inform_contract.inform_id', $request->inform)
-        ->where('contract_id', $request->contract)
-        ->get();
+        ->where('contract_id', $request->contract);
+
+        if ($this->proyectContract == 'SI')
+            $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+
+        $qualifications = $qualifications->get();
 
         $answers = collect([]);
         $acumulado = 0;

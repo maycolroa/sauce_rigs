@@ -53,6 +53,9 @@
                     <th>Contratista</th>
                     <th>Evaluador</th>
                     <th>Observación</th>
+                    @if($inform->proyect_id)
+                    <th>Proyecto</th>
+                    @endif
                 </tr>
                  <tr>
                      <td valign="top">
@@ -64,6 +67,11 @@
                     <td valign="top">
                         {{$inform->observation}}
                     </td>
+                    @if($inform->proyect_id)
+                    <td valign="top">
+                        {{$inform->proyect->name}}
+                    </td>
+                    @endif
                 </tr>
             </thead>
         </table>

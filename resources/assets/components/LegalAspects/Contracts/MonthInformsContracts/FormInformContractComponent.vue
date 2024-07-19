@@ -11,7 +11,10 @@
                 <b-row>
                     <b-col>
                         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-                        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.contract_id" :selected-object="form.multiselect_contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl" :error="form.errorsFor('contract_id')">
+                          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.contract_id" :selected-object="form.multiselect_contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl" :error="form.errorsFor('contract_id')">
+                              </vue-ajax-advanced-select>
+
+                          <vue-ajax-advanced-select v-if="auth.proyectContract == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="form.proyect_id" :error="form.errorsFor('proyect_id')" :selected-object="form.multiselect_proyect" :multiple="false" :allowEmpty="true" name="proyect_id" label="Proyectos" placeholder="Seleccione el proyecto a asignar" :url="proyectsUrl" :parameters="{contract_id: form.contract_id}">
                             </vue-ajax-advanced-select>
                         </b-card>
                     </b-col>
@@ -268,6 +271,7 @@ export default {
       default() {
         return {
             contract_id: '',
+            proyect_id: '',
             inform_id: '',
             observation: '',
             Objective_inform: '',
@@ -313,6 +317,7 @@ export default {
         loading: this.isEdit,
         form: Form.makeFrom(this.inform, this.method),
         contractDataUrl: '/selects/contractors',
+			  proyectsUrl: '/selects/contracts/ctProyectsContracts',
         contractor_information: {
             nit: '',
             classification: '',
@@ -510,8 +515,7 @@ export default {
     },
     historyItem($index)
     {
-      this.postData = Object.assign({}, {year: this.form.year}, {contract: this.form.contract_id},
-      {inform: this.form.inform_id}, {item_id: $index});
+      this.postData = Object.assign({}, {year: this.form.year}, {contract: this.form.contract_id}, {inform: this.form.inform_id}, {item_id: $index}, {proyect_id: this.form.proyect_id});
 
       axios.post('/legalAspects/informContract/historyItemQualification', this.postData)
         .then(response => {

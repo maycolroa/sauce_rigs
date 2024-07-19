@@ -44,10 +44,10 @@ export default {
      axios.get(`/legalAspects/informContract/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
-        console.log(this.data);
         delete this.data.id
         this.data.year = ''
         this.data.month = ''
+        this.data.proyect_id = ''
         this.data.inform.themes.map((theme) => {
             theme.items.map((item) => {
               item.file = [];

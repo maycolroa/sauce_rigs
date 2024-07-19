@@ -15,6 +15,7 @@ use App\Models\General\Team;
 use App\Models\General\Company;
 use App\Models\General\LogDelete;
 use App\Models\General\LogUserActivitySystem;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Session;
 
 class Controller extends BaseController
@@ -35,6 +36,7 @@ class Controller extends BaseController
         $this->team = $team ? $team->id : null;
         $this->company = Session::get('company_id');
         $this->user = Auth::user();
+        $this->proyectContract = $this->getProyectContract();
     }
 
     public function saveLogDelete($module, $description)
@@ -66,5 +68,15 @@ class Controller extends BaseController
         else
             return false;
 
+    }
+
+    public function getProyectContract()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_use_proyect')->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
     }
 }

@@ -21,7 +21,8 @@ class InformContract extends Model
         'month',
         'state',
         'observation',
-        'Objective_inform'
+        'Objective_inform',
+        'proyect_id'
     ];
 
     public function inform()
@@ -37,6 +38,11 @@ class InformContract extends Model
     public function contract()
     {
         return $this->belongsTo(ContractLesseeInformation::class, 'contract_id');
+    }
+
+    public function proyect()
+    {
+        return $this->belongsTo(ProyectContract::class, 'proyect_id');
     }
 
     public function evaluator()

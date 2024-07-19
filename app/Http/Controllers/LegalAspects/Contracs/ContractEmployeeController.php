@@ -690,9 +690,14 @@ class ContractEmployeeController extends Controller
             $keyword = "%{$request->keyword}%";
 
             $activities = ProyectContract::select("id", "name")
-                ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id')
-                ->where('sau_ct_contracts_proyects.contract_id', $contract->id)
-                ->where(function ($query) use ($keyword) {
+                ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id');
+
+            if ($request->has('contract_id'))
+                $activities->where('sau_ct_contracts_proyects.contract_id', $request->contract_id);
+            else
+                $activities->where('sau_ct_contracts_proyects.contract_id', $contract->id);
+
+            $activities = $activities->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_ct_proyects.name', 'like', $keyword);
                 })
                 ->where('company_id', $this->company)
