@@ -1025,6 +1025,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::post('employeeContract/switchStatus', 'LegalAspects\Contracs\ContractEmployeeController@toggleState');
       Route::post('employeeContract/dataContract', 'LegalAspects\Contracs\ContractEmployeeController@dataContract');
+      Route::get('employeeContract/download/{id}', 'LegalAspects\Contracs\ContractEmployeeController@download');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');

@@ -235,7 +235,7 @@ class InformReportController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
                 })
-                ->orderBy('name')
+                ->orderBy('description')
                 ->where('sau_ct_informs_themes.inform_id', $request->inform_id)
                 ->take(30)->pluck('id', 'description');
 

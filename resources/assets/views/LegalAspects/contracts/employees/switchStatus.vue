@@ -8,7 +8,14 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body style="height: 400px">
+        <b-card-body v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']" style="height: 1200px">
+            <form-employee-swith
+              url="/legalAspects/employeeContract/switchStatus"
+              :employee="data"
+              :cancel-url="{ name: 'legalaspects-contracts-employees'}"
+            />
+        </b-card-body>
+        <b-card-body v-else>
             <form-employee-swith
               url="/legalAspects/employeeContract/switchStatus"
               :employee="data"

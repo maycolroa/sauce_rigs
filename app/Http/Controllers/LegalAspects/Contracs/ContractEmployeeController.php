@@ -105,7 +105,8 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.position AS position',
             'sau_ct_contract_employees.identification AS identification',
             'sau_ct_contract_employees.state as state',
-            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
+            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects'),
+            DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee")
         )
         ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
         ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
@@ -131,7 +132,13 @@ class ContractEmployeeController extends Controller
         }
 
         return Vuetable::of($employees)
-                    ->make();
+            ->addColumn('legalaspects-contracts-employees-switchStatus', function ($employee) {
+                if ($employee->state_employee == 'Inactivo')
+                    return true;
+                else
+                    return false;
+            })
+            ->make();
     }
 
     /**
@@ -246,6 +253,9 @@ class ContractEmployeeController extends Controller
             });
 
             $contractEmployee->activities = $activities;
+
+            $contractEmployee->type_file = $contractEmployee->file_inactivation ? explode('.',$contractEmployee->file_inactivation)[1] : NULL;
+            $contractEmployee->file_inactivation_path = $contractEmployee->file_inactivation ? Storage::disk('s3')->url('legalAspects/files/'. $contractEmployee->file_inactivation) : NULL;
 
             $proyects_id = [];
 
@@ -798,6 +808,12 @@ class ContractEmployeeController extends Controller
         return Excel::download(new ContractsEmployeesImport($this->company, $contract), 'PlantillaImportacionContratistasEmpleados.xlsx');
     }
 
+    public function download(ContractEmployee $employeeContract)
+    {      
+      return Storage::disk('s3')->download('legalAspects/files/'. $employeeContract->file_inactivation);
+
+    }
+
     public function import(Request $request)
     {
       try
@@ -823,12 +839,11 @@ class ContractEmployeeController extends Controller
 
             if ($employeeContract->state_employee)
             {
-                if ($request->file)
+                if ($request->file_inactivation)
                 {
-                    $file_tmp = $request->file;
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                    $file_tmp = $request->file_inactivation;
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
                     $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
-                    $fileUpload->file = $nameFile;
                 }
 
                 $data = [

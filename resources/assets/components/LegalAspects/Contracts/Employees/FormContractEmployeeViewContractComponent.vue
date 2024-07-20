@@ -308,7 +308,6 @@ export default {
   methods: {
     refresh() {
       this.form.id = this.contract_id
-      console.log(this.form.id)
       window.location =  "/legalaspects/employees/view/contract/"+this.form.id
     },
     addActvity() {

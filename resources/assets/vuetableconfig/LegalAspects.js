@@ -937,7 +937,21 @@ export default [
                 id: 'id',
             },
             permission: 'contracts_r'
-            }]
+            },
+            {
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Ver estado'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-employees-switchStatus' },
+                    //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                    id: 'id'
+                },
+                permission: 'contracts_r'
+              }]
         },
         {
             type: 'base',
