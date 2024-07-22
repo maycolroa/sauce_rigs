@@ -93,7 +93,13 @@ class ContractEmployeeController extends Controller
         }
 
         return Vuetable::of($employees)
-                    ->make();
+            ->addColumn('legalaspects-contracts-employees-edit', function ($employee) {
+                if ($employee->state_employee == 'Inactivo')
+                    return false;
+                else
+                    return true;
+            })
+            ->make();
     }
 
     public function dataContract(Request $request)
