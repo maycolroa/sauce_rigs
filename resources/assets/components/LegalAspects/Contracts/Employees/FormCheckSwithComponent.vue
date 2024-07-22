@@ -46,6 +46,9 @@
             <img class="mw-100" :src="`${form.file_inactivation_path}`" alt="Max-width 100%">
           </b-card>
         </b-form-row>
+        <b-form-row v-if="form.file_inactivation && (form.type_file != 'png' & form.type != 'jpg' && form.type != 'jpeg' && form.type_file != 'pdf')">
+          <vue-file-simple class="col-md-12" v-model="form.file_inactivation" :disabled="true" label="Liquidación" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> `"/>
+        </b-form-row>
       </center>
     </div>  
 

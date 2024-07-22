@@ -415,6 +415,7 @@ class InformContractController extends Controller
             $informContract = new InformContract;
             $informContract->contract_id = '';
             $informContract->inform_id = $id;
+            $informContract->proyect_id = $id;
             $informContract->observation = '';
             $informContract->Objective_inform = '';
             $informContract->year = '';
@@ -680,8 +681,12 @@ class InformContractController extends Controller
         $valid = InformContract::where('contract_id', $request->contract)
         ->where('year', $request->year)
         ->where('month', $request->month)
-        ->where('inform_id', $request->inform)
-        ->exists();
+        ->where('inform_id', $request->inform);
+
+        if ($this->proyectContract == 'SI')
+            $valid->where('proyect_id', $request->proyect_id);
+
+        $valid = $valid->exists();
 
         if ($valid)
             return $this->respondWithError('Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');

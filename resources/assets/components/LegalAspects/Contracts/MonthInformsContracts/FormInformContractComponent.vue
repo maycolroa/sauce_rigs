@@ -502,8 +502,7 @@ export default {
     {
       if (this.verify)
       {
-        this.postData = Object.assign({}, {year: this.form.year}, {month: this.form.month}, {contract: this.form.contract_id},
-        {inform: this.form.inform_id});
+        this.postData = Object.assign({}, {year: this.form.year}, {month: this.form.month}, {contract: this.form.contract_id}, {inform: this.form.inform_id}, {proyect_id: this.form.proyect_id});
 
         axios.post('/legalAspects/informContract/periodExist', this.postData)
           .then(response => {
