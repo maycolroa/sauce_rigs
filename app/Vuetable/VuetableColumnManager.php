@@ -61,7 +61,9 @@ class VuetableColumnManager
         'industrialsecureroadsafetyinspections',
         'roadsafetyinspectionsqualification',
         'legalaspectscontractsemployees',
-        'legalaspectscontractsemployeesviewcontractor'
+        'legalaspectscontractsemployeesviewcontractor',
+        'legalaspectsinformscontracts',
+        'legalaspectsinformscontractslesse'
     ];
 
     protected $customColumnsName;
@@ -866,6 +868,50 @@ class VuetableColumnManager
             [ 'name' => 'sau_ct_contract_employees.email', 'data' => 'email', 'title' => 'Email', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.state', 'data' => 'state', 'title' => 'Estado Documentos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             [ 'name' => 'sau_ct_contract_employees.state_employee', 'data' => 'state_employee', 'title' => 'Estado Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function legalaspectsinformscontracts()
+    {
+        $colums = [
+            [ 'name' => 'sau_ct_inform_contract.id', 'data' => 'id', 'title' => 'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            [ 'name' => 'sau_ct_information_contract_lessee.nit', 'data' => 'nit', 'title' => 'NIT', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'social_reason', 'title' => 'Razón social', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_inform_contract.inform_date', 'data' => 'inform_date', 'title' => 'Fecha evaluación', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_inform_contract.periodo', 'data' => 'periodo', 'title' => 'Período', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_inform_contract.state', 'data' => 'state', 'title' => 'Estado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function legalaspectsinformscontractslesse()
+    {
+        $colums = [
+            [ 'name' => 'sau_ct_inform_contract.id', 'data' => 'id', 'title' => 'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            [ 'name' => 'sau_ct_inform_contract.inform_date', 'data' => 'inform_date', 'title' => 'Fecha evaluación', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_inform_contract.periodo', 'data' => 'periodo', 'title' => 'Período', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_inform_contract.state', 'data' => 'state', 'title' => 'Estado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
         ];
 
         if ($this->configuration && $this->configuration->value == 'SI')

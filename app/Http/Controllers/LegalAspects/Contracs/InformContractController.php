@@ -65,12 +65,16 @@ class InformContractController extends Controller
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
                 'sau_ct_information_contract_lessee.nit as nit',
                 'sau_users.name as name',
-                DB::raw("CONCAT(year, ' - ', month) AS periodo")
+                DB::raw("CONCAT(year, ' - ', month) AS periodo"),
+                'sau_ct_proyects.name AS proyects'
             )
             ->join('sau_users', 'sau_users.id', 'sau_ct_inform_contract.evaluator_id')
             ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
+            ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_inform_contract.proyect_id')
             ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'))
             ->orderBy('sau_ct_inform_contract.id', 'DESC');
+
+            \Log::info($inform_contracts->toSql());
 
         if ($this->user->hasRole('Contratista', $this->team))
         {
