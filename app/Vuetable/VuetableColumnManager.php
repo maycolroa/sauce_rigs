@@ -895,7 +895,7 @@ class VuetableColumnManager
 
         if ($this->configuration && $this->configuration->value == 'SI')
             $colums = array_merge($colums, [
-                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
             ]);
 
         $colums = array_merge($colums, [
@@ -916,7 +916,7 @@ class VuetableColumnManager
 
         if ($this->configuration && $this->configuration->value == 'SI')
             $colums = array_merge($colums, [
-                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
             ]);
 
         $colums = array_merge($colums, [

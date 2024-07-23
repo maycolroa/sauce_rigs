@@ -814,9 +814,10 @@ class ContractEmployeeController extends Controller
         return Excel::download(new ContractsEmployeesImport($this->company, $contract), 'PlantillaImportacionContratistasEmpleados.xlsx');
     }
 
-    public function download(ContractEmployee $employeeContract)
-    {      
-      return Storage::disk('s3')->download('legalAspects/files/'. $employeeContract->file_inactivation);
+    public function download($id)
+    {
+        $employeeContract = ContractEmployee::find($id);
+        return Storage::disk('s3')->download('legalAspects/files/'. $employeeContract->file_inactivation);
 
     }
 

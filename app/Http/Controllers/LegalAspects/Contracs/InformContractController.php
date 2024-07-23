@@ -74,8 +74,6 @@ class InformContractController extends Controller
             ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'))
             ->orderBy('sau_ct_inform_contract.id', 'DESC');
 
-            \Log::info($inform_contracts->toSql());
-
         if ($this->user->hasRole('Contratista', $this->team))
         {
             $contract = $this->getContractUser($this->user->id, $this->company);
