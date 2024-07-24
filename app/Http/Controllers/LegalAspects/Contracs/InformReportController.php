@@ -108,6 +108,9 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->groupBy('sau_ct_inform_theme_item.description');
 
+            if ($this->proyectContract == 'SI')
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+
             foreach ($months as $key => $month)
             {
                 $select[] = "SUM(
@@ -316,8 +319,12 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
             ->where('sau_ct_inform_contract.year', $request->year)
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
-            ->where('contract_id', $request->contract_id)
-            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
+            ->where('contract_id', $request->contract_id);
+
+            if ($this->proyectContract == 'SI')
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+
+            $qualifications = $qualifications->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
             ->get();
 
             $answers = collect([]);
@@ -394,6 +401,9 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description');
+            
+            if ($this->proyectContract == 'SI')
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             $total = InformContractItem::selectRaw('
                 COUNT(DISTINCT sau_ct_inform_contract.month) AS total
@@ -404,8 +414,12 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('contract_id', $request->contract_id)
-            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
-            ->get()->toArray();
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"));
+            
+            if ($this->proyectContract == 'SI')
+                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+            
+            $total = $total->get()->toArray();
 
             foreach ($total as $key => $value) {
                 $total = $value['total'];
@@ -484,8 +498,12 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
-            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
-            ->get();
+            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id');
+
+            if ($this->proyectContract == 'SI')
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+            
+            $qualifications = $qualifications->get();
 
             $answers = collect([]);
 
@@ -562,6 +580,9 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
+            if ($this->proyectContract == 'SI')
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+
             $total = InformContractItem::selectRaw('
                 COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
                 sau_ct_inform_contract.contract_id AS contract
@@ -574,6 +595,9 @@ class InformReportController extends Controller
             //->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('contract');
+
+            if ($this->proyectContract == 'SI')
+                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             foreach ($months as $key => $month)
             {
@@ -698,6 +722,9 @@ class InformReportController extends Controller
         ->where('sau_ct_inform_contract.month', $month)
         ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
+        if ($this->proyectContract == 'SI')
+            $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+
         $total = InformContractItem::selectRaw('
             COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
             sau_ct_inform_contract.contract_id AS contract,
@@ -712,6 +739,9 @@ class InformReportController extends Controller
         ->where('sau_ct_inform_contract.month', $month)
         ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
         ->groupBy('contract');
+
+        if ($this->proyectContract == 'SI')
+            $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
         if ($month != 'Total')
             $select[] = "SUM(

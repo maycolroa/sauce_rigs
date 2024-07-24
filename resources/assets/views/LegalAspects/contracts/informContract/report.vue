@@ -27,6 +27,10 @@
                                 <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
                                         </vue-ajax-advanced-select>
                             </b-col>
+                            <b-col v-if="auth.proyectContract == 'SI'">
+                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="proyect_id" name="proyects_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl">
+                                </vue-ajax-advanced-select>
+                            </b-col>
                             <b-col cols="4">
                                 <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
                                 </vue-ajax-advanced-select>
@@ -41,7 +45,7 @@
                         </b-row>
                         <b-row style="width:100%" v-if="report.length > 0">
                             <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                                <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
+                                <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                     <tbody>
                                         <template v-for="(theme, index) in report">
                                             <tr :key="index+round()" style="width:100%;">
@@ -109,7 +113,7 @@
                         </b-row>
                         <b-row style="width:95%" v-if="report_porcentage.length > 0">
                             <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                                <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
+                                <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                     <tbody>
                                         <template v-for="(theme, index) in report_porcentage">
                                             <tr :key="index+round()" style="width:100%;">
@@ -127,9 +131,9 @@
                                                         <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>
-                                                        <td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
+                                                        <!--<td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
                                                             <center>{{value}}</center>
-                                                        </td>
+                                                        </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>
@@ -140,9 +144,9 @@
                                                         <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>
-                                                        <td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
+                                                        <!--<td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
                                                             <center>{{value}}%</center>
-                                                        </td>
+                                                        </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>
@@ -197,7 +201,7 @@
                                 <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                     <b-row>
                                         <b-col>
-                                            <table style="width:90%; font-size: 13px" class="table table-bordered mb-2">
+                                            <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                                 <tbody>
                                                     <template v-for="(theme, index) in report_porcentage_global">
                                                         <tr :key="index+round()" style="width:100%;">
@@ -302,6 +306,7 @@ export default {
             report: [],
             year: '',
             theme: '',
+            proyect_id: '',
             year_global: '',
             theme_global: '',
             contract_id: '',
@@ -316,6 +321,7 @@ export default {
             urlMultiselectItem: '/selects/ctInformReportMultiselectItems',
             inform_id: this.$route.params.id,
             contractDataUrl: '/selects/contractors',
+			proyectsUrl: '/selects/contracts/ctProyects',
             test: true,
             chartData: {},
             chartData2: {},
@@ -386,7 +392,7 @@ export default {
             if (!this.isLoading)
             {
                 this.isLoading = true;
-                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id});
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id});
 
                 axios.post('/legalAspects/informContract/reportTableTotales', this.postData)
                     .then(response => {
@@ -400,7 +406,7 @@ export default {
         },
         fetch2()
         {
-            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item});
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item}, {proyect_id: this.proyect_id});
 
             axios.post('/legalAspects/informContract/reportLineItemQualification', this.postData2)
                 .then(response => {
@@ -427,7 +433,7 @@ export default {
             if (!this.isLoading)
             {
                 this.isLoading = true;
-                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id});
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id});
 
                 axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
                     .then(response => {
@@ -440,7 +446,7 @@ export default {
         },
         fetch4()
         {
-            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item_2});
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item_2}, {proyect_id: this.proyect_id});
 
             axios.post('/legalAspects/informContract/reportLineItemPorcentege', this.postData2)
                 .then(response => {
@@ -464,7 +470,7 @@ export default {
         },
         fetch5()
         {
-            this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global});
+            this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global}, {proyect_id: this.proyect_id});
 
             axios.post('/legalAspects/informContract/reportTablePorcentageGlobal', this.postData2)
                 .then(response => {
@@ -492,7 +498,7 @@ export default {
         },
         modalContract(item, mes, theme_id, value, theme_name)
         {
-             this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: theme_id}, {month: mes}, {item: item});
+             this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: theme_id}, {month: mes}, {item: item}, {proyect_id: this.proyect_id});
 
             axios.post('/legalAspects/informContract/detailContractGlobal', this.postData2)
                 .then(response => {
