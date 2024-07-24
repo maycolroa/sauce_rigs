@@ -107,8 +107,9 @@ class ComplementaryMethodologyController extends Controller
         "file" => [
             function ($attribute, $value, $fail)
             {
-                if ($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                    $fail('Archivo debe ser un xlsx');
+                if ($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+                $value->getClientMimeType() != 'application/zip')
+                    $fail('Archivo debe ser un xlsx o un zip');
             },
           ],
           "observations" => 'required'
