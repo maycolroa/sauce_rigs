@@ -396,7 +396,7 @@ class ContractController extends ApiController
 
         $employee = ContractEmployee::withoutGlobalScopes()
         ->where('identification', $request->identification)
-        ->where('company_id', 130)
+        ->where('company_id', 159)
         ->orderBy('id', 'DESC')
         ->first();
 
