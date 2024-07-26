@@ -31,7 +31,7 @@ class CheckContract implements Rule
     {
         if ($value)
         {
-            return DB::table('sau_ct_information_contract_lessee')->where('nit', $value)->where('active', DB::raw("'SI'"))->where('company_id', 130)->exists();
+            return DB::table('sau_ct_information_contract_lessee')->where('nit', $value)->where('active', DB::raw("'SI'"))->where('company_id', 159)->exists();
         }
         else
             return false;
