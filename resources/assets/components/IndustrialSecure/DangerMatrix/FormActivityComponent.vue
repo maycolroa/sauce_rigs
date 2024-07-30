@@ -44,15 +44,14 @@
               </b-card-header>
               <b-collapse :id="`accordion${danger.key}-1`" :visible="danger.activate" :accordion="`accordion-${indexActivity}`">
                 <b-card-body>
-                  <b-form-row>
+                  <!--<b-form-row>
                     <div class="col-md-12" v-if="!danger.show_danger">
                       <div class="float-right" style="padding-top: 10px;">
                         <b-btn variant="primary" @click.prevent="showDanger(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Ver Peligro</b-btn>
                       </div>
                     </div>
-                  </b-form-row>
+                  </b-form-row>-->
                   <form-danger-component
-                    v-if="danger.show_danger"
                     :ref="`danger-${danger.id ? danger.id : danger.key}`"
                     :is-edit="isEdit"
                     :view-only="viewOnly"
