@@ -83,11 +83,6 @@
                   </template>
                 </tbody>
               </table>
-							<!--<vue-table
-                ref="tableDangerMatrix"
-                configName="industrialsecure-dangermatrix-search"
-                :params="{ keyword: search_keyword, danger_matrix: form.id }"
-                ></vue-table>-->
 						</b-card>
 						<br>
 						<div class="row float-right pt-12 pr-12y">
@@ -304,7 +299,6 @@ export default {
       this.form.add_fields = this.fields;
       this.form.historial = redirect;
       let now_year = new Date().getFullYear()
-      console.log(this.auth.dangerMatrixBlock)
 
       if (this.isEdit && (this.form.year > 0 && this.form.year < now_year) && this.auth.dangerMatrixBlock == 'SI')
       {

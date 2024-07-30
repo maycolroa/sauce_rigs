@@ -51,6 +51,8 @@ class ContractController extends ApiController
 
         $employee = ContractEmployee::withoutGlobalScopes()->where('identification', $request->identification)->where('contract_id', $contract->id)->first();
 
+        if (!$employee)
+          return $this->respondWithError('La identificación no existe en nuestro sistema');
 
         $parafis = collect([]);
         $cert = collect([]);
@@ -71,6 +73,12 @@ class ContractController extends ApiController
 
         $class_document = [];
 
+        foreach ($employee->activities as $key => $activity) 
+        {          
+          $class_document = array_merge($class_document, $activity->documents->pluck('class')->toArray());
+        }
+
+        $class_document = array_unique($class_document);
 
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
@@ -83,11 +91,6 @@ class ContractController extends ApiController
 
         if (in_array('Cursos', $class_document))
           $required_habilitado++;
-
-        foreach ($employee->activities as $key => $activity) 
-        {          
-          $class_document = array_merge($class_document, $activity->documents->pluck('class')->toArray());
-        }
 
           $now = Carbon::now();
 
@@ -354,7 +357,7 @@ class ContractController extends ApiController
     public function getContract(Request $request)
     {        
       try {
-        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->first();
+        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->where('company_id', 159)->first();
 
         if (!$contract)
           return $this->respondWithError('Contratista no encontrado');

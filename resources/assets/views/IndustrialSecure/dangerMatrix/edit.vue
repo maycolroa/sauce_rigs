@@ -66,13 +66,7 @@ export default {
         this.data = response.data.data;  
         this.fields = response.data.data.add_fields;
 
-        axios.get('/administration/configuration/view')
-        .then(response2 => {
-            this.configuration = response2.data.data;
-            this.ready = true
-        })
-        .catch(error => {
-        });
+        this.ready = true
     })
     .catch(error => {
     });

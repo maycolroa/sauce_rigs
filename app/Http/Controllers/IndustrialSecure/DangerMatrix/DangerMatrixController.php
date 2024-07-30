@@ -34,6 +34,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
 use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportTemplateExcel;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixImportJob;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -119,12 +120,9 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
+            $show_action_plan = ConfigurationsCompany::findByKey('show_action_plans');
 
-            if ($dangerMatrix->approved == true)
-                $dangerMatrix->approved = 'SI';
-            else
-                $dangerMatrix->approved = 'NO';
-
+            $dangerMatrix->approved = $dangerMatrix->approved ? 'SI' : 'NO';
             $dangerMatrix->activitiesRemoved = [];
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
             $dangerMatrix->changeHistory = '';
@@ -153,18 +151,24 @@ class DangerMatrixController extends Controller
                     $itemActivity->activate = false;
 
                 $itemActivity->id = $itemActivity->id;
-                $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
+                $itemActivity->key = rand(1,10000000) + Carbon::now()->timestamp + rand(1,10000);
                 $itemActivity->dangersRemoved = [];
                 $itemActivity->multiselect_activity = $itemActivity->activity->multiselect();
 
                 foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
                 {
                     if ($keyDanger == 0)
+                    {
                         $itemDanger->activate = true;
+                        $itemDanger->show_danger = true;
+                    }
                     else
+                    {
                         $itemDanger->activate = false;
+                        $itemDanger->show_danger = false;
+                    }
 
-                    $itemDanger->key = Carbon::now()->timestamp + rand(1,10000);
+                    $itemDanger->key = rand(1,10000000) + Carbon::now()->timestamp + rand(1,10000000);
                     $itemDanger->multiselect_danger = $itemDanger->danger->multiselect();
 
                     $qualificationsData = [];
@@ -183,6 +187,7 @@ class DangerMatrixController extends Controller
 
                     $itemDanger->multiselect_cargo = $positions;
                     $itemDanger->position_id = $positions;
+                    $itemDanger->show_action_plans = $show_action_plan;
 
                     $itemDanger->qualificationsData = $qualificationsData;
                     $itemDanger->actionPlan = ActionPlan::model($itemDanger)->prepareDataComponent();
