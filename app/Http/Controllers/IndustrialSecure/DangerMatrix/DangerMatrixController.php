@@ -120,7 +120,15 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
-            $show_action_plan = ConfigurationsCompany::findByKey('show_action_plans');
+            
+
+            try
+            {
+                $show_action_plan = ConfigurationsCompany::findByKey('show_action_plans');
+                
+            } catch (\Exception $e) {
+                $show_action_plan = NULL;
+            }
 
             $dangerMatrix->approved = $dangerMatrix->approved ? 'SI' : 'NO';
             $dangerMatrix->activitiesRemoved = [];
