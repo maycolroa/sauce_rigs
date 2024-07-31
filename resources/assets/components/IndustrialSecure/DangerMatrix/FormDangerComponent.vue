@@ -1,13 +1,11 @@
 <template>
     <b-form autocomplete="off">
         <form-wizard ref="wizardFormDanger">
-            <!-- Allow html in tab title (this template required for the proper styling) -->
             <template slot="step" slot-scope="props">
                 <wizard-step :tab="props.tab" @click.native="props.navigateToTab(props.index)" @keyup.enter.native="props.navigateToTab(props.index)" :transition="props.transition" :index="props.index">
                 <span slot="title" :class="{'text-danger':props.tab.validationError}" v-html="props.tab.title"></span>
                 </wizard-step>
             </template>
-            <!-- / -->
             <tab-content title="General">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>

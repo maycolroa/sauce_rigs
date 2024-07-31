@@ -68,7 +68,7 @@ class ContractEmployeeInactiveRequest extends FormRequest
             $rules = [
                 "deadline" => "required|date",
                 "file_inactivation" => "required",
-                "motive_inactivation" => "required"
+                "motive_inactivation" => "required|string|min:50"
             ];
         }
         else
@@ -78,7 +78,7 @@ class ContractEmployeeInactiveRequest extends FormRequest
                 $rules = [
                     "deadline" => "required||date",
                     "file_inactivation" => "nullable|max:20480",
-                    "motive_inactivation" => "nullable"
+                    "motive_inactivation" => "nullable|string|min:50"
                 ];
             }
             else
@@ -86,7 +86,7 @@ class ContractEmployeeInactiveRequest extends FormRequest
                 $rules = [
                     "deadline" => "nullable||date",
                     "file_inactivation" => "nullable|max:20480",
-                    "motive_inactivation" => "nullable"
+                    "motive_inactivation" => "nullable|string|min:50"
                 ];
             }
         }

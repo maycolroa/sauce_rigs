@@ -41,10 +41,10 @@ class ContractController extends ApiController
         return $this->responderError('No encontrado');
     }
 
-    public function getEmployee(ContractRequest $request)
+    public function getEmployee(Request $request)
     {        
       try {
-        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->first();
+        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->where('company_id', 159)->first();
 
         if (!$contract)
           return $this->respondWithError('Contratista no encontrado');
