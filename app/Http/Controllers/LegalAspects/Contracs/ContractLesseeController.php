@@ -411,11 +411,12 @@ class ContractLesseeController extends Controller
                 {
                     $apply_file = 'SI';
                     $apply_motive = '';
-                    $files->transform(function($file, $index) use (&$apply_file, &$apply_motive){
+                    $files->transform(function($file, $index) use (&$apply_file, &$apply_motive, $document){
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
                         $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
-                        $file->required_expiration_date = $file->expirationDate == null ? 'NO' : 'SI';
+                        $file->required_expiration_date = $document->required_expired_date == 'SI' ? 'SI' : ($file->expirationDate == null ? 'NO' : 'SI');
+                        $file->required_date = $document->required_expired_date == 'SI' ? true : false;
                         $file->state = $file->state;
                         $file->reason_rejection = $file->reason_rejection;
                         $file->apply_file = $file->apply_file;
@@ -431,6 +432,16 @@ class ContractLesseeController extends Controller
                     $document->apply_file = $apply_file;
                     $document->apply_motive = $apply_motive;
                 }
+
+                if ($document->document_id)
+                {
+                    $doc = ActivityDocument::find($document->document_id);
+
+                    $document->required_expired_date = $doc->required_expired_date;
+                }
+                else
+                    $document->required_expired_date = NULL;
+
 
                 return $document;
             });

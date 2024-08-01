@@ -103,7 +103,7 @@
                  			<b-col>
                     			<div class="col-md-12">
 									<b-form-row>
-										<vue-radio :checked="document.apply_file" class="col-md-12" v-model="document.apply_file" :options="siNo" :name="`apply_file${document.id}`" :error="form.errorsFor(`documents.${index}.apply_file`)" label="¿Aplica el documento para este empleado?">
+										<vue-radio :checked="document.apply_file" class="col-md-12" v-model="document.apply_file" :options="siNo" :name="`apply_file${document.id}`" :error="form.errorsFor(`documents.${index}.apply_file`)" label="¿Aplica el documento?">
 										</vue-radio>
 									</b-form-row>
                     				<b-form-row>
@@ -140,10 +140,19 @@
 				                              <b-card-body border-variant="primary" class="mb-3 box-shadow-none">
 				                                <div class="rounded ui-bordered p-3 mb-3">
 				                        
-				                                  <b-form-row>
+				                                  <!--<b-form-row>
 				                                    <vue-input class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`documents.${index}.files.${indexFile}.name`)"/>
 				                                    <vue-datepicker class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
-				                                  </b-form-row>
+				                                  </b-form-row>-->
+
+												  <b-form-row>
+													<vue-input class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`documents.${index}.files.${indexFile}.name`)"/>
+													<vue-radio :disabled="file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
+													</vue-radio>
+												</b-form-row>
+												<b-form-row  v-if="file.required_expiration_date == 'SI'">
+													<vue-datepicker class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`documents.${index}.files.${indexFile}.expirationDate`)"/>
+												</b-form-row>
 
 				                                  <b-form-row>
 				                                    <vue-file-simple :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" :maxFileSize="20" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.files.${indexFile}.file`)"/>
@@ -156,7 +165,7 @@
 				                        </template>
 				                    </b-form-row>
 									<b-form-row v-if="document.apply_file == 'NO'">
-						            	<vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+						            	<vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica"></vue-textarea>
                       				</b-form-row>
 				    			</div>
 				    		</b-col>
@@ -293,12 +302,23 @@ export default {
 	        });
     	},
     	addFile(documento) {
-	      documento.files.push({
-	        key: new Date().getTime(),
-	        name: '',
-	        expirationDate: '',
-	        file: ''
-	      });
+			let required = false;
+
+			if (documento.required_expired_date === 'SI')
+			{
+				required = true;
+			}
+				
+			let content = {
+				key: new Date().getTime(),
+				name: '',
+				expirationDate: '',
+				file: '',
+				required_expiration_date: 'SI',
+				required_date: required
+			}
+
+	      documento.files.push(content);
 	    },
 	    removeFile(documento, index) {
 	      if (documento.files[index].id != undefined)
