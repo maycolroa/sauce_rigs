@@ -14,7 +14,8 @@ class ActivityDocument extends Model
         'activity_id',
         'name',
         'type',
-        'class'
+        'class',
+        'required_expired_date'
     ];
 
 

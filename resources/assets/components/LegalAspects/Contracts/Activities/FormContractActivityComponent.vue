@@ -22,6 +22,7 @@
               </vue-advanced-select>
               <vue-advanced-select v-if="auth.integrationContract == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="document.class" :error="form.errorsFor(`documents.${index}.class`)" :multiple="false" :options="classDocument" :hide-selected="false" name="class" label="Clase" placeholder="Seleccione la clase">
               </vue-advanced-select>
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="document.required_expired_date" :options="siNo" :name="`required_expired_date${index}`" label="¿Requiere fecha de expiración?" :checked="document.required_expired_date" :error="form.errorsFor(`documents.${index}.required_expired_date`)"></vue-radio>
           </b-form-row>
       </div>
     </template>
@@ -51,11 +52,13 @@
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 
 export default {
   components: {
     VueInput,
-    VueAdvancedSelect
+    VueAdvancedSelect,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -97,6 +100,10 @@ export default {
           {name: 'Cursos', value: 'Cursos'},
           {name: 'Otros', value: 'Otros'},
       ],
+      siNo: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
       message_validation: false,
       social_security: 0,
       induction: 0,
@@ -111,7 +118,10 @@ export default {
     addDocument() {
         this.form.documents.push({
             key: new Date().getTime(),
-            name: ''
+            name: '',
+            class: '',
+            typeDocument: '',
+            required_expired_date: ''
         })
     },
     removeDocument(index)
