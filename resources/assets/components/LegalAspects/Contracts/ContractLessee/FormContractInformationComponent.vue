@@ -93,6 +93,8 @@
 					<b-form-row>
 						<vue-ajax-advanced-select class="col-md-6" v-model="form.ips" name="ips" :error="form.errorsFor('ips')" label="IPS para examenes medicos" placeholder="Seleccione la IPS" :url="tagsCtIpsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
 						</vue-ajax-advanced-select>
+
+                        <vue-input class="col-md-6" v-model="form.social_security_working_day" label="Dia habil seguridad social" type="number" min="2" max="16" name="social_security_working_day" :error="form.errorsFor('social_security_working_day')" placeholder="Dia habil seguridad social"></vue-input>
                     </b-form-row>
 
             	</b-card>
