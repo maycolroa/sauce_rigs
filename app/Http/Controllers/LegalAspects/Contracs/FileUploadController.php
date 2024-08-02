@@ -54,14 +54,16 @@ class FileUploadController extends Controller
             $deleteFilesConfig = 'NO';
         }
 
-        $files = FileUpload::selectRaw(
-            "sau_ct_file_upload_contracts_leesse.*,
-             sau_users.name as user_name,
-             GROUP_CONCAT(distinct sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
-             sau_ct_section_category_items.item_name AS item_name,
-             IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module2,
-             GROUP_CONCAT(DISTINCT sau_ct_file_module_state.module) AS module,
-             sau_ct_contract_employees.name AS employee_name"
+        $files = FileUpload::select(
+            "sau_ct_file_upload_contracts_leesse.*",
+             'sau_users.name as user_name',
+             DB::raw('GROUP_CONCAT(distinct sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason'),
+             'sau_ct_section_category_items.item_name AS item_name',
+             DB::raw("IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module2"),
+             DB::raw('GROUP_CONCAT(DISTINCT sau_ct_file_module_state.module) AS module'),
+             'sau_ct_contract_employees.name AS employee_name',
+             'sau_ct_contract_employees.identification AS employee_identification',             
+            DB::raw('GROUP_CONCAT(DISTINCT CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
           )
           ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
           ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
@@ -71,7 +73,9 @@ class FileUploadController extends Controller
           ->leftJoin('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->leftJoin('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
           ->leftJoin('sau_ct_file_module_state', 'sau_ct_file_module_state.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_module_state.file_id')
+          ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
+          ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id')
+          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name', 'sau_ct_contract_employees.name', 'sau_ct_contract_employees.identification', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_module_state.file_id')
           ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');
 
         $url = "/legalaspects/upload-files";
@@ -89,8 +93,6 @@ class FileUploadController extends Controller
 
           if (isset($filters["proyects"]))
           {
-            $files->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id');
-
             $files->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
           }
         }
