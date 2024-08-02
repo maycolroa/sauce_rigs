@@ -160,7 +160,7 @@
                         
                                   <b-form-row>
                                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)"/>
-                                    <vue-radio :disabled="viewOnly" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
+                                    <vue-radio :disabled="viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
                                     </vue-radio>
                                   </b-form-row>
                                   <b-form-row  v-if="file.required_expiration_date == 'SI'">
@@ -374,14 +374,34 @@ export default {
         });
       }
     },
-    addFile(documento) {
+    /*addFile(documento) {
       documento.files.push({
         key: new Date().getTime(),
         name: '',
         expirationDate: '',
         file: ''
       });
-    },
+    },*/
+    addFile(documento) {
+      console.log(documento);
+			let required = false;
+
+			if (documento.required_expired_date === 'SI')
+			{
+				required = true;
+			}
+				
+			let content = {
+				key: new Date().getTime(),
+				name: '',
+				expirationDate: '',
+				file: '',
+				required_expiration_date: 'SI',
+				required_date: required
+			}
+
+	      documento.files.push(content);
+	    },
     removeFile(documento, index) {
       if (documento.files[index].id != undefined)
         this.form.delete.files.push(documento.files[index].id)

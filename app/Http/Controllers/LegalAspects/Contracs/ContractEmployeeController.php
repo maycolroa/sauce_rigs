@@ -800,6 +800,8 @@ class ContractEmployeeController extends Controller
                     $document->files = $files;
                 }
 
+                $document->required_expired_date = $document->required_expired_date;
+
                 return $document;
             });
         }
