@@ -22,7 +22,7 @@
               </vue-advanced-select>
               <vue-advanced-select v-if="auth.integrationContract == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="document.class" :error="form.errorsFor(`documents.${index}.class`)" :multiple="false" :options="classDocument" :hide-selected="false" name="class" label="Clase" placeholder="Seleccione la clase">
               </vue-advanced-select>
-              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="document.required_expired_date" :options="siNo" :name="`required_expired_date${index}`" label="¿Requiere fecha de expiración?" :checked="document.required_expired_date" :error="form.errorsFor(`documents.${index}.required_expired_date`)"></vue-radio>
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="document.required_expired_date" :options="siNo" :name="`required_expired_date${index}`" label="¿Requiere fecha de vencimiento?" :checked="document.required_expired_date" :error="form.errorsFor(`documents.${index}.required_expired_date`)"></vue-radio>
           </b-form-row>
       </div>
     </template>

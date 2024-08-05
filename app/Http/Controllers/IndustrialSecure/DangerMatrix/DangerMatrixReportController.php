@@ -215,6 +215,7 @@ class DangerMatrixReportController extends Controller
     */
     public function reportDangerTable(Request $request)
     {
+        \Log::info($request);
         $url = "/industrialsecure/dangermatrix/report";
         $init = true;
         $filters = [];
@@ -225,6 +226,8 @@ class DangerMatrixReportController extends Controller
             $filters = $this->filterDefaultValues($this->user->id, $url);
 
         /** FIltros */
+        $years = !$init ? $this->getValuesForMultiselect($request->years) : (isset($filters['years']) ? $this->getValuesForMultiselect($filters['years']) : []);
+
         $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
             
         $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
@@ -266,6 +269,7 @@ class DangerMatrixReportController extends Controller
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
         ->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
+        ->inYears($years, isset($filtersType['years']) ? $filtersType['years'] : 'IN')
         ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
@@ -297,6 +301,7 @@ class DangerMatrixReportController extends Controller
                 "dangers" => $this->getValuesForMultiselect($request->dangers),
                 "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
                 "positions" => $this->getValuesForMultiselect($request->positions),
+                "years" => $this->getValuesForMultiselect($request->years),
                 //"matrix" => $this->getValuesForMultiselect($request->matrix),
                 "row" => $request->row,
                 "col" => $request->col,
