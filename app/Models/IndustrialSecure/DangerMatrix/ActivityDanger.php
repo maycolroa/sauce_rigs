@@ -62,10 +62,10 @@ class ActivityDanger extends Model
         if (COUNT($positions) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+                $query->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')->whereIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
+                $query->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')->whereNotIn('sau_dm_activity_danger_positions.employee_position_id', $positions);
         }
     }
 

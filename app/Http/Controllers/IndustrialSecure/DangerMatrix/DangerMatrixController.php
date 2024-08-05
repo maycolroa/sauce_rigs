@@ -120,7 +120,6 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
-            
 
             try
             {

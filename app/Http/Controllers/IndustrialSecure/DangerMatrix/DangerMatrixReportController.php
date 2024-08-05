@@ -102,7 +102,7 @@ class DangerMatrixReportController extends Controller
             {
                 foreach ($itemMatrix->activities as $keyActivity => $itemActivity)
                 {
-                    $activity_dangers = $itemActivity->dangers()->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
+                    $activity_dangers = $itemActivity->dangers()
                     ->inDangers($dangers, $filtersType['dangers'])->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
                     ->inPositions($positions, isset($filtersType['positions']) ? $filtersType['positions'] : 'IN')
                     ->get();
@@ -215,7 +215,6 @@ class DangerMatrixReportController extends Controller
     */
     public function reportDangerTable(Request $request)
     {
-        \Log::info($request);
         $url = "/industrialsecure/dangermatrix/report";
         $init = true;
         $filters = [];
@@ -268,7 +267,6 @@ class DangerMatrixReportController extends Controller
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
-        ->leftJoin('sau_dm_activity_danger_positions', 'sau_dm_activity_danger_positions.activity_danger_id', 'sau_dm_activity_danger.id')
         ->inYears($years, isset($filtersType['years']) ? $filtersType['years'] : 'IN')
         ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
@@ -276,11 +274,9 @@ class DangerMatrixReportController extends Controller
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
         ->inPositions($positions, isset($filtersType['positions']) ? $filtersType['positions'] : 'IN')
-        //->inMatrix($matrix, $filtersType['matrix'])
         ->inDangers($dangers, $filtersType['dangers'])
         ->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
         ->where('sau_dm_activity_danger.qualification', $request->label)
-        //->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
         ->where('sau_dm_qualification_danger.value_id', $request->row);
 
         return Vuetable::of($dangers)
