@@ -159,8 +159,6 @@ class InformContractController extends Controller
 
             if ($this->proyectContract == 'SI')
                 $inform_contract->proyect_id = $request->proyect_id;
-            else
-                $informContract->proyect_id = NULL;
             
             if(!$inform_contract->save()){
                 return $this->respondHttp500();
@@ -230,8 +228,6 @@ class InformContractController extends Controller
 
             if ($this->proyectContract == 'SI')
                 $informContract->proyect_id = $request->proyect_id;
-            else
-                $informContract->proyect_id = NULL;
 
             if(!$informContract->update()){
                 return $this->respondHttp500();
