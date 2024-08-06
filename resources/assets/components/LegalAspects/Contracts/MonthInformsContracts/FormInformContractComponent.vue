@@ -391,6 +391,9 @@ export default {
 
           this.form.clearFilesBinary();
 
+          if (this.auth.proyectContract === 'NO')
+            this.form.proyect_id = NULL
+
           this.form.inform.themes.forEach((theme, keyObj) => {
             theme.items.forEach((item, keyItem) => {
              item.files.forEach((file, keyFile) => {
