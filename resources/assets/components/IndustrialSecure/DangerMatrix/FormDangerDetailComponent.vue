@@ -16,7 +16,7 @@
           <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" placeholder="Nombre"></vue-input>
           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.participants"  name="participants" label="Participantes" placeholder="Seleccione los participantes" url="/selects/tagsParticipants" :multiple="true" :allowEmpty="true" :taggable="true">
           </vue-ajax-advanced-select>
-          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-8" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl"></vue-ajax-advanced-select>
+          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl"></vue-ajax-advanced-select>
           <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-4" v-model="activity.type_activity" :options="typeActivities" name="type_activity" label="Tipo de actividad"></vue-radio>
           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_id" :selected-object="danger.multiselect_danger" name="danger_id" label="Peligro" placeholder="Seleccione el peligro" :url="dangersDataUrl"></vue-ajax-advanced-select>
           <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.id" label="Código de peligro" type="text" name="id" placeholder="Código de peligro"></vue-input>

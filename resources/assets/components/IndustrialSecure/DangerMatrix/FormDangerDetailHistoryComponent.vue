@@ -16,7 +16,7 @@
           <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" placeholder="Nombre"></vue-input>
           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.participants"  name="participants" label="Participantes" placeholder="Seleccione los participantes" url="/selects/tagsParticipants" :multiple="true" :allowEmpty="true" :taggable="true">
           </vue-ajax-advanced-select>
-          <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.activity"  name="activity" label="Actividad" placeholder="Seleccione la actividad"></vue-input>
+          <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.activity"  name="activity" label="Actividad" placeholder="Seleccione la actividad"></vue-input>
           <vue-radio :disabled="viewOnly" :checked="form.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" label="Tipo de actividad"></vue-radio>
            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.danger"  name="danger" label="Peligro" placeholder="Seleccione el peligro"></vue-input>
           <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.generating_source" label="Fuente generadora" name="generating_source"  placeholder="Fuente generadora" rows="6"></vue-textarea>
