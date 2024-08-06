@@ -159,6 +159,8 @@ class InformContractController extends Controller
 
             if ($this->proyectContract == 'SI')
                 $inform_contract->proyect_id = $request->proyect_id;
+            else
+                $informContract->proyect_id = NULL;
             
             if(!$inform_contract->save()){
                 return $this->respondHttp500();
@@ -228,6 +230,9 @@ class InformContractController extends Controller
 
             if ($this->proyectContract == 'SI')
                 $informContract->proyect_id = $request->proyect_id;
+            else
+                $informContract->proyect_id = NULL;
+
             if(!$informContract->update()){
                 return $this->respondHttp500();
             }
@@ -391,7 +396,7 @@ class InformContractController extends Controller
         $informContract = InformContract::findOrFail($id);
         $informContract->multiselect_contract_id = $informContract->contract->multiselect(); 
 
-        $informContract->multiselect_proyect = $informContract->proyect_id ? $informContract->proyect->multiselect() : NULL; 
+        $informContract->multiselect_proyect = $informContract->proyect_id && $informContract->proyect_id > 0 ? $informContract->proyect->multiselect() : NULL; 
         
         $inform_base = $this->getInform($informContract->inform_id);
         $informContract->inform = $this->setValuesInform($informContract, $inform_base);
