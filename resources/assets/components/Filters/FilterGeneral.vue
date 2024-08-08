@@ -260,7 +260,7 @@ export default {
             axios.post(`/getStateFilters`, { url: this.$route.path })
                 .then(response => {
 
-                    if (response.data)
+                    if (response.data && response.data.hasValues != undefined && response.data.hasValues)
                     {
                         this.ready = false
 

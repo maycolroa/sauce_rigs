@@ -23,7 +23,8 @@
         "santigarcor/laratrust": "5.2.*",
         "spatie/laravel-cors": "^1.6",
         "symfony/process": "^4.3",
-        "chumper/zipper": "1.0.x"
+        "chumper/zipper": "1.0.x",
+        "daltcore/lara-pdf-merger": "^2.0"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

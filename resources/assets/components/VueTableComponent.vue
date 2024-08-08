@@ -9,7 +9,7 @@
           </b-col>
       </b-row>
 
-    <v-server-table class="vuetable-master" :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable" @row-click="onRowClick">
+    <v-server-table class="vuetable-master" :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable" @row-click="onRowClick" v-if="tableReady">
       <template slot="controlls" slot-scope="props">
         <div class="align-middle text-center">
           
@@ -182,7 +182,7 @@ export default {
       filters: [],
       tableReady: false,
       keyVuetable: 'Vuetable',
-      pagina: 1
+      pagina: 4
     }
   },
   watch: {
@@ -198,12 +198,6 @@ export default {
     },
     modelId() {
       Vue.nextTick( () => this.$refs.vuetable.refresh() )
-    },
-    tableReady() {
-      if (this.tableReady)
-      {
-        Vue.nextTick( () => this.$refs.vuetable.setPage(this.pagina) )
-      }
     }
   },
   computed: {
@@ -282,7 +276,8 @@ export default {
           nameTable: this.configName,
           pagina: this.pagina,
           tables: {}
-        }
+        },
+        initialPage: this.pagina
       };
 
       var fields = this.config.fields;
@@ -450,27 +445,21 @@ export default {
               })
     }
 
-    this.getPageVuetable();
-
-    setTimeout(() => {
-        this.tableReady = true
-    }, 4000)
+    this.getPageVuetable()
   },
-  created() {
-    if (this.customColumnsName)
-    {
+  methods: {
+    loadCustomColumns() {
       axios.post('/vuetableCustomColumns', {'customColumnsName': this.config.name})
       .then(response => {
         this.config.fields = response.data.fields;
-        this.keyVuetable = 'changeVuetable'
+        //this.keyVuetable = 'changeVuetable'
+        this.tableReady = true
       })
       .catch(error => {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
           this.$router.go(-1);
       });
-    }
-  },
-  methods: {
+    },
     getPageVuetable()
     {
         axios.post(`/getPageVuetable`, { vuetable: this.configName })
@@ -478,16 +467,14 @@ export default {
               if (response.data)
               {
                 this.pagina = response.data;
-                  /*setTimeout(() => {
-                      //this.$emit('input', this.filtersSelected)
-                      return response.data
-                  }, 2000)*/
+
+                if (!this.customColumnsName)
+                  this.tableReady = true
+                else
+                  this.loadCustomColumns()
               }
           })
-          .catch(error => {
-              //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-              //this.$router.go(-1);
-          });
+          .catch(error => {});
     },
     onRowClick: function(row) {
       this.$emit("rowClick", row.row);

@@ -303,6 +303,27 @@ class ApplicationController extends Controller
 
       if ($filters)
         $filters = json_decode($filters->data, true);
+
+      $hasValues = false;
+
+      foreach ($filters as $key => $filter)
+      {
+        if ($key == 'filtersType') {
+          continue;
+        }
+        else if (is_array($filter) && COUNT($filter) > 0)
+        {
+          $hasValues = true;
+          break;
+        }
+        else if ($filter)
+        {
+          $hasValues = true;
+          break;
+        }
+      }
+
+      $filters['hasValues'] = $hasValues;
       
       return $filters;
     }
@@ -318,6 +339,8 @@ class ApplicationController extends Controller
         else
           $pages = $pages->page;
       }
+      else
+        $pages = 1;
       
       return $pages;
     }

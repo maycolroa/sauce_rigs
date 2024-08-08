@@ -171,7 +171,8 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\ObserverServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        LynX39\LaraPdfMerger\PdfMergerServiceProvider::class
 
     ],
 
@@ -234,7 +235,8 @@ return [
         'NotificationManager' => App\Facades\System\NotificationManager::class,
         'RiskMatrixReportManager' => App\Facades\RiskMatrix\RiskMatrixManager::class,
         'RiskMatrixHistoryManager' => App\Facades\RiskMatrix\RiskMatrixHistoryManager::class,
-        'Zipper' => Chumper\Zipper\Zipper::class
+        'Zipper' => Chumper\Zipper\Zipper::class,
+        'PdfMerger' => LynX39\LaraPdfMerger\Facades\PdfMerger::class,
     ],
 
     /**

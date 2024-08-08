@@ -25,8 +25,8 @@
     21 => 'Illuminate\\View\\ViewServiceProvider',
     22 => 'Barryvdh\\DomPDF\\ServiceProvider',
     23 => 'Chumper\\Zipper\\ZipperServiceProvider',
-    24 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    25 => 'Intervention\\Image\\ImageServiceProvider',
+    24 => 'LynX39\\LaraPdfMerger\\PdfMergerServiceProvider',
+    25 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     26 => 'jdavidbakr\\MailTracker\\MailTrackerServiceProvider',
     27 => 'Laravel\\Horizon\\HorizonServiceProvider',
     28 => 'Laravel\\Telescope\\TelescopeServiceProvider',
@@ -53,6 +53,7 @@
     49 => 'App\\Providers\\ObserverServiceProvider',
     50 => 'Barryvdh\\DomPDF\\ServiceProvider',
     51 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
+    52 => 'LynX39\\LaraPdfMerger\\PdfMergerServiceProvider',
   ),
   'eager' => 
   array (
@@ -68,8 +69,8 @@
     9 => 'Illuminate\\View\\ViewServiceProvider',
     10 => 'Barryvdh\\DomPDF\\ServiceProvider',
     11 => 'Chumper\\Zipper\\ZipperServiceProvider',
-    12 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    13 => 'Intervention\\Image\\ImageServiceProvider',
+    12 => 'LynX39\\LaraPdfMerger\\PdfMergerServiceProvider',
+    13 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     14 => 'jdavidbakr\\MailTracker\\MailTrackerServiceProvider',
     15 => 'Laravel\\Horizon\\HorizonServiceProvider',
     16 => 'Laravel\\Telescope\\TelescopeServiceProvider',
@@ -94,6 +95,7 @@
     35 => 'App\\Providers\\ObserverServiceProvider',
     36 => 'Barryvdh\\DomPDF\\ServiceProvider',
     37 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
+    38 => 'LynX39\\LaraPdfMerger\\PdfMergerServiceProvider',
   ),
   'deferred' => 
   array (

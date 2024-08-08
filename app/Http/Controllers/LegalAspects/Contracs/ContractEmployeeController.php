@@ -24,6 +24,8 @@ use Carbon\Carbon;
 use Validator;
 use Hash;
 use DB;
+use PdfMerger;
+use Illuminate\Support\Facades\File;
 
 class ContractEmployeeController extends Controller
 {
@@ -819,7 +821,11 @@ class ContractEmployeeController extends Controller
     public function download($id)
     {
         $employeeContract = ContractEmployee::find($id);
-        return Storage::disk('s3')->download('legalAspects/files/'. $employeeContract->file_inactivation);
+
+        if (Storage::disk('s3')->exists('legalAspects/files/'. $employeeContract->file_inactivation)) 
+        {
+            return Storage::disk('s3')->download('legalAspects/files/'. $employeeContract->file_inactivation);
+        }
 
     }
 
@@ -883,7 +889,105 @@ class ContractEmployeeController extends Controller
             \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
+    }
+
+    public function multiselectEmployee(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $employees = ContractEmployee::select("id", "name")
+                ->where('sau_ct_contract_employees.contract_id', $request->contract_id)
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_ct_contract_employees.name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($employees)
+            ]);
+        }
+        else
+        {
+            $employees = ContractEmployee::selectRaw("id, name")
+            ->where('sau_ct_contract_employees.contract_id', $request->contract_id)
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
+            return $this->multiSelectFormat($employees);
+        }
+    }
+
+    public function multiselectEmployeeDocuments(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $employees = FileUpload::select("sau_ct_file_upload_contracts_leesse.id", "sau_ct_file_upload_contracts_leesse.name")
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
+                ->where('sau_ct_contract_employees.contract_id', $request->contract_id)
+                ->where('sau_ct_contract_employees.id', $request->employee_id)
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_ct_contract_employees.name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)
+                ->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($employees)
+            ]);
+        }
+        else
+        {
+            $employees = FileUpload::selectRaw("sau_ct_file_upload_contracts_leesse.id, sau_ct_file_upload_contracts_leesse.name")
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
+                ->where('sau_ct_contract_employees.contract_id', $request->contract_id)
+                ->where('sau_ct_contract_employees.id', $request->employee_id)
+                ->orderBy('name')
+                ->pluck('id', 'name');
         
+            return $this->multiSelectFormat($employees);
+        }
+    }
+
+    public function downloadMerge(Request $request)
+    {
+        \Log::info('entro aqui');
+        $pdfResult = PDFMerger::init();//new PdfManage;
+        $pathPresentation = '';
+        $files_ids = $this->getValuesForMultiselect($request->documents_id);
+
+        $employee = ContractEmployee::find($request->employee_id);
+
+        $files = FileUpload::whereIn('id', $files_ids)->get();
+
+        foreach ($files as $key => $file)
+        {
+            $sub = explode('.',$file->file)[1];
+
+            if ($sub == 'pdf')
+            {
+                $localFilePath = "/prueba_merge/".$file->file;
+                $contents = file_get_contents($localFilePath);
+
+                $contents = Storage::disk('public')->get('prueba_merge/'. $file->file);
+                Storage::disk('public')->putFileAs('merge/1', $contents, $file->file);
+
+                $url = Storage::disk('public')->url('merge/1/'. $file->file);
+                $pdfResult->addPDF($url, 'all', 'L');
+            }
+        }
+
+        $nameFilePDF = $employee->name.'.pdf';
+        $pdfResult->merge();
+        $pdfResult->save("mergeComplete/1/{$nameFilePDF}", "file");
+
+        return $this->respondHttp200();
     }
 }

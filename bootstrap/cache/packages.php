@@ -21,22 +21,22 @@
       'Zipper' => 'Chumper\\Zipper\\Zipper',
     ),
   ),
+  'daltcore/lara-pdf-merger' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'LynX39\\LaraPdfMerger\\PdfMergerServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'PdfMerger' => 'LynX39\\LaraPdfMerger\\Facades\\PdfMerger',
+    ),
+  ),
   'fideloper/proxy' => 
   array (
     'providers' => 
     array (
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    ),
-  ),
-  'intervention/image' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
     ),
   ),
   'jdavidbakr/mail-tracker' => 

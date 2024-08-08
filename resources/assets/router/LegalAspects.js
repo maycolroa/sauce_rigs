@@ -261,6 +261,13 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/uploadFiles/report')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'legalaspects-upload-files-merge',
+					path: 'upload-files/filesMerge',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/fileMerge')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_activities_r' }, [
 				{
 					name: 'legalaspects-contracts-activities',

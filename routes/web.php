@@ -376,6 +376,8 @@ Route::middleware(['auth'])->group(function () {
 
           Route::post('ctProyects', 'LegalAspects\Contracs\ContractProyectController@multiselect');
           Route::post('ctProyectsContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselectProyect');
+          Route::post('ctEmployeeContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselectEmployee');
+          Route::post('ctEmployeeDocumentsContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselectEmployeeDocuments');
 
           Route::post('ctTrainingTypeQuestions', 'LegalAspects\Contracs\ContractTrainingController@multiselectTypeQuestion');          
           Route::post('statesFile', 'General\MultiSelectRadioController@ctFileStates');
@@ -982,6 +984,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('fileUpload/getFilesItem', 'LegalAspects\Contracs\FileUploadController@getFilesItem');
       Route::ApiResource('fileUpload', 'LegalAspects\Contracs\FileUploadController');
       Route::post('fileUpload/report', 'LegalAspects\Contracs\FileUploadController@dataReport');
+      Route::post('fileUpload/downloadMerge', 'LegalAspects\Contracs\ContractEmployeeController@downloadMerge');
 
       Route::post('typeRating/data', 'LegalAspects\Contracs\TypeRatingController@data');
       Route::post('typeRating/AllTypesRating', 'LegalAspects\Contracs\TypeRatingController@getAllTypesRating');
@@ -1027,6 +1030,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/dataContract', 'LegalAspects\Contracs\ContractEmployeeController@dataContract');
       Route::get('employeeContract/download/{id}', 'LegalAspects\Contracs\ContractEmployeeController@download');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
+      Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
       Route::post('employeeDocument/report', 'LegalAspects\Contracs\ListCheckReportController@employeeDocument');
