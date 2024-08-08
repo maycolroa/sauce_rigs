@@ -24,7 +24,7 @@ use Carbon\Carbon;
 use Validator;
 use Hash;
 use DB;
-use PdfMerger;
+//use PdfMerger;
 use Illuminate\Support\Facades\File;
 
 class ContractEmployeeController extends Controller
