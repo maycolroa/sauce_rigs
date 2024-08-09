@@ -136,9 +136,9 @@ class ContractController extends ApiController
 
         foreach ($employee->activities as $key => $activity) 
         {
-          if (in_array('Certificado alturas', $class_document))
+          if (in_array('Certificado alturas ', $class_document))
           {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas');
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas ');
 
             if ($content && COUNT($content) > 0)
             {
