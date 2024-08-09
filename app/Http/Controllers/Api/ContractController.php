@@ -83,7 +83,7 @@ class ContractController extends ApiController
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
 
-        if (in_array('Certificado', $class_document))
+        if (in_array('Certificado alturas', $class_document))
           $required_habilitado++;
 
         if (in_array('Inducción', $class_document))
@@ -136,9 +136,9 @@ class ContractController extends ApiController
 
         foreach ($employee->activities as $key => $activity) 
         {
-          if (in_array('Certificado', $class_document))
+          if (in_array('Certificado alturas', $class_document))
           {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado');
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas');
 
             if ($content && COUNT($content) > 0)
             {
@@ -174,7 +174,7 @@ class ContractController extends ApiController
           }            
         }
 
-        foreach ($employee->activities as $key => $activity) 
+        /*foreach ($employee->activities as $key => $activity) 
         {
           if (in_array('Inducción', $class_document))
           {
@@ -205,13 +205,13 @@ class ContractController extends ApiController
               }
             }
           }
-        }
+        }*/
 
         foreach ($employee->activities as $key => $activity) 
         {
-          if (in_array('Cursos', $class_document))
+          if (in_array('Certificado espacios confinados', $class_document))
           {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Cursos');
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
 
             if ($content && COUNT($content) > 0)
             {
@@ -228,6 +228,11 @@ class ContractController extends ApiController
                     $habilitado++;
                     break;
                   }
+                  else
+                  {
+                    $curs->push($content[0]);
+                    $cursos = false;
+                  }
                 }
                 else
                 {
@@ -242,9 +247,9 @@ class ContractController extends ApiController
 
         foreach ($employee->activities as $key => $activity) 
         {
-          if (in_array('Examen médico', $class_document))
+          if (in_array('Examen medico ocupacional', $class_document))
           {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen médico');
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Examen medico ocupacional');
 
             if ($content && COUNT($content) > 0)
             {
@@ -257,16 +262,21 @@ class ContractController extends ApiController
                   if ($fecha->gt($now))
                   {
                     $medic->push($content[0]);
+                    $induccion = true;
+                    $habilitado++;
                     break;
                   }
                   else
                   {
                     $medic->push($content[0]);
+                    $induccion = false;
                   }
                 }
                 else
                 {
                   $medic->push($content[0]);
+                  $induccion = true;
+                  $habilitado++;
                 }
               }
             }
@@ -298,10 +308,11 @@ class ContractController extends ApiController
           "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 'SI' : 'NO',
           "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 'SI' : 'NO',
           "ok_induccion" => $induccion ? 'SI' : 'NO',
-          "ok_cursos" => $cursos ? 'SI' : 'NO',
+          "ok_curso_confinado" => $cursos ? 'SI' : 'NO',
           "venc_seguridad_social" => $parafis->count() > 0 ? $parafis[0]->expirationDate : '',
           "fecha_venc_examedico" => $medic->count() > 0 ? $medic[0]->expirationDate : '',
           "fecha_venc_certificacion" => $cert->count() > 0 ? $cert[0]->expirationDate : '',
+          "fecha_venc_confinado" => $curs->count() > 0 ? $curs[0]->expirationDate : '',
           "estado_civil" => $employee->civil_status,
           "jornada_laboral" => $employee->workday,
           "estado" => $employee->state_employee ? 'Activo' : 'Inactivo',
