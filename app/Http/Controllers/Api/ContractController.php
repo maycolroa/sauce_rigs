@@ -67,6 +67,8 @@ class ContractController extends ApiController
 
         $parafiscales_date = false;
         $certificaciones_date = false;
+        $cursos_date = false;
+        $medic_date = false;
 
         $habilitado = 0;
         $required_habilitado = 1;
@@ -80,19 +82,21 @@ class ContractController extends ApiController
 
         $class_document = array_unique($class_document);
 
+        \Log::info($class_document);
+
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
 
         if (in_array('Certificado alturas', $class_document))
           $required_habilitado++;
 
-        if (in_array('Inducción', $class_document))
+        if (in_array('Certificado espacios confinados', $class_document))
           $required_habilitado++;
 
-        if (in_array('Cursos', $class_document))
+        if (in_array('Examen medico ocupacional', $class_document))
           $required_habilitado++;
 
-          $now = Carbon::now();
+        $now = Carbon::now();
 
         foreach ($employee->activities as $key => $activity) 
         {
@@ -174,6 +178,46 @@ class ContractController extends ApiController
           }            
         }
 
+        foreach ($employee->activities as $key => $activity) 
+        {
+          if (in_array('Certificado espacios confinados', $class_document))
+          {
+            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
+
+            if ($content && COUNT($content) > 0)
+            {
+              if ($content[0])
+              {
+                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $curs->push($content[0]);
+                    $cursos = true;
+                    $habilitado++;
+                    $cursos_date = false;
+                    break;
+                  }
+                  else
+                  {
+                    $curs->push($content[0]);
+                    $cursos_date = true;
+                  }
+                }
+                else
+                {
+                  $curs->push($content[0]);
+                  $cursos = true;
+                  $cursos_date = false;
+                  $habilitado++;
+                }
+              }
+            }
+          }            
+        }
+
         /*foreach ($employee->activities as $key => $activity) 
         {
           if (in_array('Inducción', $class_document))
@@ -206,44 +250,6 @@ class ContractController extends ApiController
             }
           }
         }*/
-
-        foreach ($employee->activities as $key => $activity) 
-        {
-          if (in_array('Certificado espacios confinados', $class_document))
-          {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
-
-            if ($content && COUNT($content) > 0)
-            {
-              if ($content[0])
-              {
-                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
-                {
-                  $fecha = Carbon::parse($content[0]->expirationDate);
-
-                  if ($fecha->gt($now))
-                  {
-                    $curs->push($content[0]);
-                    $cursos = true;
-                    $habilitado++;
-                    break;
-                  }
-                  else
-                  {
-                    $curs->push($content[0]);
-                    $cursos = false;
-                  }
-                }
-                else
-                {
-                  $curs->push($content[0]);
-                  $cursos = true;
-                  $habilitado++;
-                }
-              }
-            }
-          }
-        }
 
         foreach ($employee->activities as $key => $activity) 
         {
@@ -308,7 +314,7 @@ class ContractController extends ApiController
           "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 'SI' : 'NO',
           "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 'SI' : 'NO',
           "ok_induccion" => $induccion ? 'SI' : 'NO',
-          "ok_curso_confinado" => $cursos ? 'SI' : 'NO',
+          "ok_curso_confinado" => !$cursos_date && $cursos ? 'SI' : 'NO',
           "venc_seguridad_social" => $parafis->count() > 0 ? $parafis[0]->expirationDate : '',
           "fecha_venc_examedico" => $medic->count() > 0 ? $medic[0]->expirationDate : '',
           "fecha_venc_certificacion" => $cert->count() > 0 ? $cert[0]->expirationDate : '',
