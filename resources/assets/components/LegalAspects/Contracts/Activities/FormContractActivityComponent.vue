@@ -94,10 +94,19 @@ export default {
       form: Form.makeFrom(this.activity, this.method),
       classDocument: [
           {name: 'Seguridad social', value: 'Seguridad social'},
-          {name: 'Inducción', value: 'Inducción'},
-          {name: 'Examen médico', value: 'Examen médico'},
-          {name: 'Certificado', value: 'Certificado'},
-          {name: 'Cursos', value: 'Cursos'},
+          {name: 'Certificado alturas ', value: 'Certificado alturas '},
+          {name: 'Certificado espacios confinados', value: 'Certificado espacios confinados'},
+          {name: 'Examen medico ocupacional', value: 'Examen medico ocupacional'},
+          {name: 'Documento de identidad', value: 'Documento de identidad'},
+          {name: 'Inducción - Reinducción', value: 'Inducción - Reinducción'},
+          {name: 'Certificado de estudios', value: 'Certificado de estudios'},
+          {name: 'Contrato', value: 'Contrato'},
+          {name: 'Póliza', value: 'Póliza'},
+          {name: 'Certificados contratistas(Rut Cámara y comercio)', value: 'Certificados contratistas(Rut Cámara y comercio)'},
+          {name: 'Hoja de Vida', value: 'Hoja de Vida'},
+          {name: 'Curso obligatorio del SGSST', value: 'Curso obligatorio del SGSST'},
+          {name: 'Licencia SST', value: 'Licencia SST'},
+          {name: 'Licencia conducción', value: 'Licencia conducción'},
           {name: 'Otros', value: 'Otros'},
       ],
       siNo: [
@@ -106,10 +115,19 @@ export default {
       ],
       message_validation: false,
       social_security: 0,
+      certificate_altura: 0,
+      certificate_confinados: 0,
+      medical_exam_ocup: 0,
+      doc_ident: 0,
       induction: 0,
-      medical_exam: 0,
-      certificate: 0,
-      others: 0,
+      cerificate_studies: 0,
+      contract: 0,
+      poliza: 0,
+      certificate_contract: 0,
+      hoja_life: 0,
+      curso_sgsst: 0,
+      license_sst: 0,
+      license_conduction: 0,
       romper: false,
       verify: false
     };
@@ -134,68 +152,119 @@ export default {
     verifyClassDocument(documents)
     {
       this.social_security = 0;
+      this.certificate_altura = 0;
+      this.certificate_confinados = 0;
+      this.medical_exam_ocup = 0;
+      this.doc_ident = 0;
       this.induction = 0;
-      this.medical_exam = 0;
-      this.certificate = 0;
-      this.cursos = 0;
-      this.others = 0;
+      this.cerificate_studies = 0;
+      this.contract = 0;
+      this.poliza = 0;
+      this.certificate_contract = 0;
+      this.hoja_life = 0;
+      this.curso_sgsst = 0;
+      this.license_sst = 0;
+      this.license_conduction = 0;
       this.romper = false;
 
       _.forIn(documents, (document) => {
         if(document.class == 'Seguridad social')
         {
           if(this.social_security > 0)
-          {
             this.romper = true;
-          }
           else
-          {
             this.social_security = 1
-          }
         }
-        else if(document.class == 'Inducción')
+        else if(document.class == 'Certificado alturas ')
+        {
+          if(this.certificate_altura > 0)
+            this.romper = true;
+          else
+            this.certificate_altura = 1
+        }
+        else if(document.class == 'Certificado espacios confinados')
+        {
+          if(this.certificate_confinados > 0)
+            this.romper = true;
+          else
+            this.certificate_confinados = 1
+        }
+        else if(document.class == 'Examen medico ocupacional')
+        {
+          if(this.medical_exam_ocup > 0)
+            this.romper = true;
+          else
+            this.medical_exam_ocup = 1
+        }
+        else if(document.class == 'Documento de identidad')
+        {
+          if(this.doc_ident > 0)
+            this.romper = true;
+          else
+            this.doc_ident = 1
+        }
+        else if(document.class == 'Inducción - Reinducción')
         {
           if(this.induction > 0)
-          {
             this.romper = true;
-          }
           else
-          {
             this.induction = 1
-          }
         }
-        else if(document.class == 'Examen médico')
+        else if(document.class == 'Certificado de estudios')
         {
-          if(this.medical_exam > 0)
-          {
+          if(this.cerificate_studies > 0)
             this.romper = true;
-          }
           else
-          {
-            this.medical_exam = 1
-          }
+            this.cerificate_studies = 1
         }
-        else if(document.class == 'Certificado')
+        else if(document.class == 'Contrato')
         {
-          if(this.certificate > 0)
-          {
+          if(this.contract > 0)
             this.romper = true;
-          }
           else
-          {
-            this.certificate = 1
-          }
+            this.contract = 1
         }
-        else if(document.class == 'Cursos')
+        else if(document.class == 'Póliza')
         {
-          if(this.cursos > 0)
-          {
+          if(this.poliza > 0)
             this.romper = true;
-          }
           else
-          {
-            this.cursos = 1
-          }
+            this.poliza = 1
+        }
+        else if(document.class == 'Certificados contratistas(Rut Cámara y comercio)')
+        {
+          if(this.certificate_contract > 0)
+            this.romper = true;
+          else
+            this.certificate_contract = 1
+        }
+        else if(document.class == 'Hoja de Vida')
+        {
+          if(this.hoja_life > 0)
+            this.romper = true;
+          else
+            this.hoja_life = 1
+        }
+        else if(document.class == 'Curso obligatorio del SGSST')
+        {
+          if(this.curso_sgsst > 0)
+            this.romper = true;
+          else
+            this.curso_sgsst = 1
+        }
+        else if(document.class == 'Licencia SST ')
+        {
+          if(this.license_sst > 0)
+            this.romper = true;
+          else
+            this.license_sst = 1
+        }
+        else if(document.class == 'Licencia conducción')
+        {
+          if(this.license_conduction > 0)
+            this.romper = true;
+          else
+            this.license_conduction = 1
         }
       });
 
