@@ -184,6 +184,8 @@ class ContractController extends ApiController
           {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
 
+            \Log::info($content);
+
             if ($content && COUNT($content) > 0)
             {
               if ($content[0])

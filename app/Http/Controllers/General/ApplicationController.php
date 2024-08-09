@@ -302,28 +302,30 @@ class ApplicationController extends Controller
       $filters = FiltersState::where('user_id', Auth::user()->id)->where('url', $request->url)->first();
 
       if ($filters)
+      {
         $filters = json_decode($filters->data, true);
 
-      $hasValues = false;
+        $hasValues = false;
 
-      foreach ($filters as $key => $filter)
-      {
-        if ($key == 'filtersType') {
-          continue;
-        }
-        else if (is_array($filter) && COUNT($filter) > 0)
+        foreach ($filters as $key => $filter)
         {
-          $hasValues = true;
-          break;
+          if ($key == 'filtersType') {
+            continue;
+          }
+          else if (is_array($filter) && COUNT($filter) > 0)
+          {
+            $hasValues = true;
+            break;
+          }
+          else if ($filter)
+          {
+            $hasValues = true;
+            break;
+          }
         }
-        else if ($filter)
-        {
-          $hasValues = true;
-          break;
-        }
+
+        $filters['hasValues'] = $hasValues;
       }
-
-      $filters['hasValues'] = $hasValues;
       
       return $filters;
     }
