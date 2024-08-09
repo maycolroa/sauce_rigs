@@ -71,7 +71,7 @@ class ContractController extends ApiController
         $medic_date = false;
 
         $habilitado = 0;
-        $required_habilitado = 1;
+        $required_habilitado = 0;
 
         $class_document = [];
 
@@ -81,8 +81,6 @@ class ContractController extends ApiController
         }
 
         $class_document = array_unique($class_document);
-
-        \Log::info($class_document);
 
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
@@ -183,8 +181,6 @@ class ContractController extends ApiController
           if (in_array('Certificado espacios confinados', $class_document))
           {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
-            \Log::info('entro confinados');
-            \Log::info($content);
 
             if ($content && COUNT($content) > 0)
             {
@@ -220,39 +216,6 @@ class ContractController extends ApiController
           }            
         }
 
-        /*foreach ($employee->activities as $key => $activity) 
-        {
-          if (in_array('Inducción', $class_document))
-          {
-            $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Inducción');
-
-            if ($content && COUNT($content) > 0)
-            {
-              if ($content[0])
-              {
-                if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
-                {
-                  $fecha = Carbon::parse($content[0]->expirationDate);
-
-                  if ($fecha->gt($now))
-                  {
-                    $induc->push($content[0]);
-                    $induccion = true;
-                    $habilitado++;
-                    break;
-                  }
-                }
-                else
-                {
-                  $induc->push($content[0]);
-                  $induccion = true;
-                  $habilitado++;
-                }
-              }
-            }
-          }
-        }*/
-
         foreach ($employee->activities as $key => $activity) 
         {
           if (in_array('Examen medico ocupacional', $class_document))
@@ -272,12 +235,14 @@ class ContractController extends ApiController
                     $medic->push($content[0]);
                     $induccion = true;
                     $habilitado++;
+                    $medic_date = false;
                     break;
                   }
                   else
                   {
                     $medic->push($content[0]);
                     $induccion = false;
+                    $medic_date = true;
                   }
                 }
                 else
@@ -285,6 +250,7 @@ class ContractController extends ApiController
                   $medic->push($content[0]);
                   $induccion = true;
                   $habilitado++;
+                  $medic_date = false;
                 }
               }
             }
@@ -312,7 +278,7 @@ class ContractController extends ApiController
           "nit_contratista" => $contract->nit,
           "centro_entrenamiento" =>  $contract->height_training_centers,
           "representante_legal" =>  $contract->legal_representative_name,
-          "ok_habilitado" => $habilitado < 1 ? 'NO' : ($habilitado >= $required_habilitado ? 'SI' : 'NO'),
+          "ok_habilitado" => $habilitado >= $required_habilitado ? 'SI' : ($required_habilitado < 1 ? 'SI' : 'NO'),
           "ok_parafiscales" => !$parafiscales_date && $parafiscales ? 'SI' : 'NO',
           "ok_certificaciones" => !$certificaciones_date && $certificaciones ? 'SI' : 'NO',
           "ok_induccion" => $induccion ? 'SI' : 'NO',
