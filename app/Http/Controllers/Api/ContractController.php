@@ -183,7 +183,7 @@ class ContractController extends ApiController
           if (in_array('Certificado espacios confinados', $class_document))
           {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
-
+            \Log::info('entro confinados');
             \Log::info($content);
 
             if ($content && COUNT($content) > 0)
