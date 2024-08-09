@@ -44,7 +44,7 @@ class ContractController extends ApiController
     public function getEmployee(Request $request)
     {        
       try {
-        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->where('company_id', 159)->first();
+        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->whereIn('company_id', [159, 130])->first();
 
         if (!$contract)
           return $this->respondWithError('Contratista no encontrado');
