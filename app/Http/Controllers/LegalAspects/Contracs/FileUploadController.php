@@ -45,7 +45,6 @@ class FileUploadController extends Controller
     */
     public function data(Request $request)
     {
-      \Log::info($request);
         $contract_id = null;
 
         try
@@ -102,7 +101,7 @@ class FileUploadController extends Controller
         }
         
         return Vuetable::of($files)
-            /*->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
+            ->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
               return $this->checkPermissionUserInFile($file->user_id, $contract_id);
             })
             ->addColumn('control_delete', function ($file) use ($contract_id, $deleteFilesConfig) {
@@ -110,7 +109,7 @@ class FileUploadController extends Controller
                 return false;                
               else
                 return $this->checkPermissionUserInFile($file->user_id, $contract_id);
-            })*/
+            })
             ->make();
     }
 

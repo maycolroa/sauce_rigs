@@ -24,7 +24,7 @@ use Carbon\Carbon;
 use Validator;
 use Hash;
 use DB;
-//use PdfMerger;
+use PdfMerger;
 use Illuminate\Support\Facades\File;
 
 class ContractEmployeeController extends Controller
@@ -903,7 +903,7 @@ class ContractEmployeeController extends Controller
                     $query->orWhere('sau_ct_contract_employees.name', 'like', $keyword);
                 })
                 ->orderBy('name')
-                ->take(30)->pluck('id', 'name');
+                ->take(30)->pluck('id', 'name');        
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($employees)
@@ -934,9 +934,11 @@ class ContractEmployeeController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_ct_contract_employees.name', 'like', $keyword);
                 })
+                ->where('sau_ct_file_upload_contracts_leesse.file', 'like', '%.pdf%')
                 ->orderBy('name')
                 ->take(30)
                 ->pluck('id', 'name');
+
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($employees)
@@ -949,6 +951,7 @@ class ContractEmployeeController extends Controller
                 ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
                 ->where('sau_ct_contract_employees.contract_id', $request->contract_id)
                 ->where('sau_ct_contract_employees.id', $request->employee_id)
+                ->where('sau_ct_file_upload_contracts_leesse.file', 'like', '%.pdf%')
                 ->orderBy('name')
                 ->pluck('id', 'name');
         
@@ -958,7 +961,6 @@ class ContractEmployeeController extends Controller
 
     public function downloadMerge(Request $request)
     {
-        \Log::info('entro aqui');
         $pdfResult = PDFMerger::init();//new PdfManage;
         $pathPresentation = '';
         $files_ids = $this->getValuesForMultiselect($request->documents_id);
@@ -967,27 +969,37 @@ class ContractEmployeeController extends Controller
 
         $files = FileUpload::whereIn('id', $files_ids)->get();
 
+        $files_temp = [];
+
         foreach ($files as $key => $file)
         {
-            $sub = explode('.',$file->file)[1];
+            $file_temp = storage_path('app/temp/').$file->file;
 
-            if ($sub == 'pdf')
-            {
-                $localFilePath = "/prueba_merge/".$file->file;
-                $contents = file_get_contents($localFilePath);
+            file_put_contents(
+                $file_temp,
+                file_get_contents( Storage::disk('s3')->url("legalAspects/files/{$file->file}") )
+            );
 
-                $contents = Storage::disk('public')->get('prueba_merge/'. $file->file);
-                Storage::disk('public')->putFileAs('merge/1', $contents, $file->file);
+            $files_temp[] = $file_temp;
 
-                $url = Storage::disk('public')->url('merge/1/'. $file->file);
-                $pdfResult->addPDF($url, 'all', 'L');
-            }
+            $pdfResult->addPDF($file_temp, 'all', 'L');
         }
 
-        $nameFilePDF = $employee->name.'.pdf';
+        $nameFilePDF = time()."_{$employee->name}.pdf";
         $pdfResult->merge();
-        $pdfResult->save("mergeComplete/1/{$nameFilePDF}", "file");
+        $pdfResult->save(storage_path('app/temp/').$nameFilePDF, "file");
 
-        return $this->respondHttp200();
+        foreach ($files_temp as $temp)
+        {
+            File::delete($temp);
+        }
+
+        return response()->download(storage_path('app/temp/').$nameFilePDF, $nameFilePDF, [
+            "Content-Type" => "application/pdf",
+            "file-name" => $nameFilePDF
+        ])
+        ->deleteFileAfterSend(true);
+
+        ob_end_clean();
     }
 }

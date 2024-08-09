@@ -172,7 +172,7 @@ return [
         App\Providers\ObserverServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        //LynX39\LaraPdfMerger\PdfMergerServiceProvider::class
+        LynX39\LaraPdfMerger\PdfMergerServiceProvider::class
 
     ],
 
@@ -236,7 +236,7 @@ return [
         'RiskMatrixReportManager' => App\Facades\RiskMatrix\RiskMatrixManager::class,
         'RiskMatrixHistoryManager' => App\Facades\RiskMatrix\RiskMatrixHistoryManager::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
-        '//PdfMerger' => LynX39\LaraPdfMerger\Facades\PdfMerger::class,
+        'PdfMerger' => LynX39\LaraPdfMerger\Facades\PdfMerger::class,
     ],
 
     /**

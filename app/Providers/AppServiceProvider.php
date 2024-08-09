@@ -25,6 +25,16 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         View::share('viewService', new ViewService());
+
+        if (config('app.env') === 'local')
+        {
+            stream_context_set_default( [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ]);
+        }
     }
 
     /**

@@ -18,12 +18,10 @@
                             </vue-ajax-advanced-select>
 					</b-form-row>
 
-					<b-form-row>
-						<div class="row float-right pt-10 pr-10">
-							<template>
-								<b-btn variant="primary" @click="descargarPdf()">Descargar</b-btn>&nbsp;&nbsp;
-							</template>
-						</div>
+					<b-form-row v-if="form.contract_id && form.employee_id && form.documents_id">
+						<template>
+							<b-btn class="col-md-2 offset-md-5" variant="primary" @click="descargarPdf()">Descargar</b-btn>&nbsp;&nbsp;
+						</template>
 					</b-form-row>
 
             	</b-card>
@@ -113,9 +111,21 @@ export default {
 		descargarPdf() {
 			let postData = Object.assign({}, {contract_id: this.form.contract_id, employee_id: this.form.employee_id, documents_id: this.form.documents_id});
 
-			axios.post('/legalAspects/fileUpload/downloadMerge', postData)
+			axios.post('/legalAspects/fileUpload/downloadMerge', postData, { responseType: 'blob' })
 			.then(response => {
-				activity.documents = response.data.data;
+				// create file link in browser's memory
+				const href = URL.createObjectURL(response.data);
+
+				// create "a" HTML element with href to file & click
+				const link = document.createElement('a');
+				link.href = href;
+				link.setAttribute('download', response.headers['file-name']); //or any other extension
+				document.body.appendChild(link);
+				link.click();
+
+				// clean up "a" element & remove ObjectURL
+				document.body.removeChild(link);
+				URL.revokeObjectURL(href);
 			})
 			.catch(error => {
 				Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
