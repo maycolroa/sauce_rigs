@@ -88,8 +88,8 @@ class ContractController extends ApiController
         if (in_array('Certificado alturas', $class_document))
           $required_habilitado++;
 
-        if (in_array('Certificado espacios confinados', $class_document))
-          $required_habilitado++;
+        /*if (in_array('Certificado espacios confinados', $class_document))
+          $required_habilitado++;*/
 
         if (in_array('Examen medico ocupacional', $class_document))
           $required_habilitado++;
@@ -194,7 +194,7 @@ class ContractController extends ApiController
                   {
                     $curs->push($content[0]);
                     $cursos = true;
-                    $habilitado++;
+                    //$habilitado++;
                     $cursos_date = false;
                     break;
                   }
@@ -209,7 +209,7 @@ class ContractController extends ApiController
                   $curs->push($content[0]);
                   $cursos = true;
                   $cursos_date = false;
-                  $habilitado++;
+                  //$habilitado++;
                 }
               }
             }
