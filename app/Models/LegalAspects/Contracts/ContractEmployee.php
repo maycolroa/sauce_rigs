@@ -46,7 +46,8 @@ class ContractEmployee extends Model
         'deadline',
         'motive_inactivation',
         'file_inactivation',
-        'liquidated'
+        'liquidated',
+        'liquidated_date'
     ];
 
     public function departament()

@@ -66,6 +66,7 @@ class ContractEmployeeLiquidatedRequest extends FormRequest
         if ($configuration && $configuration->value == 'SI' && $this->state_employee)
         {
             $rules = [
+                "liquidated_date" => "required|date",
                 "file_inactivation" => "required",
             ];
         }
@@ -74,12 +75,14 @@ class ContractEmployeeLiquidatedRequest extends FormRequest
             if ($this->state_employee)
             {
                 $rules = [
+                    "liquidated_date" => "required|date",
                     "file_inactivation" => "nullable|max:20480",
                 ];
             }
             else
             {
                 $rules = [
+                    "liquidated_date" => "nullable|date",
                     "file_inactivation" => "nullable|max:20480",
                 ];
             }

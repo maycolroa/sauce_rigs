@@ -12,12 +12,20 @@
     <div class="col-md-12" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']">
       <center>
         <b-form-row>
+          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.liquidated_date" label="Fecha de liquidación" :full-month-name="true" :error="form.errorsFor('liquidated_date')" name="liquidated_date">
+                </vue-datepicker>
+        </b-form-row>
+        <b-form-row>
           <vue-file-simple class="col-md-12" v-model="form.file_inactivation" label="Liquidación" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="form.file_inactivation ? `Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'"/>
         </b-form-row>
       </center>
     </div>  
     <div class="col-md-12" v-else>
       <center>
+        <b-form-row>
+          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.liquidated_date" label="Fecha de liquidación" :full-month-name="true" :error="form.errorsFor('liquidated_date')" name="liquidated_date">
+                </vue-datepicker>
+        </b-form-row>
         <b-form-row v-if="form.file_inactivation && form.type_file == 'pdf'">
           <b-card border-variant="primary" class="mb-3 box-shadow-none" style="width: 100%;" title="Liquidación">
             <iframe style="width: 100%; height: 700px;" frameborder="0" id="frame_imprimir_rendicion" title="Archivo" :src="form.file_inactivation_path"></iframe>

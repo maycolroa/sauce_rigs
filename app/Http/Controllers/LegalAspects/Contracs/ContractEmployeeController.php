@@ -880,6 +880,9 @@ class ContractEmployeeController extends Controller
                     'state_employee' => !$employeeContract->state_employee,
                     'deadline' => NULL,
                     'motive_inactivation' => NULL,
+                    'liquidated' => false,
+                    'liquidated_date' => NULL,
+                    'file_inactivation' => NULL
                 ];
             }
 
@@ -903,7 +906,7 @@ class ContractEmployeeController extends Controller
             $employeeContract = ContractEmployee::find($request->id);
             $nameFile = NULL;
 
-            if (!$employeeContract->state_employee)
+            if (!$employeeContract->state_employee && $employeeContract->liquidated_date)
             {
                 if ($request->file_inactivation)
                 {
@@ -914,20 +917,15 @@ class ContractEmployeeController extends Controller
 
                 $data = [
                     'liquidated' => true,
+                    'liquidated_date' => $request->liquidated_date,
                     'file_inactivation' => $nameFile
                 ];
-            }
-            else
-            {
-                $data = [
-                    'liquidated' => false,
-                    'file_inactivation' => NULL
-                ];
+
+                if (!$employeeContract->update($data)) {
+                    return $this->respondHttp500();
+                }
             }
 
-            if (!$employeeContract->update($data)) {
-                return $this->respondHttp500();
-            }
             return $this->respondHttp200([
                 'message' => 'Se liquido el empleado'
             ]);
