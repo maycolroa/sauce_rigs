@@ -8,7 +8,7 @@ use App\Models\General\Team;
 use Session;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 
-class ContractEmployeeInactiveRequest extends FormRequest
+class ContractEmployeeLiquidatedRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -66,8 +66,7 @@ class ContractEmployeeInactiveRequest extends FormRequest
         if ($configuration && $configuration->value == 'SI' && $this->state_employee)
         {
             $rules = [
-                "deadline" => "required|date",
-                "motive_inactivation" => "required|string|min:30"
+                "file_inactivation" => "required",
             ];
         }
         else
@@ -75,15 +74,13 @@ class ContractEmployeeInactiveRequest extends FormRequest
             if ($this->state_employee)
             {
                 $rules = [
-                    "deadline" => "required||date",
-                    "motive_inactivation" => "nullable|string|min:30"
+                    "file_inactivation" => "nullable|max:20480",
                 ];
             }
             else
             {
                 $rules = [
-                    "deadline" => "nullable||date",
-                    "motive_inactivation" => "nullable|string|min:30"
+                    "file_inactivation" => "nullable|max:20480",
                 ];
             }
         }

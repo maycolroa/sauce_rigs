@@ -874,7 +874,21 @@ export default [
                         id: 'id'
                     },
                     permission: 'contracts_employee_u'
-                  }
+                },
+                {
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'ion ion-md-list',
+                        title: 'Liquidar'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-contracts-employees-liquidated' },
+                        //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                        id: 'id'
+                    },
+                    permission: 'contracts_employee_u'
+                }
             ]
         },
         {
@@ -951,7 +965,21 @@ export default [
                     id: 'id'
                 },
                 permission: 'contracts_r'
-              }]
+            },
+            {
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Liquidar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-employees-liquidated' },
+                    //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                    id: 'id'
+                },
+                permission: 'contracts_employee_u'
+            }]
         },
         {
             type: 'base',

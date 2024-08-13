@@ -45,7 +45,8 @@ class ContractEmployee extends Model
         'income_date',
         'deadline',
         'motive_inactivation',
-        'file_inactivation'
+        'file_inactivation',
+        'liquidated'
     ];
 
     public function departament()

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeInactiveRequest;
+use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeLiquidatedRequest;
 use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Models\LegalAspects\Contracts\ProyectContract;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
@@ -101,6 +102,12 @@ class ContractEmployeeController extends Controller
                 else
                     return true;
             })
+            ->addColumn('legalaspects-contracts-employees-liquidated', function ($employee) {
+                if ($employee->state_employee == 'Inactivo')
+                    return true;
+                else
+                    return false;
+            })
             ->make();
     }
 
@@ -142,6 +149,12 @@ class ContractEmployeeController extends Controller
         return Vuetable::of($employees)
             ->addColumn('legalaspects-contracts-employees-switchStatus', function ($employee) {
                 if ($employee->state_employee == 'Inactivo')
+                    return true;
+                else
+                    return false;
+            })
+            ->addColumn('legalaspects-contracts-employees-liquidated', function ($employee) {
+                if ($employee->state_employee == 'Inactivo' && $employee->liquidated)
                     return true;
                 else
                     return false;
@@ -850,9 +863,45 @@ class ContractEmployeeController extends Controller
         try
         {
             $employeeContract = ContractEmployee::find($request->id);
-            $nameFile = NULL;
 
             if ($employeeContract->state_employee)
+            {
+                $data = [
+                    'state_employee' => !$employeeContract->state_employee,
+                    'deadline' => (Carbon::createFromFormat('D M d Y',$request->deadline))->format('Ymd'),
+                    'motive_inactivation' => $request->motive_inactivation
+                ];
+            }
+            else
+            {
+                $data = [
+                    'state_employee' => !$employeeContract->state_employee,
+                    'deadline' => NULL,
+                    'motive_inactivation' => NULL,
+                ];
+            }
+
+            if (!$employeeContract->update($data)) {
+                return $this->respondHttp500();
+            }
+            return $this->respondHttp200([
+                'message' => 'Se cambio el estado del empleado'
+            ]);
+
+        } catch(Exception $e) {   
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+        }
+    }
+
+    public function toggleliqudated(ContractEmployeeLiquidatedRequest $request)
+    {
+        try
+        {
+            $employeeContract = ContractEmployee::find($request->id);
+            $nameFile = NULL;
+
+            if (!$employeeContract->state_employee)
             {
                 if ($request->file_inactivation)
                 {
@@ -862,18 +911,14 @@ class ContractEmployeeController extends Controller
                 }
 
                 $data = [
-                    'state_employee' => !$employeeContract->state_employee,
-                    'deadline' => (Carbon::createFromFormat('D M d Y',$request->deadline))->format('Ymd'),
-                    'motive_inactivation' => $request->motive_inactivation,
+                    'liquidated' => true,
                     'file_inactivation' => $nameFile
                 ];
             }
             else
             {
                 $data = [
-                    'state_employee' => !$employeeContract->state_employee,
-                    'deadline' => NULL,
-                    'motive_inactivation' => NULL,
+                    'liquidated' => false,
                     'file_inactivation' => NULL
                 ];
             }
@@ -882,7 +927,7 @@ class ContractEmployeeController extends Controller
                 return $this->respondHttp500();
             }
             return $this->respondHttp200([
-                'message' => 'Se cambio el estado del empleado'
+                'message' => 'Se liquido el empleado'
             ]);
 
         } catch(Exception $e) {   

@@ -3,40 +3,22 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <div class="col-md-12">
       <p class="text-center text-big mb-4" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']">
-        ¿Está seguro que desea cambiar el estado del empleado seleccionado?
+        ¿Está seguro que desea liquidar al empleado seleccionado?
       </p>
       <p class="text-center text-big mb-4" v-else>
-        Estado del empleado.
+        Liquidación del empleado.
       </p>
     </div>
     <div class="col-md-12" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']">
       <center>
-        <b-form-row v-if="form.state_employee">
-          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de inactivacion" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline">
-                </vue-datepicker>
-        </b-form-row>
-
-        <b-form-row v-if="form.state_employee">
-          <vue-input class="col-md-12" v-model="form.motive_inactivation" label="Motivo de inactivación" type="text" name="motive_inactivation" :error="form.errorsFor('motive_inactivation')" placeholder="Motivo"/>
-        </b-form-row>
-
-        <!--<b-form-row  v-if="form.state_employee">
+        <b-form-row>
           <vue-file-simple class="col-md-12" v-model="form.file_inactivation" label="Liquidación" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="form.file_inactivation ? `Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'"/>
-        </b-form-row>-->
+        </b-form-row>
       </center>
     </div>  
     <div class="col-md-12" v-else>
       <center>
-        <b-form-row>
-          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de inactivacion" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline" :disabled="true">
-                </vue-datepicker>
-        </b-form-row>
-
-        <b-form-row>
-          <vue-input class="col-md-12" v-model="form.motive_inactivation" label="Motivo de inactivación" type="text" name="motive_inactivation" :error="form.errorsFor('motive_inactivation')" placeholder="Motivo" :disabled="true"/>
-        </b-form-row>
-
-        <!--<b-form-row v-if="form.file_inactivation && form.type_file == 'pdf'">
+        <b-form-row v-if="form.file_inactivation && form.type_file == 'pdf'">
           <b-card border-variant="primary" class="mb-3 box-shadow-none" style="width: 100%;" title="Liquidación">
             <iframe style="width: 100%; height: 700px;" frameborder="0" id="frame_imprimir_rendicion" title="Archivo" :src="form.file_inactivation_path"></iframe>
           </b-card>
@@ -46,9 +28,9 @@
             <img class="mw-100" :src="`${form.file_inactivation_path}`" alt="Max-width 100%">
           </b-card>
         </b-form-row>
-        <b-form-row v-if="form.file_inactivation && (form.type_file != 'png' & form.type != 'jpg' && form.type != 'jpeg' && form.type_file != 'pdf')">
+        <b-form-row v-if="form.file_inactivation && (form.type_file != 'png' && form.type != 'jpg' && form.type != 'jpeg' && form.type_file != 'pdf')">
           <vue-file-simple class="col-md-12" v-model="form.file_inactivation" :disabled="true" label="Liquidación" name="file_inactivation" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_inactivation`)" :maxFileSize="20" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/employeeContract/download/${form.id}' target='blank'>aqui</a> `"/>
-        </b-form-row>--->
+        </b-form-row>
       </center>
     </div>  
 
