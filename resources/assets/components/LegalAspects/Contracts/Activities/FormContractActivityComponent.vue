@@ -107,6 +107,7 @@ export default {
           {name: 'Curso obligatorio del SGSST', value: 'Curso obligatorio del SGSST'},
           {name: 'Licencia SST', value: 'Licencia SST'},
           {name: 'Licencia conducción', value: 'Licencia conducción'},
+          {name: 'Entrega de Epp', value: 'Entrega de Epp'},
           {name: 'Otros', value: 'Otros'},
       ],
       siNo: [
@@ -128,6 +129,7 @@ export default {
       curso_sgsst: 0,
       license_sst: 0,
       license_conduction: 0,
+      epp: 0,
       romper: false,
       verify: false
     };
@@ -165,6 +167,7 @@ export default {
       this.curso_sgsst = 0;
       this.license_sst = 0;
       this.license_conduction = 0;
+      this.epp = 0;
       this.romper = false;
 
       _.forIn(documents, (document) => {
@@ -265,6 +268,13 @@ export default {
             this.romper = true;
           else
             this.license_conduction = 1
+        }
+        else if(document.class == 'Entrega de Epp')
+        {
+          if(this.epp > 0)
+            this.romper = true;
+          else
+            this.epp = 1
         }
       });
 

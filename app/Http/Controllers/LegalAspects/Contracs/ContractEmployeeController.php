@@ -69,7 +69,8 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.identification AS identification',
             'sau_ct_contract_employees.state as state',
             DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects'),
-            DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee")
+            DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee"),
+            DB::raw("case when sau_ct_contract_employees.liquidated is true then 'SI' else 'NO' end as liquidated")
         )
         ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
         ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
@@ -121,7 +122,8 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.identification AS identification',
             'sau_ct_contract_employees.state as state',
             DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects'),
-            DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee")
+            DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee"),
+            DB::raw("case when sau_ct_contract_employees.liquidated is true then 'SI' else 'NO' end as liquidated")
         )
         ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
         ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
