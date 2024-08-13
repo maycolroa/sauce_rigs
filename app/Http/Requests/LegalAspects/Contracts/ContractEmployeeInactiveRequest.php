@@ -75,15 +75,15 @@ class ContractEmployeeInactiveRequest extends FormRequest
             if ($this->state_employee)
             {
                 $rules = [
-                    "deadline" => "required||date",
+                    "deadline" => "required|date",
                     "motive_inactivation" => "nullable|string|min:30"
                 ];
             }
             else
             {
                 $rules = [
-                    "deadline" => "nullable||date",
-                    "motive_inactivation" => "nullable|string|min:30"
+                    "deadline" => "nullable|date",
+                    "motive_inactivation" => "nullable|string"
                 ];
             }
         }
