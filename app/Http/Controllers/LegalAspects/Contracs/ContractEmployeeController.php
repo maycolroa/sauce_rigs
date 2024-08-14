@@ -899,14 +899,14 @@ class ContractEmployeeController extends Controller
         }
     }
 
-    public function toggleliqudated(ContractEmployeeLiquidatedRequest $request)
+    public function toggleLiqudated(ContractEmployeeLiquidatedRequest $request)
     {
         try
         {
             $employeeContract = ContractEmployee::find($request->id);
             $nameFile = NULL;
 
-            if (!$employeeContract->state_employee && $employeeContract->liquidated_date)
+            if (!$employeeContract->state_employee)
             {
                 if ($request->file_inactivation)
                 {
@@ -917,7 +917,7 @@ class ContractEmployeeController extends Controller
 
                 $data = [
                     'liquidated' => true,
-                    'liquidated_date' => $request->liquidated_date,
+                    'liquidated_date' => (Carbon::createFromFormat('D M d Y',$request->liquidated_date))->format('Ymd'),
                     'file_inactivation' => $nameFile
                 ];
 

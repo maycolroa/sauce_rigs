@@ -63,24 +63,24 @@ class ContractEmployeeLiquidatedRequest extends FormRequest
         $configuration->company_scope = Session::get('company_id');
         $configuration = $configuration->first();
 
-        if ($configuration && $configuration->value == 'SI' && $this->state_employee)
-        {
+        if ($configuration && $configuration->value == 'SI' && !$this->state_employee)
+        {   
             $rules = [
                 "liquidated_date" => "required|date",
-                "file_inactivation" => "required",
+                "file_inactivation" => "required|max:20480",
             ];
         }
         else
         {
-            if ($this->state_employee)
-            {
+            if (!$this->state_employee)
+            {   
                 $rules = [
                     "liquidated_date" => "required|date",
                     "file_inactivation" => "nullable|max:20480",
                 ];
             }
             else
-            {
+            {  
                 $rules = [
                     "liquidated_date" => "nullable|date",
                     "file_inactivation" => "nullable|max:20480",
