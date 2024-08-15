@@ -82,6 +82,8 @@ class ContractController extends ApiController
 
         $class_document = array_unique($class_document);
 
+        \Log::info($class_document);
+        
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
 
@@ -140,6 +142,7 @@ class ContractController extends ApiController
         {
           if (in_array('Certificado alturas', $class_document))
           {
+            \Log::info('entro');
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas');
 
             \Log::info($content);
