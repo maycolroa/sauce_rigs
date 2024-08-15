@@ -81,8 +81,10 @@ class ContractController extends ApiController
         }
 
         $class_document = array_unique($class_document);
-
-        \Log::info($class_document);
+        foreach ($class_document as $key => $value) 
+        {
+          $value = trim($value);
+        }
         
         if (in_array('Seguridad social', $class_document))
           $required_habilitado++;
