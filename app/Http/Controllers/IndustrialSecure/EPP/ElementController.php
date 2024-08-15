@@ -153,7 +153,7 @@ class ElementController extends Controller
         if ($request->image)
         {
             $file_tmp = $request->image;
-            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;
 
@@ -164,7 +164,7 @@ class ElementController extends Controller
         if ($request->data_sheet)
         {
             $file_tmp2 = $request->data_sheet;
-            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->extension();
+            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->getClientOriginalExtension();
             $file_tmp2->storeAs($element->path_client(false), $nameFile2, 's3');
             $element->data_sheet = $nameFile2;
 
@@ -175,7 +175,7 @@ class ElementController extends Controller
         if ($request->user_manual)
         {
             $file_tmp3 = $request->user_manual;
-            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->extension();
+            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->getClientOriginalExtension();
             $file_tmp3->storeAs($element->path_client(false), $nameFile3, 's3');
             $element->user_manual = $nameFile3;
 
@@ -334,7 +334,7 @@ class ElementController extends Controller
         if ($request->image != $element->image)
         {
             $file_tmp = $request->image;
-            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;
 
@@ -345,7 +345,7 @@ class ElementController extends Controller
         if ($request->data_sheet != $element->data_sheet)
         {
             $file_tmp2 = $request->data_sheet;
-            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->extension();
+            $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp2->getClientOriginalExtension();
             $file_tmp2->storeAs($element->path_client(false), $nameFile2, 's3');
             $element->data_sheet = $nameFile2;
 
@@ -356,7 +356,7 @@ class ElementController extends Controller
         if ($request->user_manual != $element->user_manual)
         {
             $file_tmp3 = $request->user_manual;
-            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->extension();
+            $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp3->getClientOriginalExtension();
             $file_tmp3->storeAs($element->path_client(false), $nameFile3, 's3');
             $element->user_manual = $nameFile3;
 

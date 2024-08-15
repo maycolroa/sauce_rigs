@@ -326,11 +326,11 @@ class InformContractController extends Controller
                         if ($create_file)
                         {
                             $file_tmp = $file['file'];
-                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->v();
                             $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                             $fileUpload->file = $nameFile;
                             $fileUpload->name_file = $file_tmp->getClientOriginalName();
-                            $fileUpload->type_file = $file_tmp->extension();
+                            $fileUpload->type_file = $file_tmp->getClientOriginalExtension();
                         }
 
                         if (!$fileUpload->save())

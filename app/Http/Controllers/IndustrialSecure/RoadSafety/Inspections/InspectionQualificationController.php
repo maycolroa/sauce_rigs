@@ -331,7 +331,7 @@ class InspectionQualificationController extends Controller
             {
                 $file = $request->image;
                 $qualification->img_delete($picture);
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                 $file->storeAs($qualification->path_base(), $nameFile, 's3');
                 $qualification->$picture = $nameFile;
                 $data['image'] = $nameFile;

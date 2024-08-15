@@ -436,7 +436,7 @@ class ContractEmployeeController extends Controller
                         if ($create_file)
                         {
                             $file_tmp = $file['file'];
-                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                             $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
                             $fileUpload->file = $nameFile;
                         }
@@ -934,7 +934,7 @@ class ContractEmployeeController extends Controller
                 if ($request->file_inactivation)
                 {
                     $file_tmp = $request->file_inactivation;
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
                     $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
                 }
 

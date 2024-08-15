@@ -103,7 +103,7 @@ class NewsletterSendController extends Controller
             $newsletterSend->subject = $request->subject;
 
             $file = $request->image;
-            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
             $file->storeAs('newsletters/', $nameFile, 's3');
             $newsletterSend->image = $nameFile;
             $newsletterSend->image_name = $file->getClientOriginalName();
@@ -170,7 +170,7 @@ class NewsletterSendController extends Controller
         {
             $file = $request->image;
             Storage::disk('s3')->delete('newsletters/'. $newsletterSend->image);
-            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
             $file->storeAs('newsletters/', $nameFile, 's3');
             $newsletterSend->image = $nameFile;
             $newsletterSend->image_name = $file->getClientOriginalName();

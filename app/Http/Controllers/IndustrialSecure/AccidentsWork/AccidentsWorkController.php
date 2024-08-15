@@ -360,9 +360,9 @@ class AccidentsWorkController extends Controller
             {
                 $file_tmp = $file['file'];
                 $fileUpload->name = $file_tmp->getClientOriginalName();
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                 $fileUpload->file = $nameFile;
-                $fileUpload->type = $file_tmp->extension();
+                $fileUpload->type = $file_tmp->getClientOriginalExtension();
                 $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
             }
 

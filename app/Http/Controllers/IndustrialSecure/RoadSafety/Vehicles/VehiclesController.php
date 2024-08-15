@@ -246,7 +246,7 @@ class VehiclesController extends Controller
             if ($request->file_soat)
             {
                 $file_tmp = $request->file_soat;
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
                 $file_tmp->storeAs($path, $nameFile, 's3');
                 $vehicle->file_soat = $nameFile;
             }
@@ -260,7 +260,7 @@ class VehiclesController extends Controller
             if ($request->file_mechanical_tech)
             {
                 $file_tmp_2 = $request->file_mechanical_tech;
-                $nameFile_2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp_2->extension();
+                $nameFile_2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp_2->getClientOriginalExtension();
                 $file_tmp_2->storeAs($path, $nameFile_2, 's3');
                 $vehicle->file_mechanical_tech = $nameFile_2;
             }
@@ -275,7 +275,7 @@ class VehiclesController extends Controller
             if ($request->file_policy)
             {
                 $file_tmp_3 = $request->file_policy;
-                $nameFile_3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp_3->extension();
+                $nameFile_3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp_3->getClientOriginalExtension();
                 $file_tmp_3->storeAs($path, $nameFile_3, 's3');
                 $vehicle->file_policy = $nameFile_3;
             }
@@ -407,7 +407,7 @@ class VehiclesController extends Controller
             {
                 $file = $request->file_soat;
                 Storage::disk('s3')->delete($path.$vehicle->file_soat);
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                 $file->storeAs($path, $nameFile, 's3');
                 $vehicle->file_soat = $nameFile;
             }
@@ -422,7 +422,7 @@ class VehiclesController extends Controller
             {
                 $file_2 = $request->file_mechanical_tech;
                 Storage::disk('s3')->delete($path.$vehicle->file_mechanical_tech);
-                $nameFile_2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_2->extension();
+                $nameFile_2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_2->getClientOriginalExtension();
                 $file_2->storeAs($path, $nameFile_2, 's3');
                 $vehicle->file_mechanical_tech = $nameFile_2;
             }
@@ -439,7 +439,7 @@ class VehiclesController extends Controller
             {
                 $file_3 = $request->file_policy;
                 Storage::disk('s3')->delete($path.$vehicle->file_policy);
-                $nameFile_3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_3->extension();
+                $nameFile_3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_3->getClientOriginalExtension();
                 $file_3->storeAs($path, $nameFile_3, 's3');
                 $vehicle->file_policy = $nameFile_3;
             }

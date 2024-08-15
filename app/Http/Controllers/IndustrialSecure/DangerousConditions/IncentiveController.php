@@ -74,7 +74,7 @@ class IncentiveController extends Controller
                 {
                     $file = $request->ph_file_incentives;
                     Storage::disk('local')->delete('file_incentives/'. $company->ph_file_incentives);
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                     $file->storeAs('file_incentives/', $nameFile, 'local');
                     $company->ph_file_incentives = $nameFile;
                 }

@@ -127,7 +127,7 @@ class ReportController extends Controller
             if ($request->image_1)
             {
                 $file1 = $request->image_1;
-                $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file1->extension();
+                $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file1->getClientOriginalExtension();
                 $file1->storeAs($report->path_base(), $nameFile1, 's3_DConditions');
                 $report->image_1 = $nameFile1;
             }
@@ -135,7 +135,7 @@ class ReportController extends Controller
             if ($request->image_2)
             {
                 $file2 = $request->image_2;
-                $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->extension();
+                $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->getClientOriginalExtension();
                 $file2->storeAs($report->path_base(), $nameFile2, 's3_DConditions');
                 $report->image_2 = $nameFile2;
             }
@@ -143,7 +143,7 @@ class ReportController extends Controller
             if ($request->image_3)
             {
                 $file3 = $request->image_3;
-                $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->extension();
+                $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->getClientOriginalExtension();
                 $file3->storeAs($report->path_base(), $nameFile3, 's3_DConditions');
                 $report->image_3 = $nameFile3;
             }
@@ -251,7 +251,7 @@ class ReportController extends Controller
                 if ($request->image_1)
                 {
                     $file = $request->image_1;
-                    $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                    $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                     $report->img_delete('image_1');
                     $file->storeAs($report->path_base(), $nameFile1, 's3_DConditions');
                 }
@@ -267,7 +267,7 @@ class ReportController extends Controller
                 if ($request->image_2)
                 {
                     $file2 = $request->image_2;
-                    $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->extension();                    
+                    $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->getClientOriginalExtension();                    
                     $report->img_delete('image_2');
                     $file2->storeAs($report->path_base(), $nameFile2, 's3_DConditions');
                     $report->image_2 = $nameFile2;
@@ -284,7 +284,7 @@ class ReportController extends Controller
                 if ($request->image_3)
                 {
                     $file3 = $request->image_3;
-                    $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->extension();
+                    $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->getClientOriginalExtension();
                     $report->img_delete('image_3');
                     $file3->storeAs($report->path_base(), $nameFile3, 's3_DConditions');
                     $report->image_3 = $nameFile3;
@@ -496,7 +496,7 @@ class ReportController extends Controller
             {
                 $file = $request->image;
                 Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                 $file->storeAs('industrialSecure/dangerousConditions/reports/images/', $nameFile, 'public');
                 $report->$picture = $nameFile;
                 $data['image'] = $nameFile;

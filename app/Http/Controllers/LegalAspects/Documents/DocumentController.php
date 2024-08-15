@@ -99,7 +99,7 @@ class DocumentController extends Controller
       {
         $document = new Document();
         $file = $request->file;
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
         
         $file->storeAs('legalAspects/documents/files/', $nameFile,'s3');
 
@@ -196,7 +196,7 @@ class DocumentController extends Controller
         {
           $file = $request->file;
           Storage::disk('s3')->delete('legalAspects/documents/files/'. $document->file);
-          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
           $file->storeAs('legalAspects/documents/files/', $nameFile,'s3');
           $document->file = $nameFile;
         }

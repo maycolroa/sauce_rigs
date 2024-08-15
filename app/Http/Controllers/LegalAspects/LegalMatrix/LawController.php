@@ -205,7 +205,7 @@ class LawController extends Controller
             {
                 $path = ($request->custom != 'true') ? 'laws/' : "laws/".$this->company."/";
                 $file_tmp = $request->file;
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
                 $file_tmp->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
 
@@ -316,7 +316,7 @@ class LawController extends Controller
                 $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/";
                 $file = $request->file;
                 Storage::disk('s3_MLegal')->delete($path.$law->file);
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                 $file->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
 
@@ -695,7 +695,7 @@ class LawController extends Controller
                 if ($request->file)
                 {
                     $file = $request->file;
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                     $file->storeAs($path, $nameFile, 's3_MLegal');
                     $data['file'] = $nameFile;
                     $data['old_file'] = $nameFile;
@@ -801,7 +801,7 @@ class LawController extends Controller
                                     if (!$qualification->qualification_masive)
                                         Storage::disk('s3_MLegal')->delete($path. $qualification->file);
 
-                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
                                     $file->storeAs($path, $nameFile, 's3_MLegal');
                                     $qualification->file = $nameFile;
                                     $data['file'] = $nameFile;

@@ -127,7 +127,7 @@ class FileUploadController extends Controller
       {
         $fileUpload = new FileUpload();
         $file = $request->file;
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
         
         $file->storeAs('legalAspects/files/', $nameFile,'s3');
 
@@ -240,7 +240,7 @@ class FileUploadController extends Controller
         {
           $file = $request->file;
           Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
-          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
           $file->storeAs('legalAspects/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
         }

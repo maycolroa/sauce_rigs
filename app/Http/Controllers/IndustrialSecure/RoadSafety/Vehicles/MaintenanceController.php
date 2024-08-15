@@ -197,7 +197,7 @@ class MaintenanceController extends Controller
                     $path = "industrialSecure/roadSafety/files/".$this->company."/";
 
                     $file_tmp = $value['file'];
-                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                     $file_tmp->storeAs($path, $nameFile, 's3');
                     $fileUpload->file = $nameFile;
                 }
