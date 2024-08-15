@@ -141,7 +141,7 @@ class ContractRequest extends FormRequest
                 'risk_class' => 'required',
                 'documents.*.files.*.name' => 'required',
                 'documents.*.files.*.file' => 'required',
-                'documents.*.apply_motive' => 'required_if:documents.*.apply_file,NO|nullable|string|min:30'
+                'documents.*.apply_motive' => 'required_if:documents.*.apply_file,NO|nullable|string|min:20'
             ];
         }
         
