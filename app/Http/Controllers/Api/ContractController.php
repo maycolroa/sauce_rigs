@@ -142,6 +142,8 @@ class ContractController extends ApiController
           {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas');
 
+            \Log::info($content);
+
             if ($content && COUNT($content) > 0)
             {
               if ($content[0])
@@ -150,8 +152,11 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
+                  \Log::info($fecha);
+
                   if ($fecha->gt($now))
                   {
+                    \Log::info('entro');
                     $cert->push($content[0]);
                     $certificaciones = true;
                     $habilitado++;
@@ -160,12 +165,14 @@ class ContractController extends ApiController
                   }
                   else
                   {
+                    \Log::info('entro2');
                     $cert->push($content[0]);
                     $certificaciones_date = true;
                   }
                 }
                 else
                 {
+                  \Log::info('entro3');
                   $cert->push($content[0]);
                   $certificaciones = true;
                   $certificaciones_date = false;
