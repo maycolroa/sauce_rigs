@@ -178,7 +178,7 @@
                         </template>
                       </b-form-row>
                       <b-form-row v-if="document.apply_file == 'NO'">
-						            <vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor('apply_motive')" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+						            <vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
                       </b-form-row>
                     </div>
                   </b-col>

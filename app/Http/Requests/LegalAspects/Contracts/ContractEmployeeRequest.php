@@ -99,7 +99,8 @@ class ContractEmployeeRequest extends FormRequest
             'activities.*.selected' => 'required',
             'activities.*.documents.*.files.*.name' => 'required',
             'activities.*.documents.*.files.*.file' => 'required',
-            'activities.*.documents.*.files.*.expirationDate' => 'required_if:activities.*.documents.*.files.*.required_expiration_date,SI'
+            'activities.*.documents.*.files.*.expirationDate' => 'required_if:activities.*.documents.*.files.*.required_expiration_date,SI',
+            'activities.*.documents.*.apply_motive' => 'required_if:activities.*.documents.*.apply_file,NO|nullable|string|min:30'
         ];
     }
 
@@ -110,7 +111,16 @@ class ContractEmployeeRequest extends FormRequest
             'activities.*.documents.*.files.*.name' => 'Nombre',
             'activities.*.documents.*.files.*.file' => 'Archivo',
             'activities.*.documents.*.files.*.expirationDate' => 'Fecha de vencimiento',
-            'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador'
+            'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador',
+            'activities.*.documents.*.apply_motive' => 'Motivo',
+            'activities.*.documents.*.apply_file' => '¿Aplica el documento?'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'activities.*.documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.'
         ];
     }
 }

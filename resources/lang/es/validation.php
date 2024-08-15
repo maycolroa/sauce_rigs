@@ -420,7 +420,12 @@ return [
       'activities.*.documents.*.files.*.required_expiration_date' => 'Marcador',
       'activities.*.documents.*.files.*.required expiration date' => 'Marcador',
       'causes.*.secondary' => 'Causas secundarias',
-      'causes.*.secondary.*.tertiary' => 'Causas'
+      'causes.*.secondary.*.tertiary' => 'Causas',
+      'documents.*.apply_motive' => 'Motivo',
+      'documents.*.apply_file' => '¿Aplica el documento?',
+      'activities.*.documents.*.apply_motive' => 'Motivo',
+      //'activities.*.documents.*.apply_file' => '¿Aplica el documento?'
+
     ],
 
 ];

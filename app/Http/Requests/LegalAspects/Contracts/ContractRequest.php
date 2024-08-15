@@ -140,7 +140,8 @@ class ContractRequest extends FormRequest
                 'number_workers' => 'required|integer|min:0',
                 'risk_class' => 'required',
                 'documents.*.files.*.name' => 'required',
-                'documents.*.files.*.file' => 'required'
+                'documents.*.files.*.file' => 'required',
+                'documents.*.apply_motive' => 'required_if:documents.*.apply_file,NO|nullable|string|min:30'
             ];
         }
         
@@ -152,6 +153,13 @@ class ContractRequest extends FormRequest
         return [
             'documents.*.files.*.name' => 'Nombre',
             'documents.*.files.*.file' => 'Archivo'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.'
         ];
     }
 }
