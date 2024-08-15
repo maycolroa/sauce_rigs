@@ -592,10 +592,11 @@ class ContractEmployeeController extends Controller
 
             foreach ($activity['documents'] as $document)
             {
-                if (COUNT($document['files']) > 0 && COUNT($documents) > 0)
-                {
-                    $count_aprobe = 0;
+                $apply = $document['apply_file'] == 'SI' ? true : false;
+                $count_aprobe = 0;
 
+                if ($apply && COUNT($document['files']) > 0 && COUNT($documents) > 0)
+                {
                     foreach ($document['files'] as $key => $file) 
                     {
                         if (isset($documents[$file['key']]))
@@ -614,11 +615,33 @@ class ContractEmployeeController extends Controller
                             }
                         }
                     }
-
-                    if ($count_aprobe == COUNT($document['files']))
-                        $count++;
                 }
+                else if (!$apply)
+                {
+                    if (COUNT($document['files']) > 0)
+                    {
+                        foreach ($document['files'] as $key => $file) 
+                        {
+                            if (isset($documents[$file['key']]))
+                            {
+                                $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
+
+                                if ($fileUpload->state == 'ACEPTADO')
+                                    $count_aprobe++;
+                            }
+                        }
+                    }
+                }
+
+                /*\Log::info('files_total: '.COUNT($document['files']));
+                \Log::info('aprove_total: '.$count_aprobe);*/
+
+                if ($count_aprobe == COUNT($document['files']))
+                    $count++;
             }
+
+                /*\Log::info('doc_total: '.$documents_counts);
+                \Log::info('total_aprove: '.$count);*/
 
             if ($documents_counts > $count)
                 return false;
