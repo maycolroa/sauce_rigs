@@ -571,8 +571,9 @@ class InformContractController extends Controller
             }
 
             \Log::info('entrof2');
-            foreach ($informContract->files  as $file)
+            foreach ($informContract->files as $file)
             {
+                \Log::info($file);
                 $file_delete = InformContractItemFile::find($file);
                 \Log::info($file_delete);
 
