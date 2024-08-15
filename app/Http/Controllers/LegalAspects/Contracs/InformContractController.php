@@ -564,18 +564,14 @@ class InformContractController extends Controller
 
         try
         { 
-            \Log::info('entrof');
             foreach ($informContract->items as $item)
             {  
                 ActionPlan::model($item)->modelDeleteAll();
             }
 
-            \Log::info('entrof2');
             foreach ($informContract->files as $file)
             {
-                \Log::info($file);
                 $file_delete = InformContractItemFile::find($file->id);
-                \Log::info($file_delete);
 
                 if ($file_delete)
                 {
@@ -586,10 +582,8 @@ class InformContractController extends Controller
                     //}
                 }
             }
-            \Log::info('entrof55');
 
             $this->saveLogDelete('Contratistas - Informes mensuales', 'Se elimino el informe '.$informContract->inform->name.' realizada al contratista '.$informContract->contract->social_reason.' en el mes '.$informContract->month.' en el año '.$informContract->year);
-            \Log::info('entrof999');
 
             if(!$informContract->delete())
             {
