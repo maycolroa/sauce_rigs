@@ -574,14 +574,15 @@ class InformContractController extends Controller
             foreach ($informContract->files  as $file)
             {
                 $file_delete = InformContractItemFile::find($file);
+                \Log::info($file_delete);
 
                 if ($file_delete)
                 {
-                    foreach ($file_delete as $file_2) 
-                    {
-                        Storage::disk('s3')->delete($file_2->path_client(false)."/".$file_2->file);
-                        $file_2->delete();
-                    }
+                    /*foreach ($file_delete as $file_2) 
+                    {*/
+                        Storage::disk('s3')->delete($file_delete->path_client(false)."/".$file_delete->file);
+                        $file_delete->delete();
+                    //}
                 }
             }
             \Log::info('entrof55');
