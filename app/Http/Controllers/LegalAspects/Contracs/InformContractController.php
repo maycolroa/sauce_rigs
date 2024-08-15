@@ -574,7 +574,7 @@ class InformContractController extends Controller
             foreach ($informContract->files as $file)
             {
                 \Log::info($file);
-                $file_delete = InformContractItemFile::find($file);
+                $file_delete = InformContractItemFile::find($file->id);
                 \Log::info($file_delete);
 
                 if ($file_delete)
