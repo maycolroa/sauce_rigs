@@ -364,6 +364,14 @@ export default [
 					import('@/views/LegalAspects/contracts/employees/liquidated')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_employee_u' }, [
+				{
+					name: 'legalaspects-contracts-employee-social-secure',
+					path: 'legalaspects/contracts/employees/socialSecure',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/socialSecureMassive')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_c' }, [
 				{
 					name: 'legalaspects-contracts-documents',

@@ -19,6 +19,9 @@
             <b-btn variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importContractEmployee"/>
           </div>
+          <div class="card-title-elements" v-if="auth.can['contracts_employee_u']">
+            <b-btn :to="{name:'legalaspects-contracts-employee-social-secure'}" variant="primary">Seguridad Social</b-btn>
+          </div>
         </b-card-header>
         <b-card-body>
              <vue-table

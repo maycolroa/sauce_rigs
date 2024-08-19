@@ -17,7 +17,9 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesImport;
+use App\Exports\Administrative\Employees\EmployeeInactiveTemplate;
 use App\Jobs\LegalAspects\Contracts\Employees\ContractEmployeeImportJob;
+use App\Jobs\LegalAspects\Contracts\Employees\ContractEmployeeImportSocialSecureJob;
 use App\Traits\ContractTrait;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\Filtertrait;
@@ -1069,5 +1071,32 @@ class ContractEmployeeController extends Controller
         ->deleteFileAfterSend(true);
 
         ob_end_clean();
+    }
+
+    public function downloadTemplateInactiveImport()
+    {
+      return Excel::download(new EmployeeInactiveTemplate(collect([]), $this->company), 'PlantillaInactivacionEmpleados.xlsx');
+    }
+
+    public function importSocialSecure(Request $request)
+    {
+        \Log::info($request);
+      try
+      {
+        $contract = $this->getContractUser($this->user->id, $this->company);
+
+        $file_tmp = $request->file_social_secure;
+        $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
+        $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+        $file_social_secure = $nameFile;
+
+        ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $file_social_secure);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

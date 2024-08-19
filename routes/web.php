@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
     Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');      
     Route::get('templates/contractemployeeimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateImport');  
+    Route::get('templates/employeesocialsecureimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateInactiveImport');
     Route::get('templates/inspectionsimport','IndustrialSecure\DangerousConditions\Inspections\InspectionController@downloadTemplateImport');
     Route::get('templates/riskmatriximport','IndustrialSecure\RiskMatrix\RiskMatrixController@downloadTemplateImport');
     Route::get('templates/musculoskeletalimport','PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@downloadTemplateImport');
@@ -1032,7 +1033,7 @@ Route::middleware(['auth'])->group(function () {
       Route::get('employeeContract/download/{id}', 'LegalAspects\Contracs\ContractEmployeeController@download');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
-      Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
+      Route::post('employeeContract/importSocialSecure', 'LegalAspects\Contracs\ContractEmployeeController@importSocialSecure');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
       Route::post('employeeDocument/report', 'LegalAspects\Contracs\ListCheckReportController@employeeDocument');
       Route::post('globalDocument/report', 'LegalAspects\Contracs\ListCheckReportController@globalDocument');      
