@@ -160,8 +160,6 @@ class ContractEmployeeImportSocialSecure implements ToCollection
                 $ids[$value] = ['employee_id' => $employee->id];
             }
 
-            \Log::info($ids);
-
             $fileUpload->documents()->sync($ids);
 
             $state = new FileModuleState;
