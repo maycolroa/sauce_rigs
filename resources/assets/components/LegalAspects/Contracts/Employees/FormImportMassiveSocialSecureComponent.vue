@@ -8,6 +8,9 @@
       </b-card-header>
       <b-card-body>
         <b-form-row>
+          <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" rows="1" :error="form.errorsFor('description')"></vue-textarea>
+        </b-form-row>
+        <b-form-row>
           <vue-file-simple class="col-md-12" v-model="form.file_social_secure" label="Archivo de Seguridad Social" name="file_social_secure" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_social_secure`)" :maxFileSize="20"/>
         </b-form-row>
 
@@ -31,11 +34,13 @@ import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
   components: {
     PerfectScrollbar,
-    VueFileSimple
+    VueFileSimple,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -46,6 +51,7 @@ export default {
         return {
           file_social_secure: '',
           file_employee: '',
+          description: ''
           //type_element: ''
         };
       }

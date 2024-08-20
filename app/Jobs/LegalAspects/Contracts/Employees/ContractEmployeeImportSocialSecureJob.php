@@ -22,8 +22,10 @@ class ContractEmployeeImportSocialSecureJob implements ShouldQueue
     protected $company_id;
     protected $file_social_secure;
     protected $contract;
+    protected $description;
+    protected $path_file_employee;
 
-    public function __construct(UploadedFile $file, $company_id, $user, $contract, $file_social_secure)
+    public function __construct(UploadedFile $file, $company_id, $user, $contract, $description, $file_social_secure)
     {
       $this->nameFile = 'contract_empleados_'.date("YmdHis").'.xlsx';
 
@@ -34,6 +36,7 @@ class ContractEmployeeImportSocialSecureJob implements ShouldQueue
       $this->company_id = $company_id;
       $this->user = $user;
       $this->contract = $contract;
+      $this->description = $description;
 
       $recordImport = new LogFilesImport;
       $recordImport->company_id = $this->company_id;
@@ -43,6 +46,7 @@ class ContractEmployeeImportSocialSecureJob implements ShouldQueue
       $recordImport->save();
 
       $this->file_social_secure = $file_social_secure;
+      $this->path_file_employee = $recordImport->file;
     }
 
     /**
@@ -52,7 +56,7 @@ class ContractEmployeeImportSocialSecureJob implements ShouldQueue
      */
     public function handle()
     {
-      Excel::import(new ContractEmployeeImportSocialSecure($this->company_id, $this->user, $this->contract, $this->file_social_secure), "/import/1/$this->nameFile", 'public');
+      Excel::import(new ContractEmployeeImportSocialSecure($this->company_id, $this->user, $this->contract, $this->file_social_secure, $this->description, $this->path_file_employee), "/import/1/$this->nameFile", 'public');
       Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }
 }

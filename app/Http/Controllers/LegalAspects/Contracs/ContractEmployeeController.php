@@ -1089,7 +1089,9 @@ class ContractEmployeeController extends Controller
         $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
         $file_social_secure = $nameFile;
 
-        ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $file_social_secure);
+        $path_file_employee = 
+
+        ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $request->description, $file_social_secure);
       
         return $this->respondHttp200();
 
