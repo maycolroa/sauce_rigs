@@ -4,7 +4,7 @@
 
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="with-elements">
-       <b-btn v-if="auth.can['contracts_employee_c']" variant="primary" href="/templates/employeesocialsecureimport" target="blank" v-b-tooltip.top title="Generar Plantilla Elementos sin identificar"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
+       <b-btn v-if="auth.can['contracts_employee_c']" variant="primary" href="/templates/employeesocialsecureimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
       </b-card-header>
       <b-card-body>
         <b-form-row>

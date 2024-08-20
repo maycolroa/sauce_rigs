@@ -1075,12 +1075,11 @@ class ContractEmployeeController extends Controller
 
     public function downloadTemplateInactiveImport()
     {
-      return Excel::download(new EmployeeInactiveTemplate(collect([]), $this->company), 'PlantillaInactivacionEmpleados.xlsx');
+      return Excel::download(new EmployeeInactiveTemplate(collect([]), $this->company), 'PlantillaSeguridadSocialEmpleados.xlsx');
     }
 
     public function importSocialSecure(Request $request)
     {
-        \Log::info($request);
       try
       {
         $contract = $this->getContractUser($this->user->id, $this->company);
@@ -1096,6 +1095,7 @@ class ContractEmployeeController extends Controller
 
       } catch(Exception $e)
       {
+          \Log::info($e->getMessage());
         return $this->respondHttp500();
       }
     }
