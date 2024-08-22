@@ -336,7 +336,12 @@ class FileUploadController extends Controller
             }
           }
 
-          $this->updateEmployee($fileUpload->id);
+          $content = [
+            'employee_id' => NULL,
+            'file_id' =>  $fileUpload->id
+          ];
+
+          $this->updateEmployee($content);
         }
 
 
@@ -357,13 +362,21 @@ class FileUploadController extends Controller
       ]);
     }
 
-    public function updateEmployee($employee_id)
+    public function updateEmployee($request)
     {
-        /*$file = DB::table('sau_ct_file_document_employee')->where('file_id', $file_id)->first();*/
+        if ($request['file_id'])
+        {
+          $file = DB::table('sau_ct_file_document_employee')->where('file_id', $request['file_id'])->first();
+
+          $employee = ContractEmployee::find($file->employee_id);
+        }
+        else if ($request['employee_id'])
+        {
+          $employee = ContractEmployee::find($request['employee_id']);
+        }
+
         $pendiente = false;
         $rejected = false;
-
-        $employee = ContractEmployee::find($employee_id);
         
         foreach ($employee->activities as $activity)
         {
@@ -663,7 +676,12 @@ class FileUploadController extends Controller
           }
         }
 
-        $this->updateEmployee($request->id);
+        $content = [
+          'employee_id' => $request->id,
+          'file_id' =>  NULL
+        ];
+
+        $this->updateEmployee($content);
 
         DB::commit();
       }

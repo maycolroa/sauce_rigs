@@ -403,6 +403,17 @@ class ContractEmployeeController extends Controller
     {
         $activities = collect([]);
 
+        $class_documents = [];
+
+        foreach ($employee->activities as $key => $activity) 
+        {          
+          $class_documents = array_merge($class_documents, $activity->documents->pluck('class')->toArray());
+        }
+
+        $class_documents = array_unique($class_documents);
+
+        $class_document_files = [];
+
         foreach ($activitiesList as $activity)
         {
             $activities->push($activity['selected']);

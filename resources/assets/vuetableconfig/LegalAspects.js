@@ -943,8 +943,8 @@ export default [
             config: {
                 color: 'outline-info',
                 borderless: true,
-                icon: 'ion ion-md-eye',
-                title: 'Ver'
+                icon: 'ion ion-md-create',
+                title: 'Actualizar Archivos'
             },
             data: {
                 routePush: { name: 'legalaspects-contracts-employees-view-contract-view' },
