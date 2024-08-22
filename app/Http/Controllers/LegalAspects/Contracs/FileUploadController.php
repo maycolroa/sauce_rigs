@@ -367,8 +367,9 @@ class FileUploadController extends Controller
         if ($request['file_id'])
         {
           $file = DB::table('sau_ct_file_document_employee')->where('file_id', $request['file_id'])->first();
-
-          $employee = ContractEmployee::find($file->employee_id);
+          
+          if ($file)
+            $employee = ContractEmployee::find($file->employee_id);
         }
         else if ($request['employee_id'])
         {
