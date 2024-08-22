@@ -377,70 +377,73 @@ class FileUploadController extends Controller
 
         $pendiente = false;
         $rejected = false;
-        
-        foreach ($employee->activities as $activity)
+
+        if ($file)
         {
-          $activity->documents_files = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
-
-          $documents_counts = ActivityDocument::where('activity_id', $activity->id)->where('type', 'Empleado')->get();
-
-          $documents_counts = $documents_counts->count();
-          $count = 0;
-
-          foreach ($activity->documents_files as $document)
+          foreach ($employee->activities as $activity)
           {
-            $count_files = COUNT($document['files']);
-              if ($count_files > 0)
-              {
-                  $count_aprobe = 0;
+            $activity->documents_files = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
 
-                  foreach ($document['files'] as $key => $file) 
-                  {
-                      $fileUpload = FileUpload::findOrFail($file['id']);
+            $documents_counts = ActivityDocument::where('activity_id', $activity->id)->where('type', 'Empleado')->get();
 
-                      if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
-                      {
-                          if ($fileUpload->state == 'ACEPTADO')
-                              $count_aprobe++;
-                          else if ($fileUpload->state == 'RECHAZADO')
-                            $rejected = true;
-                      }
-                      else if (!$fileUpload->expirationDate)
-                      {
-                          if ($fileUpload->state == 'ACEPTADO')
-                              $count_aprobe++;
-                          else if ($fileUpload->state == 'RECHAZADO')
-                            $rejected = true;
-                      }
-                  }
+            $documents_counts = $documents_counts->count();
+            $count = 0;
 
-                  if ($count_aprobe == COUNT($document['files']))
-                      $count++;
-              }
-          }
+            foreach ($activity->documents_files as $document)
+            {
+              $count_files = COUNT($document['files']);
+                if ($count_files > 0)
+                {
+                    $count_aprobe = 0;
 
-          if ($rejected)
-          {
-            $employee->update(
-              [ 'state' => 'Rechazado']
-            );
-            break;
-          }
-          else if ($documents_counts > $count)
-          {
-              $pendiente = true;
+                    foreach ($document['files'] as $key => $file) 
+                    {
+                        $fileUpload = FileUpload::findOrFail($file['id']);
+
+                        if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                            else if ($fileUpload->state == 'RECHAZADO')
+                              $rejected = true;
+                        }
+                        else if (!$fileUpload->expirationDate)
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                            else if ($fileUpload->state == 'RECHAZADO')
+                              $rejected = true;
+                        }
+                    }
+
+                    if ($count_aprobe == COUNT($document['files']))
+                        $count++;
+                }
+            }
+
+            if ($rejected)
+            {
               $employee->update(
-                [ 'state' => 'Pendiente']
+                [ 'state' => 'Rechazado']
               );
               break;
+            }
+            else if ($documents_counts > $count)
+            {
+                $pendiente = true;
+                $employee->update(
+                  [ 'state' => 'Pendiente']
+                );
+                break;
+            }
           }
-        }
 
-        if(!$pendiente && !$rejected)
-        {
-          $employee->update(
-            [ 'state' => 'Aprobado']
-          );
+          if(!$pendiente && !$rejected)
+          {
+            $employee->update(
+              [ 'state' => 'Aprobado']
+            );
+          }
         }
     }
 

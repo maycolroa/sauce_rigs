@@ -414,6 +414,11 @@ class ContractEmployeeController extends Controller
 
         $class_document_files = [];
 
+        foreach ($class_documents as $key => $class) 
+        {          
+          $class_document_files = array_push([$class => []]);
+        }
+
         foreach ($activitiesList as $activity)
         {
             $activities->push($activity['selected']);
@@ -459,6 +464,11 @@ class ContractEmployeeController extends Controller
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
+
+                        /*if ($create_file)
+                        {
+                            
+                        }*/
 
                         $ini = Carbon::now()->format('Y-m-d 00:00:00');
                         $end = Carbon::now()->format('Y-m-d 23:59:59');
