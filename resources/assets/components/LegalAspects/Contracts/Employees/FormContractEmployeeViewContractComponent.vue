@@ -31,8 +31,8 @@
     </b-form-row>
 
     <b-form-row>
-    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.departament_id" :selected-object="form.multiselect_departament" name="departament_id" :error="form.errorsFor('departament_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
-    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.city_id" :selected-object="form.multiselect_city" name="city_id" :error="form.errorsFor('city_id')" label="Municipio" placeholder="Seleccione el municipio" :url="minicipalitiessUrl" :parameters="{departament: form.departament_id }"></vue-ajax-advanced-select>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.departament_id" :selected-object="form.multiselect_departament" name="departament_id" :error="form.errorsFor('departament_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.city_id" :selected-object="form.multiselect_city" name="city_id" :error="form.errorsFor('city_id')" label="Municipio" placeholder="Seleccione el municipio" :url="minicipalitiessUrl" :parameters="{departament: form.departament_id }"></vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
@@ -152,9 +152,9 @@
                                     </b-form-row>
                                   </div>
                                   <b-form-row>
-                                    <vue-advanced-select class="col-md-6" v-model="file.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" @input="documentAprobe(file.id, file.state, file.reason_rejection)" :multiple="false" :allow-empty="false">
+                                    <vue-advanced-select class="col-md-6" v-model="file.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" :multiple="false" :allow-empty="false">
                                     </vue-advanced-select>
-                                    <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo" @onBlur="documentAprobe(file.id, file.state, file.reason_rejection)"></vue-textarea>
+                                    <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo"></vue-textarea>
                                   </b-form-row>
                                 </div>
                               </b-card-body>
@@ -175,6 +175,7 @@
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" @click="refresh()" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
+        <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
       </template>
     </div>
   </b-form>
@@ -306,6 +307,18 @@ export default {
     };
   },
   methods: {
+    submit(e) {
+      this.loading = true;
+      this.form
+        .submit(e.target.action)
+        .then(response => {
+          this.loading = false;
+          this.refresh()
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
     refresh() {
       this.form.id = this.contract_id
       window.location =  "/legalaspects/employees/view/contract/"+this.form.id
@@ -342,7 +355,7 @@ export default {
         });
       }
     },
-    documentAprobe(file, state, reason_rejection)
+    /*documentAprobe(file, state, reason_rejection)
     {
       if (this.ready)
       {
@@ -357,7 +370,7 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
       }
-    }
+    }*/
   }
 };
 </script>

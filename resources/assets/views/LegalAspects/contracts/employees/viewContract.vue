@@ -9,6 +9,7 @@
       <b-card no-body>
         <b-card-body>
             <form-contract-employee-view
+                url="/legalAspects/employeeContract/filesAprobe"
                 :employee="data"
                 :view-only="true"
                 :sexs="sexs"
