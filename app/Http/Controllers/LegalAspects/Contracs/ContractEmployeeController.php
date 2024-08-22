@@ -405,7 +405,7 @@ class ContractEmployeeController extends Controller
 
         $class_documents = [];
 
-        foreach ($employee->activities as $key => $activity) 
+        foreach ($activities as $key => $activity) 
         {          
           $class_documents = array_merge($class_documents, $activity->documents->pluck('class')->toArray());
         }
