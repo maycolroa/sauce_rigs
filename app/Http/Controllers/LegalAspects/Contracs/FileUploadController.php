@@ -146,6 +146,19 @@ class FileUploadController extends Controller
         if ($request->get('contract_id') && COUNT($request->get('contract_id')) > 0)
         {
           $fileUpload->contracts()->sync($this->getDataFromMultiselect($request->get('contract_id')));
+
+          $contracts_states = $this->getDataFromMultiselect($request->get('contract_id'));
+
+          foreach ($contracts_states as $key => $value) 
+          {
+            $state = new FileModuleState;
+            $state->contract_id = $value;
+            $state->file_id = $fileUpload->id;
+            $state->module = 'Subida de Archivos';
+            $state->state = 'CREADO POR CONTRATANTE';
+            $state->date = date('Y-m-d');
+            $state->save();
+          }
         }
         else 
         {
@@ -267,7 +280,7 @@ class FileUploadController extends Controller
         {
           $file_old_state = FileModuleState::where('file_id', $fileUpload->id)->first();
 
-          if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'RECHAZADO')
+          if ($file_old_state && $beforeFile->state != $fileUpload->state && $fileUpload->state == 'RECHAZADO')
           {
             FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
             [
@@ -291,7 +304,7 @@ class FileUploadController extends Controller
                   [
                     'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
                     'file_id' => $fileUpload->id,
-                    'module' => $file_old_state->module,
+                    'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
                     'state' => 'ACEPTADO',
                     'date' => date('Y-m-d')
                   ]);
@@ -301,7 +314,7 @@ class FileUploadController extends Controller
                   [
                     'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
                     'file_id' => $fileUpload->id,
-                    'module' => $file_old_state->module,
+                    'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
                     'state' => 'MODIFICADO CONTRATANTE',
                     'date' => date('Y-m-d')
                   ]);
@@ -314,7 +327,7 @@ class FileUploadController extends Controller
                 [
                   'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
                   'file_id' => $fileUpload->id,
-                  'module' => $file_old_state->module,
+                  'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
                   'state' => 'MODIFICADO',
                   'date' => date('Y-m-d')
                 ]);
@@ -328,7 +341,7 @@ class FileUploadController extends Controller
                   [
                     'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
                     'file_id' => $fileUpload->id,
-                    'module' => $file_old_state->module,
+                    'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
                     'state' => 'ACEPTADO',
                     'date' => date('Y-m-d')
                   ]);

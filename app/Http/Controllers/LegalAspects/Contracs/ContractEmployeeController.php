@@ -403,21 +403,7 @@ class ContractEmployeeController extends Controller
     {
         $activities = collect([]);
 
-        $class_documents = [];
-
-        foreach ($activities as $key => $activity) 
-        {          
-          $class_documents = array_merge($class_documents, $activity->documents->pluck('class')->toArray());
-        }
-
-        $class_documents = array_unique($class_documents);
-
-        $class_document_files = [];
-
-        foreach ($class_documents as $key => $class) 
-        {          
-          $class_document_files = array_push([$class => []]);
-        }
+        $class_documents = $this->getFilesActivities($employee, $activitiesList);
 
         foreach ($activitiesList as $activity)
         {
@@ -427,6 +413,14 @@ class ContractEmployeeController extends Controller
             foreach ($activity['documents'] as $document)
             {
                 $apply = $document['apply_file'] == 'SI' ? true : false;
+                $class = $document['class'];
+                $fileClassTotal = $class_documents[$class];
+
+                foreach ($fileClassTotal as $key => $value) 
+                {
+                    if (!isset($value['id']) && $value['activity'] != $activity['id'])
+                        array_push($document['files'], $value);
+                }
 
                 if (COUNT($document['files']) > 0 && $apply)
                 {
@@ -447,28 +441,41 @@ class ContractEmployeeController extends Controller
                         }
                         else
                         {
+                            if (!isset($file['has_class']))
+                            {
+                                $file_tmp = $file['file'];
+                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
+                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                            }
+
                             $fileUpload = new FileUpload();
                             $fileUpload->user_id = $this->user->id;
                         }
 
                         if ($create_file)
                         {
-                            $file_tmp = $file['file'];
-                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                            $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
-                            $fileUpload->file = $nameFile;
+                            if (!isset($file['has_class']))
+                            {
+                                $fileUpload->file = $nameFile;
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;;
+                            }
+                            else
+                            {
+                                $fileUpload->file = $file['file'];
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->expirationDate = $file['expirationDate'];
+                            }
                         }
-
-                        $fileUpload->name = $file['name'];
-                        $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+                        else
+                        {
+                            $fileUpload->name = $file['name'];
+                            $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+    
+                        }
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
-
-                        /*if ($create_file)
-                        {
-                            
-                        }*/
 
                         $ini = Carbon::now()->format('Y-m-d 00:00:00');
                         $end = Carbon::now()->format('Y-m-d 23:59:59');
@@ -606,6 +613,70 @@ class ContractEmployeeController extends Controller
         return $data;
     }
 
+    public function getFilesActivities($employee, $activitiesList)
+    {
+        $class_document_files = [];
+
+        foreach ($activitiesList as $activity)
+        {
+            foreach ($activity['documents'] as $document)
+            {
+                $apply = $document['apply_file'] == 'SI' ? true : false;
+                $class = $document['class'];
+                $class_document_files[$class] = isset($class_document_files[$class]) ? $class_document_files[$class] : [];
+
+                if (COUNT($document['files']) > 0 && $apply)
+                {
+                    foreach ($document['files'] as $keyF => $file) 
+                    {
+                        $create_file = true;
+
+                        if (isset($file['id']))
+                        {
+                            $fileUpload = FileUpload::findOrFail($file['id']);
+
+                            if ($file['old_name'] == $file['file'])
+                                $create_file = false;
+                        }
+
+                        if ($create_file)
+                        {
+                            $file_tmp = $file['file'];
+                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
+                            $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+
+                            $content = [
+                                'has_class' => true,
+                                'activity' => $activity['id'],
+                                'key' => Carbon::now()->timestamp + rand(1,10000),
+                                'name' => $file['name'],
+                                'file' => $nameFile,
+                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null,
+                            ];
+
+                            array_push($class_document_files[$class], $content);
+                        }
+                        else
+                        {
+                            $content = [
+                                'id' => $file['id'],
+                                'activity' => $activity['id'],
+                                'key' => Carbon::now()->timestamp + rand(1,10000),
+                                'name' => $file['name'],
+                                'file' => $file['file'],
+                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null,
+                            ];
+                            
+                            array_push($class_document_files[$class], $content);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $class_document_files;
+    }
+
     public function documentscomplets($employee, $activitiesList, $documents)
     {
         foreach ($activitiesList as $activity)
@@ -656,15 +727,9 @@ class ContractEmployeeController extends Controller
                     }
                 }
 
-                /*\Log::info('files_total: '.COUNT($document['files']));
-                \Log::info('aprove_total: '.$count_aprobe);*/
-
                 if ($count_aprobe == COUNT($document['files']))
                     $count++;
             }
-
-                /*\Log::info('doc_total: '.$documents_counts);
-                \Log::info('total_aprove: '.$count);*/
 
             if ($documents_counts > $count)
                 return false;
