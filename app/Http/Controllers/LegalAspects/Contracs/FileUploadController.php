@@ -392,7 +392,7 @@ class FileUploadController extends Controller
         $pendiente = false;
         $rejected = false;
 
-        if ($file)
+        if ((isset($file) && $file) || (isset($employee) && $employee))
         {
           foreach ($employee->activities as $activity)
           {

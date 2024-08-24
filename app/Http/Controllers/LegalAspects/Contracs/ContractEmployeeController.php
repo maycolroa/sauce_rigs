@@ -418,7 +418,7 @@ class ContractEmployeeController extends Controller
 
                 foreach ($fileClassTotal as $key => $value) 
                 {
-                    if (!isset($value['id']) && $value['activity'] != $activity['id'])
+                    if (!isset($value['id']) && $value['activity'] != $document['activity_id'])
                         array_push($document['files'], $value);
                 }
 
@@ -647,7 +647,7 @@ class ContractEmployeeController extends Controller
 
                             $content = [
                                 'has_class' => true,
-                                'activity' => $activity['id'],
+                                'activity' => $document['activity_id'],
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
                                 'file' => $nameFile,
@@ -660,7 +660,7 @@ class ContractEmployeeController extends Controller
                         {
                             $content = [
                                 'id' => $file['id'],
-                                'activity' => $activity['id'],
+                                'activity' => $document['activity_id'],
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
                                 'file' => $file['file'],
