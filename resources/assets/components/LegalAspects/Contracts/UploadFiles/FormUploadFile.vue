@@ -31,6 +31,7 @@
 						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false" :disabled="viewOnly">
 						</vue-advanced-select>
 						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" :disabled="viewOnly"></vue-textarea>
+						<vue-textarea class="col-md-12" v-model="form.observations" label="Observaciones" name="observations" :error="form.errorsFor('observations')" placeholder="Observaciones"></vue-textarea>
 					</b-form-row>
 					<b-form-row v-else>
 						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false" :disabled="true">

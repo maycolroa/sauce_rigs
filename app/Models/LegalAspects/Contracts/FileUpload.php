@@ -12,7 +12,17 @@ class FileUpload extends Model
     
     protected $table = "sau_ct_file_upload_contracts_leesse";
 
-    protected $fillable = ['name','expirationDate','file','user_id'];
+    protected $fillable = [
+        'name',
+        'expirationDate',
+        'file',
+        'user_id',
+        'observations',
+        'state',
+        'reason_rejection',
+        'apply_file',
+        'apply_motive'
+    ];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_ct_information_contract_lessee';

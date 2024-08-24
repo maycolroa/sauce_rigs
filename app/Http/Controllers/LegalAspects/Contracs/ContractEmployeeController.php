@@ -893,7 +893,8 @@ class ContractEmployeeController extends Controller
                     'sau_ct_file_upload_contracts_leesse.state AS state',
                     'sau_ct_file_upload_contracts_leesse.reason_rejection AS reason_rejection',
                     'sau_ct_file_upload_contracts_leesse.apply_file AS apply_file',
-                    'sau_ct_file_upload_contracts_leesse.apply_motive AS apply_motive'
+                    'sau_ct_file_upload_contracts_leesse.apply_motive AS apply_motive',
+                    'sau_ct_file_upload_contracts_leesse.observations AS observations'
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
@@ -907,8 +908,13 @@ class ContractEmployeeController extends Controller
                     $apply_file = 'SI';
                     $apply_motive = '';
                     $files->transform(function($file, $index) use (&$apply_file, &$apply_motive){
+
+                        $type = explode('.',$file->file)[1];
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
+                        $file->type = $type;
+                        $file->path = Storage::disk('s3')->url('legalAspects/files/'. $file->file);
+                        $file->observations = $file->observations;
                         $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
                         $file->required_expiration_date = $file->expirationDate == null ? 'NO' : 'SI';
                         $file->state = $file->state;
