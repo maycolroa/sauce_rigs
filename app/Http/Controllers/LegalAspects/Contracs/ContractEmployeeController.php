@@ -909,7 +909,7 @@ class ContractEmployeeController extends Controller
                     $apply_motive = '';
                     $files->transform(function($file, $index) use (&$apply_file, &$apply_motive){
 
-                        $type = explode('.',$file->file)[1];
+                        $type = $file->file ? explode('.',$file->file)[1] : null;
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
                         $file->type = $type;
