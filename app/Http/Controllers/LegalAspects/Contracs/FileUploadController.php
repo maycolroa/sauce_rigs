@@ -407,7 +407,8 @@ class FileUploadController extends Controller
 
             foreach ($activity->documents_files as $document)
             {
-              $count_files = COUNT($document['files']);
+                $count_files = COUNT($document['files']);
+
                 if ($count_files > 0)
                 {
                     $count_aprobe = 0;
@@ -432,7 +433,7 @@ class FileUploadController extends Controller
                         }
                     }
 
-                    if ($count_aprobe == COUNT($document['files']))
+                    if ($count_files > 0 && $count_aprobe == $count_files)
                         $count++;
                 }
             }
@@ -675,7 +676,7 @@ class FileUploadController extends Controller
               $file->state = $fileF['state'] == null ? 'PENDIENTE' : $fileF['state'];
               $file->observations = $fileF['observations'];
               $file->reason_rejection = $fileF['state'] == 'RECHAZADO' ? $fileF['reason_rejection'] : NULL;
-              $contract = $file->contracts;
+              $contracts = $file->contracts;
               
               if(!$file->save()) {
                 return $this->respondHttp500();
@@ -683,14 +684,17 @@ class FileUploadController extends Controller
 
               if ($beforeFile->state != $file->state && $file->state == 'RECHAZADO')
               {
-                FileModuleState::updateOrCreate(['file_id' => $file->id, 'date' => date('Y-m-d')],
-                [
-                  'contract_id' => $contract->id,
-                  'file_id' => $file->id,
-                  'module' => 'Subida de Archivos',
-                  'state' => 'RECHAZADO',
-                  'date' => date('Y-m-d')
-                ]);
+                foreach ($contracts as $key => $contract) 
+                {
+                  FileModuleState::updateOrCreate(['file_id' => $file->id, 'date' => date('Y-m-d')],
+                  [
+                    'contract_id' => $contract->id,
+                    'file_id' => $file->id,
+                    'module' => 'Subida de Archivos',
+                    'state' => 'RECHAZADO',
+                    'date' => date('Y-m-d')
+                  ]);
+                }
               }     
             }
           }

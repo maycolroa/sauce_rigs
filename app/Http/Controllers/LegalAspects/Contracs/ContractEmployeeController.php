@@ -688,8 +688,9 @@ class ContractEmployeeController extends Controller
             {
                 $apply = $document['apply_file'] == 'SI' ? true : false;
                 $count_aprobe = 0;
+                $file_counts = COUNT($document['files']);
 
-                if ($apply && COUNT($document['files']) > 0 && COUNT($documents) > 0)
+                if ($apply && $file_counts > 0 && COUNT($documents) > 0)
                 {
                     foreach ($document['files'] as $key => $file) 
                     {
@@ -727,7 +728,7 @@ class ContractEmployeeController extends Controller
                     }
                 }
 
-                if ($count_aprobe == COUNT($document['files']))
+                if ($count_aprobe == $file_counts && $file_counts > 0)
                     $count++;
             }
 
