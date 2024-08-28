@@ -66,7 +66,8 @@ class VuetableColumnManager
         'legalaspectsinformscontractslesse',
         'legalaspectscontractdocumentsconsultingemployeereport',
         'legalaspectscontractdocumentsconsultingemployeereportexpired',
-        'legalaspectscontractdocumentsconsultingcontractreport'
+        'legalaspectscontractdocumentsconsultingcontractreport',
+        'legalaspectscontractdocumentsconsultingcontractreportexpired'
     ];
 
     protected $customColumnsName;
@@ -941,11 +942,11 @@ class VuetableColumnManager
     public function legalaspectscontractdocumentsconsultingemployeereport()
     {
         $colums = [
-            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
-            ['name' => 'contract', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'employee', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'activity', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'document', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_contract_employees.name', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities.name', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities_documents.name', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
         ];
 
         if ($this->configuration && $this->configuration->value == 'SI')
@@ -959,11 +960,12 @@ class VuetableColumnManager
     public function legalaspectscontractdocumentsconsultingemployeereportexpired()
     {
         $colums = [
-            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
-            ['name' => 'contract', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'employee', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'activity', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'document', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_contract_employees.name', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities.name', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities_documents.name', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_file_upload_contracts_leesse.expirationDate', 'data' => 'expirationDate', 'title' =>  'Fecha de vencimiento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
         ];
 
         if ($this->configuration && $this->configuration->value == 'SI')
@@ -977,10 +979,23 @@ class VuetableColumnManager
     public function legalaspectscontractdocumentsconsultingcontractreport()
     {
         $colums = [
-            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
-            ['name' => 'contract', 'data' => 'contratista', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'activities', 'data' => 'activities', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
-            ['name' => 'document', 'data' => 'documento', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'contratista', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities.name', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_contracts_documents.name', 'data' => 'documento', 'title' =>  'Documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+        ];
+
+        return $colums;
+    }
+
+    public function legalaspectscontractdocumentsconsultingcontractreportexpired()
+    {
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'contratista', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_activities.name', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_contracts_documents.name', 'data' => 'documento', 'title' =>  'Documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_file_upload_contracts_leesse.expirationDate', 'data' => 'expirationDate', 'title' =>  'Fecha de vencimiento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
         ];
 
         return $colums;

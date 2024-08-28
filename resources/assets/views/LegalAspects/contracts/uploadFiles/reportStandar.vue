@@ -42,7 +42,7 @@
                 </b-card>
             </b-tab>
 
-            <!--<b-tab>
+            <b-tab>
                 <template slot="title">
                     <strong>Documentos de contratistas pendientes por cargar</strong> 
                 </template>
@@ -54,7 +54,21 @@
                         ref="documentContract"
                     ></vue-table>
                 </b-card>
-            </b-tab>-->
+            </b-tab>
+
+            <b-tab>
+                <template slot="title">
+                    <strong>Documentos de contratistas pendientes por vencimiento</strong> 
+                </template>
+                <b-card border-variant="primary" class="mb-3 box-shadow-none">
+                    <vue-table
+                        configName="legalaspects-contract-documents-consulting-contract-report-expired"
+                        :params="{filters}"
+                        :customColumnsName="true" 
+                        ref="documentContractExpired"
+                    ></vue-table>
+                </b-card>
+            </b-tab>
                 <!--<b-card border-variant="primary" title="Documentos de empleados pendientes por vencimiento" class="mb-3 box-shadow-none">
                     <vue-table
                         configName="legalaspects-contract-documents-global-report"

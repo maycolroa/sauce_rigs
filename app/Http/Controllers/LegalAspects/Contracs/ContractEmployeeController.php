@@ -1211,7 +1211,11 @@ class ContractEmployeeController extends Controller
             ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
             ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
             ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contract_employee_activities.activity_contract_id')
-            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
+            ->leftJoin('sau_ct_activities_documents', function ($join)
+            {
+                $join->on("sau_ct_activities_documents.activity_id", 'sau_ct_activities.id');
+                $join->where('sau_ct_activities_documents.type', 'Empleado');
+            })
             ->leftJoin('sau_ct_file_document_employee', function ($join) 
             {
                 $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
@@ -1243,7 +1247,8 @@ class ContractEmployeeController extends Controller
                 'sau_ct_contract_employees.name AS employee',
                 'sau_ct_activities.name AS activity',
                 'sau_ct_activities_documents.name AS document',
-                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) AS proyects")
+                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) AS proyects"),
+                'sau_ct_file_upload_contracts_leesse.expirationDate'
             )
             ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
             ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
@@ -1259,7 +1264,7 @@ class ContractEmployeeController extends Controller
             ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_employee.file_id')
             ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate < curdate()")
             ->whereNotNull('sau_ct_file_upload_contracts_leesse.expirationDate')
-            ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.name', 'sau_ct_activities.name', 'sau_ct_activities_documents.name', 'sau_ct_file_document_employee.employee_id');
+            ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.name', 'sau_ct_activities.name', 'sau_ct_activities_documents.name', 'sau_ct_file_document_employee.employee_id', 'sau_ct_file_upload_contracts_leesse.expirationDate');
             
 
         $filters = $request->get('filters');
@@ -1277,27 +1282,69 @@ class ContractEmployeeController extends Controller
     public function globalDocument(Request $request)
     {
         $documentsGlobal = ContractLesseeInformation::select(
-                'sau_ct_contracts_documents.id as id',
-                //'sau_ct_contracts_documents.name as documento',
-                'sau_ct_activities_documents.name AS document',
-                'sau_ct_information_contract_lessee.social_reason AS contratista',
-                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_activities.name) ORDER BY sau_ct_activities.name ASC) AS activities")
-            )
-            //->join('sau_ct_contracts_documents', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
-            /*->leftJoin('sau_ct_file_document_contract', function ($join) 
-            {
-                $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
-                $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
-            })*/
-            ->join('sau_ct_contracts_activities', 'sau_ct_contracts_activities.contract_id', 'sau_ct_information_contract_lessee.id')
-            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contracts_activities.activity_id')
-            ->whereNull('sau_ct_file_document_contract.contract_id');          
+            'sau_ct_information_contract_lessee.id as id',
+            'sau_ct_contracts_documents.name as documento',
+            'sau_ct_information_contract_lessee.social_reason AS contratista',
+            DB::raw("case when sau_ct_contracts_documents.document_id is not null then sau_ct_activities.name else 'Documentos Globales' end AS activity")
+        )
+        ->join('sau_ct_contracts_documents', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
+        ->leftJoin('sau_ct_file_document_contract', function ($join) 
+        {
+            $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
+            $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
+        })
+        ->leftJoin('sau_ct_contracts_activities', 'sau_ct_contracts_activities.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->leftJoin('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contracts_activities.activity_id')
+        ->leftJoin('sau_ct_activities_documents', function ($join)
+        {
+            $join->on("sau_ct_activities_documents.activity_id", 'sau_ct_activities.id');
+            $join->on('sau_ct_contracts_activities.activity_id', "sau_ct_activities_documents.activity_id");
+            $join->where('sau_ct_activities_documents.type', 'Contratista');
+        })
+        ->whereNull('sau_ct_file_document_contract.contract_id')
+        ->whereRaw("(sau_ct_contracts_documents.document_id is null OR sau_ct_activities_documents.id = sau_ct_contracts_documents.document_id) and sau_ct_information_contract_lessee.company_id = {$this->company} and sau_ct_contracts_documents.company_id = {$this->company}")
+        ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contracts_documents.name', 'sau_ct_contracts_documents.id', 'sau_ct_contracts_documents.document_id', 'activity');
+        
+        $filters = $request->get('filters');
 
-            if($documentsGlobal)
-                $exist = true;            
-            else
-                $exist = false;
+        if (COUNT($filters) > 0)
+        {
+            $documentsGlobal->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsGlobal->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
 
+        return Vuetable::of($documentsGlobal)
+                    ->make();
+    }
+
+    public function globalDocumentExpired(Request $request)
+    {
+        $documentsGlobal = ContractLesseeInformation::select(
+            'sau_ct_information_contract_lessee.id as id',
+            'sau_ct_contracts_documents.name as documento',
+            'sau_ct_information_contract_lessee.social_reason AS contratista',
+            DB::raw("case when sau_ct_contracts_documents.document_id is not null then sau_ct_activities.name else 'Documentos Globales' end AS activity"),
+            'sau_ct_file_upload_contracts_leesse.expirationDate'
+        )
+        ->join('sau_ct_contracts_documents', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
+        ->leftJoin('sau_ct_file_document_contract', function ($join) 
+        {
+            $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
+            $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
+        })
+        ->leftJoin('sau_ct_contracts_activities', 'sau_ct_contracts_activities.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->leftJoin('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contracts_activities.activity_id')
+        ->leftJoin('sau_ct_activities_documents', function ($join)
+        {
+            $join->on("sau_ct_activities_documents.activity_id", 'sau_ct_activities.id');
+            $join->on('sau_ct_contracts_activities.activity_id', "sau_ct_activities_documents.activity_id");
+            $join->where('sau_ct_activities_documents.type', 'Contratista');
+        })
+        ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_contract.file_id')
+        ->whereRaw("(sau_ct_contracts_documents.document_id is null OR sau_ct_activities_documents.id = sau_ct_contracts_documents.document_id) and sau_ct_information_contract_lessee.company_id = {$this->company} and sau_ct_contracts_documents.company_id = {$this->company}")
+        ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate < curdate()")
+        ->whereNotNull('sau_ct_file_upload_contracts_leesse.expirationDate')
+        ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contracts_documents.name', 'sau_ct_contracts_documents.id', 'sau_ct_contracts_documents.document_id', 'activity', 'sau_ct_file_upload_contracts_leesse.expirationDate');
         
         $filters = $request->get('filters');
 

@@ -2293,7 +2293,7 @@ export default [
             }],
         configuration: {
             urlData: '/legalAspects/employeeContract/reportDocumentPending',
-            filterColumns: false,
+            filterColumns: true,
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
@@ -2312,7 +2312,7 @@ export default [
             }],
         configuration: {
             urlData: '/legalAspects/employeeContract/reportDocumentPendingExpired',
-            filterColumns: false,
+            filterColumns: true,
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
@@ -2331,7 +2331,26 @@ export default [
             }],
         configuration: {
             urlData: '/legalAspects/employeeContract/globalDocument',
-            filterColumns: false,
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
+        name: 'legalaspects-contract-documents-consulting-contract-report-expired',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/globalDocumentExpired',
+            filterColumns: true,
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
