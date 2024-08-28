@@ -1031,6 +1031,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/liquidated', 'LegalAspects\Contracs\ContractEmployeeController@toggleLiqudated');
       Route::post('employeeContract/dataContract', 'LegalAspects\Contracs\ContractEmployeeController@dataContract');
       Route::get('employeeContract/download/{id}', 'LegalAspects\Contracs\ContractEmployeeController@download');
+      Route::post('employeeContract/reportDocumentPending', 'LegalAspects\Contracs\ContractEmployeeController@reportDocumentPending');
+      Route::post('employeeContract/reportDocumentPendingExpired', 'LegalAspects\Contracs\ContractEmployeeController@reportDocumentPendingExpired');
+      Route::post('employeeContract/globalDocument', 'LegalAspects\Contracs\ContractEmployeeController@globalDocument');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('employeeContract/importSocialSecure', 'LegalAspects\Contracs\ContractEmployeeController@importSocialSecure');

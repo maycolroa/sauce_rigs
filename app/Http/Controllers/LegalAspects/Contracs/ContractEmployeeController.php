@@ -15,6 +15,7 @@ use App\Models\LegalAspects\Contracts\ProyectContract;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesImport;
 use App\Exports\Administrative\Employees\EmployeeInactiveTemplate;
@@ -1194,5 +1195,119 @@ class ContractEmployeeController extends Controller
           \Log::info($e->getMessage());
         return $this->respondHttp500();
       }
+    }
+
+    public function reportDocumentPending(Request $request)
+    {
+        $documentsEmployee = ContractLesseeInformation::select(
+                'sau_ct_information_contract_lessee.id AS id',
+                'sau_ct_information_contract_lessee.social_reason AS contract',
+                'sau_ct_contract_employees.name AS employee',
+                'sau_ct_activities.name AS activity',
+                'sau_ct_activities_documents.name AS document',
+                DB::raw("case when sau_ct_file_document_employee.employee_id is not null then 'SI' else 'NO' end AS cargado"),
+                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) AS proyects")
+            )
+            ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
+            ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
+            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contract_employee_activities.activity_contract_id')
+            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
+            ->leftJoin('sau_ct_file_document_employee', function ($join) 
+            {
+                $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
+                $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
+            })
+            ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+            ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
+            ->whereNull('sau_ct_file_document_employee.employee_id')
+            ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.name', 'sau_ct_activities.name', 'sau_ct_activities_documents.name', 'sau_ct_file_document_employee.employee_id');
+            
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
+        return Vuetable::of($documentsEmployee)
+                    ->make();
+    }
+
+    public function reportDocumentPendingExpired(Request $request)
+    {
+        $documentsEmployee = ContractLesseeInformation::select(
+                'sau_ct_information_contract_lessee.id AS id',
+                'sau_ct_information_contract_lessee.social_reason AS contract',
+                'sau_ct_contract_employees.name AS employee',
+                'sau_ct_activities.name AS activity',
+                'sau_ct_activities_documents.name AS document',
+                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) AS proyects")
+            )
+            ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
+            ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
+            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contract_employee_activities.activity_contract_id')
+            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
+            ->leftJoin('sau_ct_file_document_employee', function ($join) 
+            {
+                $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
+                $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
+            })
+            ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+            ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
+            ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_employee.file_id')
+            ->whereRaw("sau_ct_file_upload_contracts_leesse.expirationDate < curdate()")
+            ->whereNotNull('sau_ct_file_upload_contracts_leesse.expirationDate')
+            ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.name', 'sau_ct_activities.name', 'sau_ct_activities_documents.name', 'sau_ct_file_document_employee.employee_id');
+            
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
+        return Vuetable::of($documentsEmployee)
+                    ->make();
+    }
+
+    public function globalDocument(Request $request)
+    {
+        $documentsGlobal = ContractLesseeInformation::select(
+                'sau_ct_contracts_documents.id as id',
+                //'sau_ct_contracts_documents.name as documento',
+                'sau_ct_activities_documents.name AS document',
+                'sau_ct_information_contract_lessee.social_reason AS contratista',
+                DB::raw("GROUP_CONCAT(CONCAT(' ', sau_ct_activities.name) ORDER BY sau_ct_activities.name ASC) AS activities")
+            )
+            //->join('sau_ct_contracts_documents', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
+            /*->leftJoin('sau_ct_file_document_contract', function ($join) 
+            {
+                $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
+                $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
+            })*/
+            ->join('sau_ct_contracts_activities', 'sau_ct_contracts_activities.contract_id', 'sau_ct_information_contract_lessee.id')
+            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contracts_activities.activity_id')
+            ->whereNull('sau_ct_file_document_contract.contract_id');          
+
+            if($documentsGlobal)
+                $exist = true;            
+            else
+                $exist = false;
+
+        
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsGlobal->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsGlobal->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
+        return Vuetable::of($documentsGlobal)
+                    ->make();
     }
 }

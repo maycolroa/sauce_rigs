@@ -63,7 +63,10 @@ class VuetableColumnManager
         'legalaspectscontractsemployees',
         'legalaspectscontractsemployeesviewcontractor',
         'legalaspectsinformscontracts',
-        'legalaspectsinformscontractslesse'
+        'legalaspectsinformscontractslesse',
+        'legalaspectscontractdocumentsconsultingemployeereport',
+        'legalaspectscontractdocumentsconsultingemployeereportexpired',
+        'legalaspectscontractdocumentsconsultingcontractreport'
     ];
 
     protected $customColumnsName;
@@ -931,6 +934,54 @@ class VuetableColumnManager
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
+
+        return $colums;
+    }
+
+    public function legalaspectscontractdocumentsconsultingemployeereport()
+    {
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            ['name' => 'contract', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'employee', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'activity', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'document', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        return $colums;
+    }
+
+    public function legalaspectscontractdocumentsconsultingemployeereportexpired()
+    {
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            ['name' => 'contract', 'data' => 'contract', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'employee', 'data' => 'employee', 'title' =>  'Empleado', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'activity', 'data' => 'activity', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'document', 'data' => 'document', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        return $colums;
+    }
+
+    public function legalaspectscontractdocumentsconsultingcontractreport()
+    {
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            ['name' => 'contract', 'data' => 'contratista', 'title' =>  'Contratista', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'activities', 'data' => 'activities', 'title' =>  'Actividad', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
+            ['name' => 'document', 'data' => 'documento', 'title' =>  'Documento', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ]
+        ];
 
         return $colums;
     }

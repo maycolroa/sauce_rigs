@@ -2278,4 +2278,61 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'legalaspects-contract-documents-consulting-employee-report',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/reportDocumentPending',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
+        name: 'legalaspects-contract-documents-consulting-employee-report-expired',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/reportDocumentPendingExpired',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
+        name: 'legalaspects-contract-documents-consulting-contract-report',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/globalDocument',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
 ]
