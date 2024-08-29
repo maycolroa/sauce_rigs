@@ -2354,4 +2354,42 @@ export default [
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
+    {
+        name: 'legalaspects-contract-documents-consulting-employee-report-close-winning',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/reportDocumentCloseToWinning',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
+        name: 'legalaspects-contract-documents-consulting-contract-report-close-winning',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/globalDocumentCloseToWinning',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
 ]

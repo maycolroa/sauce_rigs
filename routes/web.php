@@ -1035,6 +1035,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/reportDocumentPendingExpired', 'LegalAspects\Contracs\ContractEmployeeController@reportDocumentPendingExpired');
       Route::post('employeeContract/globalDocument', 'LegalAspects\Contracs\ContractEmployeeController@globalDocument');
       Route::post('employeeContract/globalDocumentExpired', 'LegalAspects\Contracs\ContractEmployeeController@globalDocumentExpired');
+      Route::post('employeeContract/reportDocumentCloseToWinning', 'LegalAspects\Contracs\ContractEmployeeController@reportDocumentCloseToWinning');
+      Route::post('employeeContract/globalDocumentCloseToWinning', 'LegalAspects\Contracs\ContractEmployeeController@globalDocumentCloseToWinning');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('employeeContract/importSocialSecure', 'LegalAspects\Contracs\ContractEmployeeController@importSocialSecure');

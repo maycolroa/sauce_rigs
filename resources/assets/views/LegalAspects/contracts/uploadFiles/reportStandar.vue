@@ -22,12 +22,12 @@
                 <b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <vue-table
                         configName="legalaspects-contract-documents-consulting-employee-report"
-                        :params="{filters}"
                         :customColumnsName="true" 
                         ref="documentEmployee"
                     ></vue-table>
                 </b-card>
             </b-tab>
+
             <b-tab>
                 <template slot="title">
                     <strong>Documentos de empleados pendientes por vencimiento</strong> 
@@ -35,9 +35,28 @@
                 <b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <vue-table
                         configName="legalaspects-contract-documents-consulting-employee-report-expired"
-                        :params="{filters}"
                         :customColumnsName="true" 
                         ref="documentEmployeeExpired"
+                    ></vue-table>
+                </b-card>
+            </b-tab>
+            
+            <b-tab>
+                <template slot="title">
+                    <strong>Documentos de empleados proximos a vencerse</strong> 
+                </template>
+                <b-row>
+                    <b-col>
+                        <vue-input class="col-md-3" v-model="days" label="Dias" type="number" pattern="[0-9]*" name="days" placeholder="Dias"></vue-input>
+                    </b-col>
+                </b-row>
+
+                <b-card border-variant="primary" class="mb-3 box-shadow-none">
+                    <vue-table
+                        configName="legalaspects-contract-documents-consulting-employee-report-close-winning"
+                        :params="{days}"
+                        :customColumnsName="true" 
+                        ref="documentEmployeeCloseToWinning"
                     ></vue-table>
                 </b-card>
             </b-tab>
@@ -49,7 +68,6 @@
                 <b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <vue-table
                         configName="legalaspects-contract-documents-consulting-contract-report"
-                        :params="{filters}"
                         :customColumnsName="true" 
                         ref="documentContract"
                     ></vue-table>
@@ -63,41 +81,31 @@
                 <b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <vue-table
                         configName="legalaspects-contract-documents-consulting-contract-report-expired"
-                        :params="{filters}"
                         :customColumnsName="true" 
                         ref="documentContractExpired"
                     ></vue-table>
                 </b-card>
             </b-tab>
-                <!--<b-card border-variant="primary" title="Documentos de empleados pendientes por vencimiento" class="mb-3 box-shadow-none">
+
+            <b-tab>
+                <template slot="title">
+                    <strong>Documentos de contratistas proximos a vencerse</strong> 
+                </template>
+                <b-row>
+                    <b-col>
+                        <vue-input class="col-md-3" v-model="daysContract" label="Dias" type="number" pattern="[0-9]*" name="daysContract" placeholder="Dias"></vue-input>
+                    </b-col>
+                </b-row>
+
+                <b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <vue-table
-                        configName="legalaspects-contract-documents-global-report"
-                        :params="{filters}"
-                        ref="documentGlobal"
-                        ></vue-table>
+                        configName="legalaspects-contract-documents-consulting-contract-report-close-winning"
+                        :params="{daysContract}"
+                        :customColumnsName="true" 
+                        ref="documentContractCloseToWinning"
+                    ></vue-table>
                 </b-card>
-                <b-card border-variant="primary" title="Documentos de empleados proximos a vencerse" class="mb-3 box-shadow-none">
-                    <vue-table
-                        configName="legalaspects-contract-trainig-employee-report-consolidated"
-                        :params="{filters}"
-                        ref="consolidated"
-                        ></vue-table>
-                </b-card>
-                <b-card border-variant="primary" title="Documentos de contratistas pendientes por cargar" class="mb-3 box-shadow-none">
-                    <vue-table
-                        configName="legalaspects-contract-trainig-employee-report-details"
-                        :params="{filters}"
-                        ref="details"
-                        ></vue-table>
-                </b-card>
-                <b-card border-variant="primary" title="Documentos de contratistas proximos a vencerse" class="mb-3 box-shadow-none">
-                    <vue-table
-                        configName="legalaspects-contract-trainig-employee-report-details"
-                        :params="{filters}"
-                        ref="details"
-                        ></vue-table>
-                </b-card>
-            </b-tab>-->
+            </b-tab>
         </b-tabs>
     </div>
   </div>
@@ -109,6 +117,7 @@ import ChartBar from '@/components/ECharts/ChartBar.vue';
 import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
+import VueInput from "@/components/Inputs/VueInput.vue";
 
 export default {
     name: 'legalaspects-evaluations-report',
@@ -118,7 +127,8 @@ export default {
     components:{
         ChartBarCompliance,
         ChartBar,
-        FilterGeneral
+        FilterGeneral,
+        VueInput
     },
     data () {
         return {
@@ -132,50 +142,23 @@ export default {
             standar: {
                 labels: [],
                 datasets: []
-            }
+            },
+            days: 15,
+            daysContract: 15
         }
-    },
-    created(){
-        this.fetch()
     },
     watch: {
-        filters: {
+        days: {
             handler(val){
-                this.$refs.documentEmployee.refresh()
-                this.$refs.documentGlobal.refresh()
-                this.$refs.consolidated.refresh()                
-                this.$refs.details.refresh()
-                this.fetch()
+                this.$refs.documentEmployeeCloseToWinning.refresh()
             },
             deep: true
-        }
-    },
-    methods: {
-        fetch()
-        {
-            if (!this.isLoading)
-            {
-                //console.log('buscando...')
-                this.isLoading = true;
-
-                axios.post('/legalAspects/listCheck/report', this.filters)
-                .then(data => {
-                    this.update(data);
-                    this.isLoading = false;
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.isLoading = false;
-                    Alerts.error('Error', 'Hubo un problema recolectando la información');
-                });
-            }
         },
-        update(data) {
-            _.forIn(data.data, (value, key) => {
-                if (this[key]) {
-                    this[key] = value;
-                }
-            });
+        daysContract: {
+            handler(val){
+                this.$refs.documentContractCloseToWinning.refresh()
+            },
+            deep: true
         }
     }
 }
