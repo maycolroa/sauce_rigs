@@ -13,6 +13,7 @@ use App\Models\LegalAspects\Contracts\TrainingQuestions;
 use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
 use App\Models\LegalAspects\Contracts\TrainingFiles;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
+use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationUnitaryJob;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -52,7 +53,7 @@ class ContractTrainingController extends Controller
         $trainings = Training::select('*')->orderBy('id', 'DESC');
 
         return Vuetable::of($trainings)
-                ->addColumn('retrySendMail', function ($training) {
+                ->addColumn('legalaspects-contracts-trainings-virtual-send', function ($training) {
                     return $training->isActive();
                 })
                 ->make();    
@@ -492,9 +493,14 @@ class ContractTrainingController extends Controller
         ]);
     }
 
-    public function sendNotification($id)
+    public function sendNotification(Request $request, $id)
     {
-        TrainingSendNotificationJob::dispatch($this->company, $id);
+        $contracts = $request->contract_id ? $this->getDataFromMultiselect($request->get('contract_id')) : [];
+
+        if (COUNT($contracts) > 0)
+            TrainingSendNotificationUnitaryJob::dispatch($this->company, $id, $contracts);
+        else
+            TrainingSendNotificationJob::dispatch($this->company, $id);
     }
 
     public function getFiles($training)

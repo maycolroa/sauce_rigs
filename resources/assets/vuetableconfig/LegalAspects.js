@@ -723,7 +723,21 @@ export default [
                 id: 'id',
             },
             permission: 'contracts_training_r'
-            },{
+            },
+            {
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar Capacitación'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-trainings-virtual-send' },
+                    id: 'id',
+                },
+                permission: 'contracts_training_r'
+            },
+            {
                 config: {
                     color: 'outline-info',
                     borderless: true,
@@ -763,7 +777,7 @@ export default [
                 },
                 permission: 'contracts_training_u'
             },
-            {
+            /*{
                 name: 'retrySendMail',
                 config: {
                     color: 'outline-danger',
@@ -777,7 +791,7 @@ export default [
                     messageConfirmation: 'Esta seguro de enviar la capacitación'
                 },
                 permission: 'contracts_training_u'
-            }],
+            }*/],
         }],
         configuration: {
             urlData: '/legalAspects/trainingContract/data',

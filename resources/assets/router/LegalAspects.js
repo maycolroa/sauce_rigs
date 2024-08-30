@@ -427,6 +427,14 @@ export default [
 					import('@/views/LegalAspects/contracts/trainings/virtual/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_training_r' }, [
+				{
+					name: 'legalaspects-contracts-trainings-virtual-send',
+					path: 'trainings/virtual/send/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/trainings/virtual/send')
+				}
+			]),
 			{
 				name: 'legalaspects-legalmatrix',
 				path: 'legalmatrix',
