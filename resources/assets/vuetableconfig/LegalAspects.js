@@ -396,7 +396,7 @@ export default [
         name: 'legalaspects-contractor',
         fields: [
             { name: 'sau_ct_information_contract_lessee.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'Nit', sortable: true, searchable: true, detail: false, key: false },
+            /*{ name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'Nit', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_information_contract_lessee.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_information_contract_lessee.high_risk_work', data: 'high_risk_work', title: '¿Alto riesgo?', sortable: true, searchable: true, detail: false, key: false },
@@ -407,7 +407,7 @@ export default [
             { name: 'sau_ct_list_check_resumen.total_sc', data: 'total_sc', title: '#Sin Calificar', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_list_check_resumen.total_p_c', data: 'total_p_c', title: '%Cumple', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_list_check_resumen.total_p_nc', data: 'total_p_nc', title: '%No Cumple', sortable: true, searchable: true, detail: false, key: false },
-            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },*/
         ],
         'controlls': [{
               type: 'push',

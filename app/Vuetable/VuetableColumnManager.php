@@ -69,7 +69,8 @@ class VuetableColumnManager
         'legalaspectscontractdocumentsconsultingcontractreport',
         'legalaspectscontractdocumentsconsultingcontractreportexpired',
         'legalaspectscontractdocumentsconsultingemployeereportclosewinning',
-        'legalaspectscontractdocumentsconsultingcontractreportclosewinning'
+        'legalaspectscontractdocumentsconsultingcontractreportclosewinning',
+        'legalaspectscontractor'
     ];
 
     protected $customColumnsName;
@@ -1031,6 +1032,35 @@ class VuetableColumnManager
             ['name' => 'sau_ct_contracts_documents.name', 'data' => 'documento', 'title' =>  'Documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             ['name' => 'sau_ct_file_upload_contracts_leesse.expirationDate', 'data' => 'expirationDate', 'title' =>  'Fecha de vencimiento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
         ];
+
+        return $colums;
+    }
+
+    public function legalaspectscontractor()
+    {
+        $colums = [ 
+            [ 'name' => 'sau_ct_information_contract_lessee.id', 'data' => 'id', 'title' => 'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ],
+            [ 'name' => 'sau_ct_information_contract_lessee.nit', 'data' => 'nit', 'title' => 'Nit', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'social_reason', 'title' => 'Razón social', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            //[ 'name' => 'sau_ct_information_contract_lessee.type', 'data' => 'type', 'title' => 'Tipo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_information_contract_lessee.high_risk_work', 'data' => 'high_risk_work', 'title' => '¿Alto riesgo?', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_information_contract_lessee.active', 'data' => 'active', 'title' => '¿Activo?', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_standard', 'data' => 'total_standard', 'title' => 'Estándares', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_c', 'data' => 'total_c', 'title' => '#Cumple', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_nc', 'data' => 'total_nc', 'title' => '#No Cumple', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_sc', 'data' => 'total_sc', 'title' => '#Sin Calificar', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_p_c', 'data' => 'total_p_c', 'title' => '%Cumple', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            [ 'name' => 'sau_ct_list_check_resumen.total_p_nc', 'data' => 'total_p_nc', 'title' => '%No Cumple', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
+
+        $colums = array_merge($colums, [
+            [ 'name' => '', 'data' => 'controlls', 'title' => 'Controles', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => false ]
+        ]);
 
         return $colums;
     }

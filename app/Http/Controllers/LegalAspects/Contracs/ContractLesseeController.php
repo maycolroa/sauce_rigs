@@ -87,22 +87,26 @@ class ContractLesseeController extends Controller
     public function data(Request $request)
     {
         $contracts = ContractLesseeInformation::select(
-                    'sau_ct_information_contract_lessee.*',
-                    'sau_ct_list_check_resumen.total_standard AS total_standard',
-                    'sau_ct_list_check_resumen.total_c AS total_c',
-                    'sau_ct_list_check_resumen.total_nc AS total_nc',
-                    'sau_ct_list_check_resumen.total_sc AS total_sc',
-                    'sau_ct_list_check_resumen.total_p_c AS total_p_c',
-                    'sau_ct_list_check_resumen.total_p_nc AS total_p_nc',
-                    'sau_ct_list_check_resumen.list_qualification_id AS id_qualification'
-                    )
-                    ->leftJoin('sau_ct_list_check_qualifications', function ($join) 
-                    {
-                      $join->on("sau_ct_list_check_qualifications.contract_id", "sau_ct_information_contract_lessee.id");
-                      $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
-                    })
-                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
-                    ->orderBy('sau_ct_information_contract_lessee.social_reason');
+            'sau_ct_information_contract_lessee.*',
+            'sau_ct_list_check_resumen.total_standard AS total_standard',
+            'sau_ct_list_check_resumen.total_c AS total_c',
+            'sau_ct_list_check_resumen.total_nc AS total_nc',
+            'sau_ct_list_check_resumen.total_sc AS total_sc',
+            'sau_ct_list_check_resumen.total_p_c AS total_p_c',
+            'sau_ct_list_check_resumen.total_p_nc AS total_p_nc',
+            'sau_ct_list_check_resumen.list_qualification_id AS id_qualification',
+            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
+        )
+        ->leftJoin('sau_ct_list_check_qualifications', function ($join) 
+        {
+            $join->on("sau_ct_list_check_qualifications.contract_id", "sau_ct_information_contract_lessee.id");
+            $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
+        })
+        ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
+        ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id')
+        ->groupBy('sau_ct_information_contract_lessee.id', 'sau_ct_list_check_resumen.total_standard', 'sau_ct_list_check_resumen.total_c', 'sau_ct_list_check_resumen.total_nc', 'sau_ct_list_check_resumen.total_sc', 'sau_ct_list_check_resumen.total_p_c', 'sau_ct_list_check_resumen.total_p_nc', 'sau_ct_list_check_resumen.list_qualification_id')
+        ->orderBy('sau_ct_information_contract_lessee.social_reason');
 
         $url = "/legalaspects/contractor";
 

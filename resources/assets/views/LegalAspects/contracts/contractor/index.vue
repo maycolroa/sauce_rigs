@@ -45,6 +45,7 @@
                 v-if="auth.can['contracts_r']"
                 configName="legalaspects-contractor"
                 @filtersUpdate="setFilters"
+                :customColumnsName="true" 
                 ></vue-table>
         </b-card-body>
 
