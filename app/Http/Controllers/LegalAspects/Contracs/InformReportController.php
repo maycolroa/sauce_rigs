@@ -240,7 +240,8 @@ class InformReportController extends Controller
                 })
                 ->orderBy('description')
                 ->where('sau_ct_informs_themes.inform_id', $request->inform_id)
-                ->take(30)->pluck('id', 'description');
+                ->take(30)
+                ->pluck('id', 'description');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($data)
@@ -580,8 +581,8 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
-            if ($this->proyectContract == 'SI')
-                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+            if ($this->proyectContract == 'SI' && $request->proyect_id_global)
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id_global);
 
             $total = InformContractItem::selectRaw('
                 COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
@@ -597,7 +598,7 @@ class InformReportController extends Controller
             ->groupBy('contract');
 
             if ($this->proyectContract == 'SI')
-                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
+                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id_global);
 
             foreach ($months as $key => $month)
             {

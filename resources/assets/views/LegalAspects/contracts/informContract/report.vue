@@ -192,6 +192,10 @@
                                     <vue-ajax-advanced-select :disabled="isLoading" v-model="year_global" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year_global')" :emptyAll="empty.year">
                                     </vue-ajax-advanced-select>
                                 </b-col>
+                                <b-col cols="4" v-if="auth.proyectContract == 'SI'">
+                                    <vue-ajax-advanced-select :disabled="isLoading || !year_global" v-model="proyect_id_global" name="proyects_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl">
+                                    </vue-ajax-advanced-select>
+                                </b-col>
                                 <b-col cols="4">
                                     <vue-ajax-advanced-select :disabled="isLoading || !year_global" v-model="theme_global" name="theme_global" label="Tema" placeholder="Tema" :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
                                     </vue-ajax-advanced-select>
@@ -203,38 +207,47 @@
                                         <b-col>
                                             <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                                 <tbody>
-                                                    <template v-for="(theme, index) in report_porcentage_global">
-                                                        <tr :key="index+round()" style="width:100%;">
-                                                            <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
-                                                        </tr>
-                                                        <tr :key="index+round()" style="width:100%">
-                                                            <template v-for="(month, indexM) in theme.headings[0]">
-                                                                <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
-                                                                <td v-else :key="indexM+round()">{{month}}</td>
+                                                    <div v-if="report_porcentage_global.length > 0">
+                                                        <template v-for="(theme, index) in report_porcentage_global">
+                                                            <tr :key="index+round()" style="width:100%;">
+                                                                <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                                            </tr>
+                                                            <tr :key="index+round()" style="width:100%">
+                                                                <template v-for="(month, indexM) in theme.headings[0]">
+                                                                    <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                                    <td v-else :key="indexM+round()">{{month}}</td>
+                                                                </template>
+                                                            </tr>
+                                                            <template v-for="(executed, indexE) in theme.items[0]">
+                                                                <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                                    <template v-for="(value, indexV) in executed">
+                                                                        <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                                            <center>{{value}}%</center>
+                                                                        </td>
+                                                                        <td v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                                            <center>{{value}}%</center>
+                                                                        </td>
+                                                                    </template>
+                                                                </tr>
+                                                                <tr v-else :key="indexE+round()" style="width:100%">
+                                                                    <template v-for="(value, indexV) in executed">
+                                                                        <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
+                                                                            <center>{{value}}%</center>
+                                                                        </td>        
+                                                                    </template>
+                                                                </tr>
                                                             </template>
-                                                        </tr>
-                                                        <template v-for="(executed, indexE) in theme.items[0]">
-                                                            <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
-                                                                <template v-for="(value, indexV) in executed">
-                                                                    <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
-                                                                    </td>
-                                                                    <td v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
-                                                                    </td>
-                                                                </template>
-                                                            </tr>
-                                                            <tr v-else :key="indexE+round()" style="width:100%">
-                                                                <template v-for="(value, indexV) in executed">
-                                                                    <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
-                                                                    </td>        
-                                                                </template>
-                                                            </tr>
                                                         </template>
-                                                    </template>
+                                                    </div>
                                                 </tbody>
                                             </table>
+                                            <div v-if="report_porcentage_global.length < 1 && theme_global">
+                                                <center>
+                                                    <b><p style="text-align: center; font-size: 18px;">
+                                                        El tema no tiene informacion debido a que no posee % de cumplimiento por la configuración de sus items.
+                                                    </p></b>
+                                                </center>
+                                            </div>
                                         </b-col>
                                     </b-row>
                                 </b-card>
@@ -356,13 +369,17 @@ export default {
     },
     watch: {
         'contract_id'() {
-            this.emptySelect('year', 'year')
-            this.emptySelect('theme', 'theme')
+            //this.emptySelect('year', 'year')
+            //this.emptySelect('theme', 'theme')
+            if (this.contract_id && this.year)
+            {
+                this.fetch()
+            }
         },
         'year'() {
             if (this.contract_id && this.year)
             {
-                this.emptySelect('theme', 'theme')
+                // this.emptySelect('theme', 'theme')
                 this.fetch()
             }
         },
@@ -379,12 +396,14 @@ export default {
             this.fetch4()
         },
         'year_global'() {
-            if (this.year_global)
-            {
-                this.emptySelect('theme_global', 'theme_global')
-                this.fetch5()
-            }
+            this.fetch5()
         },
+        'theme_global'() {
+            this.fetch5()
+        },
+        'proyect_id_global' () {
+            this.fetch5()
+        }
     },
     methods: {
         fetch()
