@@ -205,42 +205,6 @@
                                 <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                     <b-row>
                                         <b-col>
-                                            <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
-                                                <tbody>
-                                                    <div v-if="report_porcentage_global.length > 0">
-                                                        <template v-for="(theme, index) in report_porcentage_global">
-                                                            <tr :key="index+round()" style="width:100%;">
-                                                                <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
-                                                            </tr>
-                                                            <tr :key="index+round()" style="width:100%">
-                                                                <template v-for="(month, indexM) in theme.headings[0]">
-                                                                    <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
-                                                                    <td v-else :key="indexM+round()">{{month}}</td>
-                                                                </template>
-                                                            </tr>
-                                                            <template v-for="(executed, indexE) in theme.items[0]">
-                                                                <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
-                                                                    <template v-for="(value, indexV) in executed">
-                                                                        <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                                            <center>{{value}}%</center>
-                                                                        </td>
-                                                                        <td v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                            <center>{{value}}%</center>
-                                                                        </td>
-                                                                    </template>
-                                                                </tr>
-                                                                <tr v-else :key="indexE+round()" style="width:100%">
-                                                                    <template v-for="(value, indexV) in executed">
-                                                                        <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
-                                                                            <center>{{value}}%</center>
-                                                                        </td>        
-                                                                    </template>
-                                                                </tr>
-                                                            </template>
-                                                        </template>
-                                                    </div>
-                                                </tbody>
-                                            </table>
                                             <div v-if="report_porcentage_global.length < 1 && theme_global">
                                                 <center>
                                                     <b><p style="text-align: center; font-size: 18px;">
@@ -248,6 +212,40 @@
                                                     </p></b>
                                                 </center>
                                             </div>
+                                            <table v-else style="width:85%; font-size: 12px" class="table table-bordered mb-2">
+                                                <tbody>
+                                                    <template v-for="(theme, index) in report_porcentage_global">
+                                                        <tr :key="index+round()" style="width:100%;">
+                                                            <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                                        </tr>
+                                                        <tr :key="index+round()" style="width:100%">
+                                                            <template v-for="(month, indexM) in theme.headings[0]">
+                                                                <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                                <td v-else :key="indexM+round()">{{month}}</td>
+                                                            </template>
+                                                        </tr>
+                                                        <template v-for="(executed, indexE) in theme.items[0]">
+                                                            <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                                <template v-for="(value, indexV) in executed">
+                                                                    <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                    <td v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                </template>
+                                                            </tr>
+                                                            <tr v-else :key="indexE+round()" style="width:100%">
+                                                                <template v-for="(value, indexV) in executed">
+                                                                    <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>        
+                                                                </template>
+                                                            </tr>
+                                                        </template>
+                                                    </template>
+                                                </tbody>
+                                            </table>
                                         </b-col>
                                     </b-row>
                                 </b-card>
