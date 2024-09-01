@@ -447,19 +447,19 @@ class InformReportController extends Controller
 
             $qualifications_2 = [
                 'item' => 'Total',
-                'month0' => $qualifications->sum('month0') > 0 ? (round($qualifications->sum('month0')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
+                'month0' => $qualifications->sum('month0') > 0 ? (round($qualifications->sum('month0')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
                 'month1' => $qualifications->sum('month1') > 0 ? (round($qualifications->sum('month1')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month2' => $qualifications->sum('month2') > 0 ? (round($qualifications->sum('month2')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month3' => $qualifications->sum('month3') > 0 ? (round($qualifications->sum('month3')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month4' => $qualifications->sum('month4') > 0 ? (round($qualifications->sum('month4')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month5' => $qualifications->sum('month5') > 0 ? (round($qualifications->sum('month5')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month6' => $qualifications->sum('month6') > 0 ? (round($qualifications->sum('month6')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month7' => $qualifications->sum('month7') > 0 ? (round($qualifications->sum('month7')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month8' => $qualifications->sum('month8') > 0 ? (round($qualifications->sum('month8')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month9' => $qualifications->sum('month9') > 0 ? (round($qualifications->sum('month9')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month10' => $qualifications->sum('month10') > 0 ? (round($qualifications->sum('month10')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'month11' => $qualifications->sum('month11') > 0 ? (round($qualifications->sum('month11')/($qualifications->count() > 0 ? $qualifications->count() : 1), 2)) : 0,
-                'total' => $qualifications->sum('total') > 0 ? (round($qualifications->sum('total')/$qualifications->count(), 1)) : 0,
+                'month2' => $qualifications->sum('month2') > 0 ? (round($qualifications->sum('month2')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month3' => $qualifications->sum('month3') > 0 ? (round($qualifications->sum('month3')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month4' => $qualifications->sum('month4') > 0 ? (round($qualifications->sum('month4')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month5' => $qualifications->sum('month5') > 0 ? (round($qualifications->sum('month5')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month6' => $qualifications->sum('month6') > 0 ? (round($qualifications->sum('month6')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month7' => $qualifications->sum('month7') > 0 ? (round($qualifications->sum('month7')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month8' => $qualifications->sum('month8') > 0 ? (round($qualifications->sum('month8')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month9' => $qualifications->sum('month9') > 0 ? (round($qualifications->sum('month9')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month10' => $qualifications->sum('month10') > 0 ? (round($qualifications->sum('month10')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'month11' => $qualifications->sum('month11') > 0 ? (round($qualifications->sum('month11')/($qualifications->count() > 0 ? round($qualifications->count(), 2) : 1), 2)) : 0,
+                'total' => $qualifications->sum('total') > 0 ? (round($qualifications->sum('total')/round($qualifications->count(), 2), 1)) : 0,
             ];
 
             $qualifications_2 = collect($qualifications_2);
