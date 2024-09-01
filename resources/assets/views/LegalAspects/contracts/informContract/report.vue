@@ -28,7 +28,7 @@
                                         </vue-ajax-advanced-select>
                             </b-col>
                             <b-col v-if="auth.proyectContract == 'SI'">
-                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="proyect_id" name="proyects_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl">
+                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="proyect_id" name="proyect_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl" :allowEmpty="true">
                                 </vue-ajax-advanced-select>
                             </b-col>
                             <b-col cols="4">
@@ -193,7 +193,7 @@
                                     </vue-ajax-advanced-select>
                                 </b-col>
                                 <b-col cols="4" v-if="auth.proyectContract == 'SI'">
-                                    <vue-ajax-advanced-select :disabled="isLoading || !year_global" v-model="proyect_id_global" name="proyects_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl">
+                                    <vue-ajax-advanced-select :disabled="isLoading || !year_global" v-model="proyect_id_global" name="proyects_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl" :allowEmpty="true">
                                     </vue-ajax-advanced-select>
                                 </b-col>
                                 <b-col cols="4">
@@ -385,6 +385,9 @@ export default {
         },
         'theme'()
         {
+            this.fetch()
+        },
+        'proyect_id' () {
             this.fetch()
         },
         'item'()
