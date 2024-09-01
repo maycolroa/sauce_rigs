@@ -322,6 +322,7 @@ export default {
             proyect_id: '',
             year_global: '',
             theme_global: '',
+            proyect_id_global: '',
             contract_id: '',
             item: '',
             item_2: '',
