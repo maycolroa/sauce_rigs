@@ -493,7 +493,7 @@ export default {
         },
         fetch5()
         {
-            this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global}, {proyect_id: this.proyect_id});
+            this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global}, {proyect_id: this.proyect_id_global});
 
             axios.post('/legalAspects/informContract/reportTablePorcentageGlobal', this.postData2)
                 .then(response => {

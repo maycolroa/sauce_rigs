@@ -403,7 +403,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description');
             
-            if ($this->proyectContract == 'SI')
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             $total = InformContractItem::selectRaw('
@@ -417,7 +417,7 @@ class InformReportController extends Controller
             ->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"));
             
-            if ($this->proyectContract == 'SI')
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
             
             $total = $total->get()->toArray();
@@ -581,8 +581,8 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
-            if ($this->proyectContract == 'SI' && $request->proyect_id_global)
-                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id_global);
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
+                $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             $total = InformContractItem::selectRaw('
                 COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
@@ -597,8 +597,8 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('contract');
 
-            if ($this->proyectContract == 'SI')
-                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id_global);
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
+                $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             foreach ($months as $key => $month)
             {
