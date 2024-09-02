@@ -129,26 +129,26 @@
                                                 <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
                                                     <template v-for="(value, indexV) in executed">
                                                         <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                         </td>
                                                         <!--<td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
                                                             <center>{{value}}</center>
                                                         </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                         </td>
                                                     </template>
                                                 </tr>
                                                 <tr v-else :key="indexE+round()" style="width:100%">
                                                     <template v-for="(value, indexV) in executed">
                                                         <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                         </td>
                                                         <!--<td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                         </td>
                                                     </template>
                                                 </tr>
@@ -228,17 +228,17 @@
                                                             <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
                                                                 <template v-for="(value, indexV) in executed">
                                                                     <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
+                                                                        <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                                     </td>
                                                                     <td v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
+                                                                        <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                                     </td>
                                                                 </template>
                                                             </tr>
                                                             <tr v-else :key="indexE+round()" style="width:100%">
                                                                 <template v-for="(value, indexV) in executed">
                                                                     <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
+                                                                        <center>{{ value.length > 5 ? `${value.substring(0, 5)}` : value }}%</center>
                                                                     </td>        
                                                                 </template>
                                                             </tr>
@@ -261,7 +261,7 @@
                                         <tbody>
                                             <tr>
                                                 <th style="text-align: center;">{{month_name}} de {{year_global}}</th>
-                                                <th style="text-align: center;">{{percentage_global}}%</th>
+                                                <th style="text-align: center;">{{percentage_global.length > 5 ? `${percentage_global.substring(0, 5)}` : percentage_global}}%</th>
                                             </tr>
                                             <tr>
                                                 <td style="text-align: center;" ><b>Contratista</b></td>
