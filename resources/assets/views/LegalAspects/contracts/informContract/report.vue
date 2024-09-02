@@ -135,7 +135,7 @@
                                                             <center>{{value}}</center>
                                                         </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{redondearValor(value)}}%</center>
                                                         </td>
                                                     </template>
                                                 </tr>
@@ -144,11 +144,14 @@
                                                         <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>
+                                                        <td  v-else-if="indexV == 'item'" style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
                                                         <!--<td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
                                                             <center>{{value}}%</center>
                                                         </td>-->
                                                         <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                            <center>{{value}}%</center>
+                                                            <center>{{redondearValor(value)}}%</center>
                                                         </td>
                                                     </template>
                                                 </tr>
@@ -230,15 +233,18 @@
                                                                     <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                                         <center>{{value}}%</center>
                                                                     </td>
+                                                                    <td  v-else-if="indexV == 'item'" style="vertical-align: middle;" :key="indexV+round()">
+                                                                        <center>{{value}}</center>
+                                                                    </td>
                                                                     <td v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
+                                                                        <center>{{redondearValor(value)}}%</center>
                                                                     </td>
                                                                 </template>
                                                             </tr>
                                                             <tr v-else :key="indexE+round()" style="width:100%">
                                                                 <template v-for="(value, indexV) in executed">
                                                                     <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
+                                                                        <center>{{redondearValor(value)}}%</center>
                                                                     </td>        
                                                                 </template>
                                                             </tr>
@@ -408,6 +414,9 @@ export default {
         }
     },
     methods: {
+        redondearValor: function(valor) {
+            return Math.round(valor * 100) / 100;
+        },
         fetch()
         {
             if (!this.isLoading)
@@ -496,6 +505,7 @@ export default {
             axios.post('/legalAspects/informContract/reportTablePorcentageGlobal', this.postData2)
                 .then(response => {
                 this.report_porcentage_global = response.data
+                console.log(this.report_porcentage_global);
                 this.isLoading = false;
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
