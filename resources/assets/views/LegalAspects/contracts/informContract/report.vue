@@ -23,19 +23,19 @@
                             <strong>Reporte por contratista</strong> 
                         </template>
                         <b-row style="width:95%; padding-left: 5%">
-                            <b-col cols="4">
+                            <b-col cols="6">
                                 <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
                                         </vue-ajax-advanced-select>
                             </b-col>
-                            <b-col v-if="auth.proyectContract == 'SI'">
+                            <b-col cols="6" v-if="auth.proyectContract == 'SI'">
                                 <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="proyect_id" name="proyect_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl" :allowEmpty="true">
                                 </vue-ajax-advanced-select>
                             </b-col>
-                            <b-col cols="4">
+                            <b-col cols="6">
                                 <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
                                 </vue-ajax-advanced-select>
                             </b-col>
-                            <b-col cols="4">
+                            <b-col cols="6">
                                 <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme" name="theme" label="Tema" placeholder="Tema" :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
                                 </vue-ajax-advanced-select>
                             </b-col>
