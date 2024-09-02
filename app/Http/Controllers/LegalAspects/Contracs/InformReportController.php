@@ -108,7 +108,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->groupBy('sau_ct_inform_theme_item.description');
 
-            if ($this->proyectContract == 'SI')
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             foreach ($months as $key => $month)
@@ -322,7 +322,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('contract_id', $request->contract_id);
 
-            if ($this->proyectContract == 'SI')
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
             $qualifications = $qualifications->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
@@ -501,7 +501,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id');
 
-            if ($this->proyectContract == 'SI')
+            if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
             
             $qualifications = $qualifications->get();
@@ -723,7 +723,7 @@ class InformReportController extends Controller
         ->where('sau_ct_inform_contract.month', $month)
         ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
-        if ($this->proyectContract == 'SI')
+        if ($this->proyectContract == 'SI' && $request->proyect_id)
             $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
         $total = InformContractItem::selectRaw('
@@ -741,7 +741,7 @@ class InformReportController extends Controller
         ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
         ->groupBy('contract');
 
-        if ($this->proyectContract == 'SI')
+        if ($this->proyectContract == 'SI' && $request->proyect_id)
             $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
         if ($month != 'Total')
