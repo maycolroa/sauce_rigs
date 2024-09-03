@@ -305,13 +305,10 @@ class InformContractController extends Controller
 
                     foreach ($item['files'] as $keyF => $file) 
                     {
-                        \Log::info('entro aqui');
                         $create_file = true;
-                        \Log::info($file);
 
                         if (isset($file['id']))
                         {
-                            \Log::info('entro aqui 2');
                             $fileUpload = InformContractItemFile::findOrFail($file['id']);
 
                             if ($file['old_name'] == $file['file'])
@@ -321,7 +318,6 @@ class InformContractController extends Controller
                         }
                         else
                         {
-                            \Log::info('entro aqui 3');
                             $fileUpload = new InformContractItemFile();
                             $fileUpload->item_id = $itemModel->id;
                             $fileUpload->inform_id = $informContract->id;
@@ -329,7 +325,6 @@ class InformContractController extends Controller
 
                         if ($create_file)
                         {
-                            \Log::info('entro aqui 4');
                             $file_tmp = $file['file'];
                             $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                             $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
@@ -340,8 +335,6 @@ class InformContractController extends Controller
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
-                        
-                        \Log::info('entro aqui 5');
                     }
 
                     //Borrar archivos reemplazados
