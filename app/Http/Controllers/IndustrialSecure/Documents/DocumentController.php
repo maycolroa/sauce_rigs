@@ -62,26 +62,6 @@ class DocumentController extends Controller
           })
           ->groupBy('sau_documents_security.id')
           ->orderBy('id', 'DESC');
-
-        /*$url = "/industrialsecure/documents";
-
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-
-        if (COUNT($filters) > 0)
-        {
-          if (isset($filters['contracts']))
-            $files->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
-
-          $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
-          $files->betweenCreated($filters["dateCreate"]);
-          $files->betweenUpdated($filters["dateUpdate"]);
-        }
-
-        if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
-        {
-          $contract_id = $this->getContractIdUser($this->user->id);
-          $files->where('sau_ct_information_contract_lessee.id', $contract_id);
-        }*/
         
         return Vuetable::of($files)
             ->make();

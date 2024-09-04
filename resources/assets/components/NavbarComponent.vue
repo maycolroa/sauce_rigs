@@ -80,6 +80,48 @@
         <!-- Divider -->
         <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
 
+        <label class="nav-item navbar-text navbar-search-box p-0 active">
+          <div class="media-body line-height-condenced ml-3">
+            <div class="text-dark">{{ contractName }}</div>
+          </div>
+        </label>
+
+        <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
+            v-if="Object.keys(contract.data).length > 1">
+          <template slot="button-content">
+            <i class="fas fa-sync navbar-icon align-middle"></i>
+            <span class="d-lg-none align-middle">&nbsp; </span>
+          </template>
+
+          <b-list-group-item class="media d-flex align-items-center" style="min-height: 40px;">
+            <div class="media-body line-height-condenced ml-3">
+              <div class="text-dark">
+                <b-input 
+                  placeholder="Buscar..." 
+                  type="text"
+                  autocomplete="off"
+                  v-model="searchContract"
+                  />
+                </div>
+            </div>
+          </b-list-group-item>
+
+          <b-list-group flush style="max-height: 300px; overflow-y: scroll;">
+            <template v-for="(item, index) in contractData">
+              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
+                 :key="index" v-if="item.id != contract.selected && showItemContract(item.name)" @click="changeContract(item.id)">
+                <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
+                <div class="media-body line-height-condenced ml-3">
+                  <div class="text-dark">{{ item.name }}</div>
+                </div>
+              </b-list-group-item>
+            </template>
+          </b-list-group>
+        </b-nav-item-dropdown>
+
+        <!-- Divider -->
+        <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
+
         <!--Aplications-->
 
         <b-nav-item-dropdown no-caret :right="!isRTL" id="navbar-application-sauce" class="navbar-application-sauce mr-lg-3">
@@ -171,7 +213,12 @@ export default {
           selected: null,
           data: []
         },
-        searchCompany: ''
+        searchCompany: '',
+        contract: {
+          selected: null,
+          data: []
+        },
+        searchContract: ''
       }
     },
   methods: {
@@ -207,10 +254,35 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     },
+    getContract () {
+      axios
+        .get('/getContract')
+        .then(response => {
+            this.contract.selected = response.data.selected
+            this.contract.data = response.data.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
     changeCompany(company) {
       axios
         .post('/changeCompany', {
             company_id: company,
+            currentPath: this.$route.path,
+            currentName: this.$route.name
+        })
+        .then(response => {
+            window.location = response.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    }, 
+    changeContract(contract) {
+      axios
+        .post('/changeContract', {
+            contract_id: contract,
             currentPath: this.$route.path,
             currentName: this.$route.name
         })
@@ -232,10 +304,19 @@ export default {
       }
       else
           return true
+    },
+    showItemContract(label) {
+      if (this.searchContract)
+      {
+          return label.toLowerCase().includes(this.searchContract.toLowerCase())
+      }
+      else
+          return true
     }
   },
   created () {
     this.companies()
+    this.getContract()
   },
   computed: {
       apps: function () {
@@ -247,6 +328,9 @@ export default {
       companyName: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
       },
+      contractName: function () {
+        return this.contract.data[this.contract.selected] != undefined ? this.contract.data[this.contract.selected].name : ''
+      },
       id: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].id : ''
       },
@@ -256,6 +340,20 @@ export default {
         if (this.company.selected) 
         {
           _.forIn(this.company.data, (value, key) => {
+              data.push(value);
+          })
+
+          data.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        }
+
+        return data;
+      },
+      contractData() {
+        let data = [];
+
+        if (this.contract.selected) 
+        {
+          _.forIn(this.contract.data, (value, key) => {
               data.push(value);
           })
 

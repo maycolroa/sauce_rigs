@@ -92,7 +92,8 @@ class ResetPasswordController extends Controller
 
                         if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                         {
-                            $contract = $this->getContractUser(Auth::user()->id);
+                            $contract = $this->getContractUserLogin(Auth::user()->id);
+                            Session::put('contract_id', $contract->id);
 
                             if ($contract->active == 'SI')
                             {

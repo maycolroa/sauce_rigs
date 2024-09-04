@@ -95,8 +95,9 @@ class ContractEmployeeController extends Controller
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
         else 
         {
-            $employees->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_contract_employees.contract_id');
-            $employees->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
+            $employees->where('sau_ct_contract_employees.contract_id', $this->getContractIdUser($this->user->id));
+            /*$employees->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_contract_employees.contract_id');
+            $employees->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);*/
         }
 
         return Vuetable::of($employees)

@@ -24,6 +24,7 @@ use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use App\Inform\LegalAspects\Contract\Evaluations\InformManagerEvaluationContract;
 use App\Traits\Filtertrait;
+use App\Traits\ContractTrait;
 use App\Models\General\Company;
 use Carbon\Carbon;
 use DB;
@@ -32,6 +33,7 @@ use PDF;
 
 class EvaluationContractController extends Controller
 {
+    use ContractTrait;
     use Filtertrait;
 
     /**
@@ -83,8 +85,9 @@ class EvaluationContractController extends Controller
             $evaluation_contracts->where('sau_ct_evaluation_contract.evaluation_id', '=', $request->get('modelId'));
         else 
         {
-            $evaluation_contracts->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_evaluation_contract.contract_id');
-            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
+            $evaluation_contracts->where('sau_ct_evaluation_contract.contract_id', $this->getContractIdUser($this->user->id));
+            /*$evaluation_contracts->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_evaluation_contract.contract_id');
+            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);*/
         }
 
         $url = "/legalaspects/evaluations/contracts/".$request->get('modelId');

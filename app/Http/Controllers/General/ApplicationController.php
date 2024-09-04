@@ -19,6 +19,7 @@ use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
 use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\Administrative\Employees\EmployeeARL;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Vuetable\VuetableColumnManager;
 use App\Facades\General\PermissionService;
 
@@ -65,6 +66,30 @@ class ApplicationController extends Controller
       return $this->respondHttp401();
     }
 
+    public function getContract()
+    {
+      if (Auth::check())
+      {
+        $data = ContractLesseeInformation::select(
+          'sau_ct_information_contract_lessee.id',
+          'sau_ct_information_contract_lessee.social_reason AS name'
+        )
+        ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
+        ->where('sau_user_information_contract_lessee.user_id', Auth::user()->id)
+        ->get()
+        ->mapWithKeys(function ($item, $key) {
+          return [$item->id => $item];
+        });
+
+        return collect([
+          "selected" => Session::get('contract_id'), 
+          "data"     => $data
+        ]);
+      }
+
+      return $this->respondHttp401();
+    }
+
     /**
      * Update the company_id and check if the current route is allowed for the other company of the user, 
      * in case of not having permission, a route with a level lower than the current module is calculated 
@@ -76,6 +101,17 @@ class ApplicationController extends Controller
     public function changeCompany(Request $request)
     {
       Session::put('company_id', $request->input('company_id'));
+
+      $new_path = "/";
+
+      return $new_path;
+    }
+
+    public function changeContract(Request $request)
+    {
+      Session::put('contract_id', $request->input('contract_id'));
+
+      \Log::info(Session::get('contract_id'));
 
       $new_path = "/";
 

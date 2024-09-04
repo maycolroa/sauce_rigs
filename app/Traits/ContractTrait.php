@@ -12,6 +12,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
+use Session;
 //use App\Models\LegalAspects\Contracts\LiskCheckResumen;
 
 trait ContractTrait
@@ -48,7 +49,7 @@ trait ContractTrait
         return $users;
     }
 
-    public function getContractUser($user_id, $company_id = null)
+    public function getContractUserLogin($user_id, $company_id = null)
     {
         if (!is_numeric($user_id))
             throw new \Exception('User invalid');
@@ -61,6 +62,29 @@ trait ContractTrait
             )
             ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
             ->where('sau_user_information_contract_lessee.user_id', $user_id);
+
+        if ($company_id)
+            $contract->company_scope = $company_id;
+
+        $contract = $contract->first();
+
+        return $contract ? $contract : NULL;
+    }
+
+    public function getContractUser($user_id, $company_id = null)
+    {
+        if (!is_numeric($user_id))
+            throw new \Exception('User invalid');
+
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $contract = ContractLesseeInformation::select(
+                'sau_ct_information_contract_lessee.*'
+            )
+            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
+            ->where('sau_user_information_contract_lessee.user_id', $user_id)
+            ->where('sau_ct_information_contract_lessee.id', Session::get('contract_id'));
 
         if ($company_id)
             $contract->company_scope = $company_id;
@@ -109,7 +133,8 @@ trait ContractTrait
         $contract = ContractLesseeInformation::select(
                 'sau_ct_information_contract_lessee.id AS id')
             ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
-            ->where('sau_user_information_contract_lessee.user_id', $user_id);
+            ->where('sau_user_information_contract_lessee.user_id', $user_id)
+            ->where('sau_ct_information_contract_lessee.id', Session::get('contract_id'));
 
         if ($company_id)
             $contract->company_scope = $company_id;
