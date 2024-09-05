@@ -292,7 +292,7 @@ export default {
   },
   data() {
     return {
-        loading: this.isEdit,
+        loading: false,
         form: Form.makeFrom(this.qualification, this.method, false, false),
         ready: false,
         states: [
@@ -373,6 +373,7 @@ export default {
     },
     saveState()
     {
+        this.loading = true;
         let data = new FormData();
         data.append('state', this.form.state);
         data.append('motive', this.form.motive);
