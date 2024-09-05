@@ -293,6 +293,7 @@ export default {
     return {
         loading: this.isEdit,
         form: Form.makeFrom(this.qualification, this.method, false, false),
+        ready: false,
         states: [
           {text: 'Aprobada', value: 'Aprobada'},
           {text: 'Rechazada', value: 'Rechazada'}
@@ -375,13 +376,12 @@ export default {
       if (this.ready)
       {
         this.loading = true;
-        
+
         let data = new FormData();
         data.append('state', this.form.state);
         data.append('motive', this.form.motive);
         data.append('qualification_date', this.form.qualification_date);
 
-        this.form.resetError()
         this.form
           .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualificationState', false, data)
           .then(response => {

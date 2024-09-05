@@ -395,6 +395,7 @@ class InspectionQualificationController extends Controller
 
     public function saveQualificationState(Request $request)
     {
+        \Log::info($request);
         try
         {
             DB::beginTransaction();

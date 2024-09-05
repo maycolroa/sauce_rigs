@@ -227,7 +227,7 @@
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
-        <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
+        <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">Atras</b-btn>
       </template>
     </div>
   </b-form>
@@ -356,7 +356,6 @@ export default {
         data.append('actionPlan', JSON.stringify(item.actionPlan));
         data.append(`themes[${indexTheme}][${indexItem}]`, JSON.stringify({ actionPlan: item.actionPlan }));
 
-        this.form.resetError()
         this.form
           .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualification', false, data)
           .then(response => {
@@ -383,7 +382,6 @@ export default {
         data.append('motive', this.form.motive);
         data.append('qualification_date', this.form.qualification_date);
 
-        this.form.resetError()
         this.form
           .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualificationState', false, data)
           .then(response => {

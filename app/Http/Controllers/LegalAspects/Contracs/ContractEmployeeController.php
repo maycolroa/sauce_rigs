@@ -832,41 +832,50 @@ class ContractEmployeeController extends Controller
 
         $contract = $this->getContractUser($this->user->id, $this->company);
 
-        if($request->has('keyword'))
+        if ($request->has('contract_id') || $contract)
         {
-            $keyword = "%{$request->keyword}%";
+            if($request->has('keyword'))
+            {
+                $keyword = "%{$request->keyword}%";
 
-            $activities = ProyectContract::select("id", "name")
-                ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id');
+                $activities = ProyectContract::select("id", "name")
+                    ->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id');
 
-            if ($request->has('contract_id'))
-                $activities->where('sau_ct_contracts_proyects.contract_id', $request->contract_id);
+                if ($request->has('contract_id'))
+                    $activities->where('sau_ct_contracts_proyects.contract_id', $request->contract_id);
+                else
+                    $activities->where('sau_ct_contracts_proyects.contract_id', $contract->id);
+
+                $activities = $activities->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_ct_proyects.name', 'like', $keyword);
+                    })
+                    ->where('company_id', $this->company)
+                    ->orderBy('name')
+                    ->take(30)->pluck('id', 'name');
+
+                return $this->respondHttp200([
+                    'options' => $this->multiSelectFormat($activities)
+                ]);
+            }
             else
-                $activities->where('sau_ct_contracts_proyects.contract_id', $contract->id);
+            {
+                $activities = ProyectContract::selectRaw("id, name")->where('company_id', $this->company);
 
-            $activities = $activities->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_ct_proyects.name', 'like', $keyword);
-                })
-                ->where('company_id', $this->company)
-                ->orderBy('name')
-                ->take(30)->pluck('id', 'name');
+                if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+                {
+                    $activities->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )->where('sau_ct_contracts_proyects.contract_id', $contract->id);
+                }
 
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
-            ]);
+                $activities = $activities->orderBy('name')->pluck('id', 'name');
+            
+                return $this->multiSelectFormat($activities);
+            }
         }
         else
         {
-            $activities = ProyectContract::selectRaw("id, name")->where('company_id', $this->company);
-
-            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-            {
-                $activities->join('sau_ct_contracts_proyects', 'sau_ct_proyects.id','sau_ct_contracts_proyects.proyect_id' )->where('sau_ct_contracts_proyects.contract_id', $contract->id);
-            }
-
-            $activities = $activities->orderBy('name')->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($activities);
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat([])
+            ]);
         }
     }
 
