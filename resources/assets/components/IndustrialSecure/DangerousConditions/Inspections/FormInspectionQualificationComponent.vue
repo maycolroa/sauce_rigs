@@ -21,6 +21,13 @@
         <b-card-body>
           <information-general
           :qualification="qualification"/>
+          <b-form-row>
+            <vue-radio :checked="form.state" class="col-md-12" v-model="form.state" :options="states" name="state" :error="form.errorsFor('location_level_form')" label="Estado" @input="saveState()">
+              </vue-radio>
+          </b-form-row> 
+          <b-form-row v-if="form.state == 'Rechazada'">
+              <vue-textarea class="col-md-12" v-model="form.motive" label="Motivo de rechazo" name="v" type="text" placeholder="Motivo" :error="form.errorsFor('motive')" @onBlur="saveState()"></vue-textarea>
+          </b-form-row>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -236,6 +243,7 @@ import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.v
 import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from "./InformationGeneral.vue";
 import FormImage from '../FormImageComponent.vue';
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 
 export default {
   components: {
@@ -245,7 +253,8 @@ export default {
     VueTextarea,
     ActionPlanComponent,
     InformationGeneral,
-    FormImage
+    FormImage,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -262,6 +271,8 @@ export default {
     qualification: {
       default() {
         return {
+          state: '',
+          motive: '',
           themes: [],
           add_fields: []
         };
@@ -281,7 +292,11 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.qualification, this.method, false, false)
+        form: Form.makeFrom(this.qualification, this.method, false, false),
+        states: [
+          {text: 'Aprobada', value: 'Aprobada'},
+          {text: 'Rechazada', value: 'Rechazada'}
+        ],
     };
   },
   methods: {
@@ -354,6 +369,27 @@ export default {
             this.loading = false;
           });
       }
+    },
+    saveState()
+    {
+        let data = new FormData();
+        data.append('state', this.form.state);
+        data.append('motive', this.form.motive);
+        data.append('qualification_date', this.form.qualification_date);
+
+        this.form.resetError()
+        this.form
+          .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualificationState', false, data)
+          .then(response => {
+            this.form.state = response.data.data.state;
+            this.form.motive = response.data.data.motive;
+
+            this.loading = false;
+            
+          })
+          .catch(error => {
+            this.loading = false;
+          });
     }
   }
 };

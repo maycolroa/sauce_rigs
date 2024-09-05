@@ -763,6 +763,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('inspection/qualification/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadImage');
         Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveImage');
         Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveQualification');
+
+        Route::post('inspection/qualification/saveQualificationState', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveQualificationState');
         Route::post('inspection/qualification/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@data');
         Route::ApiResource('inspection/qualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController');
         Route::post('inspection/export', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@export');

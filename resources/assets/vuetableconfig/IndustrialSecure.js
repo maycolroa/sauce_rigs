@@ -769,7 +769,8 @@ export default [
                 id: 'id',
             },
             permission: 'ph_inspections_r'
-          }]
+          }
+        ]
       },
       {
             type: 'simpleDownload',
@@ -790,15 +791,17 @@ export default [
       },
       {
         type: 'base',
-        buttons: [{
-        name: 'delete',
-        data: {
-            action: '/industrialSecurity/dangerousConditions/inspection/qualification/',
-            id: 'id',
-            messageConfirmation: 'Esta seguro de borrar la inspección planeada realizada'
-        },
-        permission: 'ph_qualification_inspection_d'
-        }],
+        buttons: [
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/dangerousConditions/inspection/qualification/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la inspección planeada realizada'
+                },
+                permission: 'ph_qualification_inspection_d'
+            }
+        ],
       }],
     configuration: {
         urlData: '/industrialSecurity/dangerousConditions/inspection/qualification/data',

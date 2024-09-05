@@ -12,6 +12,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionFirm;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationState;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
@@ -68,8 +69,8 @@ class InspectionQualificationController extends Controller
                 'sau_employees_headquarters.name AS headquarter',
                 'sau_employees_processes.name AS process',
                 'sau_employees_areas.name AS area',
-                'sau_users.name AS qualificator'/*,
-                'sau_ph_inspection_items_qualification_area_location.level_risk AS level_risk'*/
+                'sau_users.name AS qualificator',
+                'sau_ph_inspection_qualification_state.state AS state'
             )
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
@@ -78,8 +79,9 @@ class InspectionQualificationController extends Controller
             ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+            ->leftJoin('sau_ph_inspection_qualification_state', 'sau_ph_inspection_qualification_state.qualification_date', 'sau_ph_inspection_items_qualification_area_location.qualification_date')
             ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId)
-            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator'/*, 'level_risk'*/)
+            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator', 'state')
             ->orderBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'DESC');
 
         $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
@@ -130,6 +132,7 @@ class InspectionQualificationController extends Controller
                 'data' => $this->getInformationInspection($id),
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -255,11 +258,15 @@ class InspectionQualificationController extends Controller
         
         if ($qualification->item->section->inspection->type_id == 1)
             $compliance = $this->complianceType1($id);
+
+        $state = InspectionQualificationState::where('qualification_date', $qualification->qualification_date)->first();
             
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
         $data->put('type', $qualification->item->section->inspection->type_id);
         $data->put('version', $qualification->item->section->inspection->version);
+        $data->put('state', $state ? $state->state : NULL);
+        $data->put('motive', $state ? $state->motive : NULL);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
         $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');
         $data->put('process', $qualification->process ? $qualification->process->name : '');
@@ -325,50 +332,6 @@ class InspectionQualificationController extends Controller
         return $consultas;
     }
 
-
-    /*private function complianceType2($id)
-    {        
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
-
-        $consultas2 = InspectionItemsQualificationAreaLocation::select(
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 1, sau_ph_inspection_section_items.compliance_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_cumple'),
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 4, sau_ph_inspection_section_items.partial_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_parcial'),
-            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 2, 0, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_no_cumple')
-            )
-            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
-            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
-            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
-            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
-
-        if ($qualification->employee_regional_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
-
-        if ($qualification->employee_headquarter_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
-
-        if ($qualification->employee_process_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
-
-        if ($qualification->employee_area_id)
-            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
-
-        $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
-        ->select(
-            DB::raw('ROUND(AVG(t_cumple), 1) AS p_cumple'),
-            DB::raw('ROUND(AVG(t_parcial), 1) AS p_cumple_p'),
-            DB::raw('ROUND((100 - AVG(t_cumple) - AVG(t_parcial)), 1) AS p_no_cumple')
-        )
-        ->mergeBindings($consultas2->getQuery())
-        ->first();
-
-        return $consultas2;
-    }*/
-
     public function saveQualification(SaveQualificationRequest $request)
     {
         $keywords = $this->user->getKeywords();
@@ -388,11 +351,6 @@ class InspectionQualificationController extends Controller
             $item = $qualification->item;
 
             $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
-
-            /*$regionals = $inspection->regionals ? $inspection->regionals->implode('name', ', ') : null;
-            $headquarters =  $inspection->headquarters ? $inspection->headquarters->implode('name', ', ') : null;
-            $processes = $inspection->processes ? $inspection->processes->implode('name', ', ') : null;
-            $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;*/
 
             if ($confLocation['regional'] == 'SI')
                 $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
@@ -431,6 +389,43 @@ class InspectionQualificationController extends Controller
 
         } catch (Exception $e){
             DB::rollback();
+            return $this->respondHttp500();
+        }
+    }
+
+    public function saveQualificationState(Request $request)
+    {
+        try
+        {
+            DB::beginTransaction();
+
+            $qualification = InspectionItemsQualificationAreaLocation::where('qualification_date', $request->qualification_date)->first();
+
+            $state = InspectionQualificationState::updateOrCreate(
+                ['qualification_date' => $qualification->qualification_date],
+                [
+                    'qualification_date' => $qualification->qualification_date,
+                    'state' => $request->state,
+                    'motive' => $request->state == 'Aprobada' ? NULL : $request->motive
+                ]
+            );
+
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito el estado de la inspeccion realizada el dia '.$qualification->qualification_date);
+
+            DB::commit();
+
+            $data = [
+                'state' => $state->state,
+                'motive' => $state->motive ? $state->motive : ''
+            ];
+
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+        } catch (Exception $e){
+            DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
     }

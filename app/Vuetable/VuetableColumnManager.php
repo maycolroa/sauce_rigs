@@ -581,6 +581,10 @@ class VuetableColumnManager
 
         $colums = array_merge($colums, $this->getColumnsLocations());
         $colums = array_merge($colums, [
+            ['name' => 'sau_ph_inspection_qualification_state.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> false, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ]);
+
+        $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
 
