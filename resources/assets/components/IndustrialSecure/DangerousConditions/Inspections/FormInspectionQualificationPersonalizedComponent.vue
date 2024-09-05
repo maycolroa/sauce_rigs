@@ -298,7 +298,7 @@ export default {
         states: [
           {text: 'Aprobada', value: 'Aprobada'},
           {text: 'Rechazada', value: 'Rechazada'}
-        ],s
+        ],
     };
   },
   methods: {
