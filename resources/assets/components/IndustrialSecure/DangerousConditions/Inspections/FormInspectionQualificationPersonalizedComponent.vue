@@ -373,28 +373,26 @@ export default {
     },
     saveState()
     {
-      if (this.ready)
-      {
-        this.loading = true;
+      console.log('entro aqui')
+      this.loading = true;
         
-        let data = new FormData();
-        data.append('state', this.form.state);
-        data.append('motive', this.form.motive);
-        data.append('qualification_date', this.form.qualification_date);
+      let data = new FormData();
+      data.append('state', this.form.state);
+      data.append('motive', this.form.motive);
+      data.append('qualification_date', this.form.qualification_date);
 
-        this.form
-          .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualificationState', false, data)
-          .then(response => {
-            this.form.state = response.data.data.state;
-            this.form.motive = response.data.data.motive;
+      this.form
+        .submit('/industrialSecurity/dangerousConditions/inspection/qualification/saveQualificationState', false, data)
+        .then(response => {
+          this.form.state = response.data.data.state;
+          this.form.motive = response.data.data.motive;
 
-            this.loading = false;
-            
-          })
-          .catch(error => {
-            this.loading = false;
-          });
-      }
+          this.loading = false;
+          
+        })
+        .catch(error => {
+          this.loading = false;
+        });
     }
   }
 };
