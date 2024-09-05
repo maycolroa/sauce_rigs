@@ -26,7 +26,7 @@
               </vue-radio>
           </b-form-row> 
           <b-form-row v-if="form.state == 'Rechazada'">
-              <vue-textarea class="col-md-12" v-model="form.motive" label="Motivo de rechazo" name="v" type="text" placeholder="Motivo" :error="form.errorsFor('motive')" @onBlur="saveState()"></vue-textarea>
+              <vue-textarea class="col-md-12" v-model="form.motive" label="Motivo de rechazo" name="motive" type="text" placeholder="Motivo" :error="form.errorsFor('motive')" @onBlur="saveState()"></vue-textarea>
           </b-form-row>
         </b-card-body>
       </b-collapse>

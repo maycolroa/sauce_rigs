@@ -1,7 +1,13 @@
 <template>
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-
+    <b-card v-if="isEdit || viewOnly" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+        <b-form-row>
+          <vue-radio :disabled="viewOnly" :checked="form.state" class="col-md-12" v-model="form.state" :options="states" name="state" :error="form.errorsFor('state')" label="Estado">
+            </vue-radio>
+          <vue-textarea v-if="form.state == 'Rechazada'" :disabled="viewOnly" class="col-md-12" v-model="form.motive" label="Motivo de rechazo" name="motive" type="text" placeholder="Motivo" :error="form.errorsFor('motive')"></vue-textarea>
+        </b-form-row>
+    </b-card>
     <b-form-row>
       <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :multiple="false" :options="rates" :hide-selected="false" name="rate" :error="form.errorsFor('rate')" label="Severidad" placeholder="Seleccione el grado de severidad">
         </vue-advanced-select>
@@ -179,6 +185,8 @@ export default {
           image_3: '',
           path_3: '',
           old_3: '',
+          state: '',
+          motive: ''
         };
       }
     }
@@ -193,9 +201,13 @@ export default {
       loading: false,
       form: Form.makeFrom(this.report, this.method),
       condition: [
-          {text: 'Condiciones Inseguras', value: 1},
-          {text: 'Comportamientos Inseguros', value: 2}
-        ],
+        {text: 'Condiciones Inseguras', value: 1},
+        {text: 'Comportamientos Inseguros', value: 2}
+      ],
+      states: [
+        {text: 'Aprobada', value: 'Aprobada'},
+        {text: 'Rechazada', value: 'Rechazada'}
+      ],
     };
   },
   methods: {

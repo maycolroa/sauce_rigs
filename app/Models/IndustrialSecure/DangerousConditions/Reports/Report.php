@@ -37,7 +37,9 @@ class Report extends Model
         'employee_headquarter_id',
         'employee_process_id',
         'employee_area_id',
-        'other_condition'
+        'other_condition',
+        'state',
+        'motive'
     ];
 
     public function regional()

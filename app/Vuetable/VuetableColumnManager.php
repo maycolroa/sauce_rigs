@@ -653,7 +653,8 @@ class VuetableColumnManager
             [ 'name'=> 'sau_ph_conditions.description', 'data'=> 'condition', 'title'=> 'Hallazgo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             [ 'name'=> 'sau_ph_conditions_types.description', 'data'=> 'type', 'title'=> 'Tipo de reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             [ 'name'=> 'sau_ph_reports.rate', 'data'=> 'rate', 'title'=> 'Severidad', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            [ 'name'=> 'sau_ph_reports.created_at', 'data'=> 'created_at', 'title'=> 'Fecha de creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            [ 'name'=> 'sau_ph_reports.created_at', 'data'=> 'created_at', 'title'=> 'Fecha de creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            [ 'name'=> 'sau_ph_reports.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ]);
 
         $colums = array_merge($colums, [

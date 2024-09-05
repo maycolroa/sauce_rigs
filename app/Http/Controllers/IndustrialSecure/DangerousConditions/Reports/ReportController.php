@@ -64,7 +64,8 @@ class ReportController extends Controller
             'sau_users.name as user',
             'sau_ph_conditions.description as condition',
             'sau_ph_conditions_types.description as type',
-            'sau_ph_reports.rate'
+            'sau_ph_reports.rate',
+            'sau_ph_reports.state'
         )
         ->join('sau_users', 'sau_users.id', 'sau_ph_reports.user_id')
         ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
