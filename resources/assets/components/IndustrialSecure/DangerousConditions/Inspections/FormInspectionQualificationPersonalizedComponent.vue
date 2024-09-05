@@ -373,9 +373,6 @@ export default {
     },
     saveState()
     {
-      if (this.ready)
-      {
-        this.loading = true;
         let data = new FormData();
         data.append('state', this.form.state);
         data.append('motive', this.form.motive);
@@ -393,7 +390,6 @@ export default {
           .catch(error => {
             this.loading = false;
           });
-      }
     }
   }
 };
