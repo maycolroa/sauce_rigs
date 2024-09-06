@@ -675,9 +675,6 @@ class FileUploadController extends Controller
 
               $beforeState = $file->state;
 
-              \Log::info('antes before: '.$beforeState);
-              \Log::info('antes file: '.$file->state);
-
               $file->state = $fileF['state'] == null ? 'PENDIENTE' : $fileF['state'];
               $file->observations = $fileF['observations'];
               $file->reason_rejection = $fileF['state'] == 'RECHAZADO' ? $fileF['reason_rejection'] : NULL;
@@ -686,24 +683,24 @@ class FileUploadController extends Controller
               if(!$file->save()) {
                 return $this->respondHttp500();
               }
-
-              \Log::info('despues before: '.$beforeState);
-              \Log::info('despues file: '.$file->state);
               
               if ($beforeState != $file->state)
               {
-                \Log::info('entro archivo cambio estado');
-                \Log::info($file->state);
                 foreach ($contracts as $key => $contract) 
                 {
-                  FileModuleState::updateOrCreate(['file_id' => $file->id, 'date' => date('Y-m-d')],
-                  [
-                    'contract_id' => $contract->id,
-                    'file_id' => $file->id,
-                    'module' => 'Subida de Archivos',
-                    'state' => $file->state,
-                    'date' => date('Y-m-d')
-                  ]);
+                  FileModuleState::updateOrCreate(
+                    [
+                      'file_id' => $file->id, 
+                      'date' => date('Y-m-d')
+                    ],
+                    [
+                      'contract_id' => $contract->id,
+                      'file_id' => $file->id,
+                      'module' => 'Empleados',
+                      'state' => $file->state,
+                      'date' => Carbon::now()->format('Y-m-d')
+                    ]
+                  );
                 }
               }     
             }
