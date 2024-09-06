@@ -682,8 +682,12 @@ class FileUploadController extends Controller
                 return $this->respondHttp500();
               }
 
+              \Log::info($beforeFile->state);
+              \Log::info($file->state);
               if ($beforeFile->state != $file->state)
               {
+                \Log::info('entro archivo cambio estado');
+                \Log::info($file->state);
                 foreach ($contracts as $key => $contract) 
                 {
                   FileModuleState::updateOrCreate(['file_id' => $file->id, 'date' => date('Y-m-d')],
