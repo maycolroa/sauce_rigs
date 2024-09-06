@@ -673,6 +673,9 @@ class FileUploadController extends Controller
               $file = FileUpload::find($fileF['id']);
               $beforeFile= $file;
 
+              \Log::info('antes before: '.$beforeFile->state);
+              \Log::info('antes file: '.$file->state);
+
               $file->state = $fileF['state'] == null ? 'PENDIENTE' : $fileF['state'];
               $file->observations = $fileF['observations'];
               $file->reason_rejection = $fileF['state'] == 'RECHAZADO' ? $fileF['reason_rejection'] : NULL;
@@ -682,8 +685,9 @@ class FileUploadController extends Controller
                 return $this->respondHttp500();
               }
 
-              \Log::info($beforeFile->state);
-              \Log::info($file->state);
+              \Log::info('despues before: '.$beforeFile->state);
+              \Log::info('despues file: '.$file->state);
+              
               if ($beforeFile->state != $file->state)
               {
                 \Log::info('entro archivo cambio estado');
