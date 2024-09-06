@@ -671,9 +671,11 @@ class FileUploadController extends Controller
             foreach ($document['files'] as $key => $fileF) 
             {       
               $file = FileUpload::find($fileF['id']);
-              $beforeFile= $file;
+              $beforeFile = $file;
 
-              \Log::info('antes before: '.$beforeFile->state);
+              $beforeState = $file->state;
+
+              \Log::info('antes before: '.$beforeState);
               \Log::info('antes file: '.$file->state);
 
               $file->state = $fileF['state'] == null ? 'PENDIENTE' : $fileF['state'];
@@ -685,10 +687,10 @@ class FileUploadController extends Controller
                 return $this->respondHttp500();
               }
 
-              \Log::info('despues before: '.$beforeFile->state);
+              \Log::info('despues before: '.$beforeState);
               \Log::info('despues file: '.$file->state);
               
-              if ($beforeFile->state != $file->state)
+              if ($beforeState != $file->state)
               {
                 \Log::info('entro archivo cambio estado');
                 \Log::info($file->state);
