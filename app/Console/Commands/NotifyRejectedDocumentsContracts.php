@@ -114,7 +114,7 @@ class NotifyRejectedDocumentsContracts extends Command
                             NotificationMail::
                                 subject('Sauce - Contratistas Carga de archivos')
                                 ->recipients($recipient)
-                                ->message("Listado de archivos rechazados o modificados por su contratante el dia de ayer")
+                                ->message("Listado de archivos aceptados,rechazados por su contratante el dia de ayer")
                                 ->module('contracts')
                                 ->event('Tarea programada: NotifyRejectedDocumentsContracts')
                                 ->table($iter->toArray())
