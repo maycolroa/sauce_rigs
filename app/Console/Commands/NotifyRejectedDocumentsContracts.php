@@ -61,7 +61,7 @@ class NotifyRejectedDocumentsContracts extends Command
             $usersCreator = collect([]);
 
             $contracts = ContractLesseeInformation::where('company_id', $company)
-            ->isActive();
+            ->isActive()->where('id', 74);
             $contracts->company_scope = $company;
             $contracts = $contracts->get();
 
@@ -83,7 +83,7 @@ class NotifyRejectedDocumentsContracts extends Command
                 ->where('date', $date)
                 ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
                 ->where('sau_ct_file_module_state.contract_id', $contract->id)
-                ->whereIN('sau_ct_file_upload_contracts_leesse.state', ['RECHAZADO', 'ACEPTADO'])
+                ->whereIn('sau_ct_file_upload_contracts_leesse.state', ['RECHAZADO', 'ACEPTADO'])
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)

@@ -682,7 +682,7 @@ class FileUploadController extends Controller
                 return $this->respondHttp500();
               }
 
-              if ($beforeFile->state != $file->state && $file->state == 'RECHAZADO')
+              if ($beforeFile->state != $file->state)
               {
                 foreach ($contracts as $key => $contract) 
                 {
@@ -691,7 +691,7 @@ class FileUploadController extends Controller
                     'contract_id' => $contract->id,
                     'file_id' => $file->id,
                     'module' => 'Subida de Archivos',
-                    'state' => 'RECHAZADO',
+                    'state' => $file->state,
                     'date' => date('Y-m-d')
                   ]);
                 }
