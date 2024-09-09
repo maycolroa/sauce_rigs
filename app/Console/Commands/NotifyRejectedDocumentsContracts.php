@@ -10,6 +10,7 @@ use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\FileModuleState;
+use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\System\Licenses\License;
 use DB;
 
@@ -61,7 +62,7 @@ class NotifyRejectedDocumentsContracts extends Command
             $usersCreator = collect([]);
 
             $contracts = ContractLesseeInformation::where('company_id', $company)
-            ->isActive()->where('id', 74);
+            ->isActive();//->where('id', 74);
             $contracts->company_scope = $company;
             $contracts = $contracts->get();
 
@@ -95,11 +96,25 @@ class NotifyRejectedDocumentsContracts extends Command
 
                     foreach ($uploadDocuments as $document)
                     {
+                        $employee = '';
+
+                        if ($document->module == 'Empleados')
+                        {
+                            $employee = ContractEmployee::select('sau_ct_contract_employees.name')
+                            ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.employee_id', 'sau_ct_contract_employees.id')
+                            ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_employee.file_id')
+                            ->where('sau_ct_file_upload_contracts_leesse.id', $document->id)
+                            ->where('sau_ct_contract_employees.company_id', $company)
+                            ->withoutGlobalScopes()
+                            ->first()->name;
+                        }
+
                         $iter = $data->get($document->email);
                         $iter->push([
                             'Código' => $document->id,
                             'Documento' => $document->name,
                             'Módulo' => $document->module,
+                            'Empleado' => $employee,
                             'Estado' => $document->state,
                             'Motivo del rechazo' => $document->motivo
                         ]);
