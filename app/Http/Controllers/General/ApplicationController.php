@@ -111,8 +111,6 @@ class ApplicationController extends Controller
     {
       Session::put('contract_id', $request->input('contract_id'));
 
-      \Log::info(Session::get('contract_id'));
-
       $new_path = "/";
 
       return $new_path;
