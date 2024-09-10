@@ -131,7 +131,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('notify-rejected-documents-contracts')
             ->timezone('America/Bogota')
-            ->dailyAt('02:00');
+            ->dailyAt('0 */2 * * *');
+
 
         $schedule->command('delete-old-images-api')
             ->timezone('America/Bogota')

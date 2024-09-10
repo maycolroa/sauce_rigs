@@ -11,11 +11,14 @@ use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
+use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\System\Licenses\License;
+use App\Traits\ContractTrait;
 use DB;
 
 class NotifyRejectedDocumentsContracts extends Command
 {
+    use ContractTrait;
     /**
      * The name and signature of the console command.
      *
@@ -47,7 +50,7 @@ class NotifyRejectedDocumentsContracts extends Command
      */
     public function handle()
     {
-        $date = Carbon::now()->subDay()->format('Y-m-d');
+        $date = Carbon::now()->format('Y-m-d');
 
         $companies = License::selectRaw('DISTINCT company_id')
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
@@ -69,6 +72,16 @@ class NotifyRejectedDocumentsContracts extends Command
             foreach ($contracts as $key => $contract) 
             {
                 $data = collect([]);
+                $ids_file_notificate = [];
+                $responsible_sst = -1;
+
+                if ($contract->user_sst_id)
+                    $responsible_sst = User::find($contract->user_sst_id);
+                else
+                {
+                    $users_cont = $this->getUsersContract($contract->id, $company);
+                    $responsible_sst = User::find($users_cont[0]->id);
+                }
 
                 $uploadDocuments = FileModuleState::select(
                     'sau_ct_file_upload_contracts_leesse.id AS id',
@@ -85,6 +98,7 @@ class NotifyRejectedDocumentsContracts extends Command
                 ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
                 ->where('sau_ct_file_module_state.contract_id', $contract->id)
                 ->whereIn('sau_ct_file_upload_contracts_leesse.state', ['RECHAZADO', 'ACEPTADO'])
+                ->where('sau_ct_file_upload_contracts_leesse.notificate', false)
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)
@@ -118,11 +132,15 @@ class NotifyRejectedDocumentsContracts extends Command
                             'Estado' => $document->state,
                             'Motivo del rechazo' => $document->motivo
                         ]);
+
+                        array_push($ids_file_notificate, $document->id);
                     }
 
                     foreach ($data as $key => $iter)
                     {          
-                        $recipient = User::where('email', $key)->first();
+                        $recipient = collect([]);
+                        $recipient->push(User::where('email', $key)->first());
+                        $recipient->push($responsible_sst);
 
                         try
                         {         
@@ -140,7 +158,12 @@ class NotifyRejectedDocumentsContracts extends Command
                             \Log::info($e->getMessage());
                             continue;
                         }         
-                    }                            
+                    } 
+                    
+                    $files_update = FileUpload::whereIn('id', $ids_file_notificate)
+                        ->update([
+                            'notificate' => true
+                        ]);
                 }
                 else
                     continue;

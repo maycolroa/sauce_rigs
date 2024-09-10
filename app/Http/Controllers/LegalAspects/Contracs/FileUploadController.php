@@ -138,6 +138,7 @@ class FileUploadController extends Controller
         $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
         $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
         $fileUpload->reason_rejection = $request->reason_rejection;
+        $fileUpload->notificate = false;
       
         if(!$fileUpload->save())
         {
@@ -292,6 +293,8 @@ class FileUploadController extends Controller
               'state' => 'RECHAZADO',
               'date' => date('Y-m-d')
             ]);
+
+            $fileUpload->notificate = false;
           }
           else 
           {
@@ -310,6 +313,8 @@ class FileUploadController extends Controller
                     'state' => 'ACEPTADO',
                     'date' => date('Y-m-d')
                   ]);
+
+                  $fileUpload->notificate = false;
                 }
                 else {
                   FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
@@ -337,17 +342,19 @@ class FileUploadController extends Controller
             }
             else {
               if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'ACEPTADO')
-                {
-                  //notificar creador
-                  FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
-                  [
-                    'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
-                    'file_id' => $fileUpload->id,
-                    'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
-                    'state' => 'ACEPTADO',
-                    'date' => date('Y-m-d')
-                  ]);
-                }
+              {
+                //notificar creador
+                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                [
+                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                  'file_id' => $fileUpload->id,
+                  'module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos',
+                  'state' => 'ACEPTADO',
+                  'date' => date('Y-m-d')
+                ]);
+                
+                $fileUpload->notificate = false;
+              }
             }
           }
 
@@ -355,6 +362,10 @@ class FileUploadController extends Controller
             'employee_id' => NULL,
             'file_id' =>  $fileUpload->id
           ];
+
+          if(!$fileUpload->update()) {
+            return $this->respondHttp500();
+          }
 
           $this->updateEmployee($content);
         }
@@ -686,6 +697,12 @@ class FileUploadController extends Controller
               
               if ($beforeState != $file->state)
               {
+                $file->notificate = false;
+
+                if(!$file->save()) {
+                  return $this->respondHttp500();
+                }
+                
                 foreach ($contracts as $key => $contract) 
                 {
                   FileModuleState::updateOrCreate(
