@@ -51,7 +51,6 @@ trait ContractTrait
 
     public function getContractUserLogin($user_id, $company_id = null)
     {
-        \Log::info($user_id);
         if (!is_numeric($user_id))
             throw new \Exception('User invalid');
 
@@ -68,7 +67,6 @@ trait ContractTrait
             $contract->company_scope = $company_id;
 
         $contract = $contract->first();
-        \Log::info($contract);
 
         return $contract ? $contract : NULL;
     }
