@@ -39,14 +39,14 @@ trait ContractTrait
         if ($contract)
         {
             $users_id = $contract->toArray();
-
+            
             if ($scope_active)
                 $users = User::whereIn('id', $users_id)->get();
             else
                 $users = User::active()->whereIn('id', $users_id)->get();
         }
 
-        return $users;
+        return $users->unique();
     }
 
     public function getContractUserLogin($user_id, $company_id = null)

@@ -225,7 +225,10 @@ class ContractLesseeController extends Controller
             
             $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
+            $contract->user_sst_id = $user->id;
             
+            if (!$contract->save())
+                return $this->respondHttp500();
 
             $responsibles = [];
 
@@ -301,7 +304,16 @@ class ContractLesseeController extends Controller
                 array_push($users_responsibles, $value->multiselect());
             }
 
-            $contract->usersContract = $contract->users;
+            $contract->usersContract = $contract->users->unique();
+
+            if ($contract->user_sst_id)
+                $user_sst = User::find($contract->user_sst_id);
+            else
+                $user_sst = $contract->usersContract[0];
+
+            $contract->sst_user = $user_sst;
+            $contract->sst_user_id = '';
+            $contract->change_sst = '';
 
             $contract->multiselect_users_responsibles = $users_responsibles;
             $contract->users_responsibles = $users_responsibles;
@@ -529,6 +541,8 @@ class ContractLesseeController extends Controller
             $contract->ips = $ips->implode(',');
             $contract->height_training_centers = $height_training_centers->implode(',');
 
+            $users = $this->getUsersContract($contract->id);
+
             if ($request->has('isInformation'))
             {
                 if ($request->has('documents') && COUNT($request->documents) > 0)
@@ -577,12 +591,21 @@ class ContractLesseeController extends Controller
                     $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
 
                 $contract->responsibles()->sync($responsibles);
+                
+                if ($request->change_sst == 'SI' && $request->sst_user_id) 
+                {
+                    $contract->user_sst_id = $request->sst_user_id;
+                    $contract->users()->attach($request->sst_user_id);
+                }
+                else
+                {
+                    if (!$contract->user_sst_id)
+                        $contract->user_sst_id = $users[0]->id;
+                }
             }
 
             if (!$contract->update())
                 return $this->respondHttp500();
-
-            $users = $this->getUsersContract($contract->id);
 
             foreach ($users as $user)
             {
@@ -1415,7 +1438,6 @@ class ContractLesseeController extends Controller
                 }
                 else
                 {
-                    \Log::info('entro22');
                     $fileUpload = new FileUpload();
                     $fileUpload->user_id = $this->user->id;
                     $fileUpload->name = $document['name'].' no aplica';

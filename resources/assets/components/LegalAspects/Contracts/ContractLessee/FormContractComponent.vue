@@ -12,6 +12,23 @@
 						<vue-input :disabled="viewOnly" class="col-md-12" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email" help-text="El correo electronico a ingresar preferiblemente debe ser un correo corporativo"></vue-input>
                     </b-form-row>
             	</b-card>
+				<b-card border-variant="primary" title="Datos Responsable SST Empresa Contratista" class="mb-3 box-shadow-none" v-if="isEdit || viewOnly">
+                    <b-form-row>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.sst_user.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+                        <vue-input :disabled="true" class="col-md-6" v-model="form.sst_user.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
+                    </b-form-row>
+                    <b-form-row>
+						<vue-input :disabled="true" class="col-md-12" v-model="form.sst_user.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"></vue-input>
+                    </b-form-row>
+                    <b-form-row>						
+						<vue-radio :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.change_sst" :options="siNo" name="high_risk_work" :error="form.errorsFor('high_risk_work')" label="¿Desea cambiar el responsable SST?"></vue-radio>
+                    </b-form-row>
+                    <b-form-row v-if="form.change_sst == 'SI'">			
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.sst_user_id" :error="form.errorsFor('sst_user_id')" :selected-object="form.multiselect_sst_user" :multiple="false" :allowEmpty="true" name="sst_user_id" label="Usuarios" placeholder="Seleccione al nuevo responsable" :url="usersDataUrl">
+						</vue-ajax-advanced-select>
+                    </b-form-row>
+
+            	</b-card>
 				<b-card border-variant="primary" title="Datos empresariales" class="mb-3 box-shadow-none">
 					<b-form-row>
 						<vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type" :error="form.errorsFor('type')" name="type" label="Tipo" placeholder="Seleccione el tipo" :options="roles">
@@ -106,7 +123,7 @@
 								<td style='text-center align-middle'>
 									{{ index + 1 }} . {{ user.name }} - {{ user.email}}
 								</td>
-								<td v-if="index == 0">
+								<td v-if="form.user_sst_id > 0 ? form.user_sst_id == user.id : index == 0">
 									<b-btn @click="editUser(user.id)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Editar Usuario"><span class="ion ion-md-create"></span></b-btn>
 								</td>
 							</tr>
@@ -225,6 +242,7 @@ export default {
 			tagsCtSocialSecurityDataUrl: '/selects/tagsCtSocialSecurity',
 			tagsCtIpsDataUrl: '/selects/tagsCtIps',
 			tagsCtArlDataUrl: '/selects/tagsCtArl',
+			usersDataUrl: '/selects/usersContracts',
 		};
 	},
 	methods: {

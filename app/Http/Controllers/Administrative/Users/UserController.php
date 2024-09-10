@@ -1348,4 +1348,47 @@ class UserController extends Controller
         return $this->multiSelectFormat($data);
 
     }
+
+    public function multiselectUsersContract(Request $request)
+    {
+        $users = User::selectRaw("
+            sau_users.id as id,
+            Concat(sau_users.name) as name
+        ")
+        ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_user_information_contract_lessee.information_id')
+        ->where('sau_ct_information_contract_lessee.company_id', $this->company)
+        ->active();
+
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $users = $users->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_users.name', 'like', $keyword);
+                    })->get();
+
+            $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+
+            $users = $users->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($users)
+            ]);
+        }
+        else
+        {
+            $users = $users->get();
+
+            $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+
+            $users = $users->pluck('id', 'name');
+
+            return $this->multiSelectFormat($users);
+        }
+    }
 }

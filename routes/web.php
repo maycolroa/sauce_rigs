@@ -215,6 +215,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
         Route::post('usersAutomaticSend', 'Administrative\Users\UserController@multiselectUsersAutomaticSend');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
+        Route::post('usersContracts', 'Administrative\Users\UserController@multiselectUsersContract');
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
         Route::post('centers', 'System\Companies\CompanyController@multiselectCenters');
