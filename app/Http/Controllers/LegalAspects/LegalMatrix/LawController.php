@@ -97,7 +97,12 @@ class LawController extends Controller
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->leftJoin('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
-            ->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
+            //->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
+            ->leftJoin('sau_lm_laws_hide_companies', function ($join) 
+            {
+                $join->on("sau_lm_laws_hide_companies.law_id", 'sau_lm_laws.id');
+                $join->on("sau_lm_laws_hide_companies.company_id", "=", DB::raw("{$this->company}"));
+            })
             ->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
             //->where('sau_lm_articles_fulfillment.company_id', $this->company);
             ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))")
