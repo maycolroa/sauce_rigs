@@ -22,9 +22,12 @@ use App\Models\Administrative\Employees\EmployeeARL;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Vuetable\VuetableColumnManager;
 use App\Facades\General\PermissionService;
+use App\Traits\ContractTrait;
 
 class ApplicationController extends Controller
 {
+    use ContractTrait;
+
     public function index()
     {
         return view('application');
@@ -101,6 +104,9 @@ class ApplicationController extends Controller
     public function changeCompany(Request $request)
     {
       Session::put('company_id', $request->input('company_id'));
+
+      $contract = $this->getContractUserLogin(Auth::user()->id, $request->input('company_id'));
+      Session::put('contract_id', $contract->id);
 
       $new_path = "/";
 
