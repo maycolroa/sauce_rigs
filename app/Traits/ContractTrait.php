@@ -79,7 +79,9 @@ trait ContractTrait
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
 
-        if (!Session::get('contract_id'))
+        $contract_session = Session::get('contract_id');
+
+        if (!$contract_session)
         {
             $contract = $this->getContractUserLogin(Auth::user()->id, Session::get('company_id'));
             Session::put('contract_id', $contract->id);
