@@ -103,10 +103,12 @@ class InformReportController extends Controller
             $qualifications = InformContractItem::join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
             ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
             ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
-            ->where('sau_ct_inform_contract.year', $request->year)
-            ->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_contract.year', $request->year)            
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->groupBy('sau_ct_inform_theme_item.description');
+
+            if (isset($request->consult_all) && $request->consult_all == 'NO' && $request->contract_id)
+                $qualifications->where('contract_id', $request->contract_id);
 
             if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
@@ -319,8 +321,11 @@ class InformReportController extends Controller
             ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
             ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
             ->where('sau_ct_inform_contract.year', $request->year)
-            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
-            ->where('contract_id', $request->contract_id);
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id);
+            //->where('contract_id', $request->contract_id);
+
+            if (isset($request->consult_all) && $request->consult_all == 'NO' && $request->contract_id)
+                $qualifications->where('contract_id', $request->contract_id);
 
             if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
@@ -339,12 +344,12 @@ class InformReportController extends Controller
 
             foreach ($headingsXls as $key => $item)
             {
-                $response = $qualifications->where('month', $item['id'])->first();
+                $response = $qualifications->where('month', $item['id'])->sum('value_executed');
 
                 if ($response)
-                $answers->push($response->value_executed);
+                    $answers->push($response);
                 else
-                $answers->push(0);
+                    $answers->push(0);
             }
 
             $data = [
@@ -398,10 +403,13 @@ class InformReportController extends Controller
             ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
             ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
             ->where('sau_ct_inform_contract.year', $request->year)
-            ->where('contract_id', $request->contract_id)
+            //->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description');
+
+            if (isset($request->consult_all) && $request->consult_all == 'NO' && $request->contract_id)
+                $qualifications->where('contract_id', $request->contract_id);
             
             if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
@@ -497,9 +505,12 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
             ->where('sau_ct_inform_contract.year', $request->year)
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
-            ->where('contract_id', $request->contract_id)
+            //->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id');
+
+            if (isset($request->consult_all) && $request->consult_all == 'NO' && $request->contract_id)
+                $qualifications->where('contract_id', $request->contract_id);
 
             if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $qualifications->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
@@ -517,10 +528,11 @@ class InformReportController extends Controller
 
             foreach ($headingsXls as $key => $item)
             {
-                $response = $qualifications->where('month', $item['id'])->first();
+                $count_comp = $qualifications->where('month', $item['id'])->count();
+                $response = $qualifications->where('month', $item['id'])->sum('compliance');
 
                 if ($response)
-                $answers->push($response->compliance);
+                $answers->push($response/$count_comp);
                 else
                 $answers->push(0);
             }

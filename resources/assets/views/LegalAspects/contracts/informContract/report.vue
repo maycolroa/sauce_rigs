@@ -24,15 +24,19 @@
                         </template>
                         <b-row style="width:95%; padding-left: 5%">
                             <b-col cols="6">
+                                <vue-ajax-advanced-select :disabled="isLoading" v-model="year" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
+                                </vue-ajax-advanced-select>
+                            </b-col>
+                            <b-col cols="6">
+                                <vue-radio v-model="consult_all" :options="siNo" name="consult_all" label="¿Desea consultar todos los contratistas?">
+                                </vue-radio>
+                            </b-col>
+                            <b-col cols="6" v-if="consult_all == 'NO'">
                                 <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
                                         </vue-ajax-advanced-select>
                             </b-col>
                             <b-col cols="6" v-if="auth.proyectContract == 'SI'">
-                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="proyect_id" name="proyect_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl" :allowEmpty="true">
-                                </vue-ajax-advanced-select>
-                            </b-col>
-                            <b-col cols="6">
-                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
+                                <vue-ajax-advanced-select :disabled="isLoading" v-model="proyect_id" name="proyect_id" label="Proyectos" placeholder="Seleccione el proyecto" :url="proyectsUrl" :allowEmpty="true">
                                 </vue-ajax-advanced-select>
                             </b-col>
                             <b-col cols="6">
@@ -88,11 +92,11 @@
                             <b-card style="width:95%" no-body>
                                 <b-row style="width:95%; padding-left: 5%">
                                     <b-col cols="4">
-                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_values" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_values" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme_id_grafic_values')" :emptyAll="empty.theme_id_grafic_values">
                                         </vue-ajax-advanced-select>
                                     </b-col>
                                     <b-col>
-                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_values}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_values}" @updateEmpty="updateEmptyKey('item')" :emptyAll="empty.item">
                                     </vue-ajax-advanced-select>
                                     </b-col>
                                 </b-row>
@@ -304,6 +308,7 @@ import Alerts from '@/utils/Alerts.js';
 import Loading from "@/components/Inputs/Loading.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import LineComponent from '@/components/Chartjs/ChartLine.vue';
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 
 export default {
     name: 'legalaspects-informs-report',
@@ -313,7 +318,8 @@ export default {
     components:{
         Loading,
         VueAjaxAdvancedSelect,
-        LineComponent
+        LineComponent,
+        VueRadio
     },
     data () {
         return {
@@ -360,7 +366,12 @@ export default {
             month_name: '',
             percentage_global: '',
             theme_name: '',
-            name_inform: ''
+            name_inform: '',
+            consult_all: '',
+            siNo: [
+                {text: 'SI', value: 'SI'},
+                {text: 'NO', value: 'NO'}
+            ],
         }
     },
     created(){
@@ -373,34 +384,41 @@ export default {
             });
     },
     watch: {
+        'consult_all'() {
+            if (this.consult_all == 'SI')
+            {
+                this.fetch()
+                this.emptySelect('item', 'item')
+                this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
+                this.emptySelect('item_2', 'item_2')
+                this.emptySelect('theme_id_grafic_compliance', 'theme_id_grafic_compliance')
+            }
+        },
         'contract_id'() {
-            //this.emptySelect('year', 'year')
-            //this.emptySelect('theme', 'theme')
             if (this.contract_id && this.year)
             {
                 this.fetch()
+                this.emptySelect('item', 'item')
+                this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
+                this.emptySelect('item_2', 'item_2')
+                this.emptySelect('theme_id_grafic_compliance', 'theme_id_grafic_compliance')
+
+
             }
         },
-        'year'() {
-            if (this.contract_id && this.year)
-            {
-                // this.emptySelect('theme', 'theme')
-                this.fetch()
-            }
-        },
-        'theme'()
-        {
+        /*'year'() {
+            this.fetch()
+        },*/
+        'theme'() {
             this.fetch()
         },
         'proyect_id' () {
             this.fetch()
         },
-        'item'()
-        {
+        'item'() {
             this.fetch2()
         },
-        'item_2'()
-        {
+        'item_2'() {
             this.fetch4()
         },
         'year_global'() {
@@ -422,7 +440,7 @@ export default {
             if (!this.isLoading)
             {
                 this.isLoading = true;
-                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id});
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id}, {consult_all: this.consult_all});
 
                 axios.post('/legalAspects/informContract/reportTableTotales', this.postData)
                     .then(response => {
@@ -436,7 +454,7 @@ export default {
         },
         fetch2()
         {
-            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item}, {proyect_id: this.proyect_id});
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item}, {proyect_id: this.proyect_id}, {consult_all: this.consult_all});
 
             axios.post('/legalAspects/informContract/reportLineItemQualification', this.postData2)
                 .then(response => {
@@ -463,7 +481,7 @@ export default {
             if (!this.isLoading)
             {
                 this.isLoading = true;
-                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id});
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id}, {consult_all: this.consult_all});
 
                 axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
                     .then(response => {
@@ -476,7 +494,7 @@ export default {
         },
         fetch4()
         {
-            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item_2}, {proyect_id: this.proyect_id});
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item_2}, {proyect_id: this.proyect_id}, {consult_all: this.consult_all});
 
             axios.post('/legalAspects/informContract/reportLineItemPorcentege', this.postData2)
                 .then(response => {
