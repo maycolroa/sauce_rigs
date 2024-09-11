@@ -106,7 +106,9 @@ class ApplicationController extends Controller
       Session::put('company_id', $request->input('company_id'));
 
       $contract = $this->getContractUserLogin(Auth::user()->id, $request->input('company_id'));
-      Session::put('contract_id', $contract->id);
+
+      if ($contract)
+        Session::put('contract_id', $contract->id);
 
       $new_path = "/";
 
