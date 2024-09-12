@@ -120,7 +120,7 @@
                                 <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                     <tbody>
                                         <template v-for="(theme, index) in report_porcentage">
-                                            <template v-if="theme.items[0].length > 2">
+                                            <template v-if="theme.items[0].length > 1">
                                                 <tr :key="index+round()" style="width:100%;">
                                                     <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
                                                 </tr>
