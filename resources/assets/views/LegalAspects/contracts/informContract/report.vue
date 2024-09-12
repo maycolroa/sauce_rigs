@@ -169,11 +169,11 @@
                             <b-card style="width:95%" no-body>
                                 <b-row style="width:95%; padding-left: 5%">
                                     <b-col cols="4">
-                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_compliance" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_compliance" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme_id_grafic_compliance">
                                         </vue-ajax-advanced-select>
                                     </b-col>
                                     <b-col>
-                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_compliance, compliance:'si'}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_compliance, compliance:'si'}" @updateEmpty="updateEmptyKey('item')" :emptyAll="empty.item_2">
                                     </vue-ajax-advanced-select>
                                     </b-col>
                                 </b-row>
