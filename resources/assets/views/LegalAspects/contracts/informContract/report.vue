@@ -113,54 +113,52 @@
                             </b-card>
                         </b-row>
                         <b-row>
-                            <label class="col-md-6 offset-md-1"><b>Cumplimiento</b></label>
+                            <label class="col-md-6 offset-md-1"><b>Cumplimiento {{report_porcentage.length}}</b></label>
                         </b-row>
                         <b-row style="width:95%" v-if="report_porcentage.length > 0">
                             <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                 <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                     <tbody>
                                         <template v-for="(theme, index) in report_porcentage">
-                                            <template v-if="theme.items[0].length > 1">
-                                                <tr :key="index+round()" style="width:100%;">
-                                                    <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
-                                                </tr>
-                                                <tr :key="index+round()" style="width:100%">
-                                                    <template v-for="(month, indexM) in theme.headings[0]">
-                                                        <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
-                                                        <td v-else :key="indexM+round()">{{month}}</td>
+                                            <tr :key="index+round()" style="width:100%;">
+                                                <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                            </tr>
+                                            <tr :key="index+round()" style="width:100%">
+                                                <template v-for="(month, indexM) in theme.headings[0]">
+                                                    <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                    <td v-else :key="indexM+round()">{{month}}</td>
+                                                </template>
+                                            </tr>
+                                            <template v-for="(executed, indexE) in theme.items[0]">
+                                                <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                        <!--<td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>-->
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{redondearValor(value)}}%</center>
+                                                        </td>
                                                     </template>
                                                 </tr>
-                                                <template v-for="(executed, indexE) in theme.items[0]">
-                                                    <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
-                                                        <template v-for="(value, indexV) in executed">
-                                                            <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                                <center>{{value}}%</center>
-                                                            </td>
-                                                            <!--<td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
-                                                                <center>{{value}}</center>
-                                                            </td>-->
-                                                            <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                <center>{{redondearValor(value)}}%</center>
-                                                            </td>
-                                                        </template>
-                                                    </tr>
-                                                    <tr v-else :key="indexE+round()" style="width:100%">
-                                                        <template v-for="(value, indexV) in executed">
-                                                            <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                                <center>{{value}}%</center>
-                                                            </td>
-                                                            <td  v-else-if="indexV == 'item'" style="vertical-align: middle;" :key="indexV+round()">
-                                                                <center>{{value}}</center>
-                                                            </td>
-                                                            <!--<td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
-                                                                <center>{{value}}%</center>
-                                                            </td>-->
-                                                            <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                <center>{{redondearValor(value)}}%</center>
-                                                            </td>
-                                                        </template>
-                                                    </tr>
-                                                </template>
+                                                <tr v-else :key="indexE+round()" style="width:100%">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                        <td  v-else-if="indexV == 'item'" style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                        <!--<td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>-->
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{redondearValor(value)}}%</center>
+                                                        </td>
+                                                    </template>
+                                                </tr>
                                             </template>
                                         </template>
                                     </tbody>
@@ -390,6 +388,7 @@ export default {
             if (this.consult_all == 'SI')
             {
                 this.fetch()
+                this.fetch3()
                 this.emptySelect('item', 'item')
                 this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
                 this.emptySelect('item_2', 'item_2')
@@ -400,6 +399,7 @@ export default {
             if (this.contract_id && this.year)
             {
                 this.fetch()
+                this.fetch3()
                 this.emptySelect('item', 'item')
                 this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
                 this.emptySelect('item_2', 'item_2')
@@ -448,7 +448,7 @@ export default {
                     .then(response => {
                     this.report = response.data
                     this.isLoading = false;
-                    this.fetch3()
+                    //this.fetch3()
                     }).catch(error => {
                         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                     });
