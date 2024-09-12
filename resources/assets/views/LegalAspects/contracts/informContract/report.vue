@@ -113,9 +113,9 @@
                             </b-card>
                         </b-row>
                         <b-row>
-                            <label class="col-md-6 offset-md-1"><b>Cumplimiento {{report_porcentage.length}}</b></label>
+                            <label class="col-md-6 offset-md-1"><b>Cumplimiento</b></label>
                         </b-row>
-                        <b-row style="width:95%" v-if="report_porcentage.length > 0">
+                        <b-row style="width:95%">
                             <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                 <table style="width:85%; font-size: 12px" class="table table-bordered mb-2">
                                     <tbody>
@@ -388,7 +388,6 @@ export default {
             if (this.consult_all == 'SI')
             {
                 this.fetch()
-                this.fetch3()
                 this.emptySelect('item', 'item')
                 this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
                 this.emptySelect('item_2', 'item_2')
@@ -399,13 +398,10 @@ export default {
             if (this.contract_id && this.year)
             {
                 this.fetch()
-                this.fetch3()
                 this.emptySelect('item', 'item')
                 this.emptySelect('theme_id_grafic_values', 'theme_id_grafic_values')
                 this.emptySelect('item_2', 'item_2')
                 this.emptySelect('theme_id_grafic_compliance', 'theme_id_grafic_compliance')
-
-
             }
         },
         /*'year'() {
@@ -447,11 +443,17 @@ export default {
                 axios.post('/legalAspects/informContract/reportTableTotales', this.postData)
                     .then(response => {
                     this.report = response.data
-                    this.isLoading = false;
-                    //this.fetch3()
+                    axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
+                        .then(response2 => {
+                        this.report_porcentage = response2.data
+                        this.isLoading = false;
+                        }).catch(error => {
+                            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                        });
                     }).catch(error => {
                         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                     });
+
             }
         },
         fetch2()
@@ -477,22 +479,6 @@ export default {
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });
-        },
-        fetch3()
-        {
-            if (!this.isLoading)
-            {
-                this.isLoading = true;
-                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id}, {proyect_id: this.proyect_id}, {consult_all: this.consult_all});
-
-                axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
-                    .then(response => {
-                    this.report_porcentage = response.data
-                    this.isLoading = false;
-                    }).catch(error => {
-                        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    });
-            }
         },
         fetch4()
         {
