@@ -612,7 +612,7 @@ class InformReportController extends Controller
             if ($this->proyectContract == 'SI' && $request->proyect_id)
                 $total->where('sau_ct_inform_contract.proyect_id', $request->proyect_id);
 
-            foreach ($months as $key => $month)
+            foreach ($months as $key2 => $month)
             {
                 $select[] = "SUM(
                         CASE 
@@ -622,7 +622,7 @@ class InformReportController extends Controller
                                 THEN compliance ELSE 0 END
                             ELSE 0
                         END
-                    ) AS month{$key}";
+                    ) AS month{$key2}";
             }
 
             $qualifications = $qualifications->select(
@@ -640,9 +640,9 @@ class InformReportController extends Controller
 
             $qualification_global = collect([]);
 
-            foreach ($qualifications as $key => $value) 
+            foreach ($qualifications as $key3 => $value) 
             {
-                $content['item'] = $key;
+                $content['item'] = $key3;
                 $total = 0;
                 $count = 0;
 
@@ -682,9 +682,9 @@ class InformReportController extends Controller
             $theme['items']->push($qualification_global);
         }
 
-        $themes = $themes->reject(function ($value, $key) {
+        /*$themes = $themes->reject(function ($value, $key) {
             return COUNT($value['items'][0]) < 2;
-        });
+        });*/
 
         return $themes;
     }
