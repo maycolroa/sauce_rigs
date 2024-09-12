@@ -28,7 +28,7 @@
                                 </vue-ajax-advanced-select>
                             </b-col>
                             <b-col cols="6">
-                                <vue-radio v-model="consult_all" :options="siNo" name="consult_all" label="¿Desea consultar todos los contratistas?">
+                                <vue-radio :disabled="isLoading || !year" v-model="consult_all" :options="siNo" name="consult_all" label="¿Desea consultar todos los contratistas?">
                                 </vue-radio>
                             </b-col>
                             <b-col cols="6" v-if="consult_all == 'NO'">
