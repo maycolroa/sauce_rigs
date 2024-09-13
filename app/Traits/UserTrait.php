@@ -49,6 +49,16 @@ trait UserTrait
                     ->company(Session::get('company_id'))
                     ->send();
             }
+            else
+            {
+                NotificationMail::
+                    subject('Creación de usuario en sauce')
+                    ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo.')
+                    ->recipients($user)
+                    ->module('users')
+                    ->company(Session::get('company_id'))
+                    ->send();
+            }
 
             return $user;
         }
