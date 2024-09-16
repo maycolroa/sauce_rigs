@@ -9,15 +9,38 @@
         <loading :display="isLoading"/>
         <div style="width:100%" class="col-md" v-show="!isLoading">
             <b-card no-body>
-                <div v-if="option">
+                <div>
                     <filter-general 
                         v-model="filters" 
                         configName="industrialsecure-accidents-report" />
                 </div>
                 <b-row>
                     <b-card style="width:95%">
+                        <b-row>
+                            <b-col>
+                                <h4>Empleados con más accidentes relacionados</h4>
+                                <chart-bar                                    
+                                    :chart-data="reporEmployees"
+                                    title="Empleados con más accidentes relacionados"
+                                    color-line="red"
+                                    ref=""
+                                />
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <h4>Mecanismos con más accidentes relacionados</h4>
+                                <chart-bar                                    
+                                    :chart-data="reportMechanism"
+                                    title="Mecanismos con más accidentes relacionados"
+                                    color-line="red"
+                                    ref=""
+                                />
+                            </b-col>
+                        </b-row>
                         <b-row style="width:95%;">
                             <b-col>
+                                <h4>Reporte Dinámico</h4>
                                <vue-advanced-select class="col-md-6" v-model="option" :multiple="false" :options="options" :hide-selected="false" @input="fetch" name="option" label="Opción a graficar" placeholder="Seleccione una opción">
                                 </vue-advanced-select>
                             </b-col>
@@ -30,6 +53,7 @@
                                         <b-col cols="6">No hay resultados</b-col>
                                     </b-row>
                                 </b-container>
+                            <p>Para ocultar algun año haga click en el año en la leyenda de la grafica</p>
                             </b-col>
                         </b-row>
                         <b-row style="width:95%;">
@@ -181,7 +205,15 @@ export default {
             category: 'departament',
             selectBar: [],
             test2: true,
-            filters: []
+            filters: [],
+            reportMechanism: {
+                labels: [],
+                datasets: []
+            },
+            reporEmployees: {
+                labels: [],
+                datasets: []
+            },
         }
     },
     watch: {
@@ -241,6 +273,8 @@ export default {
                 axios.post('/industrialSecurity/accidents/reportDinamic', postData)
                 .then(data => {
                     this.update(data);
+                    this.fetch3()
+                    this.fetch4()
                     this.isLoading = false;
                 })
                 .catch(error => {
@@ -249,6 +283,33 @@ export default {
                     Alerts.error('Error', 'Hubo un problema recolectando la información');
                 });
             }
+        },
+        fetch3()
+        {
+            let postData = Object.assign({}, {filters: this.filters});
+            axios.post('/industrialSecurity/accidents/reportMechanism', postData)
+            .then(data => {
+                this.reportMechanism = data.data;
+            })
+            .catch(error => {
+                console.log(error);
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
+        },
+        fetch4()
+        {
+            let postData = Object.assign({}, {filters: this.filters});
+
+            axios.post('/industrialSecurity/accidents/reportEmployee', postData)
+            .then(data => {
+                this.reporEmployees = data.data;
+            })
+            .catch(error => {
+                console.log(error);
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
         },
         update(data) {
             _.forIn(data.data, (value, key) => {

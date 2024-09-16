@@ -248,15 +248,15 @@ class AccidentsWorkReportController extends Controller
             );
         }
 
-        $consultas->join('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
-            ->join('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
-            ->join('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
-            ->join('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
-            ->join('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
-            ->join('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
-            ->join('sau_aw_parts_body','sau_aw_form_accidents_parts_body.part_body_id', 'sau_aw_parts_body.id')
-            ->join('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
-            ->join('sau_aw_types_lesion','sau_aw_form_accidents_types_lesion.type_lesion_id', 'sau_aw_types_lesion.id')
+        $consultas->leftJoin('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
+            ->leftJoin('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
+            ->leftJoin('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
+            ->leftJoin('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
+            ->leftJoin('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
+            //->leftJoin('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
+            ->leftJoin('sau_aw_parts_body', 'sau_aw_parts_body.id', 'sau_aw_form_accidents.parts_body_id')
+            //->leftJoin('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
+            ->leftJoin('sau_aw_types_lesion','sau_aw_form_accidents.type_lesion_id', 'sau_aw_types_lesion.id')
             ->where('sau_aw_form_accidents.company_id', $this->company)
             ->groupBy('sau_aw_form_accidents.id', 'category');
 
@@ -281,8 +281,9 @@ class AccidentsWorkReportController extends Controller
              SUM(t.count) AS total
         ")
         ->mergeBindings($consultas->getQuery())
-        ->groupBy('t.category')
-        ->pluck('total', 'category');
+        ->groupBy('t.category');
+
+       $consultas = $consultas->pluck('total', 'category');
 
         return $this->buildDataChart($consultas);
     }
@@ -393,5 +394,83 @@ class AccidentsWorkReportController extends Controller
       ];
   
       return $this->multiSelectFormat(collect($select));
+    }
+
+    public function mechanismsAcidents(Request $request)
+    {
+            $consultas = Accident::select(
+                "sau_aw_mechanisms.name as category", 
+                DB::raw('COUNT(DISTINCT sau_aw_form_accidents.id) AS count')
+            )
+            ->leftJoin('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
+            ->where('sau_aw_form_accidents.company_id', $this->company)
+            ->groupBy('sau_aw_form_accidents.id', 'category');
+
+        if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+        {
+            $dates_request = explode('/', $request->filters['dateRange']);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $consultas->betweenDate($dates);
+        }
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->orderBy('total', 'ASC');
+
+       $consultas = $consultas->pluck('total', 'category');
+
+        return $this->buildDataChart($consultas);
+    }
+
+    public function employeeAcidents(Request $request)
+    {
+            $consultas = Accident::select(
+                DB::raw('IF(sau_employees.id IS NOT NULL, sau_employees.name, sau_aw_form_accidents.nombre_persona) AS category'),
+                DB::raw('COUNT(DISTINCT sau_aw_form_accidents.id) AS count')
+            )
+            ->leftJoin('sau_employees','sau_aw_form_accidents.employee_id', 'sau_employees.id')
+            ->where('sau_aw_form_accidents.company_id', $this->company)
+            ->groupBy('sau_aw_form_accidents.id', 'category');
+
+        if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+        {
+            $dates_request = explode('/', $request->filters['dateRange']);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $consultas->betweenDate($dates);
+        }
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->orderBy('total', 'ASC');
+
+       $consultas = $consultas->pluck('total', 'category')->take(-15);
+       
+        return $this->buildDataChart($consultas);
     }
 }

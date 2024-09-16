@@ -811,6 +811,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('accidents/reportDinamic', 'IndustrialSecure\AccidentsWork\AccidentsWorkReportController@getInformDataDinamic');
 
+      Route::post('accidents/reportMechanism', 'IndustrialSecure\AccidentsWork\AccidentsWorkReportController@mechanismsAcidents');
+
+      Route::post('accidents/reportEmployee', 'IndustrialSecure\AccidentsWork\AccidentsWorkReportController@employeeAcidents');
+
       Route::post('accidents/saveCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@saveCauses');
 
       Route::post('accidents/getCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@getCauses');
