@@ -21,6 +21,11 @@
         <b-card-body>
           <information-general
           :law="law"/>
+
+          <b-form-row>
+            <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="law.hide_total_law" :options="siNoRadio" name="hide_total_law" label="¿Desea ocultar la ley por completo?" :checked="law.hide_total_law" @input="hideOrShowLaw()">
+              </vue-radio>
+          </b-form-row>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -80,9 +85,9 @@
 
               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="hide" :options="siNoRadio" name="hide" label="¿Desea ocultar todos los artículos?">
-                      </vue-radio>
-                  </b-form-row>
+                  <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="hide" :options="siNoRadio" name="hide" label="¿Desea ocultar todos los artículos?">
+                    </vue-radio>
+                </b-form-row>
                 <b-form-row>
                   <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id_all" label="Evaluación" @selectedName="updateQualifyAll"/>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"/>
@@ -379,7 +384,8 @@ export default {
           file: '',
           articles: [],
           url: '',
-          action_plan_cumple: ''
+          action_plan_cumple: '',
+          hide_total_law: ''
         };
       }
     }
@@ -646,6 +652,35 @@ export default {
       {
         this.saveAllArticles()
       }
+    },
+    hideOrShowLaw() 
+    {
+        this.textBlock = 'Guardando...';
+        this.loadingAlternativo = true;        
+        let data = new FormData();
+        let ids = [];
+
+        _.forIn(this.form.articles, (article, key) => {
+          if (article.show_article_real)
+            {
+              ids.push(article.qualification_id);
+            }       
+        });
+
+        data.append('id', ids);
+        data.append('hide', this.law.hide_total_law);
+
+        this.form
+          .submit('/legalAspects/legalMatrix/law/saveHideLawComplete', false, data)
+          .then(response => {
+            this.textBlock = 'Recargando Página...';
+            setTimeout(() => {
+              location.reload();
+            }, 3000);
+          })
+          .catch(error => {
+            location.reload();
+          });
     },
     saveAllArticles()
     {

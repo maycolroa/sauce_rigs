@@ -563,12 +563,20 @@ class LawController extends Controller
             $law->sstRisk;
             $law->systemApply;
 
+
             $lawActionPlan = LawActionPlan::where('company_id', $this->company)->where('law_id', $law->id)->first();
+
+            $lawHideTotal = LawHide::where('company_id', $this->company)->where('law_id', $law->id)->first();
 
             if ($lawActionPlan && $lawActionPlan->action_plan)
                 $law->action_plan_cumple = 'SI';
             else
                 $law->action_plan_cumple = 'NO';
+
+            if ($lawHideTotal && $lawHideTotal->law_id == $law->id)
+                $law->hide_total_law = 'SI';
+            else
+                $law->hide_total_law = 'NO';
 
             if ($law->company_id)
             {
@@ -770,7 +778,6 @@ class LawController extends Controller
         try
         {
             $data = $request->except('articles');
-
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
 
@@ -1005,6 +1012,51 @@ class LawController extends Controller
                 $lawActionPlan->action_plan = false;
                 $lawActionPlan->save();
             }
+        }
+    }
+
+    public function saveHideLawComplete(Request $request)
+    {     
+        DB::beginTransaction();
+
+        try
+        {           
+            $ids = explode(',', $request->id);
+
+            $article_qualify = ArticleFulfillment::find($ids[0]);
+            $article_law = Article::find($article_qualify->article_id);
+            $law = Law::find($article_law->law_id);
+
+            if ($request->hide == 'SI')
+            {
+                $law_hide = LawHide::updateOrCreate(['company_id' => $this->company, 'law_id' => $law->id], ['company_id' => $this->company, 'law_id' => $law->id, 'user_id' => $this->user->id]);
+
+                $qualification_hide = ArticleFulfillment::whereIn('id', $ids)
+                ->update([
+                    'hide' => 'SI'
+                ]);
+            }
+            else
+            {
+                $law_hide = LawHide::where('company_id', $this->company)
+                ->where('law_id', $law->id)
+                ->first();
+
+                if ($law_hide)
+                    $law_hide->delete();
+
+                $qualification_hide = ArticleFulfillment::whereIn('id', $ids)
+                ->update([
+                    'hide' => 'NO'
+                ]);
+            }
+
+            DB::commit();
+
+        } catch (Exception $e){
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
         }
     }
 }
