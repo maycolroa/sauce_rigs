@@ -299,6 +299,17 @@ class AccidentsController extends ApiController
                 $accident->ciudad_accidente = $request->information_detail['ciudad_accidente']['value'];
                 $accident->zona_accidente = $request->information_detail['zona_accidente'];
             }
+            else if ($request->information_detail['accidente_ocurrio_dentro_empresa'] == 'Dentro de la empresa')
+            {
+                $sede_principal = Company::find($request->company_id);
+
+                if ($sede_principal)
+                {
+                    $accident->departamento_accidente = $sede_principal->departamento_sede_principal_id;
+                    $accident->ciudad_accidente = $sede_principal->ciudad_sede_principal_id;
+                    $accident->zona_accidente = $sede_principal->zona_sede_principal;
+                }
+            }
             
             $accident->accidente_ocurrio_dentro_empresa = $request->information_detail['accidente_ocurrio_dentro_empresa'];
             //$accident->fecha_muerte = $request->information_detail['fecha_muerte'];
