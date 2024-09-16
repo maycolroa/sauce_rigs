@@ -90,9 +90,9 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
-    name: 'legalaspects-informs-report',
+    name: 'accidents-report',
     metaInfo: {
-        title: 'Informes Mensuales - Reporte'
+        title: 'Accidentes - Reporte'
     },
     components:{
         Loading,
