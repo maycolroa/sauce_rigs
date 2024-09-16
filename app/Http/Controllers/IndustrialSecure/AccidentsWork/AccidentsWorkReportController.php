@@ -318,17 +318,17 @@ class AccidentsWorkReportController extends Controller
             );
         }
 
-        $consultas->join('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
-        ->join('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
-        ->join('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
-        ->join('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
-        ->join('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
-        ->join('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
-        ->join('sau_aw_parts_body','sau_aw_form_accidents_parts_body.part_body_id', 'sau_aw_parts_body.id')
-        ->join('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
-        ->join('sau_aw_types_lesion','sau_aw_form_accidents_types_lesion.type_lesion_id', 'sau_aw_types_lesion.id')
+        $consultas->leftJoin('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
+        ->leftJoin('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
+        ->leftJoin('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
+        ->leftJoin('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
+        ->leftJoin('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
+        //->leftJoin('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
+        ->leftJoin('sau_aw_parts_body', 'sau_aw_parts_body.id', 'sau_aw_form_accidents.parts_body_id')
+        //->leftJoin('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
+        ->leftJoin('sau_aw_types_lesion','sau_aw_form_accidents.type_lesion_id', 'sau_aw_types_lesion.id')
         ->where('sau_aw_form_accidents.company_id', $this->company)
-        ->groupBy('sau_aw_form_accidents.employee_id', 'category');
+        ->groupBy('sau_aw_form_accidents.id', 'category');
 
         if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
         {
