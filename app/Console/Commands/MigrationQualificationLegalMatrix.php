@@ -47,7 +47,7 @@ class MigrationQualificationLegalMatrix extends Command
         /// Guardado de intereses///
         $company_origin = Company::find(623);
 
-        $company_destiny = Company::find(704);
+        $company_destiny = Company::find(718);
 
         $company_destiny->interests()->sync($company_origin->interests()->pluck('id'));
 
