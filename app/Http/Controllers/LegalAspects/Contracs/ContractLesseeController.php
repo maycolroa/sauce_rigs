@@ -1922,7 +1922,7 @@ class ContractLesseeController extends Controller
 
             if ($compliance['no_cumple'] > 0)
             {
-                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica']+$compliance['no_cumple'];
+                $compliance['p_no_cumple']  = $compliance['total'] - $compliance['cumple'] - $compliance['no_aplica'];// + $compliance['no_cumple'];
                 $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
             }
             else
