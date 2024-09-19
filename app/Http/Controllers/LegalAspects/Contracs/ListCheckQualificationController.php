@@ -562,12 +562,31 @@ class ListCheckQualificationController extends Controller
 
         $qualifications = Qualifications::pluck("name", "id");
 
-        //Obtiene los items calificados
+        try
+        {
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            
+        } catch (\Exception $e) {
+            $exist = 'NO';
+        }                 
+
+        /*//Obtiene los items calificados
         $items_calificated = ItemQualificationContractDetail::
                     where('contract_id', $contract->id)
                 ->where('list_qualification_id', $qualification_list->id)
-                ->pluck("qualification_id", "item_id");
+                ->pluck("qualification_id", "item_id");*/
         
+        
+        //Obtiene los items calificados
+        $items_calificated = ItemQualificationContractDetail::
+            where('contract_id', $contract->id)
+        ->where('list_qualification_id', $qualification_list->id);
+
+        if ($exist == 'SI')
+            $items_calificated->where('state_aprove_qualification', 'APROBADA');
+
+        $items_calificated = $items_calificated->pluck("qualification_id", "item_id");
+                
         $items_observations = ItemQualificationContractDetail::
                     where('contract_id', $contract->id)
                 ->where('list_qualification_id', $qualification_list->id)                     
@@ -599,10 +618,10 @@ class ListCheckQualificationController extends Controller
                 $item->observations = (isset($items_observations[$item->id]) && $items_observations[$item->id] != 'null') ? $items_observations[$item->id] : '';
                 //$item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
                 $item->list_qualification_id = $qualification_list->id;
-                $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : 'NULL';
+                $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : NULL;
                         
                 if (isset($items_reason_reject[$item->id]))
-                    $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : 'NULL';
+                    $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : NULL;
 
                 $item->files = [];
                 $item->actionPlan = [
@@ -612,8 +631,7 @@ class ListCheckQualificationController extends Controller
 
                 if ($item->qualification == 'NA')
                     $compliance['no_aplica']++;
-
-                if ($item->qualification == 'C')
+                else if ($item->qualification == 'C')
                 {
                     $compliance['cumple']++;
                     $files = FileUpload::select(
@@ -653,6 +671,8 @@ class ListCheckQualificationController extends Controller
 
                     $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
                 }
+                else
+                    $compliance['no_cumple']++;
 
                 $compliance['total']++;
 
@@ -666,7 +686,7 @@ class ListCheckQualificationController extends Controller
 
             if ($compliance['no_cumple'] > 0)
             {
-                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica']+$compliance['no_cumple'];
+                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica'];
                 $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
             }
             else

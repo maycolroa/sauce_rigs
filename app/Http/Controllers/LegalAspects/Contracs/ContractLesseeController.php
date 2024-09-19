@@ -126,15 +126,15 @@ class ContractLesseeController extends Controller
                 return false;
             })
             ->addColumn('retrySendMail', function ($contract) {
-                $users = $this->getUsersContract($contract->id, $this->company, true);
-                if ($users[0]->active == 'SI')
+                $users = $this->getUserMasterContract($contract, $this->company, true);
+                if ($users && $users->active == 'SI')
                     return true;
 
                 return false;
             })
             ->addColumn('reactiveUser', function ($contract) {
-                $users = $this->getUsersContract($contract->id, $this->company, true);
-                if ($users[0]->active == 'NO')
+                $users = $this->getUserMasterContract($contract, $this->company, true);
+                if ($users && $users->active == 'NO')
                     return true;
 
                 return false;
@@ -1818,11 +1818,23 @@ class ContractLesseeController extends Controller
 
         $qualifications = Qualifications::pluck("name", "id");
 
+        try
+        {
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            
+        } catch (\Exception $e) {
+            $exist = 'NO';
+        }  
+
         //Obtiene los items calificados
         $items_calificated = ItemQualificationContractDetail::
                     where('contract_id', $contract->id)
-                ->where('list_qualification_id', $qualification_list->id)
-                ->pluck("qualification_id", "item_id");
+                ->where('list_qualification_id', $qualification_list->id);
+
+        if ($exist == 'SI')
+            $items_calificated->where('state_aprove_qualification', 'APROBADA');
+        
+        $items_calificated = $items_calificated->pluck("qualification_id", "item_id");
         
         $items_observations = ItemQualificationContractDetail::
                     where('contract_id', $contract->id)
@@ -1855,10 +1867,10 @@ class ContractLesseeController extends Controller
                 $item->observations = (isset($items_observations[$item->id]) && $items_observations[$item->id] != 'null') ? $items_observations[$item->id] : '';
                 //$item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
                 $item->list_qualification_id = $qualification_list->id;
-                $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : 'NULL';
+                $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : NULL;
                         
                 if (isset($items_reason_reject[$item->id]))
-                    $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : 'NULL';
+                    $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : NULL;
 
                 $item->files = [];
                 $item->actionPlan = [
@@ -1868,8 +1880,7 @@ class ContractLesseeController extends Controller
 
                 if ($item->qualification == 'NA')
                     $compliance['no_aplica']++;
-
-                if ($item->qualification == 'C')
+                else if ($item->qualification == 'C')
                 {
                     $compliance['cumple']++;
                     $files = FileUpload::select(
@@ -1909,6 +1920,8 @@ class ContractLesseeController extends Controller
 
                     $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
                 }
+                else
+                    $compliance['no_cumple']++;
 
                 $compliance['total']++;
 

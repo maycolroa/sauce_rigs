@@ -49,6 +49,42 @@ trait ContractTrait
         return $users->unique();
     }
 
+    public function getUserMasterContract($contract, $company_id = null, $scope_active = true)
+    {
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $user_master = NULL;
+
+        if ($contract->user_sst_id)
+        {
+            $user_master = User::find($contract->user_sst_id);
+        }
+        else
+        {
+            $user_contract = ContractLesseeInformation::select(
+                    'sau_user_information_contract_lessee.user_id')
+                ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
+                ->where('sau_ct_information_contract_lessee.id', $contract->id);
+
+            if ($company_id)
+                $user_contract->company_scope = $company_id;
+
+            $user_contract = $user_contract->first();
+            $users = collect([]);
+
+            if ($user_contract)
+            {                
+                if ($scope_active)
+                    $user_master = User::find($user_contract->user_id);
+                else
+                    $user_master = User::active()->find($user_contract->user_id);
+            }
+        }
+
+        return $user_master;
+    }
+
     public function getContractUserLogin($user_id, $company_id = null)
     {
         if (!is_numeric($user_id))
