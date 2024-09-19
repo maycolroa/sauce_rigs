@@ -9,6 +9,7 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
+use App\Models\System\Licenses\License;
 
 class DaysAlertExpirationDateContractFilesUpload extends Command
 {
@@ -57,7 +58,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
 
         foreach ($companies as $key => $value)
         {
-            $company_id = $value['company_id'];
+            $company_id = $value;
 
             $configDay = $this->getConfig($company_id);
 
@@ -69,7 +70,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
 
             foreach ($contracts as $key => $contract) 
             {
-                if ($value['value'])
+                if ($configDay)
                 {
                     $files_contracts = FileUpload::select(
                             'sau_ct_file_upload_contracts_leesse.name as name',
@@ -83,7 +84,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
+                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_information_contract_lessee.id', $contract->id)
                         ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_information_contract_lessee.id');
 
@@ -98,7 +99,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         ->withoutGlobalScopes()
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_document_contract','sau_ct_file_document_contract.file_id','sau_ct_file_upload_contracts_leesse.id')
-                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
+                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_file_document_contract.contract_id', $contract->id)
                         ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_contract.contract_id');
                     
@@ -114,7 +115,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_document_employee','sau_ct_file_document_employee.file_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_contract_employees','sau_ct_contract_employees.id','sau_ct_file_document_employee.employee_id')
-                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
+                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_contract_employees.contract_id', $contract->id)
                         ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_contract_employees.contract_id');
 
@@ -130,7 +131,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_item_contract','sau_ct_file_item_contract.file_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_list_check_qualifications','sau_ct_list_check_qualifications.id','sau_ct_file_item_contract.list_qualification_id')
-                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
+                        ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_list_check_qualifications.contract_id', $contract->id)
                         ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_list_check_qualifications.contract_id');
 
@@ -151,7 +152,12 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         }
 
                         $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
-                            return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
+                            try {
+                                return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
+                            } catch (\Exception $e) {
+                                \Log::info($e->getMessage());
+                                return false;
+                            }
                         });
 
                         if (!$recipients->isEmpty())
@@ -197,9 +203,15 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
 
         try
         {
-            return ConfigurationsCompany::company($company_id)->findByKey($key);
+            $days = ConfigurationsCompany::company($company_id)->findByKey($key);
+            
+            if ($days)
+                return $days;
+            else
+                return NULL;
             
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             return null;
         }
     }
