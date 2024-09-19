@@ -164,10 +164,10 @@ class NotificationMail
 
             if ($recipients->isEmpty())
                 throw new \Exception('The collection was empty after filtering the invalid emails');
-        }
+        }        
 
         if (($recipients instanceof User || $recipients instanceof Employee) && 
-                !preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $recipients->email) )
+                !preg_match('/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,63})$/', $recipients->email))
             throw new \Exception('Incorrect email format');
     
         $this->recipients = $recipients;
@@ -193,7 +193,7 @@ class NotificationMail
                         (isset($value->email) ? $value->email : null);
 
                 if ($email && 
-                    preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)(.[a-zA-Z]{2,4})$/', $email) )
+                    preg_match('/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,63})$/', $email) )
                     return true;
                 else 
                     return false;
@@ -204,7 +204,7 @@ class NotificationMail
         }
 
         if (($recipients instanceof User || $recipients instanceof Employee) && 
-                !preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $recipients->email) )
+                !preg_match('/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,63})$/', $recipients->email) )
             throw new \Exception('Incorrect email format');
 
         $this->copyHidden = $recipients;
