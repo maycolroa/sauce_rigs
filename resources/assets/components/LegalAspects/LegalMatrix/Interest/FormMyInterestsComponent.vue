@@ -5,6 +5,10 @@
        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="filterInterests" name="types" label="Filtrar Intereses" placeholder="Seleccione los intereses"  :url="urlDataInterests" :multiple="true" :allowEmpty="true" >
         </vue-ajax-advanced-select>
     </b-form-row>
+    <b-form-row v-if="auth.company_id == 130">       
+        <b-btn @click="checkAll()" :disabled="loading" variant="primary">Marcar todos los intereses</b-btn>&nbsp;&nbsp;
+        <b-btn @click="unCheckAll()" :disabled="loading" variant="primary">Desmarcar todos los intereses</b-btn>
+    </b-form-row>
     <b-form-row>
       <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-12" v-model="form.values" :checked="form.values" label="Intereses" name="interests" :options="optionsFilters" :vertical="true" :descriptions="descriptions"></vue-checkbox>
     </b-form-row>
@@ -107,6 +111,18 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    checkAll()
+    {
+      this.form.values.splice(0)
+
+      this.optionsFilters.forEach(option => {
+          this.form.values.push(option.value)
+      })
+    },
+    unCheckAll()
+    {
+      this.form.values.splice(0)
     }
   }
 };
