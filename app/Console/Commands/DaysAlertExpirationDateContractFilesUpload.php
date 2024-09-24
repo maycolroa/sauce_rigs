@@ -152,16 +152,6 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                             $recipients->push($value);
                         }
 
-                        $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
-                            try {
-                                if ($recipient)
-                                    return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
-                            } catch (\Exception $e) {
-                                \Log::info($e->getMessage());
-                                return false;
-                            }
-                        });
-
                         $notifyContractor = $this->getConfigNotify($company_id);
                         
                         if ($notifyContractor == 'SI')
@@ -174,6 +164,16 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                                 $recipients->push($usuario);
                             }
                         }
+
+                        $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
+                            try {
+                                if ($recipient)
+                                    return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
+                            } catch (\Exception $e) {
+                                \Log::info($e->getMessage());
+                                return false;
+                            }
+                        });
 
                         if (!$recipients->isEmpty())
                         {
