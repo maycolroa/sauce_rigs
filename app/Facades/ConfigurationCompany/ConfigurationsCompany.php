@@ -82,7 +82,9 @@ class ConfigurationsCompany
             'contracts_use_proyect' => 'Activar el uso de proyectos para contratistas',
             'company_there_integration_contract' => 'La compañia utiliza integracion en el modulo de contratistas',
             'danger_matrix_block_old_year' => 'Bloquea las matrices de peligros pertenecientes a años anteriores al actual',
-            'contract_validate_inactive_employee' => 'Pedir motivo y documento al momento de la inactivacion'
+            'contract_validate_inactive_employee' => 'Pedir motivo y documento al momento de la inactivacion',
+            'contract_notify_file_expired' => 'Activar las notificaciones al contratante sobre los archivos proximos a vencerse',
+            'contract_notify_file_expired_user' => 'Usuario contratante a notificar sobre los archivos proximos a vencerse'
         ];
     }
 

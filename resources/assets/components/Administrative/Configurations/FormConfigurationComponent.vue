@@ -15,18 +15,6 @@
 
     <hr class="border-light container-m--x mt-0 mb-4">
 
-    <b-form-row v-if="auth.can['contracts_r']">
-      <vue-input :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.days_alert_without_activity" label="Días de alerta para contratistas sin actividad" type="number" name="days_alert_without_activity" :error="form.errorsFor('days_alert_without_activity')" placeholder="1" min="1"></vue-input>
-    </b-form-row>
-
-    <hr class="border-light container-m--x mt-0 mb-4">
-    
-    <b-form-row v-if="auth.can['contracts_r']">
-        <vue-input :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.days_alert_expiration_date_contract_file_upload" label="Días de alerta por fecha de vencimiento cercana para los archivos cargados en el modulo de contratistas" type="number" name="days_alert_expiration_date_contract_file_upload" :error="form.errorsFor('days_alert_expiration_date_contract_file_upload')" placeholder="1"></vue-input>
-    </b-form-row>
-
-    <hr class="border-light container-m--x mt-0 mb-4">
-
     <b-form-row v-if="auth.can['dangerMatrix_r']">
       <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.show_action_plans" class="col-md-12" v-model="form.show_action_plans" :options="siNo" name="show_action_plans" :error="form.errorsFor('show_action_plans')" label="Mostrar planes de acción en el formulario de matriz de peligros">
         </vue-radio>
@@ -70,9 +58,7 @@ export default {
         return {
           location_level_form: '',
           days_alert_expiration_date_action_plan: '',
-          days_alert_expiration_date_contract_file_upload: '',
-          show_action_plans: '',
-          days_alert_without_activity: ''
+          show_action_plans: ''
         };
       }
     }

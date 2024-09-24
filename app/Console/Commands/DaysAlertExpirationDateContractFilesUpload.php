@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
 use App\Models\System\Licenses\License;
+use App\Models\Administrative\Users\User;
 
 class DaysAlertExpirationDateContractFilesUpload extends Command
 {
@@ -153,12 +154,26 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
 
                         $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
                             try {
-                                return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
+                                if ($recipient)
+                                    return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
                             } catch (\Exception $e) {
                                 \Log::info($e->getMessage());
                                 return false;
                             }
                         });
+
+                        $notifyContractor = $this->getConfigNotify($company_id);
+                        
+                        if ($notifyContractor == 'SI')
+                        {
+                            $usersContractor = $this->getConfigNotifyUser($company_id);
+
+                            foreach ($usersContractor as $key => $user) 
+                            {
+                                $usuario = User::find($user['value']);
+                                $recipients->push($usuario);
+                            }
+                        }
 
                         if (!$recipients->isEmpty())
                         {
@@ -207,6 +222,55 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
             
             if ($days)
                 return $days;
+            else
+                return NULL;
+            
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return null;
+        }
+    }
+
+    public function getConfigNotify($company_id)
+    {
+        $key = 'contract_notify_file_expired';
+
+        try
+        {
+            $days = ConfigurationsCompany::company($company_id)->findByKey($key);
+            
+            if ($days)
+                return $days;
+            else
+                return NULL;
+            
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return null;
+        }
+    }
+
+    public function getConfigNotifyUser($company_id)
+    {
+        $key = 'contract_notify_file_expired_user';
+
+        try
+        {
+            $value = ConfigurationsCompany::company($company_id)->findByKey($key);
+
+            $values = explode(',', $value);
+
+            $users = [];
+
+            foreach ($values as $email) 
+            {
+                $user = User::where('email', $email)->first();
+
+                if ($user)
+                    array_push($users, $user->multiselect());
+            }
+            if (COUNT($users) > 0)
+                return $users;
             else
                 return NULL;
             

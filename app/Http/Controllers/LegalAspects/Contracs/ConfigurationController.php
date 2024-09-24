@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use App\Models\Administrative\Users\User;
 
 class ConfigurationController extends Controller
 {
@@ -44,6 +45,25 @@ class ConfigurationController extends Controller
         {
             if ($value)
             {
+                if ($key == 'contract_notify_file_expired_user')
+                {
+                    $values = $this->getDataFromMultiselect($value);
+
+                    $users = [];
+                    
+                    foreach ($values as $id) 
+                    {
+                        $user = User::find($id);
+
+                        array_push($users, $user->email);
+                    }
+
+                    $value = implode(',', $users);
+                }
+
+                if ($key == 'multiselect_user_id')
+                    continue;
+
                 ConfigurationsCompany::key($key)->value($value)->save();
             }
         }
@@ -65,6 +85,36 @@ class ConfigurationController extends Controller
         try
         {
             $data = ConfigurationsCompany::findall();
+
+            foreach ($data as $key => $value) 
+            {
+                if ($key == 'contract_notify_file_expired_user')
+                {
+                    if ($value)
+                    {
+                        $users = explode(',', $value);
+
+                        $multiselect = [];
+
+                        foreach ($users as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            if ($user)
+                                array_push($multiselect, $user->multiselect());
+                        }
+                    }
+                }
+
+                if ($key == 'multiselect_user_id')
+                    continue;
+
+                if (isset($multiselect) && count($multiselect) > 0)
+                {
+                    $data['contract_notify_file_expired_user'] = $multiselect;
+                    $data['multiselect_user_id'] = $multiselect;
+                }
+            }
 
             return $this->respondHttp200([
                 'data' => $data
