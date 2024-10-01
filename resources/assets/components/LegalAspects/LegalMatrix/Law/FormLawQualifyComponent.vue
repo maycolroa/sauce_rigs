@@ -103,6 +103,39 @@
                     <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10 || (form.action_plan_cumple == 'SI' && fulfillment_value_id == 2)" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
                       </vue-radio>
                   </b-form-row>
+                  <b-form-row>
+                    <h4 class="col-md-6 offset-md-3">Riesgos y oportunidades</h4>
+                  </b-form-row>
+                  <b-form-row v-if="auth.hasRole['Superadmin']">
+                    <vue-radio :disabled="viewOnly" class="col-md-12" v-model="type_risk" :options="riskOport" name="type_risk" :checked="type_risk">
+                      </vue-radio>
+                  </b-form-row>
+                  <b-form-row v-if="auth.hasRole['Superadmin']">
+                    <vue-ajax-advanced-select-tag-unic v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+                  </b-form-row>
+                  <b-form-row v-if="auth.hasRole['Superadmin']">
+                    <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" rows="3"/>                  
+                  </b-form-row>
+                   <b-form-row>
+                    <vue-radio v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasiveRisk" :options="siNoRadio" name="showActionPlanMasiveRisk" label="¿Desea agregar plan de acción de Riesgos y Oportunidades?">
+                      </vue-radio>
+                  </b-form-row>
+                  <b-card v-if="showActionPlanMasiveRisk == 'SI'" :hideFooter="true" id="modals-default-masive" class="modal-top" size="lg">
+                    <div slot="modal-title">
+                      Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
+                      <small class="text-muted">Crea planes de acción para tu justificación.</small>
+                    </div>
+                      <b-card bg-variant="transparent"  title="Plan de acción Riesgos y Oportunidades" class="mb-3 box-shadow-none">
+                        <action-plan-component
+                          :is-edit="!viewOnly"
+                          :view-only="viewOnly"
+                          :form="form"
+                          :action-plan-states="actionPlanStates"
+                          v-model="actionPlanMasiveRisk"
+                          :action-plan="actionPlanMasiveRisk"/>
+                      </b-card>
+                  </b-card>
+
 
                 <!-- NO CUMPLE -->               
                   <b-card v-if="showActionPlanMasive == 'SI'" ref="modalPlanMasive" :hideFooter="true" id="modals-default-masive" class="modal-top" size="lg">
@@ -306,6 +339,61 @@
       @close-modal-history="closeModalHistory"
     />
 
+    <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+      <b-card-header class="bg-secondary">
+        <b-row>
+          <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
+          <b-col cols="1">
+            <div class="float-right">
+              <b-button-group>
+                <b-btn href="javascript:void(0)" v-b-toggle="'accordion-risk-oportunity'" variant="link">
+                  <span class="collapse-icon"></span>
+                </b-btn>
+              </b-button-group>
+            </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-risk-oportunity`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <b-form-row>
+            <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()">
+              </vue-radio>
+          </b-form-row>
+          <b-form-row>
+            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Oportunidad' || form.type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
+          </b-form-row>
+          <b-form-row>
+            <vue-textarea @onBlur="riskOpotLaw()" :disabled="viewOnly" class="col-md-12" v-model="form.risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" :error="form.errorsFor(`risk_oport_description`)" rows="3"/>                  
+          </b-form-row>
+          <b-form-row> 
+            <b-btn v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Oportunidad' || form.type_risk == 'Riesgo y oportunidad'" @click="showModalRisk('modalPlanLawRiskOport')" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+
+            <b-modal ref="modalPlanLawRiskOport" :hideFooter="true" id="modals-default-law-risk-oport" class="modal-top" size="lg" @hidden="riskOpotLaw()">
+              <div slot="modal-title">
+                Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
+                <small class="text-muted">Crea planes de acción para tu justificación.</small>
+              </div>
+
+              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                <action-plan-component
+                  :is-edit="!viewOnly"
+                  :view-only="viewOnly"
+                  :form="form"
+                  :action-plan-states="actionPlanStates"
+                  v-model="form.actionPlanRisk"
+                  :action-plan="form.actionPlanRisk"/>
+              </b-card>
+              <br>
+              <div class="row float-right pt-12 pr-12y">
+                <b-btn variant="primary" @click="hideModalRisk('modalPlanLawRiskOport')">Cerrar</b-btn>
+              </div>
+            </b-modal>
+          </b-form-row>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -324,6 +412,7 @@ import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -335,7 +424,8 @@ export default {
     VueTextarea,
     VueFileSimple,
     ActionPlanComponent,
-    VueRadio
+    VueRadio,
+    VueAjaxAdvancedSelectTagUnic
   },
   props: {
     url: { type: String },
@@ -385,7 +475,11 @@ export default {
           articles: [],
           url: '',
           action_plan_cumple: '',
-          hide_total_law: ''
+          hide_total_law: '',
+          type_risk: '',
+          risk: '',
+          risk_oport_description: '',
+          actionPlanRisk: '',
         };
       }
     }
@@ -428,6 +522,14 @@ export default {
       workplace: '',
       hide: '',
       showActionPlanMasive: '',
+      showActionPlanMasiveRisk: '',
+      type_risk: '',
+      risk_oport_description: '',
+      risk: '',
+      actionPlanMasiveRisk: {
+        activities: [],
+        activitiesRemoved: []
+      },
       actionPlanMasive: {
         activities: [],
         activitiesRemoved: []
@@ -443,8 +545,15 @@ export default {
           {text: 'SI', value: 'SI'},
           {text: 'NO', value: 'NO'}
       ],
+      riskOport: [
+          {text: 'Riesgo', value: 'Riesgo'},
+          {text: 'Oportunidad', value: 'Oportunidad'},
+          {text: 'Riesgo y oportunidad', value: 'Riesgo y oportunidad'},
+          {text: 'No aplica', value: 'No aplica'}
+      ],
       searchArticles: '',
-      editDate: false
+      editDate: false,
+			tagsRiskDataUrl: '/selects/tagsLmRisk',
     };
   },
   mounted() {
@@ -539,10 +648,18 @@ export default {
       this.idHistory = id
     },
     showModal(ref) {
+      console.log(ref)
 			this.$refs[ref][0].show();
+		},
+    showModalRisk(ref) {
+      console.log(ref)
+			this.$refs[ref].show();
 		},
 		hideModal(ref) {
 			this.$refs[ref][0].hide();
+		},
+		hideModalRisk(ref) {
+			this.$refs[ref].hide();
 		},
     closeModalHistory() {
       this.idHistory = ''
@@ -653,6 +770,20 @@ export default {
         this.saveAllArticles()
       }
     },
+    riskOpotLaw()
+    {     
+        let data = new FormData();
+        
+        data.append('id', this.form.id);
+        data.append('type', this.form.type_risk);
+        data.append('risk_oport_description', this.form.risk_oport_description);
+        data.append('actionPlan', JSON.stringify(this.form.actionPlanRisk));
+        data.append('risk', JSON.stringify(this.form.risk));
+
+        this.form
+          .submit('/legalAspects/legalMatrix/law/saveRiskOportLawComplete', false, data)
+          .then(response => {}).catch(error => {console.log(error)});
+    },
     hideOrShowLaw() 
     {
         this.textBlock = 'Guardando...';
@@ -704,6 +835,10 @@ export default {
         data.append('workplace', this.workplace ? this.workplace : '');
         data.append('hide', this.hide ? this.hide : 'NO');
         data.append('fulfillment_value_id', this.fulfillment_value_id);
+        data.append('type', this.type_risk);
+        data.append('risk_oport_description', this.risk_oport_description);
+        data.append('risk', JSON.stringify(this.risk));
+        data.append('actionPlanRisk', JSON.stringify(this.actionPlanMasiveRisk));
         data.append('actionPlan', JSON.stringify(this.actionPlanMasive));
         data.append('file', this.file_masive);
 

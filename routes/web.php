@@ -324,6 +324,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsCtArl', 'LegalAspects\Contracs\ContractLesseeController@multiselectArl');
 
 
+        Route::post('tagsLmRisk', 'LegalAspects\LegalMatrix\LawController@multiselectRisk');
+
+
         Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
         Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
         Route::post('classElement', 'IndustrialSecure\EPP\ElementController@multiselectClassElement');
@@ -1120,6 +1123,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/actionPlanCumple', 'LegalAspects\LegalMatrix\LawController@actionPlanCumple');
         Route::post('law/saveArticlesQualificationAlls', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualificationAlls');
         Route::post('law/saveHideLawComplete', 'LegalAspects\LegalMatrix\LawController@saveHideLawComplete');
+        Route::post('law/saveRiskOportLawComplete', 'LegalAspects\LegalMatrix\LawController@saveRiskOportLawComplete');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::post('law/report', 'LegalAspects\LegalMatrix\LawReportController@data');
         Route::post('law/report/export', 'LegalAspects\LegalMatrix\LawReportController@export');

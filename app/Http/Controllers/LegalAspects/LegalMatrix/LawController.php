@@ -14,6 +14,8 @@ use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Models\LegalAspects\LegalMatrix\LawHide;
 use App\Models\LegalAspects\LegalMatrix\LawActionPlan;
+use App\Models\LegalAspects\LegalMatrix\TagRisk;
+use App\Models\LegalAspects\LegalMatrix\LawRiskOpportunity;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Jobs\LegalAspects\LegalMatrix\UpdateQualificationsRepeleadArticle;
 use App\Traits\LegalMatrixTrait;
@@ -21,6 +23,7 @@ use App\Traits\Filtertrait;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use App\Http\Requests\LegalAspects\LegalMatrix\SaveArticlesQualificationRequest;
+use App\Http\Requests\LegalAspects\LegalMatrix\LawRiskRequest;
 use App\Exports\LegalAspects\LegalMatrix\Laws\LegalMatrixImport;
 use App\Jobs\LegalAspects\LegalMatrix\LawImportJob;
 use Carbon\Carbon;
@@ -568,6 +571,32 @@ class LawController extends Controller
 
             $lawHideTotal = LawHide::where('company_id', $this->company)->where('law_id', $law->id)->first();
 
+            $law_risk_opport = LawRiskOpportunity::where('company_id', $this->company)->where('law_id', $law->id)->first();
+
+            if ($law_risk_opport)
+            {
+                $law->type_risk = $law_risk_opport->type;
+                $law->risk = $law_risk_opport->risk;
+                $law->risk_oport_description = $law_risk_opport->description;
+                $law->actionPlanRisk = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
+
+                if ($law_risk_opport->type == 'Riesgo' || $law_risk_opport->type == 'Oportunidad' || $law_risk_opport->type == 'Riesgo y oportunidad')
+                    $law->actionPlanRisk = ActionPlan::model($law)->prepareDataComponent();
+            }
+            else
+            {
+                $law->type_risk = 'No aplica';
+                $law->risk = '';
+                $law->risk_oport_description = '';
+                $law->actionPlanRisk = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
+            }
+
             if ($lawActionPlan && $lawActionPlan->action_plan)
                 $law->action_plan_cumple = 'SI';
             else
@@ -701,6 +730,42 @@ class LawController extends Controller
                     $article_qualify = ArticleFulfillment::find($ids_depurados[0]);
                     $article_law = Article::find($article_qualify->article_id);
                     $law = Law::find($article_law->law_id);
+
+                    if ($request->has('type') || $request->has('risk_oport_description') || $request->has('risk'))
+                    {
+                        $risk = $this->tagsPrepare($request->risk);
+                        $this->tagsSave($risk, TagRisk::class);
+
+                        $risk_oport = LawRiskOpportunity::updateOrCreate(
+                            [
+                                'company_id' => $this->company, 
+                                'law_id' => $law->id
+                            ],
+                            [
+                                'company_id' => $this->company, 
+                                'law_id' => $law->id, 
+                                'user_id' => $this->user->id,
+                                'type' => $request->type,
+                                'description' => $request->risk_oport_description == 'null' ? NULL : $request->risk_oport_description, 
+                                'risk' => $risk->implode(','),
+                            ]
+                        );
+
+                        $actionPlan = json_decode($request->actionPlanRisk, true);
+
+                        if ($request->has('actionPlanRisk') && count($actionPlan['activities']) > 0)
+                        {
+                            $detail_procedence = 'Mátriz Legal - Norma: ' . $law->name . '.';
+
+                            ActionPlan::user($this->user)
+                            ->module('legalMatrix')
+                            ->url(url('/administrative/actionplans'))
+                            ->model($law)
+                            ->detailProcedence($detail_procedence)
+                            ->activities($actionPlan)
+                            ->save();
+                        }
+                    }
 
                     if ($request->hide == 'SI')
                     {
@@ -1057,6 +1122,86 @@ class LawController extends Controller
             \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
+        }
+    }
+
+    public function saveRiskOportLawComplete(LawRiskRequest $request)
+    {     
+        DB::beginTransaction();
+
+        try
+        {           
+            $law = Law::find($request->id);
+
+            $risk = $this->tagsPrepare($request->risk);
+            $this->tagsSave($risk, TagRisk::class);
+
+            $risk_oport = LawRiskOpportunity::updateOrCreate(
+                [
+                    'company_id' => $this->company, 
+                    'law_id' => $law->id
+                ],
+                [
+                    'company_id' => $this->company, 
+                    'law_id' => $law->id, 
+                    'user_id' => $this->user->id,
+                    'type' => $request->type,
+                    'description' => $request->risk_oport_description == 'null' ? NULL : $request->risk_oport_description, 
+                    'risk' => $risk->implode(','),
+                ]
+            );
+
+            $actionPlan = json_decode($request->actionPlan, true);
+
+            if ($request->has('actionPlan') && count($actionPlan['activities']) > 0)
+            {
+                $detail_procedence = 'Mátriz Legal - Norma: ' . $law->name . '.';
+
+                ActionPlan::user($this->user)
+                ->module('legalMatrix')
+                ->url(url('/administrative/actionplans'))
+                ->model($law)
+                ->detailProcedence($detail_procedence)
+                ->activities($actionPlan)
+                ->save();
+            }
+
+            DB::commit();
+
+        } catch (Exception $e){
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+    }
+
+    public function multiselectRisk(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagRisk::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagRisk::selectRaw("
+                sau_ct_tag_arl.id as id,
+                sau_ct_tag_arl.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
         }
     }
 }

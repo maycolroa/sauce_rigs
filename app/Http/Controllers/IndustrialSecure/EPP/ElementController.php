@@ -80,7 +80,6 @@ class ElementController extends Controller
      */
     public function store(ElementRequest $request)
     {
-        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -119,7 +118,6 @@ class ElementController extends Controller
 
         $types = $this->tagsPrepare($request->get('type'));
         $this->tagsSave($types, TagsType::class);
-
 
         $mark = $this->tagsPrepare($request->get('mark'));
         $this->tagsSave($mark, TagsMark::class);

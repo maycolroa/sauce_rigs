@@ -44,6 +44,17 @@ class SaveArticlesQualificationRequest extends FormRequest
             }
         }
 
+        $record = $this->input('risk');
+
+        if ($this->has('risk'))
+        {
+            foreach (json_decode($record, true) as $key => $value)
+            {
+                $data['risk'][$key] = $value;
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 

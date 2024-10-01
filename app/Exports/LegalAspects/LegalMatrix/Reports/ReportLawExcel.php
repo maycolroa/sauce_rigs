@@ -4,6 +4,7 @@ namespace App\Exports\LegalAspects\LegalMatrix\Reports;
 
 use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\QualificationColorDinamic;
+use App\Models\LegalAspects\LegalMatrix\LawRiskOpportunity;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -41,6 +42,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       $laws = Law::selectRaw(
         "sau_lm_articles_fulfillment.id AS id,
          SUBSTRING(sau_lm_articles.description, 1, 24) AS article,
+         sau_lm_laws.id AS law_id,
          sau_lm_laws_types.name AS type,
          sau_lm_laws.law_number AS law_number,
          sau_lm_laws.law_year AS law_year,
@@ -100,6 +102,12 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
 
     public function map($data): array
     {
+      $law_risk = LawRiskOpportunity::where('company_id', $this->company_id)->where('law_id', $data->law_id)->first();
+
+      $risk = $law_risk && ($law_risk->type == 'Riesgo' || $law_risk->type == 'Riesgo y oportunidad') ? 'SI' : 'NO';
+      $oppor = $law_risk && ($law_risk->type == 'Oportunidad' || $law_risk->type == 'Riesgo y oportunidad') ? 'SI' : 'NO';
+      $no_apl = $law_risk && $law_risk->type == 'No aplica' ? 'SI' : 'NO';
+
       return [
         $data->article,
         $data->type,
@@ -114,7 +122,11 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
         $data->entity,
         $data->observations,
         $data->responsible,
-        $data->workplace
+        $data->workplace,
+        $risk,
+        $oppor,
+        $no_apl,
+        $law_risk ? $law_risk->description : NULL
       ];
     }
 
@@ -134,7 +146,11 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           'Ente',
           'Observaciones',
           'Responsable',
-          'Centro de trabajo'
+          'Centro de trabajo',
+          'Riesgo',
+          'Oportunidad',
+          'No aplica',
+          'Descripcion'
         ];
     }
 
