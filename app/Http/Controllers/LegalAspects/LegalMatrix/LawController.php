@@ -16,6 +16,7 @@ use App\Models\LegalAspects\LegalMatrix\LawHide;
 use App\Models\LegalAspects\LegalMatrix\LawActionPlan;
 use App\Models\LegalAspects\LegalMatrix\TagRisk;
 use App\Models\LegalAspects\LegalMatrix\LawRiskOpportunity;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Jobs\LegalAspects\LegalMatrix\UpdateQualificationsRepeleadArticle;
 use App\Traits\LegalMatrixTrait;
@@ -731,7 +732,16 @@ class LawController extends Controller
                     $article_law = Article::find($article_qualify->article_id);
                     $law = Law::find($article_law->law_id);
 
-                    if ($request->has('type') || $request->has('risk_oport_description') || $request->has('risk'))
+                    $dataConfig = ConfigurationCompany::select('value')->where('key', 'legal_matrix_risk_opportunity');
+                    $dataConfig->company_scope = $this->company;
+                    $dataConfig = $dataConfig->first();
+        
+                    if (!$dataConfig)
+                        $risk_conf = 'NO';
+                    else
+                        $risk_conf = $dataConfig->value;
+
+                    if ($risk_conf == 'SI' && ($request->has('type') || $request->has('risk_oport_description') || $request->has('risk')))
                     {
                         $risk = $this->tagsPrepare($request->risk);
                         $this->tagsSave($risk, TagRisk::class);
