@@ -44,23 +44,15 @@ class SaveArticlesQualificationRequest extends FormRequest
             }
         }
 
-        /*if ($this->has('risk'))
-        {
-            foreach ($this->input('risk') as $key => $value)
-            {
-                $data['risk'][$key] = json_decode($value, true);
-                $this->merge($data);
-            }
-        }
-
-        /*$record = $this->input('risk');*/
-
         if ($this->has('risk'))
         {
-            foreach (json_decode($this->input('risk'), true) as $key => $value)
+            if (is_array($this->input('risk')))
             {
-                $data['risk'][$key] = $value;
-                $this->merge($data);
+                foreach ($this->input('risk') as $key => $value)
+                {
+                    $data['risk'][$key] = json_decode($value, true);
+                    $this->merge($data);
+                }
             }
         }
 

@@ -743,7 +743,7 @@ class LawController extends Controller
 
                     if ($risk_conf == 'SI' && ($request->has('type') || $request->has('risk_oport_description') || $request->has('risk')))
                     {
-                        $risk = $this->tagsPrepare($request->risk);
+                        $risk = $this->tagsPrepare(json_decode($request->risk, true));
                         $this->tagsSave($risk, TagRisk::class);
 
                         $risk_oport = LawRiskOpportunity::updateOrCreate(
