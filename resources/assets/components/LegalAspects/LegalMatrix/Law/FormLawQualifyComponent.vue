@@ -104,7 +104,7 @@
                       </vue-radio>
                   </b-form-row>
 
-                  <b-card v-if="auth.legalMatrixRisk == 'SI'" bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                  <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']" bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                     <b-form-row>
                       <h5 class="col-md-6 offset-md-3">Riesgos y oportunidades</h5>
                     </b-form-row>
@@ -342,7 +342,7 @@
       @close-modal-history="closeModalHistory"
     />
 
-    <b-card v-if="auth.legalMatrixRisk == 'SI'" no-body class="mb-2 border-secondary" style="width: 100%;">
+    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']" no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
           <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
