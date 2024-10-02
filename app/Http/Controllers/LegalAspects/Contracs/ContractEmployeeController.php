@@ -441,23 +441,18 @@ class ContractEmployeeController extends Controller
                             else
                                 array_push($files_names_delete, $file['old_name']);
                         }
-                        else
+
+                        if ($create_file)
                         {
+                            $fileUpload = new FileUpload();
+                            $fileUpload->user_id = $this->user->id;
+
                             if (!isset($file['has_class']))
                             {
                                 $file_tmp = $file['file'];
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                                 $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
-                            }
 
-                            $fileUpload = new FileUpload();
-                            $fileUpload->user_id = $this->user->id;
-                        }
-
-                        if ($create_file)
-                        {
-                            if (!isset($file['has_class']))
-                            {
                                 $fileUpload->file = $nameFile;
                                 $fileUpload->name = $file['name'];
                                 $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;;

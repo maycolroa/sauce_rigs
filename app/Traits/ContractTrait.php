@@ -115,19 +115,24 @@ trait ContractTrait
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
 
-        $contract = ContractLesseeInformation::select(
-                'sau_ct_information_contract_lessee.*'
-            )
-            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
-            ->where('sau_user_information_contract_lessee.user_id', $user_id)
-            ->where('sau_ct_information_contract_lessee.id', Session::get('contract_id'));
+        if (Session::get('contract_id'))
+        {
+            $contract = ContractLesseeInformation::select(
+                    'sau_ct_information_contract_lessee.*'
+                )
+                ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
+                ->where('sau_user_information_contract_lessee.user_id', $user_id)
+                ->where('sau_ct_information_contract_lessee.id', Session::get('contract_id'));
 
-        if ($company_id)
-            $contract->company_scope = $company_id;
+            if ($company_id)
+                $contract->company_scope = $company_id;
 
-        $contract = $contract->first();
+            $contract = $contract->first();
 
-        return $contract ? $contract : NULL;
+            return $contract ? $contract : NULL;
+        }
+        else
+            return $this->getContractUserLogin($user_id);
     }
 
 

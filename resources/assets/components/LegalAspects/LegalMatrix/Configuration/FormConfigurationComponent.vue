@@ -2,6 +2,10 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
+        <vue-radio :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.legal_matrix_risk_opportunity" :options="siNo" name="legal_matrix_risk_opportunity" :checked="form.legal_matrix_risk_opportunity" label="Mostrar sección de Riesgos y Oportunidades">
+              </vue-radio>
+    </b-form-row>
+    <b-form-row>
       <label>Selecciona el color que correspondera a cada calificación:</label>
     </b-form-row>
     <br>
@@ -102,7 +106,11 @@ export default {
         {name: 'Gris', value: 'd5d5d5'},
         {name: 'Lila', value: 'adadf7'},
         {name: 'Sin Color', value: 'ffffff'},
-      ]
+      ],
+      siNo: [
+          {text: 'SI', value: 'SI'},
+          {text: 'NO', value: 'NO'}
+      ],
     };
   },
   methods: {

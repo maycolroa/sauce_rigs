@@ -535,7 +535,7 @@ class InformContractController extends Controller
     private function deleteData($data)
     {
         if (COUNT($data['observations']) > 0)
-            Observation::destroy($data['observations']);
+            InformContractItemObservation::destroy($data['observations']);
         
         if (COUNT($data['files']) > 0)
         {

@@ -109,6 +109,18 @@ class ViewService
             return $configuration->value;
     }
 
+    public function getLegalMatrixRiskOpport()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'legal_matrix_risk_opportunity');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
     public function allAuthData()
     {
         return [
@@ -118,6 +130,7 @@ class ViewService
             'proyectContract' => $this->getProyectContract(), 
             'integrationContract' => $this->getIntegrationContract(), 
             'dangerMatrixBlock' => $this->getDangerMatrixBlock(), 
+            'legalMatrixRisk' => $this->getLegalMatrixRiskOpport(),
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),

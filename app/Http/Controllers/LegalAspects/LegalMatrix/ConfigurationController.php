@@ -5,6 +5,8 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\LegalAspects\LegalMatrix\QualificationColorDinamic;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 class ConfigurationController extends Controller
 {
@@ -55,6 +57,8 @@ class ConfigurationController extends Controller
             ]
         );
 
+        ConfigurationsCompany::key('legal_matrix_risk_opportunity')->value($request['legal_matrix_risk_opportunity'])->save();
+
         $this->saveLogActivitySystem('Matriz legal - Configuracion', 'Se creo o edito la configuración');
 
         return $this->respondHttp200([
@@ -73,6 +77,15 @@ class ConfigurationController extends Controller
         {
             $data = QualificationColorDinamic::where('company_id', $this->company)->first();
 
+            $dataConfig = ConfigurationCompany::select('value')->where('key', 'legal_matrix_risk_opportunity');
+            $dataConfig->company_scope = $this->company;
+            $dataConfig = $dataConfig->first();
+
+            if (!$dataConfig)
+                $risk = 'NO';
+            else
+                $risk = $dataConfig->value;
+
             if (!$data)
             {
                 $data = [
@@ -85,9 +98,12 @@ class ConfigurationController extends Controller
                     'informativo' => '',
                     'no_vigente' => '',
                     'en_transicion' => '',
-                    'pendiente_reglamentacion' => ''
+                    'pendiente_reglamentacion' => '',
+                    'legal_matrix_risk_opportunity' => $risk
                 ];
             }
+            else
+                $data->legal_matrix_risk_opportunity = $risk;
 
             return $this->respondHttp200([
                 'data' => $data

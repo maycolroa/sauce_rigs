@@ -205,8 +205,8 @@ class FileUploadController extends Controller
         $fileUpload = FileUpload::findOrFail($id);
         $fileUpload->expirationDate = $fileUpload->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$fileUpload->expirationDate))->format('D M d Y');
 
-        $type = explode('.',$fileUpload->file)[1];
-        $fileUpload->type = $type;
+        $type = explode('.',$fileUpload->file);
+        $fileUpload->type = COUNT($type) > 1 ? $type[1] : NULL;
         $fileUpload->path = Storage::disk('s3')->url('legalAspects/files/'. $fileUpload->file);
 
         $contract_id = [];

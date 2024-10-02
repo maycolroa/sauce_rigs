@@ -103,37 +103,40 @@
                     <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10 || (form.action_plan_cumple == 'SI' && fulfillment_value_id == 2)" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
                       </vue-radio>
                   </b-form-row>
-                  <b-form-row>
-                    <h4 class="col-md-6 offset-md-3">Riesgos y oportunidades</h4>
-                  </b-form-row>
-                  <b-form-row v-if="auth.hasRole['Superadmin']">
-                    <vue-radio :disabled="viewOnly" class="col-md-12" v-model="type_risk" :options="riskOport" name="type_risk" :checked="type_risk">
-                      </vue-radio>
-                  </b-form-row>
-                  <b-form-row v-if="auth.hasRole['Superadmin']">
-                    <vue-ajax-advanced-select-tag-unic v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
-                  </b-form-row>
-                  <b-form-row v-if="auth.hasRole['Superadmin']">
-                    <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" rows="3"/>                  
-                  </b-form-row>
-                   <b-form-row>
-                    <vue-radio v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasiveRisk" :options="siNoRadio" name="showActionPlanMasiveRisk" label="¿Desea agregar plan de acción de Riesgos y Oportunidades?">
-                      </vue-radio>
-                  </b-form-row>
-                  <b-card v-if="showActionPlanMasiveRisk == 'SI'" :hideFooter="true" id="modals-default-masive" class="modal-top" size="lg">
-                    <div slot="modal-title">
-                      Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
-                      <small class="text-muted">Crea planes de acción para tu justificación.</small>
-                    </div>
-                      <b-card bg-variant="transparent"  title="Plan de acción Riesgos y Oportunidades" class="mb-3 box-shadow-none">
-                        <action-plan-component
-                          :is-edit="!viewOnly"
-                          :view-only="viewOnly"
-                          :form="form"
-                          :action-plan-states="actionPlanStates"
-                          v-model="actionPlanMasiveRisk"
-                          :action-plan="actionPlanMasiveRisk"/>
-                      </b-card>
+
+                  <b-card v-if="auth.legalMatrixRisk == 'SI'" bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                    <b-form-row>
+                      <h5 class="col-md-6 offset-md-3">Riesgos y oportunidades</h5>
+                    </b-form-row>
+                    <b-form-row>
+                      <vue-radio :disabled="viewOnly" class="col-md-12" v-model="type_risk" :options="riskOport" name="type_risk" :checked="type_risk">
+                        </vue-radio>
+                    </b-form-row>
+                    <b-form-row>
+                      <vue-ajax-advanced-select-tag-unic v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+                    </b-form-row>
+                    <b-form-row>
+                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" rows="3"/>                  
+                    </b-form-row>
+                    <b-form-row>
+                      <vue-radio v-if="type_risk == 'Riesgo' || type_risk == 'Oportunidad' || type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasiveRisk" :options="siNoRadio" name="showActionPlanMasiveRisk" label="¿Desea agregar plan de acción de Riesgos y Oportunidades?">
+                        </vue-radio>
+                    </b-form-row>
+                    <b-card v-if="showActionPlanMasiveRisk == 'SI'" :hideFooter="true" id="modals-default-masive" class="modal-top" size="lg">
+                      <div slot="modal-title">
+                        Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
+                        <small class="text-muted">Crea planes de acción para tu justificación.</small>
+                      </div>
+                        <b-card bg-variant="transparent"  title="Plan de acción Riesgos y Oportunidades" class="mb-3 box-shadow-none">
+                          <action-plan-component
+                            :is-edit="!viewOnly"
+                            :view-only="viewOnly"
+                            :form="form"
+                            :action-plan-states="actionPlanStates"
+                            v-model="actionPlanMasiveRisk"
+                            :action-plan="actionPlanMasiveRisk"/>
+                        </b-card>
+                    </b-card>
                   </b-card>
 
 
@@ -339,7 +342,7 @@
       @close-modal-history="closeModalHistory"
     />
 
-    <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+    <b-card v-if="auth.legalMatrixRisk == 'SI'" no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
           <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
