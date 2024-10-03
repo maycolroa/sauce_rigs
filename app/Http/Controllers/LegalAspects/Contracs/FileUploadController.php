@@ -115,8 +115,6 @@ class FileUploadController extends Controller
           $contract_id = $this->getContractIdUser($this->user->id);
           $files->where('sau_ct_information_contract_lessee.id', $contract_id);
         }
-
-        \Log::info($files->toSql());
         
         return Vuetable::of($files)
             ->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
