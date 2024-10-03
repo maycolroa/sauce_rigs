@@ -93,12 +93,12 @@ export default [
           type: 'select',
           label: 'Items'
         },
-        {
+        /*{
           url: '/selects/contracts/ctProyectsContracts',
           key: 'proyects',
           type: 'select',
           label: 'Proyectos'
-        },
+        },*/
         {
           key: 'dateCreate',
           type: 'dateRange',
