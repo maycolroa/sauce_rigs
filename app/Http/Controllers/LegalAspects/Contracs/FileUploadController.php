@@ -54,19 +54,24 @@ class FileUploadController extends Controller
             $deleteFilesConfig = 'NO';
         }
 
+        $modules = FileModuleState::select('sau_ct_file_module_state.*')
+        ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_module_state.file_id')
+        ->whereRaw("sau_ct_file_module_state.id = (SELECT MIN(id) FROM sau_ct_file_module_state WHERE file_id = sau_ct_file_module_state.file_id)");
+
         $files = FileUpload::select(
             "sau_ct_file_upload_contracts_leesse.*",
              'sau_users.name as user_name',
              //DB::raw('GROUP_CONCAT(distinct sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason'),
              'sau_ct_information_contract_lessee.social_reason AS social_reason',
-             DB::raw("IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module2"),
+             //DB::raw("IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module2"),
+             DB::raw("IF(modules.module is not null, modules.module, 'Subida de Archivos') AS module"),
+            // DB::raw("modules.module AS module"),
             // DB::raw('GROUP_CONCAT(DISTINCT sau_ct_file_module_state.module) AS module'),
              'sau_ct_contract_employees.name AS employee_name',
              'sau_ct_contract_employees.identification AS employee_identification'       
             //DB::raw('GROUP_CONCAT(DISTINCT CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
           )
           ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
-          //->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
           ->join('sau_ct_file_upload_contract', function ($join) 
           {
             $join->on("sau_ct_file_upload_contract.file_upload_id", "sau_ct_file_upload_contracts_leesse.id");
@@ -77,13 +82,22 @@ class FileUploadController extends Controller
             $join->on("sau_ct_information_contract_lessee.id", "sau_ct_file_upload_contract.contract_id"); 
             $join->on("sau_ct_information_contract_lessee.company_id", "=", DB::raw("{$this->company}"));
           })
-          //->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
           ->leftJoin('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->leftJoin('sau_ct_contract_employees', function ($join) 
           {
             $join->on("sau_ct_contract_employees.id", "sau_ct_file_document_employee.employee_id"); 
             $join->on("sau_ct_contract_employees.company_id", "=", DB::raw("{$this->company}"));
           })
+          /*->leftJoin(DB::raw("({$modules->toSql()}) as modules"), function ($join) {
+            $join->on("modules.file_id", "sau_ct_file_upload_contracts_leesse.id");
+            $join->whereRaw("modules.contract_id IN (select id from sau_ct_information_contract_lessee where company_id = {$this->company})");
+          })*/
+          ->leftJoin(DB::raw("
+              (SELECT fms.* FROM sau_ct_file_module_state fms INNER JOIN sau_ct_file_upload_contracts_leesse fuc ON fuc.id = fms.file_id WHERE fms.id = (  SELECT MIN(id) FROM sau_ct_file_module_state WHERE file_id = fms.file_id)) as modules"), function ($join) {
+              $join->on("modules.file_id", "sau_ct_file_upload_contracts_leesse.id");
+              $join->whereRaw("modules.contract_id IN (select id from sau_ct_information_contract_lessee where company_id = {$this->company})");
+          })
+          //->mergeBindings($modules->getQuery())
           /*->leftJoin('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
           ->leftJoin('sau_ct_file_module_state', 'sau_ct_file_module_state.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
