@@ -824,7 +824,6 @@ class ContractEmployeeController extends Controller
 
     public function multiselectProyect(Request $request)
     {
-
         $contract = $this->getContractUser($this->user->id, $this->company);
 
         if ($request->has('contract_id') || $contract)
@@ -868,9 +867,15 @@ class ContractEmployeeController extends Controller
         }
         else
         {
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat([])
-            ]);
+            $proyects = ProyectContract::selectRaw("
+                sau_ct_proyects.id as id,
+                sau_ct_proyects.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($proyects);
         }
     }
 

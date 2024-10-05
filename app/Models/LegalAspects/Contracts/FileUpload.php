@@ -107,10 +107,10 @@ class FileUpload extends Model
         if (COUNT($proyects) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_ct_contracts_proyects.proyect_id', $proyects);
+                $query->whereIn('sau_ct_contract_employee_proyects.proyect_contract_id', $proyects);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_ct_contracts_proyects.proyect_id', $proyects);
+                $query->whereNotIn('sau_ct_contract_employee_proyects.proyect_contract_id', $proyects);
         }
 
         return $query;

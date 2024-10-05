@@ -363,10 +363,10 @@ class VuetableColumnManager
                 ['name' => 'sau_ct_file_module_state.module', 'data'=> 'module', 'title'=> 'Modulo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
 
-        /*if ($this->configuration && $this->configuration->value == 'SI')
+        if ($this->configuration && $this->configuration->value == 'SI')
             $colums = array_merge($colums, [
                 ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyectos', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
-            ]);*/
+            ]);
 
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
