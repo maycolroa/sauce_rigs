@@ -1143,9 +1143,10 @@ class LawController extends Controller
         {           
             $law = Law::find($request->id);
 
-            if ($request->risk && $request->risk != '')
+            \Log::info($request->risk);
+            
+            if ($request->risk && is_array($request->risk))
             {
-                \Log::info($request->risk);
                 $risk = $this->tagsPrepare($request->risk);
                 $this->tagsSave($risk, TagRisk::class);
             }
