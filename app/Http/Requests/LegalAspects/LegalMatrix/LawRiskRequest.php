@@ -38,6 +38,9 @@ class LawRiskRequest extends FormRequest
 
         if ($this->has('risk'))
         {
+            $record = (array) $this->input('risk');
+            \Log::info($record);
+
             if ($this->input('risk'))
             {
                 foreach ($this->input('risk') as $key => $value)
