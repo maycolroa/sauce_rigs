@@ -25,7 +25,7 @@ class LawRiskRequest extends FormRequest
 
     public function sanitize()
     {
-        $record = (array) $this->input('risk');
+        /*$record = (array) $this->input('risk');
 
         if ($this->has('risk'))
         {
@@ -33,6 +33,18 @@ class LawRiskRequest extends FormRequest
             {
                 $data['risk'][$key] = $value;
                 $this->merge($data);
+            }
+        }*/
+
+        if ($this->has('risk'))
+        {
+            if (is_array($this->input('risk')))
+            {
+                foreach ($this->input('risk') as $key => $value)
+                {
+                    $data['risk'][$key] = json_decode($value, true);
+                    $this->merge($data);
+                }
             }
         }
 
