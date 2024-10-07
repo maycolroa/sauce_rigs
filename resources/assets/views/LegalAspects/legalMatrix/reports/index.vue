@@ -145,6 +145,36 @@
                     </b-card>
                 </b-col>
             </b-row>
+            <b-row v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']">
+                <b-col>
+                    <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
+                        <b-row>
+                            <div class="col-md-12" style="padding-bottom: 15px;">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Sistema que aplica</th>
+                                                <th class="text-center align-middle">Riesgos</th>
+                                                <th class="text-center align-middle">Oportunidades</th>
+                                                <th class="text-center align-middle">No cumple</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row, index) in reportTableRisk" :key="`row-${index}`">
+                                                <td class="align-middle">{{ row.category }}</td>
+                                                <td class="text-center align-middle">{{ row["count_risk"] }}</td>
+                                                <td class="text-center align-middle">{{ row["count_opport"] }}</td>
+                                                <td class="text-center align-middle">{{ row["count_n_a"] }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </b-row>
+                    </b-card>
+                </b-col>
+            </b-row>
         </div>
     </div>
 </template>
@@ -195,6 +225,7 @@ export default {
             colors: [],
             legalMatrixSelected: 'systemApply',
             reportTableDinamic: [],
+            reportTableRisk: [],
             resumenFulfillment: {
                 total_laws: '',
                 total_articles: '',

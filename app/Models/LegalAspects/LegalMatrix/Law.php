@@ -370,6 +370,30 @@ class Law extends Model
         return $query;
     }
 
+    public function scopeInInterestsCompany($query, $interests, $typeSearch = 'IN')
+    {
+        $company = Session::get('company_id');
+        
+        if (COUNT($interests) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query ->join('sau_lm_company_interest', function ($join) 
+                {
+                  $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$company}"));
+                })
+                ->whereIn('sau_lm_company_interest.interest_id', $interests);
+
+            else if ($typeSearch == 'NOT IN')
+                $query ->join('sau_lm_company_interest', function ($join) 
+                {
+                  $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$company}"));
+                })
+                ->whereNotIn('sau_lm_company_interest.interest_id', $interests);
+        }
+
+        return $query;
+    }
+
     public function scopeBetweenDate($query, $dates = [])
     {
         if (COUNT($dates) == 2)

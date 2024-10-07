@@ -121,7 +121,8 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-legalmatrix" });
+          window.location = "/legalaspects/legalmatrix"
+          //this.$router.push({ name: "legalaspects-legalmatrix" });
         })
         .catch(error => {
           this.loading = false;
