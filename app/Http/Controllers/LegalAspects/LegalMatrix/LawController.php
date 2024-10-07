@@ -1144,7 +1144,7 @@ class LawController extends Controller
             $law = Law::find($request->id);
 
             \Log::info($request->risk);
-            
+
             if ($request->risk && is_array($request->risk))
             {
                 $risk = $this->tagsPrepare($request->risk);
@@ -1164,7 +1164,7 @@ class LawController extends Controller
                     'user_id' => $this->user->id,
                     'type' => $request->type,
                     'description' => $request->risk_oport_description == 'null' ? NULL : $request->risk_oport_description, 
-                    'risk' => $risk->implode(','),
+                    'risk' => COUNT($risk) > 0 ? $risk->implode(',') : NULL,
                 ]
             );
 
