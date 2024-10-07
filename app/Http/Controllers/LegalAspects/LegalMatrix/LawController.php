@@ -1143,8 +1143,13 @@ class LawController extends Controller
         {           
             $law = Law::find($request->id);
 
-            $risk = $this->tagsPrepare($request->risk);
-            $this->tagsSave($risk, TagRisk::class);
+            if ($request->risk)
+            {
+                $risk = $this->tagsPrepare($request->risk);
+                $this->tagsSave($risk, TagRisk::class);
+            }
+            else
+                $risk = [];
 
             $risk_oport = LawRiskOpportunity::updateOrCreate(
                 [
