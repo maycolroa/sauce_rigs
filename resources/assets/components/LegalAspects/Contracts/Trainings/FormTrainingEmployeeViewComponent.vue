@@ -73,7 +73,7 @@
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
       </template>
     </div>
   </b-form>

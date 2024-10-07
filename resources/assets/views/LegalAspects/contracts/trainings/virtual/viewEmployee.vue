@@ -3,7 +3,6 @@
     <header-module
       title="CONTRATISTAS"
       subtitle="VER CAPACITACIÓN VIRTUAL"
-      url="legalaspects-contracts-trainings-virtual-employees"
     />
 
     <div class="col-md">
