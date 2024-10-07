@@ -157,7 +157,7 @@
                                                 <th class="text-center align-middle">Sistema que aplica</th>
                                                 <th class="text-center align-middle">Riesgos</th>
                                                 <th class="text-center align-middle">Oportunidades</th>
-                                                <th class="text-center align-middle">No cumple</th>
+                                                <th class="text-center align-middle">No aplica</th>
                                             </tr>
                                         </thead>
                                         <tbody>
