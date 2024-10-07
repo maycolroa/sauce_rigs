@@ -40,6 +40,7 @@ class LawRiskRequest extends FormRequest
         {
             $record = (array) $this->input('risk');
             \Log::info($record);
+            \Log::info(json_decode($record[0]));
 
             if ($this->input('risk'))
             {
