@@ -364,7 +364,7 @@
               </vue-radio>
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Oportunidad' || form.type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
+            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
           </b-form-row>
           <b-form-row>
             <vue-textarea @onBlur="riskOpotLaw()" :disabled="viewOnly" class="col-md-12" v-model="form.risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" :error="form.errorsFor(`risk_oport_description`)" rows="3"/>                  
@@ -480,7 +480,7 @@ export default {
           action_plan_cumple: '',
           hide_total_law: '',
           type_risk: '',
-          risk: '',
+          risk: null,
           risk_oport_description: '',
           actionPlanRisk: '',
         };
