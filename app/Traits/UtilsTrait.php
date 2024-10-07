@@ -231,10 +231,8 @@ trait UtilsTrait
 
     protected function getValuesForMultiselectTags($data, $keyRef = 'value')
     {
-        \Log::info($data);
         return  collect($data)
                 ->transform(function ($item, $index) use ($keyRef) {
-                    \Log::info($item);
                     return trim(str_replace(',', '', $item[$keyRef]));
                 })
                 ->filter(function ($item, $key) {
