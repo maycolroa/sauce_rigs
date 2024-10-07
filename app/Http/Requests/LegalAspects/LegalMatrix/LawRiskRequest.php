@@ -40,9 +40,9 @@ class LawRiskRequest extends FormRequest
         {
             $record = (array) $this->input('risk');
 
-            if (count($record[0]) > 0)
+            if (count($record) > 0)
             {
-                foreach ($record[0] as $key => $value)
+                foreach ($record as $key => $value)
                 {
                     $data['risk'][$key] = json_decode($value, true);
                     $this->merge($data);
