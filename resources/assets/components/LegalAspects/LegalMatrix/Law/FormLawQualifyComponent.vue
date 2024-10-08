@@ -360,7 +360,7 @@
       <b-collapse :id="`accordion-risk-oportunity`" visible :accordion="`accordion-master`">
         <b-card-body>
           <b-form-row>
-            <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()">
+            <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()" label="Tipo">
               </vue-radio>
           </b-form-row>
           <b-form-row>
@@ -399,7 +399,7 @@
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" @click="beforeSubmit" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
       </template>
     </div>
   </b-form>
@@ -573,6 +573,28 @@ export default {
     this.reloadShowArticles();
   },
   methods: {
+    beforeSubmit()
+    {
+      if (this.auth.legalMatrixRisk == 'SI')
+      {
+        if (!this.form.type_risk)
+        {
+          Alerts.error('Error', 'El campo Tipo de la sección de Riesgo y Oportunidades es requerido');
+        }
+        else if (!this.form.risk && (this.form.type_risk == 'Riesgo' || this.form.type_risk == 'Riesgo y oportunidad'))
+        {
+          Alerts.error('Error', 'El campo Riesgo de la sección de Riesgo y Oportunidades es requerido');
+        }
+        else
+        {
+          this.$router.push({ name: "legalaspects-lm-law-qualify" });
+        }
+      }
+      else
+      {
+        this.$router.push({ name: "legalaspects-lm-law-qualify" });
+      }
+    },
     resetReloadShowArticles() {
       this.limitShowArticles = 10;
       this.reloadShowArticles();
