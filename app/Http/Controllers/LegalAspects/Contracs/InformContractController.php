@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\InformContractRequest;
+use App\Http\Requests\LegalAspects\Contracts\ContractInformStateChangeRequest;
 use App\Models\LegalAspects\Contracts\Inform;
 use App\Models\LegalAspects\Contracts\InformContract;
 use App\Models\LegalAspects\Contracts\InformThemeItem;
@@ -15,6 +16,7 @@ use App\Models\LegalAspects\Contracts\InformContractItem;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\InformContractItemObservation;
 use App\Models\LegalAspects\Contracts\InformContractItemFile;
+use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\General\Module;
 use App\Traits\Filtertrait;
 use App\Traits\ContractTrait;
@@ -101,7 +103,12 @@ class InformContractController extends Controller
 
         //return Vuetable::of($inform_contracts)->make();
         return Vuetable::of($inform_contracts)
-                    ->make();
+            ->addColumn('legalaspects-informs-contract-switchStatus', function ($inform_contract) {
+                if ($inform_contract->state == 'Terminada' || $inform_contract->state == 'Aprobado' || $inform_contract->state == 'Rechazado')
+                    return true;
+                else
+                    return false;
+            })->make();
     }
     
     /**
@@ -760,5 +767,68 @@ class InformContractController extends Controller
         ];
 
         return $data;
+    }
+
+    public function toggleState(ContractInformStateChangeRequest $request)
+    {
+        try
+        {
+            $informContract = InformContract::find($request->id);
+            $dataEmail = [];
+            $data = [
+                'state' => $request->state,
+                'motive_rejected' => $request->state == 'Rechazado' ? $request->motive_rejected : NULL
+            ];
+
+            if (!$informContract->update($data)) {
+                return $this->respondHttp500();
+            }
+
+            $user = $this->getUserMasterContract($informContract->contract, $this->company);
+
+            if ($informContract->proyect_id)
+            {
+                $content = [
+                    'Contratista' => $informContract->contract->social_reason,
+                    'Informe' => $informContract->inform->name,
+                    'Año' => $informContract->year,
+                    'Mes' => $informContract->month,
+                    'Proyecto' => $informContract->proyect->name,
+                    'Estado' => $informContract->state,
+                    'Motivo del rechazo' => $informContract->motive_rejected
+                ];
+            }
+            else
+            {
+                $content = [
+                    'Contratista' => $informContract->contract->social_reason,
+                    'Informe' => $informContract->inform->name,
+                    'Año' => $informContract->year,
+                    'Mes' => $informContract->month,
+                    'Estado' => $informContract->state,
+                    'Motivo del rechazo' => $informContract->motive_rejected
+                ];
+            }
+
+            array_push($dataEmail, $content);
+
+            NotificationMail::
+                subject('Informes mensuales')
+                ->message("Estimado usuario el informe realiza sufrio un cambio de estado por parte del contratante")
+                ->recipients($user)
+                ->module('contracts')
+                ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
+                ->company($this->company)
+                ->table($dataEmail)
+                ->send();
+
+            return $this->respondHttp200([
+                'message' => 'Se cambio el estado del informe'
+            ]);
+
+        } catch(Exception $e) {   
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+        }
     }
 }

@@ -1072,6 +1072,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('informContract/historyItemQualification', 'LegalAspects\Contracs\InformContractController@historyItemQualification');
 
+      Route::post('informContract/switchStatus', 'LegalAspects\Contracs\InformContractController@toggleState');
+
       Route::post('informContract/reportTableTotales', 'LegalAspects\Contracs\InformReportController@reportTableTotales');
 
       Route::post('informContract/reportLineItemQualification', 'LegalAspects\Contracs\InformReportController@reportLineItemQualification');
@@ -1081,7 +1083,6 @@ Route::middleware(['auth'])->group(function () {
       Route::post('informContract/reportLineItemPorcentege', 'LegalAspects\Contracs\InformReportController@reportLineItemPorcentage');
 
       Route::post('informContract/reportTablePorcentageGlobal', 'LegalAspects\Contracs\InformReportController@reportTableTotalesContractsPorcentage');
-
       Route::post('informContract/detailContractGlobal', 'LegalAspects\Contracs\InformReportController@detailContractGlobal');
 
 

@@ -1885,75 +1885,92 @@ export default [
               type: 'push',
               buttons: [
                 {
-                config: {
-                    color: 'outline-success',
-                    borderless: true,
-                    icon: 'ion ion-md-create',
-                    title: 'Editar'
+                    config: {
+                        color: 'outline-success',
+                        borderless: true,
+                        icon: 'ion ion-md-create',
+                        title: 'Editar'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-informs-contracts-edit' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_informs_edit_informs_made'
+                }, 
+                {
+                    config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-eye',
+                        title: 'Ver'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-informs-contracts-view' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_informs_view_informs_made'
                 },
-                data: {
-                    routePush: { name: 'legalaspects-informs-contracts-edit' },
-                    id: 'id',
-                },
-                permission: 'contracts_informs_edit_informs_made'
-              }, {
-                config: {
-                    color: 'outline-info',
-                    borderless: true,
-                    icon: 'ion ion-md-eye',
-                    title: 'Ver'
-                },
-                data: {
-                    routePush: { name: 'legalaspects-informs-contracts-view' },
-                    id: 'id',
-                },
-                permission: 'contracts_informs_view_informs_made'
-              },
-              {
-                config: {
-                    color: 'outline-success',
-                    borderless: true,
-                    icon: 'ion ion-ios-copy',
-                    title: 'Clonar Evaluación'
-                },
-                data: {
-                    routePush: { name: 'legalaspects-informs-contracts-clone' },
-                    id: 'id',
-                },
-                permission: 'contracts_informs_edit_informs_made'
-            }]
-          },
-          {
-              type: 'base',
-              buttons: [
-              {
-                  name: 'delete',
-                  data: {
-                      action: '/legalAspects/informContract/',
-                      id: 'id',
-                      messageConfirmation: 'Esta seguro de borrar la evaluación realizada'
-                  },
-                  permission: 'contracts_informs_delete_informs_made'
-              }],
-          },
-          {
-              type: 'simpleDownload',
-              buttons: [
-              {
-                name: 'downloadFile',
-                config: {
-                    color: 'outline-danger',
-                    borderless: true,
-                    icon: 'fas fa-file-pdf',
-                    title: 'Descargar Evaluación en PDF'
-                },
-                data: {
-                    action: '/legalAspects/informContract/downloadPdf/',
-                    id: 'id'
-                },
-                permission: 'contracts_evaluations_export'
-              }],
-          }
+                {
+                    config: {
+                        color: 'outline-success',
+                        borderless: true,
+                        icon: 'ion ion-ios-copy',
+                        title: 'Clonar Informe'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-informs-contracts-clone' },
+                        id: 'id',
+                    },
+                    permission: 'contracts_informs_edit_informs_made'
+                },        
+                {
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar estado'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-informs-contract-switchStatus' },
+                        id: 'id'
+                    },
+                    permission: 'contracts_c'
+                }
+              ]
+            },
+            {
+                type: 'base',
+                buttons: [
+                    {
+                        name: 'delete',
+                        data: {
+                            action: '/legalAspects/informContract/',
+                            id: 'id',
+                            messageConfirmation: 'Esta seguro de borrar el informe realizado'
+                        },
+                        permission: 'contracts_informs_delete_informs_made'
+                    }
+                ]
+            },
+            {
+                type: 'simpleDownload',
+                buttons: [
+                    {
+                        name: 'downloadFile',
+                        config: {
+                            color: 'outline-danger',
+                            borderless: true,
+                            icon: 'fas fa-file-pdf',
+                            title: 'Descargar Evaluación en PDF'
+                        },
+                        data: {
+                            action: '/legalAspects/informContract/downloadPdf/',
+                            id: 'id'
+                        },
+                        permission: 'contracts_evaluations_export'
+                    }
+                ],
+            }
         ],
         configuration: {
             urlData: '/legalAspects/informContract/data',

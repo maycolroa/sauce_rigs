@@ -22,7 +22,8 @@ class InformContract extends Model
         'state',
         'observation',
         'Objective_inform',
-        'proyect_id'
+        'proyect_id',
+        'motive_rejected'
     ];
 
     public function inform()

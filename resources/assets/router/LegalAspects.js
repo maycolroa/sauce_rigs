@@ -972,6 +972,14 @@ export default [
 					import('@/views/LegalAspects/contracts/informContract/edit')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+				  name: 'legalaspects-informs-contract-switchStatus',
+				  path: 'informs/contracts/switchStatus/:id',
+				  component: () =>
+					import('@/views/LegalAspects/contracts/informContract/switchStatus')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_informs_report_view' }, [
 				{
 					name: 'legalaspects-informs-report',
