@@ -130,7 +130,7 @@
 								Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
 							</div>
 							<br>
-							<vue-textarea class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
+							<vue-textarea class="col-md-12" v-model="item.reason_rejection" label="Motivo del rechazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
 							<br>
 							<div class="row float-right pt-12 pr-12y">
 								<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
