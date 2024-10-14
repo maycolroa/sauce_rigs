@@ -363,7 +363,8 @@ class ListCheckQualificationController extends Controller
                             'qualification_id' => $qualifications[$request->qualification], 
                             'observations' => $request->observations, 
                             'list_qualification_id' => $request->list_qualification_id,
-                            'state_aprove_qualification' => 'PENDIENTE'
+                            'state_aprove_qualification' => 'PENDIENTE',
+                            'reason_rejection' => NULL
                         ]);
                     }
                 else
@@ -379,7 +380,8 @@ class ListCheckQualificationController extends Controller
                             'item_id' => $request->id,                    
                             'qualification_id' => $qualifications[$request->qualification], 
                             'observations' => $request->observations, 
-                            'list_qualification_id' => $request->list_qualification_id
+                            'list_qualification_id' => $request->list_qualification_id,
+                            'reason_rejection' => NULL
                         ]);
                 }
                 

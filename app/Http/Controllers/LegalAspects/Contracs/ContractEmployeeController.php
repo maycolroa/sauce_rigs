@@ -384,7 +384,7 @@ class ContractEmployeeController extends Controller
                 }
             }
 
-            $this->saveLogActivitySystem('Contratistas - Empleados', 'Se creo el empleado '.$employeeContract->name.' - '.$employeeContract->identification);
+            $this->saveLogActivitySystem('Contratistas - Empleados', 'Se edito el empleado '.$employeeContract->name.' - '.$employeeContract->identification);
 
             DB::commit();
 

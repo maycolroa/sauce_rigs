@@ -1067,7 +1067,7 @@ class ContractLesseeController extends Controller
                     ]);
 
                 if ($exist == 'SI')
-                    $itemQualification->update(['state_aprove_qualification' => 'PENDIENTE']);
+                    $itemQualification->update(['state_aprove_qualification' => 'PENDIENTE', 'reason_rejection' => NULL]);
                 
 
                 //Cumple y solo es aqui donde se cargan archivos
