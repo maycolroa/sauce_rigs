@@ -27,6 +27,12 @@
         </vue-radio>
     </b-form-row>
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.criticality_level_inspections" class="col-md-12" v-model="form.criticality_level_inspections" :options="siNo" name="criticality_level_inspections" :error="form.errorsFor('criticality_level_inspections')" label="¿Mostrar campo para asignar un nivel de criticidad a un item dentro del formulario de inspecciones planeadas?">
+        </vue-radio>
+      <vue-ajax-advanced-select v-if="form.criticality_level_inspections == 'SI'" class="col-md-12" v-model="form.users_notify_criticality_level_inspections" :selected-object="form.multiselect_criticality_user_id" name="users_notify_criticality_level_inspections" label="Usuarios a notificar la alerta por criticidad" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_criticality_level_inspections')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -38,12 +44,14 @@
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueInput,
-    VueRadio
+    VueRadio,
+    VueAjaxAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -67,7 +75,9 @@ export default {
           mandatory_action_plan_inspections: '',
           mandatory_level_risk_inspections: '',
           filter_inspections: '',
-          location_level_form_user_inspection_filter: ''
+          location_level_form_user_inspection_filter: '',
+          criticality_level_inspections: '',
+          users_notify_criticality_level_inspections: ''
         };
       }
     }
@@ -81,7 +91,8 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.configuration, this.method)
+      form: Form.makeFrom(this.configuration, this.method),
+      userDataUrl: '/selects/users'
     };
   },
   methods: {

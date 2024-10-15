@@ -85,7 +85,9 @@ class ConfigurationsCompany
             'contract_validate_inactive_employee' => 'Pedir motivo y documento al momento de la inactivacion',
             'contract_notify_file_expired' => 'Activar las notificaciones al contratante sobre los archivos proximos a vencerse',
             'contract_notify_file_expired_user' => 'Usuario contratante a notificar sobre los archivos proximos a vencerse',
-            'legal_matrix_risk_opportunity' => 'Activa la funcionalidad de riesgos y oportunidades en las calificaciones de las leyes'
+            'legal_matrix_risk_opportunity' => 'Activa la funcionalidad de riesgos y oportunidades en las calificaciones de las leyes',
+            'criticality_level_inspections' => 'Muestra nuevo campo en el formulario de inspecciones planeadas para asignar un nivel de criticidad a los items',
+            'users_notify_criticality_level_inspections' => 'Uusarios a los cuales notificar la alerta por criticidad de alguno de los items'
         ];
     }
 

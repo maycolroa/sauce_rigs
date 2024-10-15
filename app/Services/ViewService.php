@@ -121,6 +121,18 @@ class ViewService
             return $configuration->value;
     }
 
+    public function getInspectionsCriticality()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'criticality_level_inspections');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
     public function allAuthData()
     {
         return [
@@ -131,6 +143,7 @@ class ViewService
             'integrationContract' => $this->getIntegrationContract(), 
             'dangerMatrixBlock' => $this->getDangerMatrixBlock(), 
             'legalMatrixRisk' => $this->getLegalMatrixRiskOpport(),
+            'inspectionCriticality' => $this->getInspectionsCriticality(),
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),
