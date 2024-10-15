@@ -84,6 +84,11 @@ class ContractEmployee extends Model
     {
         return $this->belongsTo(EmployeeEPS::class, 'employee_eps_id');
     }
+    
+    public function observations()
+    {
+        return $this->hasMany(ContractEmployeeObservation::class, 'employee_id');
+    }
 
     public function scopeInProyects($query, $proyects, $typeSearch = 'IN')
     {

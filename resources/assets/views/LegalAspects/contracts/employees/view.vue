@@ -9,6 +9,8 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+          <loading :display="!ready"/>
+          <div v-if="ready">
             <form-contract-employee
                 :employee="data"
                 :view-only="true"
@@ -16,6 +18,7 @@
                 activitiesUrl="/selects/contracts/ctActivitiesContracts"
                 afp-data-url="/selects/afp"
                 :cancel-url="{ name: 'legalaspects-contracts-employees'}"/>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -39,6 +42,7 @@ export default {
     return {
       data: [],
 			sexs: [],
+      ready: false,
     }
   },
   created(){
@@ -46,6 +50,9 @@ export default {
     .then(response => {
         this.data = response.data.data;
     	  this.fetchSelect('sexs', '/selects/sexs')
+        setTimeout(() => {
+            this.ready = true
+        }, 1000)
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

@@ -8,6 +8,8 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+          <loading :display="!ready"/>
+          <div v-if="ready">
             <form-contract-employee-view
                 url="/legalAspects/employeeContract/filesAprobe"
                 :employee="data"
@@ -17,6 +19,7 @@
                 activitiesUrl="/selects/contracts/ctActivitiesContracts"
                 afp-data-url="/selects/afp"
                 :states="states"/>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -27,6 +30,7 @@
 import FormContractEmployeeView from '@/components/LegalAspects/Contracts/Employees/FormContractEmployeeViewContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'legalaspects-contracts-employees-view-contract-view',
@@ -41,7 +45,8 @@ export default {
       data: [],
       contract_id: '',
 			sexs: [],
-      states: []
+      states: [],
+      ready: false,
     }
   },
   created(){
@@ -49,6 +54,10 @@ export default {
     .then(response => {
         this.data = response.data.data;
         this.contract_id = this.data.contract_id
+        setTimeout(() => {
+            this.ready = true
+        }, 2000)
+        
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

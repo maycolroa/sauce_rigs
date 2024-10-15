@@ -68,7 +68,42 @@
       </vue-ajax-advanced-select>
     </b-form-row>
 
-    <div class="col-md-12">
+    <b-card no-body class="mb-2 border-secondary" style="width: 100%; margin-top:15px; margin-bottom: 15px;">
+      <b-card-header class="bg-secondary">
+        <b-row>
+            <b-col cols="10" class="d-flex justify-content-between"> <strong>Observaciones</strong>  </b-col>
+            <b-col cols="2">
+              <div class="float-right">
+                <b-button-group>
+                  <b-btn href="javascript:void(0)" v-b-toggle="'accordion-observations'" variant="link">
+                    <span class="collapse-icon"></span>
+                  </b-btn>
+                </b-button-group>
+              </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-observations`" :visible="true" :accordion="`accordion-123`">
+        <b-card-body>
+          <b-form-row>
+            <div class="col-md-12">
+              <employee-observations
+                :disabled="false"
+                :editable-observations="true"
+                :old-observations="form.old_observations"
+                :employee-id="form.id"
+                :user-contract="false"
+                ref="observationInserter"
+              >
+              </employee-observations>
+            </div>
+          </b-form-row></b-card-body>
+      </b-collapse>
+    </b-card>
+
+    <br><br>
+
+    <div class="col-md-12" style="padding-top:15px; margin-bottom: 15px;">
       <blockquote class="blockquote text-center">
           <p class="mb-0">Actividades</p>
       </blockquote>
@@ -204,6 +239,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import EmployeeObservations from "./EmployeeObservations.vue";
 
 export default {
   components: {
@@ -214,7 +250,8 @@ export default {
     PerfectScrollbar,
     VueAdvancedSelect,
     VueRadio,
-    VueTextarea
+    VueTextarea,
+    EmployeeObservations
   },
   props: {
     url: { type: String },
@@ -257,7 +294,9 @@ export default {
             activities: [],
             delete: {
               files: []
-            }
+            },
+            new_observations: [],
+            old_observations: []
         };
       }
     }
@@ -320,6 +359,10 @@ export default {
   methods: {
     submit(e) {
       this.loading = true;
+
+      this.form.new_observations = this.$refs.observationInserter.getNewObservations();
+      this.form.old_observations = this.$refs.observationInserter.getOldObservations();
+
       this.form
         .submit(e.target.action)
         .then(response => {

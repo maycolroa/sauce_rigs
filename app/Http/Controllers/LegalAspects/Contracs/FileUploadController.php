@@ -5,6 +5,8 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\LegalAspects\Contracts\ContractEmployeeObservation;
+use App\Models\Administrative\Users\User;
 use App\Http\Requests\LegalAspects\Contracts\FileUploadRequest;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
@@ -19,6 +21,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
+use ReflectionClass;
 
 class FileUploadController extends Controller
 {
@@ -842,6 +845,10 @@ class FileUploadController extends Controller
           }
         }
 
+        $employee = ContractEmployee::find($request->id);
+
+        $this->saveObservations('App\Models\LegalAspects\Contracts\ContractEmployeeObservation', $employee, $request->new_observations, $this->user, $request->old_observations);
+
         $content = [
           'employee_id' => $request->id,
           'file_id' =>  NULL
@@ -860,5 +867,65 @@ class FileUploadController extends Controller
       return $this->respondHttp200([
         'message' => 'Se actualizo el archivo correctamente'
       ]);
+    }
+
+    public function saveObservations($class, ContractEmployee $contractEmployee, $observationDescription, User $madeByUser, $observationsToUpdate = [])
+    {
+        try
+        {
+            $this->handleObservationsUpdates($class, $madeByUser, $observationsToUpdate);
+
+            if (!$observationDescription)
+                return true;
+
+            foreach ($observationDescription as $observation)
+            {
+                $observation = json_decode($observation, true);
+
+                $newobservation = (new ReflectionClass($class))->newInstanceArgs([[
+                    'description' => $observation['description']
+                ]]);
+
+                $newobservation->employee_id = $contractEmployee->id;
+                $newobservation->user_id = $madeByUser->id;
+                $newobservation->company_id = $this->company;
+                $newobservation->save();
+            }
+
+            return true;
+
+        } catch (Exception $e) {
+            $this->handleError($e);
+            return false;
+        }
+    }
+
+    /**
+     * updates old observations if necessary
+     * @param  array  $observationsToUpdate
+     * @return void
+     */
+    public function handleObservationsUpdates($class, User $madeByUser, $observationsToUpdate = [])
+    {
+        if (!is_array($observationsToUpdate))
+            return;
+
+        foreach ($observationsToUpdate as $observation)
+        {
+            $observation = json_decode($observation, true);
+
+            $oldObservation = (new ReflectionClass($class))->newInstanceArgs([])->where('id', $observation['id'])->first();
+
+            if (!$oldObservation)
+                continue;
+
+            if ($observation['description'] != $oldObservation->description)
+            {
+                $oldObservation->update([
+                    'description' => $observation['description'],
+                    'user_id' => $madeByUser->id
+                ]);                
+            }
+        }
     }
 }

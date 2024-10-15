@@ -298,6 +298,28 @@ class ContractEmployeeController extends Controller
                 'files' => []
             ];
 
+            $contractEmployee->load([
+                'observations' => function ($query) {
+                    $query->with('madeBy')->orderBy('created_at', 'desc');
+                }
+            ]);
+
+            $contractEmployee->new_observations = '';
+
+            $oldObservations = [];
+
+            foreach ($contractEmployee->observations as $observation)
+            {
+                array_push($oldObservations, [
+                    'id' => $observation->id,
+                    'description' => $observation->description,
+                    'made_by' => $observation->madeBy ? $observation->madeBy->name :'',
+                    'updated_at' => Carbon::parse($observation->updated_at)->format('d-m-Y H:m:s')
+                ]);
+            }
+
+            $contractEmployee->old_observations = $oldObservations;
+
             return $this->respondHttp200([
                 'data' => $contractEmployee,
             ]);
