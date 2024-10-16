@@ -14,7 +14,8 @@ class InspectionSectionItem extends Model
         'compliance_value',
         'partial_value',
         'type_id',
-        'values'
+        'values',
+        'level_criticality'
     ];
 
     /**

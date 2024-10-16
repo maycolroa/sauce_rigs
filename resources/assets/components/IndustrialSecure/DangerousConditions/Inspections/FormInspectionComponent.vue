@@ -164,6 +164,7 @@
                                   <th scope="col" class="align-middle">Descripción</th>
                                   <th v-show="form.type_id == 2" scope="col" class="align-middle">Valor cumplimiento (%)</th>
                                   <th v-show="form.type_id == 2" scope="col" class="align-middle">Valor parcial (%)</th>
+                                  <th v-show="auth.inspectionCriticality == 'Formulario'" scope="col" class="align-middle">Nivel de riesgo</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -180,11 +181,14 @@
                                     <td style="padding: 0px;">
                                       <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
                                     </td>
-                                    <td v-show="form.type_id == 2">
+                                    <td style="padding: 0px;" v-show="form.type_id == 2">
                                       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].compliance_value" label="" type="number" name="compliance_value" :error="form.errorsFor(`themes.${index}.items.${index2}.compliance_value`)" placeholder="% cumplimiento"></vue-input>
                                     </td>
-                                    <td v-show="form.type_id == 2">
+                                    <td style="padding: 0px;" v-show="form.type_id == 2">
                                       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].partial_value" label="" type="number" name="partial_value" :error="form.errorsFor(`themes.${index}.items.${index2}.partial_value`)" placeholder="% parcial"></vue-input>
+                                    </td>
+                                    <td style="padding: 0px;" v-show="auth.inspectionCriticality == 'Formulario'">
+                                      <vue-advanced-select v-model="form.themes[index].items[index2].level_criticality" :disabled="viewOnly"  :multiple="false" :options="optionsLevel" :hide-selected="false" name="level_criticality" placeholder="Selecciona el nivel de riesgo" :error="form.errorsFor(`themes.${index}.items.${index2}.level_criticality`)" > </vue-advanced-select>
                                     </td>
                                   </tr>
                                 </template>
@@ -271,7 +275,12 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.inspection, this.method)
+        form: Form.makeFrom(this.inspection, this.method),
+        optionsLevel: [
+          {name: 'Alto', value: 'Alto'},
+          {name: 'Medio', value: 'Medio'},
+          {name: 'Bajo', value: 'Bajo'}
+        ]
     };
   },
   methods: {

@@ -242,138 +242,6 @@ class InspectionController extends Controller
                 ->make();
     }
 
-    public function dataCopy(Request $request)
-    {
-        $inspections_location = Inspection::select(
-            'sau_ph_inspections.*')
-        ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name')
-        ->get();
-
-        $r = [];
-        $h = [];
-        $p = [];
-        $a = [];
-
-        foreach ($inspections_location as $key => $i) {
-            $r[$i->id] = implode(',', $i->regionals()->pluck('name')->toArray());
-            $h[$i->id] = $i->headquarters()->pluck('name');
-            $p[$i->id] = $i->processes()->pluck('name');
-            $a[$i->id] = $i->areas()->pluck('name');
-        }
-        
-        $confLocationTableInspections = $this->getLocationFormConfTableInspections();
-
-        $select = [];
-
-        if ($confLocationTableInspections['regional'] == 'SI')
-            $select[] = "'' AS regional";
-
-        if ($confLocationTableInspections['headquarter'] == 'SI')
-            $select[] = "'' AS headquarter";
-
-        if ($confLocationTableInspections['process'] == 'SI')
-            $select[] = "'' AS process";
-
-        if ($confLocationTableInspections['area'] == 'SI')
-            $select[] = "'' AS area";
-
-
-        $inspections = Inspection::select(
-            'sau_ph_inspections.*',
-            DB::raw(implode(",", $select))
-        );
-        /*->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id');*/
-
-        /*if ($confLocationTableInspections['regional'] == 'SI')
-            $inspections->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id');
-
-        if ($confLocationTableInspections['headquarter'] == 'SI')
-            $inspections->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id');   
-
-        if ($confLocationTableInspections['process'] == 'SI')
-            $inspections->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id');
-
-        if ($confLocationTableInspections['area'] == 'SI')
-            $inspections->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id');*/
-
-        $inspections->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');  
-
-
-        $url = "/industrialsecure/dangerousconditions/inspections";
-
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-
-        if (COUNT($filters) > 0)
-        {
-            $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
-
-            if (isset($filters["regionals"]))   
-            {             
-                $inspections->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
-                ->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
-            }
-
-            if (isset($filters["headquarters"]))
-            {
-                $inspections->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
-                ->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-            }
-
-            if (isset($filters["processes"]))
-            {
-                $inspections->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
-                ->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
-            }
-            
-            if (isset($filters["areas"]))
-            {
-                $inspections->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
-                ->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
-            }
-            
-            $dates_request = explode('/', $filters["dateRange"]);
-
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, $this->formatDateToSave($dates_request[0]));
-                array_push($dates, $this->formatDateToSave($dates_request[1]));
-            }
-                
-            $inspections->betweenDate($dates);
-        }
-
-        //$inspections->limit(3);
-
-        $vuetable = Vuetable::of($inspections);
-
-       /*if ($confLocationTableInspections['regional'] == 'SI')
-            $vuetable->addColumn('regional', function ($inspection) use ($r) {
-                return $r[$inspection->id];
-            });
-
-        if ($confLocationTableInspections['headquarter'] == 'SI')
-            $vuetable->addColumn('headquarter', function ($inspection) use ($h) {
-                return $h[$inspection->id];
-            });
-
-        if ($confLocationTableInspections['process'] == 'SI')
-            $vuetable->addColumn('process', function ($inspection) use ($p) {
-                return $p[$inspection->id];
-            });
-
-        if ($confLocationTableInspections['area'] == 'SI')
-            $vuetable->addColumn('area', function ($inspection) use ($a) {
-                return $a[$inspection->id];
-            });*/
-
-        return $vuetable->make();
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -418,12 +286,12 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
-            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se creo el formato de inspección '.$inspection->name);
-
             if ($request->has('additional_fields') && $request->additional_fields)            
                 $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
 
             $this->saveThemes($inspection, $request->get('themes'));
+
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se creo el formato de inspección '.$inspection->name);
 
             DB::commit();
 
@@ -661,13 +529,11 @@ class InspectionController extends Controller
     {
         foreach ($items as $item)
         {
-            \Log::info($item);
             if (isset($item['min_value']) && isset($item['max_value']))
             {
                 $values = [$item['min_value'],$item['max_value']];
                 $config = collect(['values' => []]);
                 $config->put('values', $values);
-                \Log::info($config);
 
                 $item['values'] = $config; 
             }

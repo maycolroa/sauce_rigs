@@ -1067,9 +1067,10 @@ class ContractLesseeController extends Controller
                     ]);
 
                 if ($exist == 'SI')
-                    $itemQualification->update(['state_aprove_qualification' => 'PENDIENTE', 'reason_rejection' => NULL]);
+                    $itemQualification->update(['state_aprove_qualification' => 'APROBADA', 'reason_rejection' => NULL]);
                 
-
+                $data['state_aprove_qualification'] = $itemQualification->state_aprove_qualification;
+                
                 //Cumple y solo es aqui donde se cargan archivos
                 if ($request->qualification == 'C')
                 {
@@ -1187,8 +1188,8 @@ class ContractLesseeController extends Controller
             DB::commit();
 
             $data['observations'] = $data['observations'] != 'null' ? $data['observations'] : '';
-
-            //$this->sendNotification($contract);
+            
+            $this->reloadLiskCheckResumen($contract, $request->list_qualification_id);
 
             return $this->respondHttp200([
                 'data' => $data

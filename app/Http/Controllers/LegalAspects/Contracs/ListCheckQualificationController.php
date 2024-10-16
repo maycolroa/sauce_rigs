@@ -502,7 +502,7 @@ class ListCheckQualificationController extends Controller
 
             $data['observations'] = $data['observations'] ? $data['observations'] : '';
 
-            //$this->sendNotification($contract);
+            $this->reloadLiskCheckResumen($contract, $request->list_qualification_id);
 
             return $this->respondHttp200([
                 'data' => $data

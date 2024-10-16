@@ -128,7 +128,7 @@ class ViewService
         $configuration = $configuration->first();
 
         if (!$configuration)
-            return 'NO';
+            return 'Calificacion';
         else
             return $configuration->value;
     }

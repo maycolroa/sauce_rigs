@@ -118,6 +118,9 @@
                                 </b-form-row>
                                 <b-form-row>
                                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.themes[index].items[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
+
+                                  <vue-advanced-select class="col-md-6" v-model="form.themes[index].items[index2].level_criticality" :disabled="viewOnly"  :multiple="false" :options="optionsLevel" :hide-selected="false" label="Nivel de riesgo" name="level_criticality" placeholder="Selecciona el nivel de riesgo" :error="form.errorsFor(`themes.${index}.items.${index2}.level_criticality`)" > </vue-advanced-select>
+                                  
                                   <vue-advanced-select v-model="form.themes[index].items[index2].type_id" :disabled="viewOnly" class="col-md-6" :multiple="false" label="Seleccione el tipo" :options="typesItems" :hide-selected="false" name="type_id" placeholder="Selecciona el tipo de item" :error="form.errorsFor('type_id')"></vue-advanced-select>
                                 </b-form-row>
                                 <b-form-row v-if="form.themes[index].items[index2].type_id && (form.themes[index].items[index2].type_id == 1 || form.themes[index].items[index2].type_id == 2)">
@@ -209,7 +212,12 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.inspection, this.method)
+        form: Form.makeFrom(this.inspection, this.method),
+        optionsLevel: [
+          {name: 'Alto', value: 'Alto'},
+          {name: 'Medio', value: 'Medio'},
+          {name: 'Bajo', value: 'Bajo'}
+        ]
     };
   },
   methods: {
