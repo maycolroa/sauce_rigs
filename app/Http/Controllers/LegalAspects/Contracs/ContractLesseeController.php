@@ -139,6 +139,12 @@ class ContractLesseeController extends Controller
 
                 return false;
             })
+            ->addColumn('downloadFile', function ($contract) {
+                if ($contract->id_qualification)
+                    return true;
+
+                return false;
+            })
             ->make();
     }
 
