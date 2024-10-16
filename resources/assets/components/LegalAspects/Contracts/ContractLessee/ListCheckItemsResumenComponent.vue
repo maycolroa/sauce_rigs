@@ -52,17 +52,24 @@ export default {
                 this.total_standard++;
 
                 if (this.validate_qualificacion)
-                {                
-                    if (item.qualification == 'C' || item.qualification == 'NA')
-                    {
-                        this.total_c++;
+                {       
+                    if (item.state_aprove_qualification == 'APROBADA')     
+                    {   
+                        if (item.qualification == 'C' || item.qualification == 'NA')
+                        {
+                            this.total_c++;
+                        }
+                        else if (item.qualification == 'NC')
+                        {
+                            this.total_nc++;
+                        }
+                        else
+                        {
+                            this.total_sc++;
+                        }
                     }
-                    else if (item.qualification == 'NC')
-                    {
-                        this.total_nc++;
-                    }
-                    else
-                    {
+                    else  
+                    {   
                         this.total_nc++;
                         this.total_sc++;
                     }
@@ -83,7 +90,6 @@ export default {
                         this.total_sc++;
                     }
                 }
-
             });
 
             if (this.total_standard > 0)

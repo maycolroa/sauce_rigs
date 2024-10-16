@@ -290,7 +290,7 @@ trait ContractTrait
 
         $contract->listCheckResumen()->where('list_qualification_id', $qualification)->delete();
 
-        /*$items_delete = ItemQualificationContractDetail::select(
+        $items_delete = ItemQualificationContractDetail::select(
                     'sau_ct_item_qualification_contract.*',
                     'sau_ct_qualifications.name AS name'
                 )
@@ -327,8 +327,77 @@ trait ContractTrait
             }
 
             ItemQualificationContractDetail::find($item->id)->delete();
-        }*/
+        }
 
+        if (COUNT($items) > 0)
+        {
+            $totales = [
+                'list_qualification_id' => $qualification,
+                'total_standard' => 0,
+                'total_c' => 0,
+                'total_nc' => 0,
+                'total_sc' => 0,
+                'total_p_c' => 0,
+                'total_p_nc' => 0
+            ];
+
+            $qualifications = Qualifications::pluck("name", "id");
+
+            try
+            {
+                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                
+            } catch (\Exception $e) {
+                $exist = 'NO';
+            }
+
+            //Obtiene los items calificados
+            $items_calificated = ItemQualificationContractDetail::
+                      where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification);                   
+
+            if ($exist == 'SI')
+                $items_calificated->where('state_aprove_qualification', 'APROBADA');
+
+            $items_calificated = $items_calificated->pluck("qualification_id", "item_id");
+
+            $items->each(function($item, $index) use ($qualifications, $items_calificated, $contract, &$totales) {
+                
+                $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                
+                $totales['total_standard']++;
+
+                if ($item->qualification == 'C' || $item->qualification == 'NA')
+                {
+                    $totales['total_c']++;
+                }
+                else if ($item->qualification == 'NC')
+                {
+                    $totales['total_nc']++;
+                }
+                else
+                {
+                    $totales['total_nc']++;
+                    $totales['total_sc']++;
+                }
+
+                return $item;
+            });
+
+            $totales['total_p_c'] = round(($totales['total_c'] / $totales['total_standard']) * 100, 1);
+            $totales['total_p_nc'] = round(($totales['total_nc'] / $totales['total_standard']) * 100, 1);
+
+            $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id, 'list_qualification_id' => $qualification], $totales);
+        }
+    }
+
+    public function reloadLiskCheckResumenPercentege($contract, $qualification)
+    {
+        $contract->listCheckResumen()->where('list_qualification_id', $qualification)->delete();
+
+        if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
+            $items = $this->getStandardItemsContract($contract);
+            
         if (COUNT($items) > 0)
         {
             $totales = [
