@@ -15,6 +15,7 @@ export default {
 				return []
 			}
 		},
+		validate_qualificacion: { type: Boolean, default: false },
     },
     watch: {
         items: {
@@ -49,20 +50,40 @@ export default {
             this.items.forEach((item, index) => {
 
                 this.total_standard++;
-                
-                if (item.qualification == 'C' || item.qualification == 'NA')
-                {
-                    this.total_c++;
-                }
-                else if (item.qualification == 'NC')
-                {
-                    this.total_nc++;
+
+                if (this.validate_qualificacion)
+                {                
+                    if (item.qualification == 'C' || item.qualification == 'NA')
+                    {
+                        this.total_c++;
+                    }
+                    else if (item.qualification == 'NC')
+                    {
+                        this.total_nc++;
+                    }
+                    else
+                    {
+                        this.total_nc++;
+                        this.total_sc++;
+                    }
                 }
                 else
                 {
-                    this.total_nc++;
-                    this.total_sc++;
+                    if (item.qualification == 'C' || item.qualification == 'NA')
+                    {
+                        this.total_c++;
+                    }
+                    else if (item.qualification == 'NC')
+                    {
+                        this.total_nc++;
+                    }
+                    else
+                    {
+                        this.total_nc++;
+                        this.total_sc++;
+                    }
                 }
+
             });
 
             if (this.total_standard > 0)

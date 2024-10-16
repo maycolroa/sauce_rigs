@@ -290,7 +290,7 @@ trait ContractTrait
 
         $contract->listCheckResumen()->where('list_qualification_id', $qualification)->delete();
 
-        $items_delete = ItemQualificationContractDetail::select(
+        /*$items_delete = ItemQualificationContractDetail::select(
                     'sau_ct_item_qualification_contract.*',
                     'sau_ct_qualifications.name AS name'
                 )
@@ -327,7 +327,7 @@ trait ContractTrait
             }
 
             ItemQualificationContractDetail::find($item->id)->delete();
-        }
+        }*/
 
         if (COUNT($items) > 0)
         {

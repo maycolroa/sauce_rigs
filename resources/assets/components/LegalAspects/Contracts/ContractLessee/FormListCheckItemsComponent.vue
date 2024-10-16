@@ -1,7 +1,7 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 		<element-fixed-component>
-		  <list-check-items-resumen-component :items="form.items"/>
+		  <list-check-items-resumen-component :items="form.items" :validate_qualificacion="validate_qualificacion"/>
 		</element-fixed-component>
 		
 		<b-card border-variant="primary" no-body class="mb-4">

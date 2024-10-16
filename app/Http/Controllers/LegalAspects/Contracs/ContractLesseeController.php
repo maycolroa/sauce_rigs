@@ -1195,7 +1195,7 @@ class ContractLesseeController extends Controller
 
             $data['observations'] = $data['observations'] != 'null' ? $data['observations'] : '';
             
-            $this->reloadLiskCheckResumen($contract, $request->list_qualification_id);
+            //$this->reloadLiskCheckResumen($contract, $request->list_qualification_id);
 
             return $this->respondHttp200([
                 'data' => $data
@@ -1772,7 +1772,7 @@ class ContractLesseeController extends Controller
 
         $contract = ContractLesseeInformation::findOrFail($request->contract_id);
 
-        $this->reloadLiskCheckResumen($contract, $request->list_id);
+        //$this->reloadLiskCheckResumen($contract, $request->list_id);
 
         return $this->respondHttp200([
             'message' => 'Se actualizo la calificación'
@@ -1793,7 +1793,7 @@ class ContractLesseeController extends Controller
 
             $contract = ContractLesseeInformation::findOrFail($request->contract_id);
 
-            $this->reloadLiskCheckResumen($contract, $request->list_id);
+            //$this->reloadLiskCheckResumen($contract, $request->list_id);
 
             return $this->respondHttp200([
                 'message' => 'Se actualizo la calificación'
