@@ -52,6 +52,7 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');
         Route::post('getPlanActionMandatory', 'Api\InspectionController@getPlanActionMandatory');
         Route::post('getlevelRiskMandatory', 'Api\InspectionController@getLevelRiskMandatory');
+        Route::post('getLevelCriticality', 'Api\InspectionController@getLevelCriticality');
     });
 
 

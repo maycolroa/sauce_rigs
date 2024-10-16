@@ -1013,6 +1013,14 @@
                     {
                         "name": "typesCustom_d",
                         "display_name": "Matriz Legal/Mis Tipos - eliminar"
+                    },
+                    {
+                        "name": "risk_opportunity_u",
+                        "display_name": "Matriz Legal/Riesgos y oportunidades - editar"
+                    },
+                    {
+                        "name": "risk_opportunity_v",
+                        "display_name": "Matriz Legal/Riesgos y oportunidades - ver"
                     }
                 ]
             }

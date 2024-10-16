@@ -229,6 +229,32 @@ class InspectionController extends ApiController
         }
     }
 
+    public function getLevelCriticality(Request $request)
+    {
+        $company = Company::find($request->company_id);
+        
+        try
+        {
+            $data = ConfigurationsCompany::company($company->id)->findByKey('criticality_level_inspections');
+
+            if ($data && $data == 'Formulario')
+            {
+                return $this->respondHttp200([
+                    'data' => $data,
+                ]);
+            }
+            else
+                return $this->respondHttp200([
+                    'data' => 'Calificacion'
+                ]);
+            
+        } catch (\Exception $e) {
+            return $this->respondHttp200([
+                'data' => 'Calificacion'
+            ]);
+        }
+    }
+
     public function getLevelRiskMandatory(Request $request)
     {
         $company = Company::find($request->company_id);
