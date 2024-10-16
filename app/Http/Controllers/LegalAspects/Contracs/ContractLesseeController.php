@@ -1764,6 +1764,10 @@ class ContractLesseeController extends Controller
 
         $items_calificated->update(['state_aprove_qualification' => 'APROBADA','reason_rejection' => NULL]);
 
+        $contract = ContractLesseeInformation::findOrFail($request->contract_id);
+
+        $this->reloadLiskCheckResumen($contract, $request->list_id);
+
         return $this->respondHttp200([
             'message' => 'Se actualizo la calificación'
         ]);
@@ -1780,6 +1784,10 @@ class ContractLesseeController extends Controller
             ->first();
 
             $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection, 'qualification_id' => 2]);
+
+            $contract = ContractLesseeInformation::findOrFail($request->contract_id);
+
+            $this->reloadLiskCheckResumen($contract, $request->list_id);
 
             return $this->respondHttp200([
                 'message' => 'Se actualizo la calificación'
