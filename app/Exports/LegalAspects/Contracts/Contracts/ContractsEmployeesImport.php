@@ -9,6 +9,8 @@ use App\Exports\LegalAspects\Contracts\Contracts\ActivityContractTemplate;
 use App\Exports\LegalAspects\Contracts\Contracts\ProyectContractTemplate;
 use App\Exports\LegalAspects\Contracts\Contracts\EpsTemplateExcel;
 use App\Exports\LegalAspects\Contracts\Contracts\RhTemplate;
+use App\Exports\LegalAspects\Contracts\Contracts\WorkingDayTemplate;
+use App\Exports\LegalAspects\Contracts\Contracts\DepartamentMunicipalityTemplateExcel;
 use App\Exports\Administrative\Employees\AfpTemplateExcel;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 
@@ -20,10 +22,12 @@ class ContractsEmployeesImport implements WithMultipleSheets
     protected $contract;
 
     protected $data;
+    protected $workingDay;
     
     public function __construct($company_id, $contract)
     {
         $this->data = collect([]);
+        $this->workingDay = collect([]);
 
         $this->company_id = $company_id;
         $this->contract = $contract;
@@ -32,9 +36,21 @@ class ContractsEmployeesImport implements WithMultipleSheets
             'A', 'B', 'O','AB', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-','AB+', 'AB-'
         ];
 
+        $working = [
+            'Jornada Normal',
+            'Jornada Nocturna',
+            'Jornada Mixta',
+            'Jornada Diurna'
+        ];
+
         foreach ($leyends as $key => $value)
         {
             $this->data->push(['leyend'=>$value]);
+        }
+
+        foreach ($working as $key => $value)
+        {
+            $this->workingDay->push(['working'=>$value]);
         }
     }
 
@@ -53,6 +69,8 @@ class ContractsEmployeesImport implements WithMultipleSheets
         $sheets[] = new ActivityContractTemplate($this->contract,$this->company_id);
         $sheets[] = new AfpTemplateExcel($this->company_id);
         $sheets[] = new EpsTemplateExcel($this->company_id);
+        $sheets[] = new WorkingDayTemplate($this->workingDay);
+        $sheets[] = new DepartamentMunicipalityTemplateExcel($this->company_id);
         $sheets[] = new RhTemplate($this->data);
 
         if ($configuration && $configuration->value == 'SI')
