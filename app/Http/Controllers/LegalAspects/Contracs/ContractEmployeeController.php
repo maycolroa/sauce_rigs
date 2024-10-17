@@ -185,7 +185,7 @@ class ContractEmployeeController extends Controller
                         $ext = strtolower($value->getClientOriginalExtension());
                         
                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt')
-                            $fail('Archivo debe ser un pdf, un excel, un word o una presentación');
+                            $fail('Archivo debe ser un pdf, un excel (.xlsx, .xls), un word (.docx, .doc) o una presentación (.pptx, .ppt)');
                     }
                 }
 
@@ -347,7 +347,7 @@ class ContractEmployeeController extends Controller
                         $ext = strtolower($value->getClientOriginalExtension());
 
                         if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt')
-                            $fail('Archivo debe ser un pdf, un excel, un word o una presentación');
+                            $fail('Archivo debe ser un pdf, un excel (.xlsx, .xls), un word (.docx, .doc) o una presentación (.pptx, .ppt)');
                     }
                 }
 

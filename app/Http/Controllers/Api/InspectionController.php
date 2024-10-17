@@ -369,7 +369,21 @@ class InspectionController extends ApiController
                     $item->employee_area_id = $employee_area_id;
                     $item->employee_headquarter_id = $employee_headquarter_id;
                     $item->save();
-                
+
+                    $items_criticality = [];
+
+                    $useLevelCriticality = $this->getLevelCriticality($request);
+
+                    if ($useLevelCriticality == 'Formulario')
+                    {
+                        if ($value['level_criticality'] == 'Alto')
+                        {
+                            if ($value['qualification_id'] == 2)
+                            {
+                                array_push($items_criticality, $value);
+                            }
+                        }
+                    }
 
                     $response['themes'][$keyT]['items'][$key]['id'] = $item->id;
 
