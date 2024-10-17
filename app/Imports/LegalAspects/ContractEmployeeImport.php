@@ -125,9 +125,6 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 
     private function checkContractEmployee($row)
     {
-
-        \Log::info($this->contract);
-        \Log::info($this->contract->id);
         $data = [
             'nombre_empleado' => $row[0],
             'documento_empleado' => $row[1],
@@ -178,9 +175,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 
         $id = NULL;
 
-        $employee_exist = ContractEmployee::where('identification', $data['documento_empleado'])->where('company_id', $this->company_id)->where('contract_id', $this->contract->id)->first();
-
-        \Log::info($employee_exist);
+        $employee_exist = ContractEmployee::where('identification', $data['documento_empleado'])->where('company_id', $this->company_id)->where('contract_id', $this->contract->id)->withoutGlobalScopes()->first();
 
         if ($employee_exist)
         {
