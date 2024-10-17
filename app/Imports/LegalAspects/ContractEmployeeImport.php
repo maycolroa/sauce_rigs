@@ -174,6 +174,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
         }
 
         $id = NULL;
+        \Log::info($this->contract->id);
 
         $employee_exist = ContractEmployee::where('identification', $data['documento_empleado'])->where('company_id', $this->company_id)->where('contract_id', $this->contract->id)->first();
 
