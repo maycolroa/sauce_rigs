@@ -66,6 +66,7 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
         'Sexo (Masculino, Femenino, Sin Sexo)*',
         'Teléfono de residencia (*)',
         'Teléfono movil (*)',
+        'Estado civil (*)(Soltero, Casado)',
         'Dirección (*)',
         'Email (*)',
         'Jornada laboral (Tomar valor de la pestaña Jornadas)',

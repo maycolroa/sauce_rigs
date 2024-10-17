@@ -11,6 +11,8 @@ use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
 use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\Administrative\Employees\EmployeeEPS;
+use App\Models\General\Departament;
+use App\Models\General\Municipality;
 use App\Models\General\Team;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
@@ -48,6 +50,8 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
       $this->company_id = $company_id;
       $this->afp_data = EmployeeAFP::pluck('id', 'code');
       $this->eps_data = EmployeeEPS::pluck('id', 'code');
+      $this->departament_data = Departament::pluck('id', 'id');
+      $this->municipality_data = Municipality::pluck('id', 'id');
       $this->contract = $contract;
     }
 
@@ -128,26 +132,46 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
             'sexo' => $row[3],
             'tel_residencia' => $row[4],
             'tel_movil' => $row[5],
-            'direccion' => $row[6],
-            'email_empleado' => $row[7],
-            'posicion' => ucfirst($row[8]),
-            'discapacidad' => strtoupper($row[9]),
-            'descrip_discapacidad' => $row[10],
-            'contacto_emergencia' => $row[11],
-            'tel_contacto_emergencia' => $row[12],
-            'rh' => $row[13],
-            'salario' => $row[14],
-            'afp' => $row[15],
-            'eps' => $row[16],
-            'actividades' => explode(",", $row[17]),
-            'proyectos' => isset($row[18]) && $row[18] ? explode(",", $row[18]) : []
+            'civil_status' => $row[6],
+            'direccion' => $row[7],
+            'email_empleado' => $row[8],
+            'working_day' => $row[9],
+            'departament' => $row[10],
+            'municipality' => $row[11],
+            'income_date' => $row[12],
+            'posicion' => ucfirst($row[13]),
+            'discapacidad' => strtoupper($row[14]),
+            'descrip_discapacidad' => $row[15],
+            'contacto_emergencia' => $row[16],
+            'tel_contacto_emergencia' => $row[17],
+            'rh' => $row[18],
+            'salario' => $row[19],
+            'afp' => $row[20],
+            'eps' => $row[21],
+            'actividades' => explode(",", $row[22]),
+            'proyectos' => isset($row[23]) && $row[23] ? explode(",", $row[23]) : []
         ];
 
         $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
+        $data['income_date'] = $this->validateDate($data['income_date']);
 
         $data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
 
         $data['eps'] = $data['eps'] ? (isset($this->eps_data[$data['eps']]) ? $this->eps_data[$data['eps']] : -1) : null;
+
+        $data['departament'] = $data['departament'] ? (isset($this->departament_data[$data['departament']]) ? $this->departament_data[$data['departament']] : -1) : null;
+
+        $data['municipality'] = $data['municipality'] ? (isset($this->municipality_data[$data['municipality']]) ? $this->municipality_data[$data['municipality']] : -1) : null;
+
+        $municipio = Municipality::where('id', $data['municipality'])->where('departament_id', $data['departament'])->first();
+
+        if (!$municipio)
+        {
+            $this->setError('El municipio ingresado no corresponde al departamento ingresado');
+            $this->setErrorData($row);
+
+            return null;
+        }
 
         $id = NULL;
 
@@ -203,6 +227,9 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 
                 if ($email_valid)
                 {
+                    $tok = Hash::make($data['email_empleado'].$data['documento_empleado']);
+                    $tok = str_replace("/", "a", $tok);
+
                     $employee = new ContractEmployee();
                     $employee->name = $data['nombre_empleado'];
                     $employee->email = $data['email_empleado'];
@@ -210,7 +237,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->position = $data['posicion'];
                     $employee->company_id = $this->company_id;
                     $employee->contract_id = $this->contract->id;
-                    $employee->token = Hash::make($data['email_empleado'].$data['documento_empleado']);
+                    $employee->token = $tok;
                     $employee->employee_afp_id = $data['afp'];
                     $employee->employee_eps_id = $data['eps'];
                     $employee->sex = $data['sexo'];
@@ -224,6 +251,11 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->date_of_birth = $data['fecha_nacimiento'];
                     $employee->disability_description = $data['descrip_discapacidad'];
                     $employee->emergency_contact_phone = $data['tel_contacto_emergencia'];
+                    $employee->workday = $data['working_day'];
+                    $employee->income_date = $data['income_date'];
+                    $employee->departament_id = $data['departament'];
+                    $employee->city_id = $data['municipality'];
+                    $employee->civil_status = $data['civil_status'];
                     $employee->save();
 
                     $employee->activities()->sync($data['actividades']);
@@ -238,11 +270,6 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 
                     return null;
                 }
-
-
-                ////////////////Envio de capacitacione///////////////
-
-
 
                 return true;
 
