@@ -165,7 +165,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 
         $municipio = Municipality::where('id', $data['municipality'])->where('departament_id', $data['departament'])->first();
 
-        if (!$municipio)
+        if ($data['municipality'] && !$municipio)
         {
             $this->setError('El municipio ingresado no corresponde al departamento ingresado');
             $this->setErrorData($row);
