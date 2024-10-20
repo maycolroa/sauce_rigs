@@ -27,11 +27,11 @@
         </vue-radio>
     </b-form-row>
 
-    <!--<b-form-row>
+    <b-form-row>
       <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.criticality_level_inspections" class="col-md-12" v-model="form.criticality_level_inspections" :options="formQualify" name="criticality_level_inspections" :error="form.errorsFor('criticality_level_inspections')" label="¿Mostrar campo para asignar un nivel de criticidad a un item dentro del formulario de inspecciones planeadas?">
         </vue-radio>
       <vue-ajax-advanced-select v-if="form.criticality_level_inspections == 'Formulario'" class="col-md-12" v-model="form.users_notify_criticality_level_inspections" :selected-object="form.multiselect_criticality_user_id" name="users_notify_criticality_level_inspections" label="Usuarios a notificar la alerta por criticidad" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_criticality_level_inspections')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
-    </b-form-row> -->
+    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
