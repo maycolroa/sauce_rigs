@@ -922,7 +922,7 @@ export default [
                         messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                     },
                     permission: 'contracts_employee_u'
-                },*/
+                },
                 {
                     name: 'delete',
                     data: {
@@ -931,7 +931,7 @@ export default [
                         messageConfirmation: 'Esta seguro de borrar el empleado __name__'
                     },
                     permission: 'contracts_employee_d'
-                }
+                }*/
             ],
         }],
         configuration: {
@@ -997,7 +997,17 @@ export default [
         },
         {
             type: 'base',
-            buttons: [],
+            buttons: [
+                {
+                    name: 'delete',
+                    data: {
+                        action: '/legalAspects/employeeContract/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de borrar el empleado __name__'
+                    },
+                    permission: 'contracts_r'
+                }
+            ],
         }],
         configuration: {
             urlData: '/legalAspects/employeeContract/dataContract',

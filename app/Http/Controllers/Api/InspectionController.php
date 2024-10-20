@@ -337,6 +337,10 @@ class InspectionController extends ApiController
 
             $qualification_date_verify = '';
 
+            $items_criticality = [];
+
+            $useLevelCriticality = ConfigurationsCompany::company($request->company_id)->findByKey('criticality_level_inspections');
+
             foreach ($request->themes as $keyT => $theme)
             {
                 foreach ($theme['items'] as $key => $value)
@@ -345,7 +349,7 @@ class InspectionController extends ApiController
                     $fileName2 = null;
 
                     if (isset($value['id']) && $value['id'])
-                        $item = InspectionItemsQualificationAreaLocation::find($value['id'])->withoutGlobalScopes();
+                        $item = InspectionItemsQualificationAreaLocation::where('id',$value['id'])->withoutGlobalScopes()->first();
                     else { 
                         $item = new InspectionItemsQualificationAreaLocation();
                         $item->qualification_date = $qualification_date;
@@ -369,21 +373,6 @@ class InspectionController extends ApiController
                     $item->employee_area_id = $employee_area_id;
                     $item->employee_headquarter_id = $employee_headquarter_id;
                     $item->save();
-
-                    $items_criticality = [];
-
-                    $useLevelCriticality = $this->getLevelCriticality($request);
-
-                    if ($useLevelCriticality == 'Formulario')
-                    {
-                        if ($value['level_criticality'] == 'Alto')
-                        {
-                            if ($value['qualification_id'] == 2)
-                            {
-                                array_push($items_criticality, $value);
-                            }
-                        }
-                    }
 
                     $response['themes'][$keyT]['items'][$key]['id'] = $item->id;
 
@@ -457,6 +446,26 @@ class InspectionController extends ApiController
                         $response['themes'][$keyT]['items'][$key]['actionPlan'] = ActionPlan::getActivities();
 
                         ActionPlan::restart();
+                    }
+                    
+                    if ($useLevelCriticality == 'Formulario')
+                    {
+                        if ($value['level_criticality'] == 'Alto')
+                        {
+                            if ($value['qualification_id'] == 2)
+                            {
+                                $send_email_criticality = true;
+
+                                $content = [
+                                    'Tema' => $theme['name'],
+                                    'Item' => $value['description'],
+                                    'Nivel de riesgo' => $value['level_criticality'],
+                                    'Calificación' => 'No cumple'
+                                ];
+
+                                array_push($items_criticality, $content);
+                            }
+                        }
                     }
                 }
             }
@@ -705,7 +714,7 @@ class InspectionController extends ApiController
                         $recipient = new User(["email" => $record->email]); 
 
                         NotificationMail::
-                            subject('Registro de calificaciónn de inspección')
+                            subject('Registro de calificación de inspección')
                             ->recipients($recipient)
                             ->message('Se ha generado una calificacion de inspecciones planeadas.')
                             ->buttons([['text'=>'Descargar', 'url'=>url($url)]])
@@ -713,6 +722,50 @@ class InspectionController extends ApiController
                             ->event('Mobile: SendPdfInspectionQualification')
                             ->company($request->company_id)
                             ->send();
+                    }
+
+                    if (count($items_criticality) > 0)
+                    {
+                        $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
+                        $regional_detail->company_scope = $request->company_id;
+                        $regional_detail = $regional_detail->first();
+                        $headquarter_detail = EmployeeHeadquarter::find($employee_headquarter_id);
+                        $process_detail = EmployeeProcess::find($employee_process_id);
+                        $area_detail = EmployeeArea::find($employee_area_id);
+
+                        $detail_procedence_criticality = '';
+
+                        if ($confLocation['regional'] == 'SI')
+                            $detail_procedence_criticality = $keywords['regional']. ': ' .  $regional_detail->name;
+                        if ($confLocation['headquarter'] == 'SI')
+                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['headquarter']. ': ' .  $headquarter_detail->name;
+                        if ($confLocation['process'] == 'SI')
+                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['process']. ': ' .  $process_detail->name;
+                        if ($confLocation['area'] == 'SI')
+                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['area']. ': ' .  $area_detail->name;
+
+                        $responsibles = ConfigurationsCompany::company($request->company_id)->findByKey('users_notify_criticality_level_inspections');
+
+                        if ($responsibles)
+                            $responsibles = explode(',', $responsibles);
+
+                        if (count($responsibles) > 0)
+                        {
+                            foreach ($responsibles as $email)
+                            {
+                                $recipient = new User(["email" => $email]); 
+            
+                                NotificationMail::
+                                    subject('Inspecciones planeadas - Nivel de riesgo')
+                                    ->recipients($recipient)
+                                    ->message("La inspeccion $inspection->name realizada en $detail_procedence_criticality. tiene items que deben ser verificados debido a su calificación y nivel de riesgo asociado")
+                                    ->module('dangerousConditions')
+                                    ->event('Mobile: SendAlertLevelCriticality')
+                                    ->company($request->company_id)
+                                    ->table($items_criticality)
+                                    ->send();
+                            }
+                        }
                     }
                 }
             }

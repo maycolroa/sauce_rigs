@@ -502,9 +502,9 @@ class ContractLesseeController extends Controller
                     if ($value && !is_string($value))
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
-                        
-                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt')
-                            $fail('Archivo debe ser un pdf, un excel, un word o una presentación');
+
+                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt' && $ext != 'jpg' && $ext != 'jpeg' && $ext != 'png')
+                            $fail('Archivo debe ser un pdf, un excel (.xlsx, .xls), un word (.docx, .doc), una presentación (.pptx, .ppt) o una imagen (.jpg, .jpeg, .png)');
                     }
                 }
 
