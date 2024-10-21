@@ -725,51 +725,51 @@ class InspectionController extends ApiController
                             ->company($request->company_id)
                             ->send();
                     }
+                }
 
-                    \Log::info($items_criticality);
-                    if (count($items_criticality) > 0)
+                \Log::info($items_criticality);
+                if (count($items_criticality) > 0)
+                {
+                    \Log::info('level 4');
+                    $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
+                    $regional_detail->company_scope = $request->company_id;
+                    $regional_detail = $regional_detail->first();
+                    $headquarter_detail = EmployeeHeadquarter::find($employee_headquarter_id);
+                    $process_detail = EmployeeProcess::find($employee_process_id);
+                    $area_detail = EmployeeArea::find($employee_area_id);
+
+                    $detail_procedence_criticality = '';
+
+                    if ($confLocation['regional'] == 'SI')
+                        $detail_procedence_criticality = $keywords['regional']. ': ' .  $regional_detail->name;
+                    if ($confLocation['headquarter'] == 'SI')
+                        $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['headquarter']. ': ' .  $headquarter_detail->name;
+                    if ($confLocation['process'] == 'SI')
+                        $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['process']. ': ' .  $process_detail->name;
+                    if ($confLocation['area'] == 'SI')
+                        $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['area']. ': ' .  $area_detail->name;
+
+                    $responsibles = ConfigurationsCompany::company($request->company_id)->findByKey('users_notify_criticality_level_inspections');
+
+                    if ($responsibles)
+                        $responsibles = explode(',', $responsibles);
+
+                    if (count($responsibles) > 0)
                     {
-                        \Log::info('level 4');
-                        $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
-                        $regional_detail->company_scope = $request->company_id;
-                        $regional_detail = $regional_detail->first();
-                        $headquarter_detail = EmployeeHeadquarter::find($employee_headquarter_id);
-                        $process_detail = EmployeeProcess::find($employee_process_id);
-                        $area_detail = EmployeeArea::find($employee_area_id);
-
-                        $detail_procedence_criticality = '';
-
-                        if ($confLocation['regional'] == 'SI')
-                            $detail_procedence_criticality = $keywords['regional']. ': ' .  $regional_detail->name;
-                        if ($confLocation['headquarter'] == 'SI')
-                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['headquarter']. ': ' .  $headquarter_detail->name;
-                        if ($confLocation['process'] == 'SI')
-                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['process']. ': ' .  $process_detail->name;
-                        if ($confLocation['area'] == 'SI')
-                            $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['area']. ': ' .  $area_detail->name;
-
-                        $responsibles = ConfigurationsCompany::company($request->company_id)->findByKey('users_notify_criticality_level_inspections');
-
-                        if ($responsibles)
-                            $responsibles = explode(',', $responsibles);
-
-                        if (count($responsibles) > 0)
+                        \Log::info('level 5');
+                        foreach ($responsibles as $email)
                         {
-                            \Log::info('level 5');
-                            foreach ($responsibles as $email)
-                            {
-                                $recipient = new User(["email" => $email]); 
-            
-                                NotificationMail::
-                                    subject('Inspecciones planeadas - Nivel de riesgo')
-                                    ->recipients($recipient)
-                                    ->message("La inspeccion $inspection->name realizada en $detail_procedence_criticality. tiene items que deben ser verificados debido a su calificación y nivel de riesgo asociado")
-                                    ->module('dangerousConditions')
-                                    ->event('Mobile: SendAlertLevelCriticality')
-                                    ->company($request->company_id)
-                                    ->table($items_criticality)
-                                    ->send();
-                            }
+                            $recipient = new User(["email" => $email]); 
+        
+                            NotificationMail::
+                                subject('Inspecciones planeadas - Nivel de riesgo')
+                                ->recipients($recipient)
+                                ->message("La inspeccion $inspection->name realizada en $detail_procedence_criticality. tiene items que deben ser verificados debido a su calificación y nivel de riesgo asociado")
+                                ->module('dangerousConditions')
+                                ->event('Mobile: SendAlertLevelCriticality')
+                                ->company($request->company_id)
+                                ->table($items_criticality)
+                                ->send();
                         }
                     }
                 }
