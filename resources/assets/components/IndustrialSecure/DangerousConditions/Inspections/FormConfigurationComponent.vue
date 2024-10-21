@@ -106,6 +106,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
+          window.location = "/industrialsecure/dangerousconditions"
         })
         .catch(error => {
           this.loading = false;
