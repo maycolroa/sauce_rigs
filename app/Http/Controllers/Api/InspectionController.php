@@ -726,6 +726,7 @@ class InspectionController extends ApiController
                             ->send();
                     }
 
+                    \Log::info($items_criticality);
                     if (count($items_criticality) > 0)
                     {
                         \Log::info('level 4');
