@@ -340,7 +340,6 @@ class InspectionController extends ApiController
             $items_criticality = [];
 
             $useLevelCriticality = ConfigurationsCompany::company($request->company_id)->findByKey('criticality_level_inspections');
-            \Log::info($useLevelCriticality);
 
             foreach ($request->themes as $keyT => $theme)
             {
@@ -451,13 +450,10 @@ class InspectionController extends ApiController
                     
                     if ($useLevelCriticality == 'Formulario')
                     {
-                        \Log::info('level 1');
                         if ($value['level_criticality'] == 'Alto')
                         {
-                            \Log::info('level 2');
                             if ($value['qualification_id'] == 2)
                             {
-                                \Log::info('level 3');
                                 $content = [
                                     'Tema' => $theme['name'],
                                     'Item' => $value['description'],
@@ -727,10 +723,8 @@ class InspectionController extends ApiController
                     }
                 }
 
-                \Log::info($items_criticality);
                 if (count($items_criticality) > 0)
                 {
-                    \Log::info('level 4');
                     $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
                     $regional_detail->company_scope = $request->company_id;
                     $regional_detail = $regional_detail->first();
@@ -764,7 +758,7 @@ class InspectionController extends ApiController
                             NotificationMail::
                                 subject('Inspecciones planeadas - Nivel de riesgo')
                                 ->recipients($recipient)
-                                ->message("La inspeccion $inspection->name realizada en $detail_procedence_criticality. tiene items que deben ser verificados debido a su calificación y nivel de riesgo asociado")
+                                ->message("La inspección planeada $inspection->name realizada en $detail_procedence_criticality, tiene items que deben ser verificados debido a su calificación y nivel de riesgo asociado")
                                 ->module('dangerousConditions')
                                 ->event('Mobile: SendAlertLevelCriticality')
                                 ->company($request->company_id)
