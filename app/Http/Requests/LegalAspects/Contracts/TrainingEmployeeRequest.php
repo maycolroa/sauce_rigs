@@ -46,6 +46,14 @@ class TrainingEmployeeRequest extends FormRequest
     public function rules()
     {
         return [
+            'firm_employee' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'firm_employee' => 'El campo Firma es obligatorio.'
         ];
     }
 }

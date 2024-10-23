@@ -71,6 +71,26 @@
       </b-card-body>
     </b-card>
 
+    <b-card no-body class="mb-2 border-secondary">
+      <b-card-body>
+        <blockquote class="blockquote text-center">
+          <p class="mb-0">Firma del empleado</p>
+        </blockquote>
+        <div class="row">
+          <div class="col-md-12">
+            <center>
+                <div class="my-4 mx-2 text-center" v-if="form.firm">
+                    <img class="ui-w-300" :src="`${form.path_firm}`" alt="">
+                </div>
+                <div v-else>
+                  <label><b>No hay firma agregada</b></label>
+                </div>
+            </center>
+          </div>
+        </div> 
+      </b-card-body>
+    </b-card>
+
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;

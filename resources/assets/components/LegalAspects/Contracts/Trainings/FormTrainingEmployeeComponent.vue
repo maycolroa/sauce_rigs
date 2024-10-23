@@ -60,7 +60,7 @@
                             </vue-advanced-select>
 
                             <!--Seleccion multiple-->
-                            <vue-advanced-select v-if="question.type.name == 'selection_multiple'" limit="50" class="col-md-12" v-model="question.answers" name="answers" label="Respuesta" :multiple="true" placeholder="Seleccione las respuestas" :options="question.answer_options.options">
+                            <vue-advanced-select v-if="question.type.name == 'selection_multiple'" class="col-md-12" v-model="question.answers" name="answers" label="Respuesta" :multiple="true" placeholder="Seleccione las respuestas" :options="question.answer_options.options">
                             </vue-advanced-select>
 
                             <!--verdadero y falso-->
@@ -94,6 +94,32 @@
                         </b-form-row>
                       </div>
                     </template>
+                </b-card>
+                <b-card>
+                  <b-card-body>
+                     <div>
+                        <div>
+                          <center>
+                             <b-form-feedback class="d-block" v-if="form.errorsFor(`firm_employee`)" style="padding-bottom: 10px;">
+                                {{ form.errorsFor(`firm_employee`) }}
+                              </b-form-feedback>
+                              <p><b>Ingresa aqui tu firma</b></p>
+                              <VueSignaturePad
+                                  id="signature"
+                                  width="100%"
+                                  height="250px"
+                                  ref="signaturePad"
+                                  v-model="form.firm_employee"
+                              />
+                              <br>
+                              <div>
+                                  <b-btn variant="default" @click="undo">Borrar</b-btn>
+                              </div>
+                              <br>
+                          </center>
+                        </div>
+                    </div>
+                  </b-card-body>
                 </b-card>
 
                 <b-modal ref="modalConfirm" :hideFooter="true" id="modals-historial2" class="modal-top" size="lg">
@@ -168,6 +194,7 @@ export default {
             attempt: '',
             employee: '',
             questions: {},
+            firm_employee: ''
         };
       }
     }
@@ -191,6 +218,13 @@ export default {
     submit(e) {
       this.loading = true;
       this.$refs.modalConfirm.hide()
+
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+
+      if (data != null) {
+        console.log('entro');
+        this.form.firm_employee = data
+      }
                         
       this.form
         .submit(e.target.action)
@@ -207,7 +241,21 @@ export default {
                 text: error
               });
         });
-    }
+    },
+    undo () {
+      this.$refs.signaturePad.undoSignature()
+    },
   }
 };
 </script>
+
+<style>
+  #signature {
+    border: double 3px transparent;
+    border-radius: 5px;
+    background-image: linear-gradient(white, white),
+      radial-gradient(circle at top left, #9f6274, #9f6274);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
+</style>

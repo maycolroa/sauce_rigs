@@ -87,6 +87,7 @@ class TrainingEmployeeController extends Controller
 
             $training->attempt = $attempts + 1;
             $training->employee = $employee->id;
+            $training->firm_employee = '';
             $data->put("training", $training);
         }
 
@@ -103,12 +104,33 @@ class TrainingEmployeeController extends Controller
         try
         {
             $training = Training::withoutGlobalScopes()->find($request->id);
+            $imageName = NULL;
+
+            if ($request->firm_employee)
+            {
+                $image_64 = $request->firm_employee;
+        
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        
+                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+        
+                $image = str_replace($replace, '', $image_64); 
+        
+                $image = str_replace(' ', '+', $image); 
+        
+                $imageName = base64_encode($request->employee . rand(1,10000) . now()) . '.' . $extension;
+
+                $file = base64_decode($image);
+
+                Storage::disk('s3')->put('legalAspects/contracts/trainings/files/'.$training->company_id.'/' . $imageName, $file, 'public');
+            }
 
             $attempt = new TrainingEmployeeAttempt();
             $attempt->attempt = $request->attempt;
             $attempt->employee_id = $request->employee;
             $attempt->training_id = $request->id;
             $attempt->state = 'REPROBADO';
+            $attempt->firm = $imageName;
             $attempt->save();
             $grade = 0;
 
@@ -295,6 +317,7 @@ class TrainingEmployeeController extends Controller
             $attempt->questions = $question_answer;
             $attempt->name = Training::find($attempt->training_id)->name;
             $attempt->qualification = $attempt->state;
+            $attempt->path_firm = Storage::disk('s3')->url('legalAspects/contracts/trainings/files/'.$this->company.'/'.$attempt->firm);
 
             return $this->respondHttp200([
                 'data' => $attempt

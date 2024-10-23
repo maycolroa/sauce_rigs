@@ -13,7 +13,8 @@ class TrainingEmployeeAttempt extends Model
         'attempt',
         'state',
         'training_id',
-        'employee_id'
+        'employee_id',
+        'firm_employee'
     ];
 
     public function trainings()
