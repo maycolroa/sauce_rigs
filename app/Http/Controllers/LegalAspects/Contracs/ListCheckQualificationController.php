@@ -570,22 +570,15 @@ class ListCheckQualificationController extends Controller
             
         } catch (\Exception $e) {
             $exist = 'NO';
-        }                 
-
-        /*//Obtiene los items calificados
-        $items_calificated = ItemQualificationContractDetail::
-                    where('contract_id', $contract->id)
-                ->where('list_qualification_id', $qualification_list->id)
-                ->pluck("qualification_id", "item_id");*/
-        
+        }                         
         
         //Obtiene los items calificados
         $items_calificated = ItemQualificationContractDetail::
             where('contract_id', $contract->id)
         ->where('list_qualification_id', $qualification_list->id);
 
-        if ($exist == 'SI')
-            $items_calificated->where('state_aprove_qualification', 'APROBADA');
+        /*if ($exist == 'SI')
+            $items_calificated->where('state_aprove_qualification', 'APROBADA');*/
 
         $items_calificated = $items_calificated->pluck("qualification_id", "item_id");
                 
@@ -718,7 +711,8 @@ class ListCheckQualificationController extends Controller
                 'user_Creator' => $qualifications_creator->user_creator,
                 'state' => $qualifications_creator->state_list,
                 'contract_name' => $contract->social_reason,
-                'cumplimiento' => $compliance
+                'cumplimiento' => $compliance,
+                'validate_qualification' => $exist
             ];
         }
         else

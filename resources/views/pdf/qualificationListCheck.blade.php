@@ -95,6 +95,9 @@
                     <th>Item</th>
                     <th>Calificación</th>
                     <th>Observaciones</th>
+                    @if ($listCheck['validate_qualification'] == 'SI')
+                        <th>Estado</th>
+                    @endif
                 </tr>
                 @foreach($listCheck["items"] as $keyItem => $item)
                 <tr>
@@ -104,6 +107,9 @@
                     </td>
                     <td>{{ $item["qualification"] }}</td>
                     <td>{{ $item["observations"] }}</td>
+                    @if ($listCheck['validate_qualification'] == 'SI')
+                        <td>{{ $item["state_aprove_qualification"] }}</td>
+                    @endif
                 </tr> 
                 @endforeach                                      
             </thead>
