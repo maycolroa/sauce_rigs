@@ -753,7 +753,13 @@ class InspectionController extends ApiController
                     if ($confLocation['area'] == 'SI')
                         $detail_procedence_criticality = $detail_procedence_criticality . ' - ' .$keywords['area']. ': ' .  $area_detail->name;
 
-                    $responsibles = ConfigurationsCompany::company($request->company_id)->findByKey('users_notify_criticality_level_inspections');
+                    try
+                    {
+                        $responsibles = ConfigurationsCompany::company($request->company_id)->findByKey('users_notify_criticality_level_inspections');
+                        
+                    } catch (\Exception $e) {
+                        $responsibles = '';
+                    }
 
                     if ($responsibles)
                         $responsibles = explode(',', $responsibles);
