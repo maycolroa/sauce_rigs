@@ -339,7 +339,17 @@ class InspectionController extends ApiController
 
             $items_criticality = [];
 
-            $useLevelCriticality = ConfigurationsCompany::company($request->company_id)->findByKey('criticality_level_inspections');
+            try
+            {
+                $dato = ConfigurationsCompany::company($request->company_id)->findByKey('criticality_level_inspections');
+
+                $useLevelCriticality = $dato;
+                
+            } catch (\Exception $e) {
+                $useLevelCriticality = 'Calificacion';
+            }
+
+            //$useLevelCriticality = ConfigurationsCompany::company($request->company_id)->findByKey('criticality_level_inspections');
 
             foreach ($request->themes as $keyT => $theme)
             {
