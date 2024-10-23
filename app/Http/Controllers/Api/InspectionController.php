@@ -450,7 +450,7 @@ class InspectionController extends ApiController
                     
                     if ($useLevelCriticality == 'Formulario')
                     {
-                        if ($value['level_criticality'] == 'Alto')
+                        if (isset($value['level_criticality']) && $value['level_criticality'] == 'Alto')
                         {
                             if ($value['qualification_id'] == 2)
                             {
