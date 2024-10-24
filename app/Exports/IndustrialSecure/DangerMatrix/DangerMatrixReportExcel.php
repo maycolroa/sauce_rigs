@@ -218,9 +218,10 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
       ];
 
       $conf = $this->conf;
+      $company_colors = $this->company_id;
 
-      Sheet::macro('getConfDM', function (Sheet $sheet) use ($conf) {
-        return $conf;
+      Sheet::macro('getConfDM', function (Sheet $sheet) use ($conf, $company_colors) {
+        return ['conf' => $conf, 'company' => $company_colors];
       });
     }
 
@@ -228,27 +229,53 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
     {
       $conf = $event->sheet->getConfDM();
 
-      if ($conf == 'Tipo 1')
+      if ($conf['conf'] == 'Tipo 1')
       {
-        $colors['A4:F4'] = 'ef7b38';
-        $colors['G4:L4'] = 'f0635f';
-        $colors['M4:O4'] = '6f42c1';
+        if ($conf['company'] == 409)
+        {
+          $colors['A4:F4'] = 'ffff00';
+          $colors['G4:I4'] = 'ffcf00';
+          $colors['J4:O4'] = 'ff0000';
 
-        $colors['A5:C5'] = 'FFD950';
-        $colors['D5:I5'] = 'ef7b38';
-        $colors['J5:O5'] = 'f0635f';
+          $colors['A5:C5'] = '5a92d7';
+          $colors['D5:F5'] = 'ffff00';
+          $colors['G5:L5'] = 'ffcf00';
+          $colors['M5:O5'] = 'ff0000';
 
-        $colors['A6:C6'] = '02BC77';
-        $colors['D6:F6'] = 'FFD950';
-        $colors['G6:L6'] = 'ef7b38';
-        $colors['M6:O6'] = 'f0635f';
+          $colors['A6:F6'] = '5a92d7';
+          $colors['G6:I6'] = 'ffff00';
+          $colors['J6:O6'] = 'ffcf00';
+          
+          $colors['A7:C7'] = '9ecf00';
+          $colors['D7:I7'] = '5a92d7';
+          $colors['J7:O7'] = 'ffff00';
 
-        $colors['A7:F7'] = '02BC77';
-        $colors['G7:L7'] = 'FFD950';
-        $colors['M7:O7'] = 'ef7b38';
+          $colors['A8:F8'] = '9ecf00';
+          $colors['G8:L8'] = '5a92d7';
+          $colors['M8:O8'] = 'ffff00';
+        }
+        else
+        {
+          $colors['A4:F4'] = 'ef7b38';
+          $colors['G4:L4'] = 'f0635f';
+          $colors['M4:O4'] = '6f42c1';
 
-        $colors['A8:I8'] = '02BC77';
-        $colors['J8:O8'] = 'FFD950';
+          $colors['A5:C5'] = 'FFD950';
+          $colors['D5:I5'] = 'ef7b38';
+          $colors['J5:O5'] = 'f0635f';
+
+          $colors['A6:C6'] = '02BC77';
+          $colors['D6:F6'] = 'FFD950';
+          $colors['G6:L6'] = 'ef7b38';
+          $colors['M6:O6'] = 'f0635f';
+
+          $colors['A7:F7'] = '02BC77';
+          $colors['G7:L7'] = 'FFD950';
+          $colors['M7:O7'] = 'ef7b38';
+
+          $colors['A8:I8'] = '02BC77';
+          $colors['J8:O8'] = 'FFD950';
+        }
 
         foreach ($colors as $cols => $color)
         {

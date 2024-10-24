@@ -88,10 +88,22 @@ class DangerMatrixReportHistoryController extends Controller
               where("year", $request->year)
             ->where("month", $request->month)
             ->where("type_configuration", $conf)
+            ->where("company_id", $this->company)
             ->first();
 
         if ($matriz_calification)
             $matriz_calification = json_decode($matriz_calification->value, true);
+        else
+        {
+            $matriz_calification = QualificationHistory::
+                where("year", $request->year)
+              ->where("month", $request->month)
+              ->where("type_configuration", $conf)
+              ->first();
+              
+              if ($matriz_calification)
+                  $matriz_calification = json_decode($matriz_calification->value, true);
+        }
 
         $data = $matriz_calification ? $matriz_calification : [];
 

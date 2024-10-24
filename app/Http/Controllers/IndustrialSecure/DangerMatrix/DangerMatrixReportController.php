@@ -61,7 +61,7 @@ class DangerMatrixReportController extends Controller
 
         if ($conf)
         {
-            $matriz_calification = $this->getMatrixCalification($conf);
+            $matriz_calification = $this->getMatrixCalification($conf, $this->company);
             $data = $matriz_calification;
 
             /** FIltros */

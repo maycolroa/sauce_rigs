@@ -74,6 +74,22 @@ class DmReportHistory extends Command
 
             foreach ($companies as $company)
             {
+                if ($company == 409)
+                {
+                    $all_matriz = $this->getAllMatrixCalification($company );
+
+                    foreach ($all_matriz as $key => $value)
+                    {
+                        $qualificationHistory = new QualificationHistory();
+                        $qualificationHistory->year = $year;
+                        $qualificationHistory->month = $month;
+                        $qualificationHistory->type_configuration = $key;
+                        $qualificationHistory->value = json_encode($value);
+                        $qualificationHistory->company_id = $company;
+                        $qualificationHistory->save();        
+                    }
+                }
+
                 $data = [];
 
                 $conf = QualificationCompany::select('qualification_id');

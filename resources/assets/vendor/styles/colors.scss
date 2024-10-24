@@ -12,7 +12,13 @@ $custom-colors: (
 
   windows: #26AAE1,
   macos: #343434,
-  linux: #800080
+  linux: #800080,
+
+  bluematrix: #5a92d7,
+  yellow: #ffff00,
+  greenmatrix: #9ecf00,
+  mostaza: #ffcf00,
+  redmatrix: #ff0000
 ) !default;
 
 @each $color-name, $color-value in $custom-colors {
