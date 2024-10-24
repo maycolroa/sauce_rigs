@@ -234,25 +234,24 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         if ($conf['company'] == 409)
         {
           $colors['A4:F4'] = 'ffff00';
-          $colors['G4:I4'] = 'ffcf00';
-          $colors['J4:O4'] = 'ff0000';
+          $colors['G4:L4'] = 'ffcf00';
+          $colors['M4:O4'] = 'ff0000';
 
           $colors['A5:C5'] = '5a92d7';
-          $colors['D5:F5'] = 'ffff00';
-          $colors['G5:L5'] = 'ffcf00';
-          $colors['M5:O5'] = 'ff0000';
+          $colors['D5:I5'] = 'ffff00';
+          $colors['J5:O5'] = 'ffcf00';
 
-          $colors['A6:F6'] = '5a92d7';
-          $colors['G6:I6'] = 'ffff00';
-          $colors['J6:O6'] = 'ffcf00';
-          
-          $colors['A7:C7'] = '9ecf00';
-          $colors['D7:I7'] = '5a92d7';
-          $colors['J7:O7'] = 'ffff00';
+          $colors['A6:C6'] = '9ecf00';
+          $colors['D6:F6'] = '5a92d7';
+          $colors['G6:L6'] = 'ffff00';
+          $colors['M6:O6'] = 'ffcf00';
 
-          $colors['A8:F8'] = '9ecf00';
-          $colors['G8:L8'] = '5a92d7';
-          $colors['M8:O8'] = 'ffff00';
+          $colors['A7:F7'] = '9ecf00';
+          $colors['G7:L7'] = '5a92d7';
+          $colors['M7:O7'] = 'ffff00';
+
+          $colors['A8:I8'] = '9ecf00';
+          $colors['J8:O8'] = '5a92d7';
         }
         else
         {
