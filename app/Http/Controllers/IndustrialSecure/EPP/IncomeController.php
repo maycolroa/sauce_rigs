@@ -651,7 +651,7 @@ class IncomeController extends Controller
     {
         $ele = Element::find($request->id);
         
-        if ($ele->identify_each_element)
+        if ($ele && $ele->identify_each_element)
         {
             return [
                 'type' => 'Identificable',

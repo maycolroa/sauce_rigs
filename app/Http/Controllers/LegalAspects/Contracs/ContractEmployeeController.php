@@ -1207,6 +1207,33 @@ class ContractEmployeeController extends Controller
 
     public function importSocialSecure(Request $request)
     {
+        Validator::make($request->all(), [
+            "file_employee" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                       if ($ext != 'xlsx' && $ext != 'xls')
+                            $fail('Archivo debe ser un excel (.xlsx, .xls)');
+                    }
+                }
+            ],
+            "file_social_secure" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                       if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt' && $ext != 'jpg' && $ext != 'jpeg' && $ext != 'png')
+                            $fail('Archivo debe ser un pdf, un excel (.xlsx, .xls), un word (.docx, .doc), una presentación (.pptx, .ppt) o una imagen (.jpg, .jpeg, .png)');
+                    }
+                }
+            ]
+        ])->validate();
+
       try
       {
         $contract = $this->getContractUser($this->user->id, $this->company);
@@ -1216,7 +1243,7 @@ class ContractEmployeeController extends Controller
         $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
         $file_social_secure = $nameFile;
 
-        $path_file_employee = 
+        //$path_file_employee = 
 
         ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $request->description, $file_social_secure);
       

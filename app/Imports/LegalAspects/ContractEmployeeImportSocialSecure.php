@@ -28,6 +28,7 @@ class ContractEmployeeImportSocialSecure implements ToCollection
     private $list = [];
     private $file_social_secure;
     private $holiday;
+    private $path_file_social_secure;
 
     public function __construct($company_id, $user, $contract, $file_social_secure, $description, $path_file_employee)
     {        
