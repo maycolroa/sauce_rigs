@@ -131,16 +131,28 @@ export default {
 
                         if (item.key == 'regionals' && inputs.regional == 'NO')
                             continue;
+                        else if (item.key == 'regionals' && (this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario']))
+                                continue;
                         if (item.key == 'headquarters' && inputs.headquarter == 'NO')
                             continue;
+                        else if (item.key == 'headquarters' && (this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario']))
+                                continue;
                         if (item.key == 'processes' && inputs.process == 'NO')
                             continue;
+                        else if (item.key == 'processes' && (this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario']))
+                                continue;
                         if (item.key == 'macroprocesses' && inputs.process == 'NO')
                             continue;
+                        else if (item.key == 'macroprocesses' && (this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario']))
+                                continue;
                         if (item.key == 'areas' && inputs.area == 'NO')
                             continue;
-                        
-                        if(item.key == 'proyects' && auth.proyectContract == 'NO')
+                        else if (item.key == 'areas' && (this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario']))
+                                continue;
+                        if (item.key == 'inspections' && this.auth.hasRole['Contratista'] || this.auth.hasRole['Arrendatario'])
+                            continue;
+
+                        if(item.key == 'proyects' && this.auth.proyectContract == 'NO')
                             continue;
 
                         if (item.permission != undefined && item.permission)
