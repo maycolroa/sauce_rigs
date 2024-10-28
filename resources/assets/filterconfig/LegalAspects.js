@@ -316,6 +316,12 @@ export default [
           label: 'Calificación'
         },
         {
+          url: '/selects/siNoFiltro',
+          key: 'riskOpportunity',
+          type: 'select',
+          label: '¿Tiene Riesgo/Oportunidad?'
+        },
+        {
           key: 'dateRange',
           type: 'dateRange',
           label: 'Rango de fechas de modificación de la calificación',

@@ -100,12 +100,21 @@ class LawController extends Controller
             ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->leftJoin('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
-            ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
-            //->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
+            //->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+            ->join('sau_lm_articles_fulfillment', function ($join) 
+            {
+                $join->on("sau_lm_articles_fulfillment.article_id", "sau_lm_articles.id"); 
+                $join->on("sau_lm_articles_fulfillment.company_id", "=", DB::raw("{$this->company}"));
+            })
             ->leftJoin('sau_lm_laws_hide_companies', function ($join) 
             {
                 $join->on("sau_lm_laws_hide_companies.law_id", 'sau_lm_laws.id');
                 $join->on("sau_lm_laws_hide_companies.company_id", "=", DB::raw("{$this->company}"));
+            })
+            ->leftJoin('sau_lm_law_risk_opportunity', function ($join) 
+            {
+                $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
+                $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
             })
             ->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
             //->where('sau_lm_articles_fulfillment.company_id', $this->company);
@@ -167,6 +176,7 @@ class LawController extends Controller
                 $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
                 $laws->inInterests($this->getValuesForMultiselect($filters["interests"]), $filters['filtersType']['interests']);
                 $laws->inState($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+                $laws->inRiskOpportunity($this->getValuesForMultiselect($filters["riskOpportunity"]), $filters['filtersType']['riskOpportunity']);
 
                 if (isset($filters["qualifications"]) && COUNT($filters["qualifications"]) > 0)
                     $laws->inQualification($this->getValuesForMultiselect($filters["qualifications"]), $filters['filtersType']['qualifications']);

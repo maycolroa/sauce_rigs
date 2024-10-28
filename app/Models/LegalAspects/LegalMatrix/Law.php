@@ -370,6 +370,31 @@ class Law extends Model
         return $query;
     }
 
+    public function scopeInRiskOpportunity($query, $riskOpportunity, $typeSearch = 'IN')
+    {
+        if (COUNT($riskOpportunity) > 0)
+        {
+            if ($riskOpportunity[0] == 'SI')
+            {
+                if ($typeSearch == 'IN')
+                    $query->whereNotNull('sau_lm_law_risk_opportunity.id');
+
+                else if ($typeSearch == 'NOT IN')
+                    $query->whereNull('sau_lm_law_risk_opportunity.id');
+            }
+            else if ($riskOpportunity[0] == 'NO')
+            {
+                if ($typeSearch == 'IN')
+                    $query->whereNull('sau_lm_law_risk_opportunity.id');
+
+                else if ($typeSearch == 'NOT IN')
+                    $query->whereNotNull('sau_lm_law_risk_opportunity.id');
+            }
+        }
+
+        return $query;
+    }
+
     public function scopeInInterestsCompany($query, $interests, $typeSearch = 'IN')
     {
         $company = Session::get('company_id');

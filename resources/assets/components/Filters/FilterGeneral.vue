@@ -154,6 +154,9 @@ export default {
 
                         if(item.key == 'proyects' && this.auth.proyectContract == 'NO')
                             continue;
+                        
+                        if(item.key == 'riskOpportunity' && this.auth.legalMatrixRisk == 'NO')
+                            continue;
 
                         if (item.permission != undefined && item.permission)
                             if (!auth.can[item.permission])

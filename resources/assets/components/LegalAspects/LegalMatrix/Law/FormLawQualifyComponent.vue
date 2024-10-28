@@ -104,7 +104,7 @@
                       </vue-radio>
                   </b-form-row>
 
-                  <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']" bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                  <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_u']" bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                     <b-form-row>
                       <h5 class="col-md-6 offset-md-3">Riesgos y oportunidades</h5>
                     </b-form-row>
@@ -342,7 +342,7 @@
       @close-modal-history="closeModalHistory"
     />
 
-    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']" no-body class="mb-2 border-secondary" style="width: 100%;">
+    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v']" no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
           <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
@@ -360,14 +360,14 @@
       <b-collapse :id="`accordion-risk-oportunity`" visible :accordion="`accordion-master`">
         <b-card-body>
           <b-form-row>
-            <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()" label="Tipo">
+            <vue-radio :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()" label="Tipo">
               </vue-radio>
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Riesgo y oportunidad'" :disabled="viewOnly" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
+            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
           </b-form-row>
           <b-form-row>
-            <vue-textarea @onBlur="riskOpotLaw()" :disabled="viewOnly" class="col-md-12" v-model="form.risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" :error="form.errorsFor(`risk_oport_description`)" rows="3"/>                  
+            <vue-textarea @onBlur="riskOpotLaw()" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" :error="form.errorsFor(`risk_oport_description`)" rows="3"/>                  
           </b-form-row>
           <b-form-row> 
             <b-btn v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Oportunidad' || form.type_risk == 'Riesgo y oportunidad'" @click="showModalRisk('modalPlanLawRiskOport')" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
