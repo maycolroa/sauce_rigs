@@ -684,18 +684,21 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      $sub = explode('.',$fileUpload->file)[1];
+      $sub_explode = explode('.',$fileUpload->file);
+      $sub = count($sub_explode) > 1 ? $sub_explode[1] : '.pdf';
 
       $name = $fileUpload->name.'.'.$sub;
       
-      if ($name)
+      if (count($sub_explode) > 1 && $name)
       {
+        \Log::info('entro aqui');
         if (Storage::disk('s3')->exists('legalAspects/files/'. $fileUpload->file)) {
             return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file, $name);
         }
       }
       else
       {
+        \Log::info('entro aqui 2');
         if (Storage::disk('s3')->exists('legalAspects/files/'. $fileUpload->file)) {
           return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
         }
