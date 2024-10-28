@@ -691,14 +691,12 @@ class FileUploadController extends Controller
       
       if (count($sub_explode) > 1 && $name)
       {
-        \Log::info('entro aqui');
         if (Storage::disk('s3')->exists('legalAspects/files/'. $fileUpload->file)) {
             return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file, $name);
         }
       }
       else
       {
-        \Log::info('entro aqui 2');
         if (Storage::disk('s3')->exists('legalAspects/files/'. $fileUpload->file)) {
           return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
         }
