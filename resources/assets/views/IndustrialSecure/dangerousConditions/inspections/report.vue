@@ -176,6 +176,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
 import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
     name: 'dangerousconditions-inspections-report',
@@ -185,7 +186,8 @@ export default {
     components:{
         VueAdvancedSelect,
         ChartBar,
-        ChartBarCompliance
+        ChartBarCompliance,
+        FilterGeneral
     },
     data () {
         return {
