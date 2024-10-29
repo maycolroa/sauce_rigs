@@ -2,7 +2,7 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
-        <vue-radio :disabled="!auth.can['configurations_c'] && auth.hasRole['Superadmin']" class="col-md-12" v-model="form.legal_matrix_risk_opportunity" :options="siNo" name="legal_matrix_risk_opportunity" :checked="form.legal_matrix_risk_opportunity" label="Mostrar sección de Riesgos y Oportunidades">
+        <vue-radio :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.legal_matrix_risk_opportunity" :options="siNo" name="legal_matrix_risk_opportunity" :checked="form.legal_matrix_risk_opportunity" label="Mostrar sección de Riesgos y Oportunidades">
               </vue-radio>
     </b-form-row>
     <b-form-row>
