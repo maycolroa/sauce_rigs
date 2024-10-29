@@ -70,14 +70,7 @@ class LawController extends Controller
     {
         if ($request->has('qualify'))
         {
-            $laws_hides = LawHide::select('law_id')->get()->toArray();
-
-            $hides = [];
-
-            foreach ($laws_hides as $key => $value) 
-            {
-                array_push($hides, $value['law_id']);
-            }
+            $laws_hides = LawHide::select('law_id')->pluck('law_id')->toArray();
 
             $laws = Law::selectRaw(
                 'sau_lm_laws.*,
@@ -99,8 +92,11 @@ class LawController extends Controller
             ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
             ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
-            ->leftJoin('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
-            //->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+            ->join('sau_lm_company_interest', function ($join) 
+            {
+            $join->on("sau_lm_company_interest.interest_id", "sau_lm_article_interest.interest_id"); 
+            $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$this->company}"));
+            })
             ->join('sau_lm_articles_fulfillment', function ($join) 
             {
                 $join->on("sau_lm_articles_fulfillment.article_id", "sau_lm_articles.id"); 
@@ -117,12 +113,11 @@ class LawController extends Controller
                 $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
             })
             ->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
-            //->where('sau_lm_articles_fulfillment.company_id', $this->company);
             ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))")
             ->orderBy('sau_lm_laws.id', 'DESC');
 
             if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
-                $laws->whereNotIn('sau_lm_laws.id', $hides);
+                $laws->whereNotIn('sau_lm_laws.id', $laws_hides);
             
             $laws->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
 

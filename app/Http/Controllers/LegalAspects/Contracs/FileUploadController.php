@@ -58,12 +58,15 @@ class FileUploadController extends Controller
         }
 
         $select = [];
-        $having = [];
 
-        $select[] = "sau_ct_file_upload_contracts_leesse.*";
-        $select[] = "sau_users.name as user_name";
+        $select[] = "sau_ct_file_upload_contracts_leesse.id";
+        $select[] = "sau_ct_file_upload_contracts_leesse.name";
+        $select[] = "sau_users.name as user_name";    
+        $select[] = "sau_ct_file_upload_contracts_leesse.created_at";
+        $select[] = "sau_ct_file_upload_contracts_leesse.updated_at";
+        $select[] = "sau_ct_file_upload_contracts_leesse.state";
         $select[] = "sau_ct_information_contract_lessee.social_reason AS social_reason";
-        $select[] = "IF(sau_ct_file_upload_contracts_leesse.module is not null, sau_ct_file_upload_contracts_leesse.module, 'Subida de Archivos') AS module";
+        $select[] = "IFNULL(sau_ct_file_upload_contracts_leesse.module, 'Subida de Archivos') AS module";
         $select[] = "sau_ct_contract_employees.name AS employee_name";
         $select[] = "sau_ct_contract_employees.identification AS employee_identification";
 
@@ -93,18 +96,8 @@ class FileUploadController extends Controller
           $join->on("sau_ct_contract_employees.id", "sau_ct_file_document_employee.employee_id"); 
           $join->on("sau_ct_contract_employees.company_id", "=", DB::raw("{$this->company}"));
         })
-        /*->leftJoin(DB::raw("
-            (SELECT fms.* FROM sau_ct_file_module_state fms INNER JOIN sau_ct_file_upload_contracts_leesse fuc ON fuc.id = fms.file_id WHERE fms.id = (  SELECT MIN(id) FROM sau_ct_file_module_state WHERE file_id = fms.file_id)) as modules"), function ($join) {
-            $join->on("modules.file_id", "sau_ct_file_upload_contracts_leesse.id");
-            $join->whereRaw("modules.contract_id IN (select id from sau_ct_information_contract_lessee where company_id = {$this->company})");
-        })*/
         ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
-        ->leftJoin('sau_ct_proyects', function ($join) 
-        {
-          $join->on("sau_ct_contract_employee_proyects.proyect_contract_id", "sau_ct_proyects.id"); 
-          $join->on("sau_ct_proyects.company_id", "=", DB::raw("{$this->company}"));
-        })
-        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_contract_employees.name', 'sau_ct_contract_employees.identification', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.id')
+        ->groupBy('sau_ct_file_upload_contracts_leesse.id')
         ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');  
 
         $url = "/legalaspects/upload-files";
@@ -124,9 +117,6 @@ class FileUploadController extends Controller
           {
             $files->inProyects($this->getValuesForMultiselect($filters["proyects"]), $filters['filtersType']['proyects']);
           }
-
-          if (COUNT($having) > 0)
-          $inspections->havingRaw(implode(" and ", $having));
         }
 
         if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))

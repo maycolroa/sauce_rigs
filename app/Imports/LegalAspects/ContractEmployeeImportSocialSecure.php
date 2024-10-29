@@ -28,7 +28,6 @@ class ContractEmployeeImportSocialSecure implements ToCollection
     private $list = [];
     private $file_social_secure;
     private $holiday;
-    private $path_file_social_secure;
 
     public function __construct($company_id, $user, $contract, $file_social_secure, $description, $path_file_employee)
     {        
@@ -40,6 +39,18 @@ class ContractEmployeeImportSocialSecure implements ToCollection
       $this->description = $description;
 
 	  $this->calculateForYear();
+    }
+
+    public function logImport()
+    {        
+        $log_import = new LogImportSocialSecure;
+        $log_import->company_id = $this->company_id;
+        $log_import->user_id = $this->user->id;
+        $log_import->contract_id = $this->contract->id;
+        $log_import->description = $this->description;
+        $log_import->path_file_employee = $this->path_file_employee;
+        $log_import->path_file_social_secure = Storage::disk('s3')->url('legalAspects/files/'. $this->file_social_secure);
+        $log_import->save();
     }
 
     public function collection(Collection $rows)
@@ -59,14 +70,6 @@ class ContractEmployeeImportSocialSecure implements ToCollection
                     }
                 }
 
-                $log_import = new LogImportSocialSecure;
-                $log_import->company_id = $this->company_id;
-                $log_import->user_id = $this->user->id;
-                $log_import->contract_id = $this->contract->id;
-                $log_import->description = $this->description;
-                $log_import->path_file_social_secure = $this->path_file_social_secure;
-                $log_import->path_file_employee = $this->path_file_employee;
-                $log_import->save();
 
                 if (COUNT($this->errors) == 0)
                 {
@@ -158,7 +161,7 @@ class ContractEmployeeImportSocialSecure implements ToCollection
             $fileUpload = new FileUpload();
             $fileUpload->user_id = $this->user->id;
             $fileUpload->name = 'Seguridad Social';
-            $fileUpload->file = $this->file_social_secure ;
+            $fileUpload->file = $this->file_social_secure;
             $fileUpload->expirationDate = NULL;
             $fileUpload->apply_file = 'SI';
             $fileUpload->apply_motive = NULL;
@@ -212,8 +215,6 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 
             $fileUpload->expirationDate = $day_expiration->format('Y-m-d');   
             $fileUpload->save();     
-
-            $this->path_file_social_secure = Storage::disk('s3')->url('legalAspects/files/'. $fileUpload->file);
 
             return true;
         }

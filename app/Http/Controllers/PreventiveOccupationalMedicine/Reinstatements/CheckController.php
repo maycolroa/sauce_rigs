@@ -93,12 +93,23 @@ class CheckController extends Controller
 
         if (COUNT($filters) > 0)
         {
-            $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
-            $checks->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
-            $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
-            $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
-            $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
-            $checks->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
+            if (isset($filters["identifications"]))
+                $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
+
+            if (isset($filters["names"]))
+                $checks->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
+
+            if (isset($filters["regionals"]))
+                $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+            if (isset($filters["businesses"]))
+                $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
+
+            if (isset($filters["diseaseOrigin"]))
+                $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
+                
+            if (isset($filters["years"]))
+                $checks->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
 
             if (isset($filters["nextFollowDays"]))
                 $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);

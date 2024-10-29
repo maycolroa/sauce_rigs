@@ -1768,7 +1768,10 @@ class ContractLesseeController extends Controller
             ->where('item_id', $request->item_id)
             ->first();
 
-        $items_calificated->update(['state_aprove_qualification' => 'APROBADA','reason_rejection' => NULL]);
+        if ($items_calificated)
+        {
+            $items_calificated->update(['state_aprove_qualification' => 'APROBADA','reason_rejection' => NULL]);
+        }
 
         $contract = ContractLesseeInformation::findOrFail($request->contract_id);
 
