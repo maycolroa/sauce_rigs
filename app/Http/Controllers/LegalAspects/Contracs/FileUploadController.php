@@ -546,7 +546,7 @@ class FileUploadController extends Controller
                             else if ($fileUpload->state == 'RECHAZADO')
                               $rejected = true;
                         }
-                        else if (!$fileUpload->expirationDate)
+                        else
                         {
                             if ($fileUpload->state == 'ACEPTADO')
                                 $count_aprobe++;
@@ -555,7 +555,7 @@ class FileUploadController extends Controller
                         }
                     }
 
-                    if ($count_files > 0 && $count_aprobe == $count_files)
+                    if ($count_files > 0 && $count_aprobe >= $count_files)
                         $count++;
                 }
             }
