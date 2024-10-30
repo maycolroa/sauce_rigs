@@ -116,7 +116,7 @@ class LawController extends Controller
             ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))")
             ->orderBy('sau_lm_laws.id', 'DESC');
 
-            if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
+            if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($laws_hides) > 0)
                 $laws->whereNotIn('sau_lm_laws.id', $laws_hides);
             
             $laws->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
