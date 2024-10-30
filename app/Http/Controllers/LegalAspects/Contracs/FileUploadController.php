@@ -62,6 +62,7 @@ class FileUploadController extends Controller
         $select[] = "sau_ct_file_upload_contracts_leesse.id";
         $select[] = "sau_ct_file_upload_contracts_leesse.name";
         $select[] = "sau_users.name as user_name";    
+        $select[] = "sau_ct_file_upload_contracts_leesse.id as user_id";    
         $select[] = "sau_ct_file_upload_contracts_leesse.created_at";
         $select[] = "sau_ct_file_upload_contracts_leesse.updated_at";
         $select[] = "sau_ct_file_upload_contracts_leesse.state";
@@ -97,6 +98,7 @@ class FileUploadController extends Controller
           $join->on("sau_ct_contract_employees.company_id", "=", DB::raw("{$this->company}"));
         })
         ->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+        ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id')
         ->groupBy('sau_ct_file_upload_contracts_leesse.id')
         ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');  
 

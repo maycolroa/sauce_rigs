@@ -51,7 +51,7 @@ class DeliveryExportJob implements ShouldQueue
       ->message('Se ha generado una exportación de entregas.')
       ->subcopy('Este link es valido por 24 horas')
       ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-      ->module('dangerousConditions')
+      ->module('epp')
       ->event('Job: DeliveryExportJob')
       ->company($this->company_id)
       ->send();

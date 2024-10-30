@@ -2609,7 +2609,7 @@ class TransactionController extends Controller
                 'filtersType' => $filtersType
             ];
 
-            DeliveryExportJob::dispatch($this->user, $this->company, $filters );
+            DeliveryExportJob::dispatch($this->user, $this->company, $filters);
           
             return $this->respondHttp200();
 
