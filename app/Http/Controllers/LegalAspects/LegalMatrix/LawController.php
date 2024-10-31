@@ -76,7 +76,7 @@ class LawController extends Controller
                 'sau_lm_laws.law_number,
                  sau_lm_laws.id,
                  sau_lm_laws.law_year,
-                 sau_lm_laws.description AS descrp,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
                  sau_lm_laws.repealed,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
@@ -132,7 +132,7 @@ class LawController extends Controller
                 'sau_lm_laws.law_number,
                  sau_lm_laws.id,
                  sau_lm_laws.law_year,
-                 sau_lm_laws.description AS descrp,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
                  sau_lm_laws.repealed,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
@@ -188,12 +188,12 @@ class LawController extends Controller
         }
 
         return Vuetable::of($laws)
-            ->addColumn('description', function ($law) {
+            /*->addColumn('description', function ($law) {
 
                 $law->descrp = substr($law->descrp, 0, 50).'...';
 
                 return $law->descrp ;
-            })
+            })*/
                     ->make();
     }
 
