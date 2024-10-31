@@ -37,6 +37,7 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
     {
         $transactions = ElementTransactionEmployee::selectRaw(
           "sau_epp_transactions_employees.*,
+          sau_epp_transactions_employees.created_at AS create_delivery,
           sau_epp_elements.*,
           sau_epp_elements.code AS code_element,
           sau_employees.name AS employee,
@@ -66,7 +67,7 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
     public function map($data): array
     {
       $values = [
-        $data->created_at,
+        $data->create_delivery,
         $data->employee,
         $data->position,
         $data->location,
