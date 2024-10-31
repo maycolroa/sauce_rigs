@@ -17,17 +17,23 @@ class GeneratePasswordController extends Controller
      */
     public function generatePassword($tokenEncode)
     {
-        $token = base64_decode($tokenEncode);
-        $user = GeneratePasswordUser::where('token', $token)->first();
-        // dd($token);
-        if (!$user) {
-            return $this->respondHttp500();            
+        try {
+            $token = base64_decode($tokenEncode);
+            $user = GeneratePasswordUser::where('token', $token)->first();
+            // dd($token);
+            if (!$user) {
+                return $this->respondHttp500();            
+            }
+            if ($user->state != 'without use') {
+                return view('auth.passwords.generate', ['state' => $user->state, 'user_id' => $user->user_id]);
+            } else {
+                return view('auth.passwords.generate', ['state' => $user->state, 'user_id' => $user->user_id]);
+            }
+        }  catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
         }
-        if ($user->state != 'without use') {
-            return view('auth.passwords.generate', ['state' => $user->state, 'user_id' => $user->user_id]);
-        } else {
-            return view('auth.passwords.generate', ['state' => $user->state, 'user_id' => $user->user_id]);
-        }
+        
         // dd($user);
     }
 
