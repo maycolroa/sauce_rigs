@@ -73,8 +73,11 @@ class LawController extends Controller
             $laws_hides = LawHide::select('law_id')->pluck('law_id')->toArray();
 
             $laws = Law::selectRaw(
-                'sau_lm_laws.*,
-                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
+                'sau_lm_laws.law_number,
+                 sau_lm_laws.id,
+                 sau_lm_laws.law_year,
+                 sau_lm_laws.description AS descrp,
+                 sau_lm_laws.repealed,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
                  sau_lm_risks_aspects.name AS risk_aspect,
@@ -92,10 +95,10 @@ class LawController extends Controller
             ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
             ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
-            ->join('sau_lm_company_interest', function ($join) 
+            ->leftJoin('sau_lm_company_interest', function ($join) 
             {
-            $join->on("sau_lm_company_interest.interest_id", "sau_lm_article_interest.interest_id"); 
-            $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$this->company}"));
+                $join->on("sau_lm_company_interest.interest_id", "sau_lm_article_interest.interest_id"); 
+                $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$this->company}"));
             })
             ->join('sau_lm_articles_fulfillment', function ($join) 
             {
@@ -112,8 +115,8 @@ class LawController extends Controller
                 $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
                 $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
             })
-            ->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
-            ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}) or (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}))")
+            //->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
+            ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}) OR (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}))")
             ->orderBy('sau_lm_laws.id', 'DESC');
 
             if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($laws_hides) > 0)
@@ -126,8 +129,11 @@ class LawController extends Controller
         else
         {
             $laws = Law::selectRaw(
-                'sau_lm_laws.*,
-                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
+                'sau_lm_laws.law_number,
+                 sau_lm_laws.id,
+                 sau_lm_laws.law_year,
+                 sau_lm_laws.description AS descrp,
+                 sau_lm_laws.repealed,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
                  sau_lm_risks_aspects.name AS risk_aspect,
@@ -182,6 +188,12 @@ class LawController extends Controller
         }
 
         return Vuetable::of($laws)
+            ->addColumn('description', function ($law) {
+
+                $law->descrp = substr($law->descrp, 0, 50).'...';
+
+                return $law->descrp ;
+            })
                     ->make();
     }
 

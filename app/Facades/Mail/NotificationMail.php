@@ -544,6 +544,11 @@ class NotificationMail
              * En el archivo 'sauce/vendor/jdavidbakr/mail-tracker/src/MailTracker.php' en la funcion 'createTrackers()' a partir de la linea 132.
              */
             
+             /**
+              *  Se hizo un cambio en la funcion de verificacion de los clicks en el correo debido a que hay casos en los cuales no se esta guardando el registro de correo en la tabla sent_mail y da error cuando se intenta guardar el click.
+              * Se edito en el 'sauce/vendor/jdavidbakr/mail-tracker/src/v.php' en la funcion 'linkClicked()' a partir de la linea 63.
+              * 30/10/24
+             */
             $logModel->update(['message' => $message->render()]);
             $this->restart();
         }

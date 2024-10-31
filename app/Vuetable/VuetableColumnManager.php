@@ -384,7 +384,7 @@ class VuetableColumnManager
                 ['name' => 'sau_lm_laws_types.name', 'data' => 'law_type', 'title' => 'Tipo Norma', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
                 ['name' => 'sau_lm_laws.law_number', 'data' => 'law_number', 'title' => 'Número', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
                 ['name' => 'sau_lm_laws.law_year', 'data' => 'law_year', 'title' => 'Año', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
-                ['name' => 'sau_lm_laws.description', 'data' => 'description', 'title' => 'Descripción', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+                ['name' => 'sau_lm_laws.description', 'data' => 'description', 'title' => 'Descripción', 'sortable' => true, 'searchable' => false, 'detail' => false, 'key' => false ],
                 ['name' => 'sau_lm_risks_aspects.name', 'data' => 'risk_aspect', 'title' => 'Tema Ambiental', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
                 ['name' => 'sau_lm_sst_risks.name', 'data' => 'sst_risk', 'title' => 'Tema SST', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
                 ['name' => 'sau_lm_entities.name', 'data' => 'entity', 'title' => 'Ente', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
