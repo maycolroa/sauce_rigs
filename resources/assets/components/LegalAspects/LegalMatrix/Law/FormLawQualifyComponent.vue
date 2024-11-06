@@ -743,7 +743,7 @@ export default {
     updateQualify(event, index) {
       if (event) {
         this.form.articles[index].qualify = event;
-        this.dateEditQualification(index);
+        //this.dateEditQualification(index);
         this.saveArticleQualification(index);
         this.builderFilterQualificationOptions();
       }
@@ -967,6 +967,7 @@ export default {
             _.forIn(response.data.data, (value, key) => {
               article[key] = value
             })
+            this.dateEditQualification(index);
             //this.currentAxios++;
           })
           .catch(error => {
