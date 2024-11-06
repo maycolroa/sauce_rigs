@@ -17,7 +17,6 @@ class EppTransfer extends Model
         'user_id',
         'location_origin_id',
         'location_destiny_id',
-        'quantity',
         'state'
     ];
 

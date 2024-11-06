@@ -20,7 +20,9 @@ class ActionPlansActivity extends Model
         'state',
         'editable',
         'company_id',
-        'observation'
+        'observation',
+        'detail_procedence',
+        'evidence'
     ];
 
     //the attribute define the table for scope company execute

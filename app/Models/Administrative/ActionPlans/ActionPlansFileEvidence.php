@@ -11,7 +11,8 @@ class ActionPlansFileEvidence extends Model
 
     protected $fillable = [
         'activity_id',
-        'file'
+        'file',
+        'file_name'
     ];
 
     public function activity()

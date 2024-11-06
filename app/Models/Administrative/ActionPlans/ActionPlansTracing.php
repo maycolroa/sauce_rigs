@@ -11,7 +11,7 @@ class ActionPlansTracing extends Model
     protected $fillable = [
         'activity_id',
         'user_id',
-        'tracing',
+        'tracing'
     ];
 
     //the attribute define the table for scope company execute

@@ -21,7 +21,12 @@ class ElementTransactionEmployee extends Model
         'firm_employee',
         'company_id',
         'location_id',
-        'state'
+        'state',
+        'class_element',
+        'user_id',
+        'firm_email',
+        'edit_firm',
+        'email_firm_employee'
     ];
 
     public function multiselect()

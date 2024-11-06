@@ -14,7 +14,7 @@ class ElementBalanceLocation extends Model
         'location_id',
         'quantity',
         'quantity_available',
-        'quantity_allocated',
+        'quantity_allocated'
     ];
 
     public function element()

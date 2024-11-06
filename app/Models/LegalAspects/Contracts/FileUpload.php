@@ -22,7 +22,8 @@ class FileUpload extends Model
         'reason_rejection',
         'apply_file',
         'apply_motive',
-        'notificate'
+        'notificate', 
+        'module'
     ];
 
     //the attribute define the table for scope company execute

@@ -12,7 +12,9 @@ class InformContractItemFile extends Model
     protected $fillable = [
         'inform_id',
         'item_id',
-        'file'
+        'name_file',
+        'file',
+        'type_file'
     ];
 
     public function inform()

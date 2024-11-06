@@ -21,7 +21,8 @@ class EppReceptionDetail extends Model
         'reception',
         'quantity_transfer',
         'quantity_reception',
-        'reason'
+        'reason',
+        'quantity_completes'
     ];
 
     public function element()

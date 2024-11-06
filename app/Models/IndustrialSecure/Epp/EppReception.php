@@ -19,7 +19,9 @@ class EppReception extends Model
         'location_origin_id',
         'location_destiny_id',
         'quantity',
-        'state'
+        'state',
+        'user_transfer',
+        'user_reception',
     ];
 
     public function detail()
