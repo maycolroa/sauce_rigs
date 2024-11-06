@@ -60,6 +60,7 @@
                   autocomplete="off"
                   v-model="searchArticles"
                   />
+                  <!--<vue-input @onBlur="searchOptions()" v-model="searchArticles" label="Buscar Artículo" name="searchArticles" placeholder="Buscar..."/>-->
               </div>
           </div>
           <br><br>
@@ -564,7 +565,6 @@ export default {
       this.$nextTick(() => {
         this.activateEvent = true;
         this.editDate = true;
-        console.log(this.form)
       });
     }, 5000)
   },
@@ -617,11 +617,20 @@ export default {
             this.totalShow++;
             article.show_article_real = true;
           }
+          else if (this.searchArticles.length > 0 && !article.description.toLowerCase().includes(this.searchArticles.toLowerCase()))
+          {
+            this.totalShow++;
+            article.show_article_real = true;
+          }
         }
         else if (this.checkFilter(article, 'filterQualification', 'qualify') || this.checkFilter(article, 'filterRepealed', 'repealed') || !this.checkFilterInterest(article))
         {
           show = false;     
         }
+        else if (this.searchArticles.length > 0 && !article.description.toLowerCase().includes(this.searchArticles.toLowerCase()))
+        {
+            show = false;
+        } 
         else if (article.hide == 'SI' && !auth.hasRole['Superadmin'])
         {
           show = false;
@@ -673,11 +682,9 @@ export default {
       this.idHistory = id
     },
     showModal(ref) {
-      console.log(ref)
 			this.$refs[ref][0].show();
 		},
     showModalRisk(ref) {
-      console.log(ref)
 			this.$refs[ref].show();
 		},
 		hideModal(ref) {
