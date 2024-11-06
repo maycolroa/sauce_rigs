@@ -145,7 +145,7 @@
                     </b-card>
                 </b-col>
             </b-row>
-            <b-row v-if="auth.legalMatrixRisk == 'SI' && auth.hasRole['Superadmin']">
+            <b-row v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v']">
                 <b-col>
                     <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
                         <b-row>
