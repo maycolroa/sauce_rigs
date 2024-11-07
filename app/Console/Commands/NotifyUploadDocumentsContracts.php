@@ -48,6 +48,7 @@ class NotifyUploadDocumentsContracts extends Command
     public function handle()
     {
         $date = Carbon::now()->subDay()->format('Y-m-d');
+        $date = '2024-10-13';
 
         $companies = License::selectRaw('DISTINCT company_id')
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
@@ -74,12 +75,16 @@ class NotifyUploadDocumentsContracts extends Command
                     'sau_ct_file_upload_contracts_leesse.id AS id',
                     'sau_ct_file_module_state.state AS state',
                     'sau_ct_file_upload_contracts_leesse.name as name',
-                    'sau_ct_file_module_state.module AS module'
+                    'sau_ct_file_module_state.module AS module',
+                    'sau_ct_contract_employees.name AS employee'
                 )
                 ->join('sau_ct_file_upload_contracts_leesse', 'sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_module_state.file_id')
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_file_document_employee.employee_id')
                 ->where('date', $date)
-                ->where('contract_id', $contract->id)
-                ->whereIN('sau_ct_file_module_state.state', ['CREADO', 'MODIFICADO'])
+                ->where('sau_ct_file_module_state.contract_id', $contract->id)
+                ->where('sau_ct_contract_employees.contract_id', $contract->id)
+                ->whereIn('sau_ct_file_module_state.state', ['CREADO', 'MODIFICADO'])
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)
@@ -103,6 +108,7 @@ class NotifyUploadDocumentsContracts extends Command
                             $iter = $responsibles->get($keyResponsible);
                             $iter->push([
                                 'Contratista' => $contract->social_reason,
+                                'Empleado' => $document->employee,
                                 'Código' => $document->id,
                                 'Documento' => $document->name,
                                 'Módulo' => $document->module,
