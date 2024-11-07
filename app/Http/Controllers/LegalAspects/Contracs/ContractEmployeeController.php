@@ -380,7 +380,6 @@ class ContractEmployeeController extends Controller
 
             $employeeContract->activities()->sync($activities['activities']->values());
 
-
             if($request->has('proyects_id'))
             {
                 $proyects = $this->getDataFromMultiselect($request->proyects_id);

@@ -11,6 +11,7 @@ use App\Traits\ContractTrait;
 use Carbon\Carbon;
 use App\Models\System\Licenses\License;
 use App\Models\Administrative\Users\User;
+use DB;
 
 class DaysAlertExpirationDateContractFilesUpload extends Command
 {
@@ -73,68 +74,87 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
             {
                 if ($configDay)
                 {
+                    $configDay = 17;
                     $files_contracts = FileUpload::select(
+                            'sau_ct_file_upload_contracts_leesse.id as id',
                             'sau_ct_file_upload_contracts_leesse.name as name',
                             'sau_ct_file_upload_contracts_leesse.expirationDate as expirationDate',
                             'sau_ct_file_upload_contracts_leesse.created_at as created_at',
                             'sau_ct_file_upload_contracts_leesse.updated_at as updated_at',
                             'sau_users.name as user_name',
-                            'sau_ct_information_contract_lessee.id as contract_id'
+                            'sau_ct_information_contract_lessee.id as contract_id',
+                            'sau_ct_information_contract_lessee.social_reason as social_reason',
+                            DB::raw("'' as employee_name")
                         )
                         ->withoutGlobalScopes()
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
+                        ->join('sau_ct_file_document_employee','sau_ct_file_document_employee.file_id','sau_ct_file_upload_contracts_leesse.id')
+                        ->join('sau_ct_contract_employees','sau_ct_contract_employees.id','sau_ct_file_document_employee.employee_id')
                         ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_information_contract_lessee.id', $contract->id)
+                        ->whereNULL('sau_ct_contract_employees.id')
                         ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_information_contract_lessee.id');
 
                     $files_globals = FileUpload::select(
+                            'sau_ct_file_upload_contracts_leesse.id as id',
                             'sau_ct_file_upload_contracts_leesse.name as name',
                             'sau_ct_file_upload_contracts_leesse.expirationDate as expirationDate',
                             'sau_ct_file_upload_contracts_leesse.created_at as created_at',
                             'sau_ct_file_upload_contracts_leesse.updated_at as updated_at',
                             'sau_users.name as user_name',
-                            'sau_ct_file_document_contract.contract_id as contract_id'
+                            'sau_ct_file_document_contract.contract_id as contract_id',
+                            'sau_ct_information_contract_lessee.social_reason as social_reason',
+                            DB::raw("'' as employee_name")
                         )
                         ->withoutGlobalScopes()
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_document_contract','sau_ct_file_document_contract.file_id','sau_ct_file_upload_contracts_leesse.id')
+                        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_document_contract.contract_id')
                         ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_file_document_contract.contract_id', $contract->id)
-                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_file_document_contract.contract_id');
+                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_information_contract_lessee.id');
                     
                     $files_employees = FileUpload::select(
+                            'sau_ct_file_upload_contracts_leesse.id as id',
                             'sau_ct_file_upload_contracts_leesse.name as name',
                             'sau_ct_file_upload_contracts_leesse.expirationDate as expirationDate',
                             'sau_ct_file_upload_contracts_leesse.created_at as created_at',
                             'sau_ct_file_upload_contracts_leesse.updated_at as updated_at',
                             'sau_users.name as user_name',
-                            'sau_ct_contract_employees.contract_id as contract_id'
+                            'sau_ct_contract_employees.contract_id as contract_id',
+                            'sau_ct_information_contract_lessee.social_reason as social_reason',
+                            "sau_ct_contract_employees.name as employee_name"
                         )
                         ->withoutGlobalScopes()
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_document_employee','sau_ct_file_document_employee.file_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_contract_employees','sau_ct_contract_employees.id','sau_ct_file_document_employee.employee_id')
+                        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id')
                         ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_contract_employees.contract_id', $contract->id)
-                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_contract_employees.contract_id');
+                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.id');
 
                     $files_list_check = FileUpload::select(
+                            'sau_ct_file_upload_contracts_leesse.id as id',
                             'sau_ct_file_upload_contracts_leesse.name as name',
                             'sau_ct_file_upload_contracts_leesse.expirationDate as expirationDate',
                             'sau_ct_file_upload_contracts_leesse.created_at as created_at',
                             'sau_ct_file_upload_contracts_leesse.updated_at as updated_at',
                             'sau_users.name as user_name',
-                            'sau_ct_list_check_qualifications.contract_id as contract_id'
+                            'sau_ct_list_check_qualifications.contract_id as contract_id',
+                            'sau_ct_information_contract_lessee.social_reason as social_reason',
+                            DB::raw("'' as employee_name")
                         )
                         ->withoutGlobalScopes()
                         ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                         ->join('sau_ct_file_item_contract','sau_ct_file_item_contract.file_id','sau_ct_file_upload_contracts_leesse.id')
                         ->join('sau_ct_list_check_qualifications','sau_ct_list_check_qualifications.id','sau_ct_file_item_contract.list_qualification_id')
+                        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_list_check_qualifications.contract_id')
                         ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$configDay." DAY)")
                         ->where('sau_ct_list_check_qualifications.contract_id', $contract->id)
-                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_list_check_qualifications.contract_id');
+                        ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_information_contract_lessee.id');
 
                     $files_contracts->union($files_globals);
                     $files_contracts->union($files_employees);
@@ -201,6 +221,8 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
         foreach ($data as $file) 
         {
             array_push($result, [
+                'Contratista' => $file->social_reason,
+                'Empleado' => $file->employee_name,
                 'Nombre' => $file->name,
                 'Fecha Vencimiento' => ($file->expirationDate) ? Carbon::createFromFormat('Y-m-d', $file->expirationDate)->toFormattedDateString() : '',
                 'Usuario Creador' => $file->user_name,

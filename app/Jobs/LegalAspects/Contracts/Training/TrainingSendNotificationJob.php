@@ -99,11 +99,8 @@ class TrainingSendNotificationJob implements ShouldQueue
                 ->orderBy('created_at', 'DESC')
                 ->first();
 
-                /*if ($trainingSend)
-                {
-                  if ($trainingSend->created_at->diffInDays(Carbon::now()) < 3)
+                if ($trainingSend)
                     return true;
-                }*/
 
                 $trainingsList->push($training);
             });
