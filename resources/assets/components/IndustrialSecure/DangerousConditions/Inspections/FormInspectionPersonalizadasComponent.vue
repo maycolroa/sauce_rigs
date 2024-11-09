@@ -200,7 +200,8 @@ export default {
           employee_area_id: [],
           employee_process_id: [],
           additional_fields: [],
-          themes: []
+          themes: [],
+          description: null
         };
       }
     }
