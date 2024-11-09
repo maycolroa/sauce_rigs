@@ -24,6 +24,6 @@ class TrainingEmployeeAttempt extends Model
 
     public function employees()
     {
-        return $this->hasMany(ContractEmployee::class, 'employee_id');
+        return $this->belongsTo(ContractEmployee::class, 'employee_id');
     }
 }

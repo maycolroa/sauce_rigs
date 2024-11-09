@@ -15,6 +15,11 @@
                   <div v-if="locationForm.area == 'SI'"><b>{{ keywordCheck('area') }}:</b> <br>{{ qualification.area }}</div>
                 </b-col>
             </b-row>
+            <b-row v-if="qualification.description">
+                <b-col class="text-left">
+                  <div><b>Descripción:</b> <br>{{ qualification.description }}</div>
+                </b-col>
+            </b-row>
         </b-card>
       </div>
 </template>

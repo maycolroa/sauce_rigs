@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
+use App\Models\General\Company;
 use App\Http\Requests\LegalAspects\Contracts\TrainingEmployeeRequest;
 use App\Models\LegalAspects\Contracts\Training;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
@@ -13,9 +14,11 @@ use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeSend;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeAttempt;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeQuestionsAnswers;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\TrainingFiles;
 use Carbon\Carbon;
 use DB;
+use PDF;
 
 class TrainingEmployeeController extends Controller
 {
@@ -250,7 +253,7 @@ class TrainingEmployeeController extends Controller
 
     public function dataEmployee(Request $request)
     {
-        $training_employee = Training::select(
+        $training_employees = Training::select(
             'sau_ct_training_employee_attempts.id',
             'nit',
             'social_reason',
@@ -264,17 +267,27 @@ class TrainingEmployeeController extends Controller
         ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id')
         ->where('sau_ct_training_employee_attempts.training_id', $request->get('modelId'));
 
-        return Vuetable::of($training_employee)
-                    ->make();
+        return Vuetable::of($training_employees)
+            ->addColumn('downloadFile', function ($training_employee) {
+                if ($training_employee->state_attempts == 'APROBADO')
+                    return true;
+
+                return false;
+            })
+            ->make();
     }
 
-    public function showEmployee($id)
+    public function showEmployee($id, $export_pdf = false)
     {
         try
         {
             $attempt = TrainingEmployeeAttempt::findOrFail($id);
 
             $question_answer = TrainingEmployeeQuestionsAnswers::where('attempt_id', $attempt->id)->get();
+            
+            $employee = $attempt->employees;
+            $attempt->employee = $employee;
+            $attempt->contract = ContractLesseeInformation::find($employee->contract_id);
 
             foreach ($question_answer as $answer)
             {
@@ -318,14 +331,34 @@ class TrainingEmployeeController extends Controller
             $attempt->name = Training::find($attempt->training_id)->name;
             $attempt->qualification = $attempt->state;
             $attempt->path_firm = Storage::disk('s3')->url('legalAspects/contracts/trainings/files/'.$this->company.'/'.$attempt->firm);
+            $attempt->date_approver = Carbon::parse($attempt->created_at)->format('d-m-Y');
 
-            return $this->respondHttp200([
-                'data' => $attempt
-            ]);
+            if ($export_pdf)
+                return $attempt;
+            else
+            {
+                return $this->respondHttp200([
+                    'data' => $attempt
+                ]);
+            }
 
         } catch(Exception $e){
             \Log::info($e->getMessage());
             $this->respondHttp500();
         }
+    }
+
+    public function downloadPdf($id)
+    {
+        $training = $this->showEmployee($id, true);
+        $training->company = Company::find($this->company);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.trainingEmployeeCertificate', ['training' => $training] );
+
+        //$pdf->setPaper('A3', 'landscape');
+
+        return $pdf->download('certificado.pdf');
     }
 }

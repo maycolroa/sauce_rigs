@@ -263,6 +263,7 @@ class InspectionQualificationController extends Controller
             
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
+        $data->put('description', $qualification->item->section->inspection->description ? $qualification->item->section->inspection->description : NULL);
         $data->put('type', $qualification->item->section->inspection->type_id);
         $data->put('version', $qualification->item->section->inspection->version);
         $data->put('state', $state ? $state->state : NULL);

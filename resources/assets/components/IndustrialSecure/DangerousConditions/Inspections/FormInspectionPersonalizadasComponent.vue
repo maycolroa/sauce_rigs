@@ -32,6 +32,8 @@
             </vue-ajax-advanced-select>
             <vue-ajax-advanced-select v-if="locationForm.area == 'SI'" :disabled="viewOnly || (form.employee_process_id && form.employee_process_id.length == 0)" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" :label="keywordCheck('areas')" placeholder="Seleccione las opciones" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id, form: 'inspections' }" :multiple="true" :allowEmpty="true">
             </vue-ajax-advanced-select>
+
+            <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor('description')" rows="3"></vue-textarea>
           </b-form-row>
         </b-card-body>
       </b-collapse>

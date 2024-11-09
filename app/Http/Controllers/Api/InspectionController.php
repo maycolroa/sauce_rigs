@@ -79,6 +79,7 @@ class InspectionController extends ApiController
             $inspection = collect([
                 'id' => $value->id,
                 'name' => $value->name,
+                'description' => $value->description,
                 'created_at' => $created_at,
                 'themes' => $value->themes,
                 'additional_fields' => $value->additional_fields
@@ -766,7 +767,6 @@ class InspectionController extends ApiController
 
                     if (count($responsibles) > 0)
                     {
-                        \Log::info('level 5');
                         foreach ($responsibles as $email)
                         {
                             $recipient = new User(["email" => $email]); 

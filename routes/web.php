@@ -1032,6 +1032,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('trainingContract/dataEmployee', 'LegalAspects\Contracs\TrainingEmployeeController@dataEmployee');
 
       Route::get('trainingContract/showEmployee/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@showEmployee');
+      
+      Route::get('trainingContract/downloadPdf/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@downloadPdf');
 
       Route::ApiResource('trainingContract', 'LegalAspects\Contracs\ContractTrainingController');
       Route::post('trainingContract/switchStatus/{trainingContract}', 'LegalAspects\Contracs\ContractTrainingController@toggleState');

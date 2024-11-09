@@ -828,7 +828,24 @@ export default [
           {
               type: 'base',
               buttons: [],
-          }],
+          },
+          {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-danger',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar Certificado en PDF'
+            },
+            data: {
+              action: '/legalAspects/trainingContract/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'contracts_training_r'
+            }],
+        },],
         configuration: {
             urlData: '/legalAspects/trainingContract/dataEmployee',
             filterColumns: true,
