@@ -21,7 +21,7 @@
     <br/><br/>
     <center><b>SAUCE - CONTRATISTAS</b></center>
     <br/><br/>
-    <p>Notifica que el empleado <b>{{$training->employee->name}}</b>, identificado(a) con el número de documento <b>{{$training->employee->identification}}</b>, perteneciente a la empresa contratistas <b>{{$training->contract->social_reason}}</b>, ha aprobado la capacitación {{$training->name}}, asignada por la empresa contratante <b>{{$training->company->name}}</b>.</p>
+    <p>Notifica que el empleado <b>{{$training->employee->name}}</b>, identificado(a) con el número de documento <b>{{$training->employee->identification}}</b>, perteneciente a la empresa contratistas <b>{{$training->contract->social_reason}}</b>, ha aprobado la capacitación <b>{{$training->name}}</b>, asignada por la empresa contratante <b>{{$training->company->name}}</b>.</p>
 
     <br><br>
     <p>Fecha de aprobación: <b>{{$training->date_approver}}</b>.
