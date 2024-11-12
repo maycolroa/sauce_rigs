@@ -47,7 +47,8 @@ export default [
     configuration: {
       urlData: '/administration/users/data',
       filterColumns: true,
-      configNameFilter: 'administrative-users'
+      configNameFilter: 'administrative-users',
+      detailComponent: '/Administrative/Users/DetailVuetableComponent.vue'
     }
   },
   {

@@ -91,12 +91,12 @@
         </div>
       </template>
      }
-      <template :slot="details.length > 0 || config.configuration.detailComponent ? 'child_row': null" slot-scope="props">
+      <template :slot="details.length > 0 || (config.configuration.detailComponent && showMoreRow) ? 'child_row': null" slot-scope="props">
         <div v-if="!component">
           <b-row class="mx-0">
-          <b-col cols="6" v-for="(field, index) in details" :key="index">
-            <b>{{field.title}}:</b> {{props.row[field.data]}}
-          </b-col>
+            <b-col cols="6" v-for="(field, index) in details" :key="index">
+              <b>{{field.title}}:</b> {{props.row[field.data]}}
+            </b-col>
           </b-row>
         </div>
         <component :is="component" v-if="component" :row="props.row"/>
@@ -182,7 +182,8 @@ export default {
       filters: [],
       tableReady: false,
       keyVuetable: 'Vuetable',
-      pagina: 4
+      pagina: 4,
+      showMoreRow: false
     }
   },
   watch: {
@@ -209,7 +210,20 @@ export default {
     },
     loader(){
       if(this.config.configuration.detailComponent){
-        return () => import(`@/components${this.config.configuration.detailComponent}`);
+        if (this.config.configuration.detailComponent == '/Administrative/Users/DetailVuetableComponent.vue')
+        {
+          if (this.auth.hasRole['Superadmin'])
+          {
+            this.showMoreRow = true;
+
+            return () => import(`@/components${this.config.configuration.detailComponent}`);
+          }
+        }
+        else
+        {
+          this.showMoreRow = true;
+          return () => import(`@/components${this.config.configuration.detailComponent}`);
+        }
       }
       return () => null;
     },

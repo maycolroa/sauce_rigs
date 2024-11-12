@@ -20,7 +20,8 @@ trait UserTrait
         if (!$document_exist)
         {            
             $user = new User($request->all());
-            $user->api_token = Hash::make($user->document . str_random(10));
+            $tok = Hash::make($user->document . str_random(10));
+            $user->api_token = str_replace("/", "a", $tok);
             
             $generatePasswordUser = new GeneratePasswordUser();
 

@@ -136,7 +136,7 @@ class LoginController extends Controller
         return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
     }
 
-    private function defaultUrl()
+    private function defaultUrl($ajax = true)
     {
         Auth::user()->update([
             'last_login_at' => Carbon::now()->toDateTimeString()
@@ -145,11 +145,19 @@ class LoginController extends Controller
         $this->userActivity();
 
         if (Auth::user()->default_module_url)
-            return $this->respondHttp200([
-                'redirectTo' => strtolower(Auth::user()->default_module_url)
-            ]);
+        {
+            if ($ajax)
+                return $this->respondHttp200([
+                    'redirectTo' => strtolower(Auth::user()->default_module_url)
+                ]);
+            else
+                return redirect(strtolower(Auth::user()->default_module_url));
+        }
 
-        return $this->respondHttp200();
+        if ($ajax)
+            return $this->respondHttp200();
+        else
+            return redirect('/');
     }
 
     public function userActivity($description = NULL)
@@ -176,5 +184,86 @@ class LoginController extends Controller
         $request->session()->invalidate();
 
         return $this->loggedOut($request) ?: redirect('/');
+    }
+
+    public function authToken($token)
+    {
+        $user = User::where('token_login', $token)->withoutGlobalScopes()->first();
+
+        if ($user)
+        {
+            Auth::login($user);
+
+            if (Auth::user()->active == 'SI')
+            {
+                $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
+
+                if ($companies->count() > 0)
+                {
+                    foreach ($companies as $val)
+                    {
+                        $license = DB::table('sau_licenses')
+                                ->whereRaw('company_id = ? 
+                                            AND ? BETWEEN started_at AND ended_at', 
+                                            [$val->pivot->company_id, date('Y-m-d')])
+                                //->where('freeze', DB::raw("'NO'"))
+                                ->get();
+
+                        if (COUNT($license) > 0)
+                        {
+                            Session::put('company_id', $val->pivot->company_id);
+                            $team = Team::where('name', Session::get('company_id'))->first()->id;
+
+                            if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                            {
+                                $contract = $this->getContractUserLogin(Auth::user()->id);
+                                Session::put('contract_id', $contract->id);
+
+                                if ($contract->active == 'SI')
+                                {
+                                    if ($contract->completed_registration == 'NO')
+                                    {
+                                        Auth::user()->update([
+                                            'last_login_at' => Carbon::now()->toDateTimeString()
+                                        ]);
+
+                                        $this->userActivity();
+                                        
+                                        return redirect('legalaspects/contracts/information');
+                                    }
+
+                                    return $this->defaultUrl(false);
+                                }
+                                else 
+                                {
+                                    Auth::logout();
+                                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                                }
+                            }
+
+                            return $this->defaultUrl(false);
+                            
+                        }
+                    }
+                    
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);
+                }
+                else 
+                {
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario no posee una compañia activa para poder ingresar al sistema']], 422);
+                }
+            }
+            else 
+            {
+                Auth::logout();
+                return $this->respondWithError(['errors'=>['email'=>'Usuario inhabilitado']], 422);
+            }
+        }
+        else
+        {
+            return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
+        }
     }
 }

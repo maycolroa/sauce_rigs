@@ -72,6 +72,7 @@ class UserController extends Controller
    public function data(Request $request)
    {    
         $url = "/administrative/users";
+        $url_login = url("/a2bf4bd63b86602070807dd7f62fb49a");
 
         if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
@@ -82,7 +83,8 @@ class UserController extends Controller
                     'sau_users.document AS document',
                     'sau_users.document_type AS document_type',
                     'sau_users.active AS active',
-                    'sau_users.last_login_at AS last_login_at'
+                    'sau_users.last_login_at AS last_login_at',
+                    "sau_users.token_login AS token_login"
                 )
                 ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                 ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
@@ -100,7 +102,8 @@ class UserController extends Controller
                 'sau_users.document_type AS document_type',
                 'sau_users.active AS active',
                 'sau_users.last_login_at AS last_login_at',
-                DB::raw('GROUP_CONCAT(sau_roles.name) AS role')
+                DB::raw('GROUP_CONCAT(sau_roles.name) AS role'),
+                "sau_users.token_login AS token_login"
             )
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_role_user', function($q) use ($team) { 
@@ -128,22 +131,23 @@ class UserController extends Controller
         
 
        return Vuetable::of($users)
-                ->addColumn('administrative-users-edit', function ($user) {
+                ->addColumn('administrative-users-edit', function ($user) use ($url_login) {
                     $isSuper = $this->user->hasRole('Superadmin', $this->team);
 
                     if ($user->id != $this->user->id)
                     {
                         if ($isSuper)
+                        {
+                            $user->link = $url_login.'/'.$user->token_login;
+
                             return true;
+                        }
                         else 
                             return !$user->hasRole('Superadmin', $this->team);
                     }
 
                     return false; 
                 })
-                /*->addColumn('control_delete', function ($user) {
-                    return $user->id != Auth::user()->id; 
-                })*/
                 ->make();
    }
 
