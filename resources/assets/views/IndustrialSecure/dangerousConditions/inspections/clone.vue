@@ -9,7 +9,20 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+          <form-inspection-personalized
+                v-if="type == '3'"
+                url="/industrialSecurity/dangerousConditions/inspection"
+                method="POST"
+                regionals-data-url="/selects/regionals"
+                headquarters-data-url="/selects/headquarters"
+                areas-data-url="/selects/areas"
+                processes-data-url="/selects/processes"
+                :inspection="data"
+                :typesInspection="typesInspection"
+                :typesItems="typesItems"
+                :cancel-url="{ name: 'dangerousconditions-inspections'}"/>
             <form-inspection
+                v-else
                 url="/industrialSecurity/dangerousConditions/inspection"
                 method="POST"
                 regionals-data-url="/selects/regionals"
@@ -29,6 +42,7 @@
 import FormInspection from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import FormInspectionPersonalized from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionPersonalizadasComponent.vue';
 
 export default {
   name: 'dangerousconditions-inspections-create',
@@ -36,20 +50,25 @@ export default {
     title: 'Inspecciones Planeadas - Clonar'
   },
   components:{
-    FormInspection
+    FormInspection,
+    FormInspectionPersonalized
   },
   data(){
     return {
       data: [],
-      typesInspection: []
+      typesInspection: [],
+      typesItems: [],
+      type: ''
     }
   },
   created(){
     this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
+    this.fetchSelect('typesItems', '/selects/industrialSecurity/inspectionTypeItems')
 
     axios.get(`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        this.type = response.data.data.type_id
         delete this.data.id
         this.data.additional_fields.map((field) => {
           delete field.id
