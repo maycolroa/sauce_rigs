@@ -15,9 +15,7 @@
             <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'dangerousconditions-inspection-report-menu'}" variant="primary">Ver Informes</b-btn>
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" href="/templates/inspectionsimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
-            <div class="card-title-elements" v-if="auth.can['users_c']">
-              <b-btn :to="{name:'dangerousconditions-inspections-import'}" variant="primary">Importar</b-btn>
-            </div>
+            <b-btn :to="{name:'dangerousconditions-inspections-import'}" variant="primary" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" :to="{name:'dangerousconditions-inspection-qualification-masive'}" v-b-tooltip.top title="Configurar opciones para la calificación másiva"><i class="oi oi-list"></i></b-btn>
             <b-btn v-if="auth.can['ph_inspections_r']" variant="primary" :to="{name:'dangerousconditions-inspections-request-firm'}" v-b-tooltip.top title="Ver Solicitudes de Firmas"><i class="ion ion-md-create"></i></b-btn>
           </div>

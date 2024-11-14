@@ -10,17 +10,15 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
-            <div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
-              <b-btn variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
-            </div>
-            <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
+            <b-btn style="margin-top: 10px;" variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-log-qualification'}" variant="primary">Log Calificaciones</b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-export-masive'}" variant="primary">Exportación masiva</b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-log-qualification'}" variant="primary" v-b-tooltip.top title="Log Calificaciones"><i class="oi oi-list"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-export-masive'}" variant="primary" v-b-tooltip.top title="Exportacion Masiva"><i class="fas fa-download"></i></b-btn>
           </div>
         </b-card-header>
         <b-card-body>

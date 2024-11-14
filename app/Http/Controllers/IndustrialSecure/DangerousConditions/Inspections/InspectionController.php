@@ -69,6 +69,7 @@ class InspectionController extends Controller
         $having = [];
 
         $select[] = "sau_ph_inspections.*";
+        $select[] = "IF(sau_ph_inspections.type_id = 3, 'SI', 'NO') as personalized";
 
         if ($confLocationTableInspections['regional'] == 'SI')
             $select[] = "(SELECT GROUP_CONCAT(r.name) 
@@ -239,7 +240,7 @@ class InspectionController extends Controller
         }
 
         return Vuetable::of($inspections)
-                ->make();
+            ->make();
     }
 
     /**
