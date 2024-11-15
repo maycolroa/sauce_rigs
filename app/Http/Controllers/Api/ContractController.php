@@ -73,16 +73,18 @@ class ContractController extends ApiController
         $habilitado = 0;
         $required_habilitado = 0;
 
+        $class_document_bk = [];
         $class_document = [];
 
         foreach ($employee->activities as $key => $activity) 
         {          
-          $class_document = array_merge($class_document, $activity->documents->pluck('class')->toArray());
+          $class_document_bk = array_merge($class_document_bk, $activity->documents->pluck('class')->toArray());
         }
 
-        $class_document = array_unique($class_document);
-        foreach ($class_document as $key => $value) 
+        $class_document_bk = array_unique($class_document_bk);
+        foreach ($class_document_bk as $key => $value) 
         {
+          array_push($class_document, trim($value));
           $value = trim($value);
         }
         
