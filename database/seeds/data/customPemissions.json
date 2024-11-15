@@ -808,6 +808,10 @@
                     {
                         "name": "contracts_proyects_d",
                         "display_name": "Contratistas/Proyectos - eliminar"
+                    },
+                    {
+                        "name": "contracts_training_view_made",
+                        "display_name": "Contratistas/Capacitaciones - ver capacitaciones realizadas"
                     }
                 ]
             },

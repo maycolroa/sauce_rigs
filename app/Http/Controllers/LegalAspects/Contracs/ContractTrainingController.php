@@ -27,10 +27,10 @@ class ContractTrainingController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:contracts_activities_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:contracts_activities_r, {$this->team}", ['except' =>['multiselect', 'download']]);
-        $this->middleware("permission:contracts_activities_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:contracts_activities_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:contracts_training_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_training_r|contracts_training_view_made, {$this->team}", ['except' =>['multiselect', 'download']]);
+        $this->middleware("permission:contracts_training_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_training_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

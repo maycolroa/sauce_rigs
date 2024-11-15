@@ -387,7 +387,7 @@ export default [
 					import('@/views/LegalAspects/contracts/contractor/documentsRequest')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_training_r' }, [
+			...middleware({ 'check-permission': ['contracts_training_r', 'contracts_training_view_made'] }, [
 				{
 					name: 'legalaspects-contracts-trainings',
 					path: 'trainings',
@@ -395,7 +395,7 @@ export default [
 					import('@/views/LegalAspects/contracts/trainings/index')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_training_r' }, [
+			...middleware({ 'check-permission': ['contracts_training_r', 'contracts_training_view_made'] }, [
 				{
 					name: 'legalaspects-contracts-trainings-virtual',
 					path: 'trainings/virtual',
@@ -1049,7 +1049,7 @@ export default [
 					import('@/views/LegalAspects/legalMatrix/helpers/view')
 						}
 			]),
-			...middleware({ 'check-permission': 'contracts_training_r' }, [
+			...middleware({ 'check-permission': ['contracts_training_r', 'contracts_training_view_made'] }, [
 				{
 				name: 'legalaspects-contracts-trainings-virtual-employees',
 				path: 'trainings/employee/:id',
@@ -1057,7 +1057,7 @@ export default [
 					import('@/views/LegalAspects/contracts/trainings/virtual/indexEmployee')
 						}
 			]),
-			...middleware({ 'check-permission': 'contracts_training_r' }, [
+			...middleware({ 'check-permission': ['contracts_training_r', 'contracts_training_view_made'] }, [
 				{
 				name: 'legalaspects-training-employee-view',
 				path: 'trainings/employee/view/:id',

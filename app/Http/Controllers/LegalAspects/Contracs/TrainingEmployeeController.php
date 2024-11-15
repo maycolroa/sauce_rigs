@@ -16,12 +16,15 @@ use App\Models\LegalAspects\Contracts\TrainingEmployeeAttempt;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeQuestionsAnswers;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\TrainingFiles;
+use App\Traits\ContractTrait;
 use Carbon\Carbon;
 use DB;
 use PDF;
 
 class TrainingEmployeeController extends Controller
 {
+    use ContractTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -266,6 +269,13 @@ class TrainingEmployeeController extends Controller
         ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.id', 'sau_ct_training_employee_attempts.employee_id')
         ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id')
         ->where('sau_ct_training_employee_attempts.training_id', $request->get('modelId'));
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            \Log::info('entro');
+            \Log::info($this->getContractIdUser($this->user->id));
+            $training_employees->where('sau_ct_contract_employees.contract_id', $this->getContractIdUser($this->user->id));
+        }
 
         return Vuetable::of($training_employees)
             ->addColumn('downloadFile', function ($training_employee) {

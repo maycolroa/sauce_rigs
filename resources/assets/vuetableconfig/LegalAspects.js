@@ -748,7 +748,7 @@ export default [
                     routePush: { name: 'legalaspects-contracts-trainings-virtual-employees' },
                     id: 'id',
                 },
-                permission: 'contracts_training_u'
+                permission: 'contracts_training_view_made'
             }]
         },
         {
@@ -822,7 +822,7 @@ export default [
                   routePush: { name: 'legalaspects-training-employee-view' },
                   id: 'id',
               },
-              permission: 'contracts_training_r'
+              permission: 'contracts_training_view_made'
               }]
           },
           {
@@ -843,7 +843,7 @@ export default [
               action: '/legalAspects/trainingContract/downloadPdf/',
               id: 'id'
             },
-            permission: 'contracts_training_r'
+            permission: 'contracts_training_view_made'
             }],
         },],
         configuration: {

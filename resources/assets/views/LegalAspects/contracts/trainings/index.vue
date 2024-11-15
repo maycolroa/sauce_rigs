@@ -10,7 +10,7 @@
 					<div class="card-title-elements">
 						<div class="row no-gutters row-bordered row-border-light h-100">
 
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']) && auth.can['contracts_training_r']">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['contracts_training_r'] || auth.can['contracts_training_view_made']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-trainings-virtual'}">
 									<i class="lnr lnr-laptop display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">

@@ -16,7 +16,7 @@
         <b-card-body>
              <vue-table
                 configName="legalaspects-contracts-trainings-virtual"
-                v-if="auth.can['contracts_training_r']"
+                v-if="auth.can['contracts_training_r'] || auth.can['contracts_training_view_made']"
                 ></vue-table>
         </b-card-body>
     </b-card>
