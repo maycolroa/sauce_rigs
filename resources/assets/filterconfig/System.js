@@ -25,6 +25,18 @@ export default [
             type: 'select',
             label: 'Permisos'
         },
+        {
+          url: '/selects/modules',
+          key: 'modules',
+          type: 'select',
+          label: 'Módulos'
+        },
+        {
+          url: '/selects/companies',
+          key: 'companies',
+          type: 'select',
+          label: 'Compañias'
+        }
       ]
     },
     {

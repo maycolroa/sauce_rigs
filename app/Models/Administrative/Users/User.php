@@ -283,6 +283,34 @@ class User extends Authenticatable
         return $query;
     }
 
+    public function scopeInCompanies($query, $companies, $typeSearch = 'IN')
+    {
+        if (COUNT($companies) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_company_user.company_id', $companies);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_company_user.company_id', $companies);
+        }
+
+        return $query;
+    }
+
+    public function scopeInModules($query, $modules, $typeSearch = 'IN')
+    {
+        if (COUNT($modules) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_roles.module_id', $modules);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_roles.module_id', $modules);
+        }
+
+        return $query;
+    }
+
     public function headquartersFilter()
     {
         return $this->belongsToMany('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'sau_ph_user_headquarters')->withPivot('company_id');

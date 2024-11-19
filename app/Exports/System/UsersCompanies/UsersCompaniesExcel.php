@@ -40,7 +40,8 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
           'sau_users.email', 
           'sau_users.active',
           'sau_companies.name as company',
-          DB::raw('GROUP_CONCAT(sau_roles.name) AS role')
+          'sau_roles.name AS role',
+          'sau_modules.display_name AS module'
       )
       ->withoutGlobalScopes()
       ->join('sau_company_user', 'sau_users.id', 'sau_company_user.user_id')
@@ -50,14 +51,22 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
                 ->on('sau_role_user.team_id', '=', 'sau_companies.id');
       })
       ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+      ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
       ->leftJoin('sau_permission_role', 'sau_permission_role.role_id', 'sau_roles.id')
       ->leftJoin('sau_permissions', 'sau_permissions.id', 'sau_permission_role.permission_id')
       ->whereRaw("(sau_role_user.role_id <> {$role->id} OR sau_role_user.role_id IS NULL)")
-      ->groupBy('sau_users.id', 'company');
+      ->where('sau_users.active', DB::raw("'SI'"))
+      ->groupBy('sau_users.id', 'company', 'sau_roles.id', 'sau_modules.id');
 
 
       if (isset($this->filters['permissions']) && $this->filters['filtersType']['permissions'] && COUNT($this->filters['permissions']) > 0)
         $usersCompanies->inPermissions($this->filters['permissions'], $this->filters['filtersType']['permissions']);
+
+      if (isset($this->filters['modules']) && $this->filters['filtersType']['modules'] && COUNT($this->filters['modules']) > 0)
+        $usersCompanies->inModules($this->filters['modules'], $this->filters['filtersType']['modules']);
+
+      if (isset($this->filters['companies']) && $this->filters['filtersType']['companies'] && COUNT($this->filters['companies']) > 0)
+        $usersCompanies->inCompanies($this->filters['companies'], $this->filters['filtersType']['companies']);
 
       return $usersCompanies;
     }
@@ -68,6 +77,7 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
         $data->name,
         $data->email,
         $data->active,
+        $data->module,
         $data->role,
         $data->company
       ];
@@ -81,6 +91,7 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
         'Nombre',
         'Email',
         '¿Activo?',
+        'Modulo',
         'Rol',
         'Compañia'
       ];

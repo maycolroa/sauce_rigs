@@ -65,6 +65,12 @@ class UserCompanyController extends Controller
         if (COUNT($filters) > 0)
         {
             $usersCompanies->inPermissions($this->getValuesForMultiselect($filters["permissions"]), $filters['filtersType']['permissions']);
+
+            if (isset($filters["modules"]) && $filters["modules"])
+                $usersCompanies->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+
+            if (isset($filters["companies"]) && $filters["companies"])
+                $usersCompanies->inCompanies($this->getValuesForMultiselect($filters["companies"]), $filters['filtersType']['companies']);
         }
 
         return Vuetable::of($usersCompanies)
@@ -76,10 +82,14 @@ class UserCompanyController extends Controller
         try
         {
             $permissions = $this->getValuesForMultiselect($request->permissions);
+            $modules = $this->getValuesForMultiselect($request->modules);
+            $companies = $this->getValuesForMultiselect($request->companies);
             $filtersType = $request->filtersType;
 
             $filters = [
                 'permissions' => $permissions,
+                'modules' => $modules,
+                'companies' => $companies,
                 'filtersType' => $filtersType
             ];
 
