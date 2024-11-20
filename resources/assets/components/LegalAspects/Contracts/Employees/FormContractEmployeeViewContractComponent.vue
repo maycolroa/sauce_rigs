@@ -173,7 +173,7 @@
                                 <div class="rounded ui-bordered p-3 mb-3">    
                                   <div v-if="document.apply_file == 'SI'">
                                     <b-form-row>
-                                      <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)"/>
+                                      <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
                                       <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
                                     </b-form-row>
 

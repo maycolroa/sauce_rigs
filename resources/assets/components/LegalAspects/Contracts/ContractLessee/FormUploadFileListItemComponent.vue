@@ -37,7 +37,7 @@
 								<div class="rounded ui-bordered p-3 mb-3">
 				
 									<b-form-row>
-										<vue-input :disabled="viewOnly" class="col-md-6" v-model="value[index].name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`${prefixIndex}files.${index}.name`)"></vue-input>
+										<vue-input :disabled="viewOnly" class="col-md-6" v-model="value[index].name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`${prefixIndex}files.${index}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"></vue-input>
 										<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="value[index].expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates">
 										</vue-datepicker>
 									</b-form-row>

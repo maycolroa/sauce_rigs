@@ -189,6 +189,25 @@ class ContractEmployeeController extends Controller
                     }
                 }
 
+            ],
+            "activities.*.documents.*.files.*.name" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '/');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '.');
+
+                            if ($exist)
+                                $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
             ]
         ])->validate();
 
@@ -351,6 +370,25 @@ class ContractEmployeeController extends Controller
                     }
                 }
 
+            ],
+            "activities.*.documents.*.files.*.name" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '/');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '.');
+
+                            if ($exist)
+                                $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
             ]
         ])->validate();
 

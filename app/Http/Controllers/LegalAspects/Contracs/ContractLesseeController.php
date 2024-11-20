@@ -508,6 +508,25 @@ class ContractLesseeController extends Controller
                     }
                 }
 
+            ],
+            "documents.*.files.*.name" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '/');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '.');
+
+                            if ($exist)
+                                $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
             ]
         ])->validate();
 
@@ -1017,6 +1036,25 @@ class ContractLesseeController extends Controller
                     /*if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
                         $fail('Archivo debe ser un pdf');*/
                 },
+            ],
+            "items.*.files.*.name" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '/');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '.');
+
+                            if ($exist)
+                                $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
             ]
         ])->validate();
 

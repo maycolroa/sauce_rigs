@@ -22,6 +22,7 @@ use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
 use ReflectionClass;
+use Validator;
 
 class FileUploadController extends Controller
 {
@@ -234,6 +235,28 @@ class FileUploadController extends Controller
      */
     public function store(FileUploadRequest $request)
     {
+      Validator::make($request->all(), [
+        "name" => [
+            function ($attribute, $value, $fail) 
+            {
+                if ($value && is_string($value))
+                {
+                    $exist = strpos($value, '/');
+
+                    if ($exist)
+                        $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                    else
+                    {
+                        $exist = strpos($value, '.');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                    }
+                }
+            }
+        ]
+      ])->validate();
+
       DB::beginTransaction();
 
       try
@@ -350,6 +373,28 @@ class FileUploadController extends Controller
      */
     public function update(FileUploadRequest $request, FileUpload $fileUpload)
     {
+      Validator::make($request->all(), [
+        "name" => [
+            function ($attribute, $value, $fail) 
+            {
+                if ($value && is_string($value))
+                {
+                    $exist = strpos($value, '/');
+
+                    if ($exist)
+                        $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                    else
+                    {
+                        $exist = strpos($value, '.');
+
+                        if ($exist)
+                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                    }
+                }
+            }
+        ]
+      ])->validate();
+      
       DB::beginTransaction();
 
       try

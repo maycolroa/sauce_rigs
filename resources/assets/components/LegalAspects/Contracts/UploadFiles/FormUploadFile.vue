@@ -10,7 +10,7 @@
 
 					<div v-if="form.apply_file == 'SI'">
 						<b-form-row>
-							<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+							<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre" help-text="El nombre no debe contener caracteres especiales como '/', '.'"></vue-input>
 							<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento" :error="form.errorsFor('expirationDate')" name="expirationDate" :disabled-dates="disabledDates">
 							</vue-datepicker>
 						</b-form-row>

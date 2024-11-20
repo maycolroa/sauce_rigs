@@ -148,7 +148,7 @@
 				                                  </b-form-row>-->
 
 												  <b-form-row>
-													<vue-input class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`documents.${index}.files.${indexFile}.name`)"/>
+													<vue-input class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`documents.${index}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
 													<vue-radio :disabled="file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
 													</vue-radio>
 												</b-form-row>
