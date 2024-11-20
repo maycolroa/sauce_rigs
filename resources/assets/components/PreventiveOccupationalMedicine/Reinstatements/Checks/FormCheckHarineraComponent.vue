@@ -157,7 +157,7 @@
                   </vue-ajax-advanced-select>
             </b-form-row>
             <b-form-row>
-              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder="" help-text="El detalle no debe contener caracteres especiales como '<', '>'"></vue-textarea>
             </b-form-row>
             <b-form-row>
               <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-12" v-model="form.reinstatement_condition" name="reinstatement_condition" :error="form.errorsFor('reinstatement_condition')" label="Condición de Reincorporación" placeholder="Seleccione la Condición de Reincorporación" :url="tagsReinstatementConditionDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">

@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use DB;
 use PDF;
 use Datetime;
+use Validator;
 
 class CheckController extends Controller
 { 
@@ -241,6 +242,28 @@ class CheckController extends Controller
      */
     public function store(CheckRequest $request)
     {
+        Validator::make($request->all(), [
+            "detail" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '<');
+
+                        if (is_numeric($exist) && $exist >= 0)
+                            $fail('El detalle de recomendaciones no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '>');
+
+                            if (is_numeric($exist) && $exist >= 0)
+                                $fail('El detalle de recomendaciones no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
+            ]
+        ])->validate();
+
         $this->validate($request, CheckManager::getProcessRules($request));
 
         try
@@ -362,6 +385,28 @@ class CheckController extends Controller
      */
     public function update(CheckRequest $request, $id)
     {
+        //\Log::info($request);
+        Validator::make($request->all(), [
+            "detail" => [
+                function ($attribute, $value, $fail) 
+                {
+                    if ($value && is_string($value))
+                    {
+                        $exist = strpos($value, '<');
+
+                        if (is_numeric($exist) && $exist >= 0)
+                            $fail('El detalle de recomendaciones no puede contener ninguno de los caracteres especiales indicados');
+                        else
+                        {
+                            $exist = strpos($value, '>');
+
+                            if (is_numeric($exist) && $exist >= 0)
+                                $fail('El detalle de recomendaciones no puede contener ninguno de los caracteres especiales indicados');
+                        }
+                    }
+                }
+            ]
+        ])->validate();
         $check = Check::select('sau_reinc_checks.*')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);

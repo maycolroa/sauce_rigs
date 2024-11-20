@@ -157,7 +157,7 @@
                   </vue-ajax-advanced-select>
             </b-form-row>
             <b-form-row>
-              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder="" help-text="El detalle no debe contener caracteres especiales como '<', '>'"></vue-textarea>
             </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.position_functions_assigned_reassigned" label="Cargo y funciones asignadas y/o reasignadas al trabajador" name="position_functions_assigned_reassigned" :error="form.errorsFor('position_functions_assigned_reassigned')" placeholder=""></vue-textarea>
