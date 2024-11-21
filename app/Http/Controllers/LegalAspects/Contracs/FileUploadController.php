@@ -728,6 +728,8 @@ class FileUploadController extends Controller
       
       if (count($sub_explode) > 1 && $name)
       {
+        $name = str_replace("/", "-", $name);
+
         if (Storage::disk('s3')->exists('legalAspects/files/'. $fileUpload->file)) {
             return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file, $name);
         }
