@@ -62,7 +62,8 @@ return [
             'region' => 'us-east-1',
             'bucket' => 'appsauce',
             'url' => env('AWS_URL'),
-            'visibility' => 'public'
+            'visibility' => 'public',
+            //'scheme' => 'http'
         ],
 
         's3_MLegal' => [
