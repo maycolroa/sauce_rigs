@@ -191,7 +191,7 @@ class ContractEmployeeController extends Controller
 
             ],
             "activities.*.documents.*.files.*.name" => [
-                function ($attribute, $value, $fail) 
+                function ($attribute, $value, $fail)  use ($request)
                 {
                     $index = explode('.', $attribute);
 

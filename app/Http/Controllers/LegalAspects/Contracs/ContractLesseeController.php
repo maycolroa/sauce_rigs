@@ -510,7 +510,7 @@ class ContractLesseeController extends Controller
 
             ],
             "documents.*.files.*.name" => [
-                function ($attribute, $value, $fail) 
+                function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
 
