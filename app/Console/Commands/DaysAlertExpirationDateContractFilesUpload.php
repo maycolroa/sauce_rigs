@@ -74,7 +74,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
             {
                 if ($configDay)
                 {
-                    $configDay = 17;
+                    //$configDay = 17;
                     $files_contracts = FileUpload::select(
                             'sau_ct_file_upload_contracts_leesse.id as id',
                             'sau_ct_file_upload_contracts_leesse.name as name',

@@ -170,7 +170,7 @@ class ListCheckQualificationController extends Controller
             foreach ($qualification->files as $file) 
             {                    
                 $file->delete();
-                Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
+                //Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
             }
 
             $this->saveLogDelete('Contratistas - Lista de Chequeo', 'Se elimino la lista de chequeo del periodo '.$qualification->validity_period.' del contratista '.$qualification->contract->social_reason);
@@ -482,7 +482,7 @@ class ListCheckQualificationController extends Controller
                         //Borrar archivos reemplazados
                         foreach ($files_names_delete as $keyf => $file)
                         {
-                            Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                            //Storage::disk('s3')->delete('legalAspects/files/'. $file);
                         }
                     }
                 }
@@ -510,7 +510,7 @@ class ListCheckQualificationController extends Controller
                     if ($file_delete)
                     {
                         $file_delete->delete();
-                        Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
+                        //Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
                     }
                 }
             }

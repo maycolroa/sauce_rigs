@@ -407,12 +407,12 @@ class FileUploadController extends Controller
         }
 
         $file = FileUpload::find($fileUpload->id);
-        $beforeFile= $file;
+        $beforeFile = $file;
 
         if($request->file != $fileUpload->file)
         {
           $file = $request->file;
-          Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+          //Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
           $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
           $file->storeAs('legalAspects/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
@@ -694,7 +694,7 @@ class FileUploadController extends Controller
           return $this->respondWithError('No tiene permitido eliminar este archivo');
         }
 
-        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+        //Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
 
         $this->saveLogActivitySystem('Contratistas - Archivos', 'Se elimino el archivo '.$fileUpload->name);
         

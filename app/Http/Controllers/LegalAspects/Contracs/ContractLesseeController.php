@@ -585,7 +585,7 @@ class ContractLesseeController extends Controller
                             {
                                 $path = $file_delete->file;
                                 $file_delete->delete();
-                                Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                                //Storage::disk('s3')->delete('legalAspects/files/'. $path);
                             }
                         }
                     }
@@ -1194,7 +1194,7 @@ class ContractLesseeController extends Controller
                         //Borrar archivos reemplazados
                         foreach ($files_names_delete as $keyf => $file)
                         {
-                            Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                            //Storage::disk('s3')->delete('legalAspects/files/'. $file);
                         }
                     }
                 }
@@ -1222,7 +1222,7 @@ class ContractLesseeController extends Controller
                     if ($file_delete)
                     {
                         $file_delete->delete();
-                        Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
+                        //Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
                     }
                 }
             }
@@ -1418,7 +1418,7 @@ class ContractLesseeController extends Controller
                 //Borrar archivos reemplazados
                 foreach ($files_names_delete as $keyf => $file)
                 {
-                    Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                    //Storage::disk('s3')->delete('legalAspects/files/'. $file);
                 }
             }
             else if (!$apply)
@@ -1580,7 +1580,7 @@ class ContractLesseeController extends Controller
                             {
                                 $path = $file_2->file;
                                 $file_2->delete();
-                                Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                                //Storage::disk('s3')->delete('legalAspects/files/'. $path);
                             }
                         }
                     }
@@ -1606,7 +1606,7 @@ class ContractLesseeController extends Controller
                     {
                         foreach ($file_delete as $file_2) 
                         {
-                            Storage::disk('s3')->delete($file_2->path_client(false)."/".$file_2->file);
+                            //Storage::disk('s3')->delete($file_2->path_client(false)."/".$file_2->file);
                             $file_2->delete();
                         }
                     }
@@ -1628,7 +1628,7 @@ class ContractLesseeController extends Controller
                     {
                         $path = $file_delete->file;
                         $file_delete->delete();
-                        Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                        //Storage::disk('s3')->delete('legalAspects/files/'. $path);
                     }
                 }
 
@@ -1648,7 +1648,7 @@ class ContractLesseeController extends Controller
                 foreach ($qualification->files as $file) 
                 {                    
                     $file->delete();
-                    Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
+                    //Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
                 }
 
                 $qualification->delete();

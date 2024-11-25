@@ -438,7 +438,7 @@ class ContractEmployeeController extends Controller
                     {
                         $path = $file_delete->file;
                         $file_delete->delete();
-                        Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                        //Storage::disk('s3')->delete('legalAspects/files/'. $path);
                     }
                 }
             }
@@ -479,6 +479,7 @@ class ContractEmployeeController extends Controller
 
                 foreach ($fileClassTotal as $key => $value) 
                 {
+                    //// Esto se hace para cargar el mismo documento en todas las clases que se repitan en las actividades asignadas, siempre y cuando el archivo sea nuevo.
                     if (!isset($value['id']) && $value['activity'] != $document['activity_id'])
                         array_push($document['files'], $value);
                 }
@@ -497,8 +498,8 @@ class ContractEmployeeController extends Controller
 
                             if ($file['old_name'] == $file['file'])
                                 $create_file = false;
-                            else
-                                array_push($files_names_delete, $file['old_name']);
+                            /*else
+                                array_push($files_names_delete, $file['old_name']);*/
                         }
 
                         if ($create_file)
@@ -508,13 +509,16 @@ class ContractEmployeeController extends Controller
 
                             if (!isset($file['has_class']))
                             {
-                                $file_tmp = $file['file'];
-                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                                if (!isset($file['id']))
+                                {
+                                    $file_tmp = $file['file'];
+                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
+                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
 
-                                $fileUpload->file = $nameFile;
-                                $fileUpload->name = $file['name'];
-                                $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;;
+                                    $fileUpload->file = $nameFile;
+                                    $fileUpload->name = $file['name'];
+                                    $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+                                }
                             }
                             else
                             {
@@ -563,10 +567,10 @@ class ContractEmployeeController extends Controller
                     }
 
                     //Borrar archivos reemplazados
-                    foreach ($files_names_delete as $keyf => $file)
+                    /*foreach ($files_names_delete as $keyf => $file)
                     {
                         Storage::disk('s3')->delete('legalAspects/files/'. $file);
-                    }
+                    }*/
                 }
                 else if (!$apply)
                 {
@@ -580,8 +584,6 @@ class ContractEmployeeController extends Controller
 
                                 if ($file['old_name'] == $file['file'])
                                     $create_file = false;
-                                else
-                                    array_push($files_names_delete, $file['old_name']);
                             }
                             else
                             {
@@ -703,6 +705,7 @@ class ContractEmployeeController extends Controller
 
                             $content = [
                                 'has_class' => true,
+                                'create_file' => true,
                                 'activity' => $document['activity_id'],
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
@@ -716,6 +719,8 @@ class ContractEmployeeController extends Controller
                         {
                             $content = [
                                 'id' => $file['id'],
+                                'has_class' => false,
+                                'create_file' => false,
                                 'activity' => $document['activity_id'],
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
@@ -818,7 +823,7 @@ class ContractEmployeeController extends Controller
                 {
                     $path = $file_delete->file;
                     $file_delete->delete();
-                    Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                    //Storage::disk('s3')->delete('legalAspects/files/'. $path);
                 }
             }
 
@@ -982,8 +987,10 @@ class ContractEmployeeController extends Controller
 
                         $explode = explode('.',$file->file);
                         $type = $file->file && COUNT($explode) > 1 ? $explode[1] : null;
+
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
+                        $file->file = $file->file;
                         $file->type = $type;
                         $file->path = Storage::disk('s3')->url('legalAspects/files/'. $file->file);
                         $file->observations = $file->observations;
