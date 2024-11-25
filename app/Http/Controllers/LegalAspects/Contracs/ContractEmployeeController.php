@@ -193,17 +193,22 @@ class ContractEmployeeController extends Controller
             "activities.*.documents.*.files.*.name" => [
                 function ($attribute, $value, $fail) 
                 {
+                    $index = explode('.', $attribute);
+
+                    $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].apply_file");
+
                     if ($value && is_string($value))
                     {
                         $exist = strpos($value, '/');
 
-                        if ($exist)
+                        \Log::info($apply);
+                        if ($exist && $apply == 'SI')
                             $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         else
                         {
                             $exist = strpos($value, '.');
 
-                            if ($exist)
+                            if ($exist && $apply == 'SI')
                                 $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         }
                     }
@@ -372,19 +377,24 @@ class ContractEmployeeController extends Controller
 
             ],
             "activities.*.documents.*.files.*.name" => [
-                function ($attribute, $value, $fail) 
+                function ($attribute, $value, $fail) use ($request)
                 {
+                    $index = explode('.', $attribute);
+
+                    $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].apply_file");
+
                     if ($value && is_string($value))
                     {
                         $exist = strpos($value, '/');
 
-                        if ($exist)
+                        \Log::info($apply);
+                        if ($exist && $apply == 'SI')
                             $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         else
                         {
                             $exist = strpos($value, '.');
 
-                            if ($exist)
+                            if ($exist && $apply == 'SI')
                                 $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         }
                     }

@@ -512,17 +512,22 @@ class ContractLesseeController extends Controller
             "documents.*.files.*.name" => [
                 function ($attribute, $value, $fail) 
                 {
+                    $index = explode('.', $attribute);
+
+                    $apply = $request->input("documents.$index[1].files.$index[3].apply_file");
+
                     if ($value && is_string($value))
                     {
                         $exist = strpos($value, '/');
 
-                        if ($exist)
+                        \Log::info($apply);
+                        if ($exist && $apply == 'SI')
                             $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         else
                         {
                             $exist = strpos($value, '.');
 
-                            if ($exist)
+                            if ($exist && $apply == 'SI')
                                 $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         }
                     }
