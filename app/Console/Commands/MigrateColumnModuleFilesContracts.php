@@ -41,13 +41,10 @@ class MigrateColumnModuleFilesContracts extends Command
     public function handle()
     {
         $files = FileUpload::withoutGlobalScopes()->whereNull('module')->limit(5000)->get();
-
-        \Log::info($files->count());
-
+        
         foreach ($files as $key => $file) 
         {
             $module = FileModuleState::where('file_id', $file->id)->first();
-            \Log::info($module);
 
             if ($module)
             {
