@@ -117,6 +117,20 @@ class FileUpload extends Model
         return $query;
     }
 
+    public function scopeInProyectsEmployeeContract($query, $proyects, $typeSearch = 'IN')
+    {
+        if (COUNT($proyects) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereRaw("(sau_ct_contract_employee_proyects.proyect_contract_id in $proyects) OR (sau_ct_contracts_proyects.proyect_id in $proyects)");
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereRaw("(sau_ct_contract_employee_proyects.proyect_contract_id not in $proyects) OR (sau_ct_contracts_proyects.proyect_id not in $proyects)");
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

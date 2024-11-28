@@ -544,6 +544,8 @@ class ContractEmployeeController extends Controller
     
                         }
 
+                        $fileUpload->module = 'Empleados';
+
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
 

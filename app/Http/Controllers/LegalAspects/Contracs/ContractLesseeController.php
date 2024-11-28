@@ -1161,6 +1161,8 @@ class ContractLesseeController extends Controller
                             $fileUpload->name = $file['name'];
                             $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
 
+                            $fileUpload->module = 'Lista de chequeo';
+
                             if (!$fileUpload->save())
                                 return $this->respondHttp500();
 
@@ -1386,6 +1388,8 @@ class ContractLesseeController extends Controller
                     $fileUpload->name = $file['name'];
                     $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
 
+                    $fileUpload->module = 'Documentos globales';
+
                     if (!$fileUpload->save())
                         return $this->respondHttp500();
 
@@ -1473,7 +1477,7 @@ class ContractLesseeController extends Controller
                             $state = new FileModuleState;
                             $state->contract_id = $contract->id;
                             $state->file_id = $fileUpload->id;
-                            $state->module = 'Empleados';
+                            $state->module = 'Documentos globales';
                             $state->state = 'CREADO';                            
                             $state->date = date('Y-m-d');
                             $state->save();

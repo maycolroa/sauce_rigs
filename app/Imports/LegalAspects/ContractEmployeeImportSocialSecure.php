@@ -165,6 +165,7 @@ class ContractEmployeeImportSocialSecure implements ToCollection
             $fileUpload->expirationDate = NULL;
             $fileUpload->apply_file = 'SI';
             $fileUpload->apply_motive = NULL;
+            $fileUpload->module = 'Empleados';
             $fileUpload->save();
 
             $fileUpload->contracts()->sync([$this->contract->id]);

@@ -92,13 +92,20 @@ class EloquentVuetableBuilder
         return $data->where(function ($q) use ($queries, $tables) {
             foreach ($queries as $field => $query) {
                 $field = isset($tables[$field]) ? $tables[$field] : $field;
-                if (is_string($query)) {
-                    $q->where($field, 'LIKE', "%{$query}%");
-                } else {
-                    $start = Carbon::createFromFormat('Y-m-d', $query['start'])->startOfDay();
-                    $end = Carbon::createFromFormat('Y-m-d', $query['end'])->endOfDay();
+                if ($field == 'date_upload')
+                {
+                    $q->whereRaw("date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') LIKE '%{$query}%'");
+                }
+                else
+                {
+                    if (is_string($query)) {
+                        $q->where($field, 'LIKE', "%{$query}%");
+                    } else {
+                        $start = Carbon::createFromFormat('Y-m-d', $query['start'])->startOfDay();
+                        $end = Carbon::createFromFormat('Y-m-d', $query['end'])->endOfDay();
 
-                    $q->whereBetween($field, [$start, $end]);
+                        $q->whereBetween($field, [$start, $end]);
+                    }
                 }
             }
         });

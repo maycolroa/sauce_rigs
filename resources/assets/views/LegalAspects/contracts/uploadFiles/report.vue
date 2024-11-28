@@ -15,6 +15,17 @@
                     ></vue-table>
             </b-card-body>
         </b-card>
+        <b-card>
+            <b-card-body>                
+                <vue-table
+                    ref="employeeContracts"
+                    configName="legalaspects-fileUpload-employee-contracts-report"
+                    @filtersUpdate="setFilters"
+                    :params="{filters}"
+                    :customColumnsName="true" 
+                    ></vue-table>
+            </b-card-body>
+        </b-card>
     </div>
   </div>
 </template>
@@ -29,6 +40,15 @@ export default {
     return {
       filters: []
     }
+  },
+  watch: {
+      filters: {
+          handler(val) {
+            console.log('entro aqui')
+              this.$refs.employeeContracts.refresh()
+          },
+          deep: true,
+      },
   },
   methods: {
     setFilters(value)

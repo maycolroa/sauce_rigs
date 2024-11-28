@@ -2139,6 +2139,25 @@ export default [
         }
     },
     {
+        name: 'legalaspects-fileUpload-employee-contracts-report',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+        ],
+        
+        'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/fileUpload/reportEmployeeContracts',
+            filterColumns: true
+        }
+    },
+    {
         name: 'contracts-helpers',
         fields: [
             { name: 'sau_helpers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

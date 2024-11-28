@@ -274,6 +274,7 @@ class FileUploadController extends Controller
         $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
         $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
         $fileUpload->reason_rejection = $request->reason_rejection;
+        $fileUpload->module = 'Subida de Archivos';
         $fileUpload->notificate = false;
       
         if(!$fileUpload->save())
@@ -440,6 +441,10 @@ class FileUploadController extends Controller
         if(COUNT($request->get('contract_id')) == 1)
         {
           $file_old_state = FileModuleState::where('file_id', $fileUpload->id)->first();
+
+          $fileUpload->update(
+            ['module' => $file_old_state->module ? $file_old_state->module : 'Subida de archivos'])
+          ;
 
           if ($file_old_state && $beforeFile->state != $fileUpload->state && $fileUpload->state == 'RECHAZADO')
           {
@@ -850,6 +855,7 @@ class FileUploadController extends Controller
               $file->state = $fileF['state'] == null ? 'PENDIENTE' : $fileF['state'];
               $file->observations = $fileF['observations'];
               $file->reason_rejection = $fileF['state'] == 'RECHAZADO' ? $fileF['reason_rejection'] : NULL;
+              $file->module = 'Empleados';
               $contracts = $file->contracts;
               
               if(!$file->save()) {
@@ -967,5 +973,81 @@ class FileUploadController extends Controller
                 ]);                
             }
         }
+    }
+
+    public function reportEmployeeFiles(Request $request)
+    {
+        $contract_id = null;
+
+        $select = [];
+
+        $select[] = "sau_ct_file_upload_contracts_leesse.id";
+        $select[] = "sau_ct_file_upload_contracts_leesse.name";  
+        $select[] = "sau_ct_file_upload_contracts_leesse.created_at";
+        $select[] = "date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') AS date_upload";
+        $select[] = "sau_ct_file_upload_contracts_leesse.state";
+        $select[] = "sau_ct_information_contract_lessee.social_reason AS social_reason";
+        $select[] = "sau_ct_file_upload_contracts_leesse.module AS module";
+        $select[] = "sau_ct_contract_employees.name AS employee_name";
+        $proyectOn = $this->getProyectContract();
+
+        if ($proyectOn == 'SI')
+        {
+            $select[] = "IF(sau_ct_contract_employees.id, (SELECT GROUP_CONCAT(sau_ct_proyects.name) FROM sau_ct_proyects INNER JOIN sau_ct_contract_employee_proyects on sau_ct_contract_employee_proyects.proyect_contract_id = sau_ct_proyects.id WHERE sau_ct_contract_employee_proyects.employee_id = sau_ct_contract_employees.id), (SELECT GROUP_CONCAT(sau_ct_proyects.name) FROM sau_ct_proyects INNER JOIN sau_ct_contracts_proyects on sau_ct_contracts_proyects.proyect_id = sau_ct_proyects.id WHERE sau_ct_contracts_proyects.contract_id = sau_ct_information_contract_lessee.id)) AS proyects";
+        }
+
+        $files = FileUpload::join('sau_ct_file_upload_contract', function ($join) 
+        {
+          $join->on("sau_ct_file_upload_contract.file_upload_id", "sau_ct_file_upload_contracts_leesse.id");
+          $join->whereRaw("sau_ct_file_upload_contract.contract_id IN (select id from sau_ct_information_contract_lessee where company_id = {$this->company})");
+        })
+        ->join('sau_ct_information_contract_lessee', function ($join) 
+        {
+          $join->on("sau_ct_information_contract_lessee.id", "sau_ct_file_upload_contract.contract_id"); 
+          $join->on("sau_ct_information_contract_lessee.company_id", "=", DB::raw("{$this->company}"));
+        })
+        ->leftJoin('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+        ->leftJoin('sau_ct_contract_employees', function ($join) 
+        {
+          $join->on("sau_ct_contract_employees.id", "sau_ct_file_document_employee.employee_id"); 
+          $join->on("sau_ct_contract_employees.company_id", "=", DB::raw("{$this->company}"));
+        });
+
+        if ($proyectOn == 'SI')
+        {
+          $files->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
+          ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
+          ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id');
+        }
+
+        $files->whereIn('sau_ct_file_upload_contracts_leesse.module', ['Empleados', 'Documentos globales'])
+        ->groupBy('sau_ct_file_upload_contracts_leesse.id')
+        ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');  
+
+        $url = "/legalaspects/upload-files";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+          if (isset($filters['contracts']))
+            $files->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
+
+          $files->betweenCreated($filters["dateRange"]); 
+          
+          if (isset($filters['users']))
+            $files->inUsers($this->getValuesForMultiselect($filters["users"]), $filters['filtersType']['users']);
+        }
+
+        if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
+        {
+          $contract_id = $this->getContractIdUser($this->user->id);
+          $files->where('sau_ct_information_contract_lessee.id', $contract_id);
+        }
+
+        $files->selectRaw(implode(",", $select));
+        
+        return Vuetable::of($files)
+            ->make();
     }
 }

@@ -70,7 +70,8 @@ class VuetableColumnManager
         'legalaspectscontractdocumentsconsultingcontractreportexpired',
         'legalaspectscontractdocumentsconsultingemployeereportclosewinning',
         'legalaspectscontractdocumentsconsultingcontractreportclosewinning',
-        'legalaspectscontractor'
+        'legalaspectscontractor',
+        'legalaspectsfileUploademployeecontractsreport'
     ];
 
     protected $customColumnsName;
@@ -1066,6 +1067,26 @@ class VuetableColumnManager
         $colums = array_merge($colums, [
             [ 'name' => '', 'data' => 'controlls', 'title' => 'Controles', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => false ]
         ]);
+
+        return $colums;
+    }
+
+    public function legalaspectsfileUploademployeecontractsreport()
+    {
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_contract_employees.name', 'data' => 'employee_name', 'title' => 'Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'social_reason', 'title' => 'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_file_upload_contracts_leesse.name', 'data' => 'name', 'title' => 'Nombre de documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_file_upload_contracts_leesse.state', 'data' => 'state', 'title' => 'Estado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'sau_ct_file_upload_contracts_leesse.module', 'data' => 'module', 'title' => 'Tipo', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
+            ['name' => 'date_upload', 'data' => 'date_upload', 'title' => 'Año-Mes', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+        ];
+
+        if ($this->configuration && $this->configuration->value == 'SI')
+            $colums = array_merge($colums, [
+                ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
+            ]);
 
         return $colums;
     }

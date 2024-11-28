@@ -998,6 +998,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('fileUpload/getFilesItem', 'LegalAspects\Contracs\FileUploadController@getFilesItem');
       Route::ApiResource('fileUpload', 'LegalAspects\Contracs\FileUploadController');
       Route::post('fileUpload/report', 'LegalAspects\Contracs\FileUploadController@dataReport');
+      Route::post('fileUpload/reportEmployeeContracts', 'LegalAspects\Contracs\FileUploadController@reportEmployeeFiles');
       Route::post('fileUpload/downloadMerge', 'LegalAspects\Contracs\ContractEmployeeController@downloadMerge');
 
       Route::post('typeRating/data', 'LegalAspects\Contracs\TypeRatingController@data');
