@@ -1017,7 +1017,8 @@ class FileUploadController extends Controller
         {
           $files->leftJoin('sau_ct_contract_employee_proyects', 'sau_ct_contract_employee_proyects.employee_id', 'sau_ct_contract_employees.id')
           ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
-          ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contract_employee_proyects.proyect_contract_id');
+          ->leftjoin('sau_ct_proyects', 'sau_ct_proyects.id', DB::raw("
+            CASE WHEN sau_ct_contract_employees.id IS NOT NULL THEN sau_ct_contract_employee_proyects.proyect_contract_id ELSE sau_ct_contracts_proyects.proyect_id END"));
         }
 
         $files->whereIn('sau_ct_file_upload_contracts_leesse.module', ['Empleados', 'Documentos globales'])
