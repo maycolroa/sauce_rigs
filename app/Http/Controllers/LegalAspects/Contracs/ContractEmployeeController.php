@@ -201,7 +201,6 @@ class ContractEmployeeController extends Controller
                     {
                         $exist = strpos($value, '/');
 
-                        \Log::info($apply);
                         if ($exist && $apply == 'SI')
                             $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         else
@@ -376,7 +375,7 @@ class ContractEmployeeController extends Controller
                 }
 
             ],
-            "activities.*.documents.*.files.*.name" => [
+            /*"activities.*.documents.*.files.*.name" => [
                 function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
@@ -387,7 +386,6 @@ class ContractEmployeeController extends Controller
                     {
                         $exist = strpos($value, '/');
 
-                        \Log::info($apply);
                         if ($exist && $apply == 'SI')
                             $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
                         else
@@ -399,7 +397,7 @@ class ContractEmployeeController extends Controller
                         }
                     }
                 }
-            ]
+            ]*/
         ])->validate();
 
         DB::beginTransaction();
