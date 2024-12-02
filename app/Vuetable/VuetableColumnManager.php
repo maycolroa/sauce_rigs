@@ -1074,7 +1074,7 @@ class VuetableColumnManager
     public function legalaspectsfileUploademployeecontractsreport()
     {
         $colums = [
-            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
+            ['name' => 'sau_ct_information_contract_lessee.id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => true, 'detail' => false, 'key' => true ],
             ['name' => 'sau_ct_contract_employees.name', 'data' => 'employee_name', 'title' => 'Empleado', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data' => 'social_reason', 'title' => 'Contratista', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
             ['name' => 'sau_ct_file_upload_contracts_leesse.name', 'data' => 'name', 'title' => 'Nombre de documento', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ],
