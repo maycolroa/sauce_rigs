@@ -1026,7 +1026,7 @@ class FileUploadController extends Controller
         ->groupBy('sau_ct_file_upload_contracts_leesse.id')
         ->orderBy('sau_ct_file_upload_contracts_leesse.id', 'DESC');  
 
-        $url = "/legalaspects/upload-files";
+        $url = "/legalaspects/upload-files/report";
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
