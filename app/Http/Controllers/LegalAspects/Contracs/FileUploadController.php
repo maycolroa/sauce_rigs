@@ -981,7 +981,8 @@ class FileUploadController extends Controller
 
         $select = [];
 
-        $select[] = "sau_ct_file_upload_contracts_leesse.id";
+        $select[] = "sau_ct_file_upload_contracts_leesse.id AS file_id";
+        $select[] = "sau_ct_information_contract_lessee.id AS id";
         $select[] = "sau_ct_file_upload_contracts_leesse.name";  
         $select[] = "sau_ct_file_upload_contracts_leesse.created_at";
         $select[] = "date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') AS date_upload";
