@@ -375,25 +375,22 @@ class ContractEmployeeController extends Controller
                 }
 
             ],
-            /*"activities.*.documents.*.files.*.name" => [
+            /*"activities.*.documents.*.files.*.expirationDate" => [
                 function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
 
-                    $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].apply_file");
+                    $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].required_expiration_date");
 
-                    if ($value && is_string($value))
+                    if ($apply == 'SI')
                     {
-                        $exist = strpos($value, '/');
-
-                        if ($exist && $apply == 'SI')
-                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
-                        else
+                        if ($index[5] > 1)
                         {
-                            $exist = strpos($value, '.');
+                            $i_file = $index[5]-1;
 
-                            if ($exist && $apply == 'SI')
-                                $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                            $expired_date_old_file = $request->input("activities.$index[1].documents.$index[3].files.$i_file.expirationDate");
+
+
                         }
                     }
                 }

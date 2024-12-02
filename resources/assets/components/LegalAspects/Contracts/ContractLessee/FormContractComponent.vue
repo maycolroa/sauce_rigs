@@ -36,7 +36,7 @@
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.business_name" label="Nombre Comercial" type="text" name="business_name" :error="form.errorsFor('business_name')" placeholder="Nombre Comercial"></vue-input>
                     </b-form-row>
 					<b-form-row>
-						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.nit" label="Nit" type="number" name="nit" :error="form.errorsFor('nit')" placeholder="Nit o número de indetificación"></vue-input>
+						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.nit" label="Nit" type="text" name="nit" :error="form.errorsFor('nit')" placeholder="Nit o número de indetificación"></vue-input>
 						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.social_reason" label="Razón social" type="text" name="social_reason" :error="form.errorsFor('social_reason')" placeholder="Razón social"></vue-input>
 					</b-form-row>
 					<b-form-row>
