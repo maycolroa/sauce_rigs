@@ -1031,6 +1031,8 @@ class ContractEmployeeController extends Controller
                 {
                     $apply_file = 'SI';
                     $apply_motive = '';
+                    $state_file = '';
+                    $motive_rejected_file = '';
                     $files->transform(function($file, $index) use (&$apply_file, &$apply_motive){
 
                         $explode = explode('.',$file->file);
@@ -1051,6 +1053,8 @@ class ContractEmployeeController extends Controller
 
                         $apply_motive = $file->apply_motive;
                         $apply_file = $file->apply_file;
+                        $state_file = $file->state;
+                        $motive_rejected_file = $file->reason_rejection;
 
                         return $file;
                     });
@@ -1058,6 +1062,8 @@ class ContractEmployeeController extends Controller
 
                     $document->apply_file = $apply_file;
                     $document->apply_motive = $apply_motive;
+                    $document->state_file = $state_file;
+                    $document->motive_rejected_file = $motive_rejected_file;
                     $document->files = $files;
                 }
 
