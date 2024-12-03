@@ -212,6 +212,35 @@ class ContractEmployeeController extends Controller
                         }
                     }
                 }
+            ],
+            "activities.*.documents.*.files.*.expirationDate" => [
+                function ($attribute, $value, $fail) use ($request)
+                {
+                    $index = explode('.', $attribute);
+
+                    $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].required_expiration_date");
+
+                    $isset_id = $request->input("activities.$index[1].documents.$index[3].files.$index[5].id");
+
+                    if (!$isset_id)
+                    {
+                        if ($apply == 'SI')
+                        {
+                            if ($index[5] > 0)
+                            {
+                                $i_file = $index[5]-1;
+
+                                $expired_date_old_file = $request->input("activities.$index[1].documents.$index[3].files.$i_file.expirationDate");
+
+                                $valid = Carbon::parse($value)->gt(Carbon::parse($expired_date_old_file));
+
+                                if (!$valid)
+                                    $fail('La fecha de vencimiento del archivo no puede ser igual o menor que la fecha de vencimiento del archivo cargado anteriormente');
+
+                            }
+                        }
+                    }
+                }
             ]
         ])->validate();
 
@@ -375,26 +404,35 @@ class ContractEmployeeController extends Controller
                 }
 
             ],
-            /*"activities.*.documents.*.files.*.expirationDate" => [
+            "activities.*.documents.*.files.*.expirationDate" => [
                 function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
 
                     $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].required_expiration_date");
 
-                    if ($apply == 'SI')
+                    $isset_id = $request->input("activities.$index[1].documents.$index[3].files.$index[5].id");
+
+                    if (!$isset_id)
                     {
-                        if ($index[5] > 1)
+                        if ($apply == 'SI')
                         {
-                            $i_file = $index[5]-1;
+                            if ($index[5] > 0)
+                            {
+                                $i_file = $index[5]-1;
 
-                            $expired_date_old_file = $request->input("activities.$index[1].documents.$index[3].files.$i_file.expirationDate");
+                                $expired_date_old_file = $request->input("activities.$index[1].documents.$index[3].files.$i_file.expirationDate");
 
+                                $valid = Carbon::parse($value)->gt(Carbon::parse($expired_date_old_file));
 
+                                if (!$valid)
+                                    $fail('La fecha de vencimiento del archivo no puede ser igual o menor que la fecha de vencimiento del archivo cargado anteriormente');
+
+                            }
                         }
                     }
                 }
-            ]*/
+            ]
         ])->validate();
 
         DB::beginTransaction();
@@ -495,35 +533,36 @@ class ContractEmployeeController extends Controller
 
                     foreach ($document['files'] as $keyF => $file) 
                     {
-                        $create_file = true;
+                        $create_file = false;
 
                         if (isset($file['id']))
                         {
                             $fileUpload = FileUpload::findOrFail($file['id']);
 
-                            if ($file['old_name'] == $file['file'])
-                                $create_file = false;
+                            if ($file['old_name'] != $file['file'])
+                                $create_file = true;
                             /*else
                                 array_push($files_names_delete, $file['old_name']);*/
+                        }
+                        else
+                        {
+                            $create_file = true;
+
+                            $fileUpload = new FileUpload();
+                            $fileUpload->user_id = $this->user->id;
                         }
 
                         if ($create_file)
                         {
-                            $fileUpload = new FileUpload();
-                            $fileUpload->user_id = $this->user->id;
-
                             if (!isset($file['has_class']))
                             {
-                                if (!isset($file['id']))
-                                {
-                                    $file_tmp = $file['file'];
-                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                                $file_tmp = $file['file'];
+                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
+                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
 
-                                    $fileUpload->file = $nameFile;
-                                    $fileUpload->name = $file['name'];
-                                    $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
-                                }
+                                $fileUpload->file = $nameFile;
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
                             }
                             else
                             {
@@ -604,6 +643,7 @@ class ContractEmployeeController extends Controller
 
                             $fileUpload->apply_file = $document['apply_file'];
                             $fileUpload->apply_motive = $document['apply_motive'];
+                            $fileUpload->module = 'Empleados';
 
                             if (!$fileUpload->save())
                                 return $this->respondHttp500();
@@ -984,6 +1024,7 @@ class ContractEmployeeController extends Controller
                 ->where('sau_ct_file_upload_contract.contract_id', $contract)
                 ->where('sau_ct_file_document_employee.document_id', $document->id)
                 ->where('sau_ct_file_document_employee.employee_id', $employee_id)
+                ->whereRaw("sau_ct_file_upload_contracts_leesse.name <> '' and sau_ct_file_upload_contracts_leesse.file <> ''")
                 ->get();
 
                 if ($files)

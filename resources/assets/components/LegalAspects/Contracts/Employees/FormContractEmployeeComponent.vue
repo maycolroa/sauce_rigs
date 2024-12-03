@@ -192,18 +192,29 @@
                             <b-collapse :id="`accordion${file.key}-1`" visible :accordion="`accordion-activities.${index}.documents.${indexDocument}`">
                               <b-card-body border-variant="primary" class="mb-3 box-shadow-none">
                                 <div class="rounded ui-bordered p-3 mb-3">
-                        
-                                  <b-form-row>
-                                    <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
-                                    <vue-radio :disabled="viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
-                                    </vue-radio>
-                                  </b-form-row>
-                                  <b-form-row  v-if="file.required_expiration_date == 'SI'">
-                                    <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
-                                  </b-form-row>
+                                  <div v-if="file.apply_file == 'SI'">
+                                    <b-form-row>
+                                      <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
+                                      <vue-radio :disabled="viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
+                                      </vue-radio>
+                                    </b-form-row>
+                                    <b-form-row  v-if="file.required_expiration_date == 'SI'">
+                                      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
+                                    </b-form-row>
 
+                                    <b-form-row>
+                                      <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                    </b-form-row>
+                                  </div>
+                                  <div v-if="file.apply_file == 'NO'">
+                                    <b-form-row>
+                                      <vue-textarea class="col-md-12" v-model="file.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+                                    </b-form-row>
+                                  </div>
                                   <b-form-row>
-                                    <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                    <vue-advanced-select class="col-md-6" v-model="file.state" :disabled="true" name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" :multiple="false" :allow-empty="false">
+                                    </vue-advanced-select>
+                                    <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo" :disabled="true"></vue-textarea>
                                   </b-form-row>
                                   
                                 </div>
@@ -269,6 +280,12 @@ export default {
     activitiesUrl: { type: String, default: "" },
     afpDataUrl: { type: String, default: "" },
     sexs: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },	
+    states: {
       type: Array,
       default: function() {
         return [];
@@ -422,7 +439,7 @@ export default {
       });
     },*/
     addFile(documento) {
-      console.log(documento);
+      console.log(documento); 
 			let required = false;
 
 			if (documento.required_expired_date === 'SI')

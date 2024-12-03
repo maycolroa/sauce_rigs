@@ -17,7 +17,8 @@
                 :sexs="sexs"
                 activitiesUrl="/selects/contracts/ctActivitiesContracts"
                 afp-data-url="/selects/afp"
-                :cancel-url="{ name: 'legalaspects-contracts-employees'}"/>
+                :cancel-url="{ name: 'legalaspects-contracts-employees'}"                
+                :states="states"/>
           </div>
         </b-card-body>
       </b-card>
@@ -29,6 +30,7 @@
 import FormContractEmployee from '@/components/LegalAspects/Contracts/Employees/FormContractEmployeeComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'legalaspects-contracts-employees-view',
@@ -36,13 +38,15 @@ export default {
     title: 'Empleados - Ver'
   },
   components:{
-    FormContractEmployee
+    FormContractEmployee,
+    Loading
   },
   data () {
     return {
       data: [],
 			sexs: [],
       ready: false,
+      states: [],
     }
   },
   created(){
@@ -50,6 +54,7 @@ export default {
     .then(response => {
         this.data = response.data.data;
     	  this.fetchSelect('sexs', '/selects/sexs')
+        this.fetchSelect('states', '/selects/contracts/statesFile')
         setTimeout(() => {
             this.ready = true
         }, 1000)
@@ -58,6 +63,7 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         //this.$router.go(-1);
     });
+
   },
   methods: {
 		fetchSelect(key, url)

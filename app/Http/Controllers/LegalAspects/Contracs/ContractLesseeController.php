@@ -516,19 +516,52 @@ class ContractLesseeController extends Controller
 
                     $apply = $request->input("documents.$index[1].files.$index[3].apply_file");
 
+                    $isset_id = $request->input("documents.$index[1].files.$index[3].id");
+
                     if ($value && is_string($value))
                     {
-                        $exist = strpos($value, '/');
-
-                        \Log::info($apply);
-                        if ($exist && $apply == 'SI')
-                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
-                        else
+                        if (!$isset_id)
                         {
-                            $exist = strpos($value, '.');
+                            $exist = strpos($value, '/');
 
                             if ($exist && $apply == 'SI')
                                 $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                            else
+                            {
+                                $exist = strpos($value, '.');
+
+                                if ($exist && $apply == 'SI')
+                                    $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                            }
+                        }
+                    }
+                }
+            ],
+            "documents.*.files.*.expirationDate" => [
+                function ($attribute, $value, $fail) use ($request)
+                {
+                    $index = explode('.', $attribute);
+
+                    $apply = $request->input("documents.$index[1].files.$index[3].required_expiration_date");
+
+                    $isset_id = $request->input("documents.$index[1].files.$index[3].id");
+
+                    if (!$isset_id)
+                    {
+                        if ($apply == 'SI')
+                        {
+                            if ($index[3] > 0)
+                            {
+                                $i_file = $index[3]-1;
+
+                                $expired_date_old_file = $request->input("documents.$index[1].files.$i_file.expirationDate");
+
+                                $valid = Carbon::parse($value)->gt(Carbon::parse($expired_date_old_file));
+
+                                if (!$valid)
+                                    $fail('La fecha de vencimiento del archivo no puede ser igual o menor que la fecha de vencimiento del archivo cargado anteriormente');
+
+                            }
                         }
                     }
                 }
@@ -1047,16 +1080,23 @@ class ContractLesseeController extends Controller
                 {
                     if ($value && is_string($value))
                     {
+                        $index = explode('.', $attribute);
+
+                        $isset_id = $request->input("items.$index[1].files.$index[3].id");
+                        
                         $exist = strpos($value, '/');
 
-                        if ($exist)
-                            $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
-                        else
+                        if (!$isset_id)
                         {
-                            $exist = strpos($value, '.');
-
                             if ($exist)
                                 $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                            else
+                            {
+                                $exist = strpos($value, '.');
+
+                                if ($exist)
+                                    $fail('El nombre no puede contener ninguno de los caracteres especiales indicados');
+                            }
                         }
                     }
                 }
