@@ -212,7 +212,7 @@
                                     </b-form-row>
                                   </div>
                                   <b-form-row>
-                                    <vue-advanced-select class="col-md-6" v-model="file.state" :disabled="true" name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" :multiple="false" :allow-empty="false">
+                                    <vue-advanced-select v-if="file.id" class="col-md-6" v-model="file.state" :disabled="true" name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" :multiple="false" :allow-empty="false">
                                     </vue-advanced-select>
                                     <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo" :disabled="true"></vue-textarea>
                                   </b-form-row>
@@ -458,7 +458,8 @@ export default {
 				expirationDate: '',
 				file: '',
 				required_expiration_date: 'SI',
-				required_date: required
+				required_date: required,
+        apply_file: 'SI'
 			}
 
 	      documento.files.push(content);
