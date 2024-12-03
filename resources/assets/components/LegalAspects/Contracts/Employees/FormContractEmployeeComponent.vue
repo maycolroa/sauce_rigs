@@ -226,6 +226,11 @@
                       <b-form-row v-if="document.apply_file == 'NO'">
 						            <vue-textarea class="col-md-12" v-model="document.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
                       </b-form-row>
+                      <b-form-row v-if="document.apply_file == 'NO'">
+                        <vue-advanced-select class="col-md-6" v-model="file.state" :disabled="true" name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.state`)" :multiple="false" :allow-empty="false">
+                        </vue-advanced-select>
+                        <vue-textarea v-if="file.state == 'RECHAZADO'" class="col-md-6" v-model="file.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.reason_rejection`)" placeholder="Motivo del rechazo" :disabled="true"></vue-textarea>
+                      </b-form-row>
                     </div>
                   </b-col>
                 </b-row>
