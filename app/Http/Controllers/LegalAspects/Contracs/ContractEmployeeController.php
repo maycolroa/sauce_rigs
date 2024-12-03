@@ -1033,7 +1033,7 @@ class ContractEmployeeController extends Controller
                     $apply_motive = '';
                     $state_file = '';
                     $motive_rejected_file = '';
-                    $files->transform(function($file, $index) use (&$apply_file, &$apply_motive){
+                    $files->transform(function($file, $index) use (&$apply_file, &$apply_motive, &$state_file, &$motive_rejected_file){
 
                         $explode = explode('.',$file->file);
                         $type = $file->file && COUNT($explode) > 1 ? $explode[1] : null;
