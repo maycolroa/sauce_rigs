@@ -217,6 +217,10 @@ class ContractEmployeeImportSocialSecure implements ToCollection
             $fileUpload->expirationDate = $day_expiration->format('Y-m-d');   
             $fileUpload->save();     
 
+            $employee->update([
+                'state' => 'Pendiente'
+            ]);
+
             return true;
         }
     }

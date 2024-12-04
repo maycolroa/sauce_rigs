@@ -38,7 +38,8 @@ export default {
     title: 'Empleados - Ver'
   },
   components:{
-    FormContractEmployeeView
+    FormContractEmployeeView,
+    Loading
   },
   data () {
     return {

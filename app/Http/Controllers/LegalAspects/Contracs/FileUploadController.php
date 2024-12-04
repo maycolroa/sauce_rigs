@@ -567,6 +567,7 @@ class FileUploadController extends Controller
 
         $pendiente = false;
         $rejected = false;
+        $expired = false;
 
         if ((isset($file) && $file) || (isset($employee) && $employee))
         {
@@ -591,24 +592,77 @@ class FileUploadController extends Controller
                     {
                         $fileUpload = FileUpload::findOrFail($file['id']);
 
-                        if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                        if ($fileUpload->expirationDate)
                         {
-                            if ($fileUpload->state == 'ACEPTADO')
-                                $count_aprobe++;
-                            else if ($fileUpload->state == 'RECHAZADO')
-                              $rejected = true;
+                            if ($fileUpload->expirationDate > date('Y-m-d'))
+                            {
+                                if ($fileUpload->state == 'ACEPTADO')
+                                {
+                                    $count_aprobe++;
+                                    $rejected = false;
+                                    $pendiente = false;
+                                    $expired = false;
+                                }
+                                else if ($fileUpload->state == 'RECHAZADO')
+                                {
+                                    $rejected = true;
+                                    $pendiente = false;
+                                    $expired = false;
+                                }
+                                else if ($fileUpload->state == 'PENDIENTE')
+                                {
+                                    $rejected = false;
+                                    $pendiente = true;
+                                    $expired = false;
+                                }
+                            }
+                            else
+                            {
+                                if ($fileUpload->state == 'RECHAZADO')
+                                {
+                                    $rejected = true;
+                                    $pendiente = false;
+                                    $expired = true;
+                                }
+                                else if ($fileUpload->state == 'PENDIENTE')
+                                {
+                                    $rejected = false;
+                                    $pendiente = true;
+                                    $expired = true;
+                                }
+                            }
                         }
                         else
                         {
                             if ($fileUpload->state == 'ACEPTADO')
+                            {
                                 $count_aprobe++;
+                                $rejected = false;
+                                $pendiente = false;
+                                $expired = false;
+                            }
                             else if ($fileUpload->state == 'RECHAZADO')
-                              $rejected = true;
+                            {
+                                $rejected = true;
+                                $pendiente = false;
+                                $expired = false;
+                            }
+                            else if ($fileUpload->state == 'PENDIENTE')
+                            {
+                                $rejected = false;
+                                $pendiente = true;
+                                $expired = false;
+                            }
                         }
                     }
 
+                    
                     if ($count_files > 0 && $count_aprobe >= $count_files)
                         $count++;
+                    else if (!$pendiente && !$rejected && !$expired)
+                        $count++;
+                    else if ($count_files < 1)
+                        $pendiente = true;
                 }
             }
 
@@ -618,6 +672,13 @@ class FileUploadController extends Controller
                 [ 'state' => 'Rechazado']
               );
               break;
+            }
+            else if ($pendiente || $expired)
+            {
+                $employee->update(
+                    [ 'state' => 'Pendiente']
+                );
+                break;
             }
             else if ($documents_counts > $count)
             {
@@ -629,7 +690,7 @@ class FileUploadController extends Controller
             }
           }
 
-          if(!$pendiente && !$rejected)
+          if(!$pendiente && !$rejected && !$expired)
           {
             $employee->update(
               [ 'state' => 'Aprobado']
