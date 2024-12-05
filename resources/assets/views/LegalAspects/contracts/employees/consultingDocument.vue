@@ -21,7 +21,7 @@
                                             <b-card border-variant="dark">
                                                 <h6 style="padding-left: 5%">Documento:  {{document.name}}.</h6>
                                                 <br>
-                                                <table class="table table-bordered table-striped mb-0">
+                                                <table v-if="document.files.id" class="table table-bordered table-striped mb-0">
                                                     <thead>
                                                         <tr style="border: solid 2px black">
                                                             <th class="text-center align-middle" style="border: solid 2px black">Nombre de Archivo</th>
@@ -45,6 +45,7 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+                                                <p v-else><b>Sin archivo cargado</b></p>
                                             </b-card>
                                             <br><br>
                                         </div>
@@ -54,7 +55,7 @@
                         </template>
                         <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
                             <template>
-                                <b-btn variant="default" @click="refresh()" :disabled="loading">Atras</b-btn>
+                                <b-btn variant="default" @click="refresh()" >Atras</b-btn>
                             </template>
                         </div>
                     </b-card>
