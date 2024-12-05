@@ -1623,8 +1623,9 @@ class ContractEmployeeController extends Controller
                     $files = $document->files;
 
                     $files = $files->sortByDesc('id')->first();
-                   
-                    $files->expirationDate = $files->expirationDate ? (Carbon::createFromFormat('D M d Y', $files->expirationDate)->format('Y-m-d')) : 'No aplica';
+
+                    if ($files->expirationDate)                   
+                        $files->expirationDate = $files->expirationDate ? (Carbon::createFromFormat('D M d Y', $files->expirationDate)->format('Y-m-d')) : 'No aplica';
 
                     $document->files = $files;
                 }

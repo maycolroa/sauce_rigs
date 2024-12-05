@@ -64,15 +64,6 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
     });
 
-    let postData = Object.assign({}, {employee_id: this.$route.params.id});
-    axios.post('/legalAspects/employeeContract/consultingDocumentResumen', postData)
-    .then(response => {
-        
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-    });
-
     this.fetchSelect('states', '/selects/contracts/statesFile')
     this.fetchSelect('sexs', '/selects/sexs')
   },
