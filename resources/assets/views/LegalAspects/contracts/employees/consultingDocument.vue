@@ -11,6 +11,7 @@
                     <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
                         <h5 style="padding-left: 5%">Contratista:  {{tableDocuments.contract}}.</h5>
                         <h5 style="padding-left: 5%">Empleado:  {{tableDocuments.employee}}.</h5>
+                        <p style="color: red; padding-left: 5%"><b>IMPORTANTE:</b> Solo se muestran los archivos más recientes subidos para cada documento</p>
                         <br>
                         <template v-for="(activity, index) in tableDocuments.activities" >
                             <b-row :key="`row-${index}`">
@@ -39,8 +40,7 @@
                                                             <td class="text-center align-middle" style="border: solid 2px black">{{ document.files.created_at }}</td>
                                                             <td>
                                                                 <center><b-btn 
-                                                                v-if="document.files.id"
-                                                                @click="editFile(document.files.id)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Consultar archivo"><span class="ion ion-md-eye"></span></b-btn></center>
+                                                                v-if="document.files.id" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Consultar archivo"><a :href="`/legalaspects/upload-files/view/${document.files.id}`" target='blank'><span class="ion ion-md-eye"></span></a></b-btn></center>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -117,10 +117,6 @@ export default {
                 });
             }
         },
-		editFile(id)
-		{
-			this.$router.push({name: 'legalaspects-upload-files-view', params : { id }});
-		},
         refresh() {
             if (this.auth.hasRole['Arrendatario'] || this.auth.hasRole['Contratista'])
             {
