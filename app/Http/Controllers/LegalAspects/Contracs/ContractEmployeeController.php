@@ -1620,14 +1620,17 @@ class ContractEmployeeController extends Controller
             {
                 foreach ($activity->documents as $key2 => $document) 
                 {
-                    $files = $document->files;
+                    if (COUNT($document->files) > 0)
+                    {
+                        $files = $document->files;
 
-                    $files = $files->sortByDesc('id')->first();
+                        $files = $files->sortByDesc('id')->first();
 
-                    if (isset($files->expirationDate))                   
-                        $files->expirationDate = $files->expirationDate ? (Carbon::createFromFormat('D M d Y', $files->expirationDate)->format('Y-m-d')) : 'No aplica';
+                        if (isset($files->expirationDate))                   
+                            $files->expirationDate = $files->expirationDate ? (Carbon::createFromFormat('D M d Y', $files->expirationDate)->format('Y-m-d')) : 'No aplica';
 
-                    $document->files = $files;
+                        $document->files = $files;
+                    }
                 }
             }
 

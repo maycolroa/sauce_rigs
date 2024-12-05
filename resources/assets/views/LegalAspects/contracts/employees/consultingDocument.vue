@@ -38,7 +38,9 @@
                                                             <td class="text-center align-middle" style="border: solid 2px black">{{ document.files.expirationDate }}</td>
                                                             <td class="text-center align-middle" style="border: solid 2px black">{{ document.files.created_at }}</td>
                                                             <td>
-                                                                <center><b-btn @click="editFile(document.files.id)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Editar Usuario"><span class="ion ion-md-eye"></span></b-btn></center>
+                                                                <center><b-btn 
+                                                                v-if="document.files.id"
+                                                                @click="editFile(document.files.id)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Consultar archivo"><span class="ion ion-md-eye"></span></b-btn></center>
                                                             </td>
                                                         </tr>
                                                     </tbody>
