@@ -325,6 +325,14 @@ export default [
 			]),
 			...middleware({ 'check-permission': 'contracts_r' }, [
 				{
+					name: 'legalaspects-contracts-employees-consulting-documents',
+					path: 'employees/consultingDocuments/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/consultingDocument')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
 					name: 'legalaspects-contracts-employees-view-contract-view',
 					path: 'employees/view/contract/view/:id',
 					component: () =>

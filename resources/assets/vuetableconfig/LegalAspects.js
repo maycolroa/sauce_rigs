@@ -919,6 +919,20 @@ export default [
                         id: 'id'
                     },
                     permission: 'contracts_employee_u'
+                },
+                {
+                    config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-list',
+                        title: 'Consulta resumida de documentos'
+                    },
+                    data: {
+                        routePush: { name: 'legalaspects-contracts-employees-consulting-documents'},
+                        //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                        id: 'id'
+                    },
+                    permission: 'contracts_employee_u'
                 }
             ]
         },
@@ -1009,7 +1023,22 @@ export default [
                     //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
                     id: 'id'
                 },
-                permission: 'contracts_employee_u'
+                permission: 'contracts_r'
+            },
+        
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Consulta resumida de documentos'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-employees-consulting-documents'},
+                    //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                    id: 'id'
+                },
+                permission: 'contracts_r'
             }]
         },
         {

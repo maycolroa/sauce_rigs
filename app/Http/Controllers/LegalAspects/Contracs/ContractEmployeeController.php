@@ -1017,7 +1017,8 @@ class ContractEmployeeController extends Controller
                     'sau_ct_file_upload_contracts_leesse.reason_rejection AS reason_rejection',
                     'sau_ct_file_upload_contracts_leesse.apply_file AS apply_file',
                     'sau_ct_file_upload_contracts_leesse.apply_motive AS apply_motive',
-                    'sau_ct_file_upload_contracts_leesse.observations AS observations'
+                    'sau_ct_file_upload_contracts_leesse.observations AS observations',
+                    'sau_ct_file_upload_contracts_leesse.created_at AS created_at'
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
@@ -1600,5 +1601,51 @@ class ContractEmployeeController extends Controller
 
         return Vuetable::of($documentsGlobal)
                     ->make();
+    }
+
+    public function consultingDocumentResumen(Request $request)
+    {
+        try {
+            $employee = ContractEmployee::find($request->employee_id);
+
+            $contract = ContractLesseeInformation::find($employee->contract_id);
+
+            $activities = $employee->activities->transform(function($activity, $index) use ($employee) {
+                $activity->documents = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
+
+                return $activity;
+            });
+
+            foreach ($activities as $key => $activity) 
+            {
+                foreach ($activity->documents as $key2 => $document) 
+                {
+                    $files = $document->files;
+
+                    $files = $files->sortByDesc('id')->first();
+                   
+                    $files->expirationDate = $files->expirationDate ? (Carbon::createFromFormat('D M d Y', $files->expirationDate)->format('Y-m-d')) : 'No aplica';
+
+                    $document->files = $files;
+                }
+            }
+
+            $data = [
+                'contract' => $contract->social_reason,
+                'contract_id' => $contract->id,
+                'employee' => $employee->name,
+                'activities' => $activities->values()
+            ];
+
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+        }  catch(Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+        }
+        
+
     }
 }
