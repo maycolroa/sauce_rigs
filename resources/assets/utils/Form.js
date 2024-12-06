@@ -142,7 +142,8 @@ export default class Form {
             Alerts.error('Error', error.response.data.error);
           }
           else if(error.response.data.message == 'The given data was invalid.'){
-            Alerts.error('Error en los datos', 'Los datos ingresados no son validos');  
+            //Alerts.error('Error en los datos', 'Los datos ingresados no son validos');  
+            Alerts.error('Error en los datos', 'Verifique los datos ingresados en el formulario');  
           }
           else{
             if (error.response.status == 403)
