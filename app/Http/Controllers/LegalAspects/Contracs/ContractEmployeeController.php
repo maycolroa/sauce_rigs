@@ -1317,6 +1317,8 @@ class ContractEmployeeController extends Controller
                        if ($ext != 'xlsx' && $ext != 'xls')
                             $fail('Archivo debe ser un excel (.xlsx, .xls)');
                     }
+                    else if (!$value)
+                        $fail('Archivo debe ser un excel (.xlsx, .xls)');
                 }
             ],
             "file_social_secure" => [
@@ -1328,6 +1330,17 @@ class ContractEmployeeController extends Controller
                         
                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf' && $ext != 'docx' && $ext != 'doc' && $ext != 'pptx' && $ext != 'ppt' && $ext != 'jpg' && $ext != 'jpeg' && $ext != 'png')
                             $fail('Archivo debe ser un pdf, un excel (.xlsx, .xls), un word (.docx, .doc), una presentación (.pptx, .ppt) o una imagen (.jpg, .jpeg, .png)');
+                    }
+                    else if (!$value)
+                        $fail('Archivo debe ser un excel (.xlsx, .xls)');
+                }
+            ],
+            "description" => [
+                function ($attribute, $value, $fail)
+                {
+                    if (!$value || !is_string($value))
+                    {
+                        $fail('El campo descripcion es obligatorio');
                     }
                 }
             ]

@@ -33,8 +33,8 @@
                     <label class="col-md-2"><b>Período a evaluar</b></label>
                 </b-form-row>
                 <b-form-row>
-                    <vue-advanced-select class="col-md-2" :disabled="isEdit" v-model="form.year" :options="yearsOptions" :searchable="false" name="years" placeholder="Año" :multiple="false"></vue-advanced-select>
-                    <vue-advanced-select class="col-md-2" :disabled="isEdit" v-model="form.month" :options="monthsOptions" @input="periodValid()" :searchable="true" name="months" placeholder="Mes" :multiple="false"></vue-advanced-select>
+                    <vue-advanced-select class="col-md-2" :disabled="isEdit" v-model="form.year" :options="yearsOptions" :searchable="false" name="years" placeholder="Año" :multiple="false" :error="form.errorsFor('year')"></vue-advanced-select>
+                    <vue-advanced-select class="col-md-2" :disabled="isEdit" v-model="form.month" :options="monthsOptions" @input="periodValid()" :searchable="true" name="months" placeholder="Mes" :multiple="false" :error="form.errorsFor('month')"></vue-advanced-select>
                 </b-form-row>
                 <b-form-row>
                     <vue-input v-if="viewOnly || isEdit" disabled class="col-md-4" v-model="form.inform_date" label="Fecha de presentación" type="text" name="inform_date" placeholder="Fecha de presentación"></vue-input>

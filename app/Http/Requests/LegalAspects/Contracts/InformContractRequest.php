@@ -68,6 +68,8 @@ class InformContractRequest extends FormRequest
 
         return [
             'contract_id' => 'required|exists:sau_ct_information_contract_lessee,id',
+            'year' => 'required',
+            'month' => 'required',
             'inform.themes.*.items.*.observations.*.description' => 'required',
             'inform.themes.*.items.*.files.*.file' => 'max:20480'
         ];

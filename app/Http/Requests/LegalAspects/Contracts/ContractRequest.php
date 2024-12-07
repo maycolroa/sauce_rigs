@@ -139,9 +139,11 @@ class ContractRequest extends FormRequest
                 'arl' => 'required|array',
                 'number_workers' => 'required|integer|min:0',
                 'risk_class' => 'required',
+                'social_security_working_day' => 'required',
                 'documents.*.files.*.name' => 'required',
                 'documents.*.files.*.file' => 'required',
-                'documents.*.apply_motive' => 'required_if:documents.*.apply_file,NO|nullable|string|min:20'
+                'documents.*.apply_motive' => 'required_if:documents.*.apply_file,NO|nullable|string|min:20',
+                'documents.*.files.*.expirationDate' => 'required_if:documents.*.files.*.required_expiration_date,SI'
             ];
         }
         
@@ -159,7 +161,8 @@ class ContractRequest extends FormRequest
     public function messages()
     {
         return [
-            'documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.'
+            'documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.',
+            'documents.*.files.*.expirationDate.required_if' => 'El campo fecha de vencimiento es obligatorio cuando el campo Requiere fecha de vencimiento es SI.'
         ];
     }
 }

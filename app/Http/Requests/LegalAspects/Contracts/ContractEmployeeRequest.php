@@ -95,6 +95,7 @@ class ContractEmployeeRequest extends FormRequest
             'rh' => 'required',
             'salary' => 'required',
             'date_of_birth' => 'required',
+            'income_date' => 'required',
             'activities' => 'required|array',
             'activities.*.selected' => 'required',
             'activities.*.documents.*.files.*.name' => 'required',
@@ -120,7 +121,8 @@ class ContractEmployeeRequest extends FormRequest
     public function messages()
     {
         return [
-            'activities.*.documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.'
+            'activities.*.documents.*.apply_motive.required_if' => 'El campo Motivo es obligatorio cuando ¿Aplica el documento? es NO.',
+            'activities.*.documents.*.files.*.expirationDate.required_if' => 'El campo fecha de vencimiento es obligatorio cuando el campo Requiere fecha de vencimiento es SI.'
         ];
     }
 }

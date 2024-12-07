@@ -9,6 +9,10 @@
           <p class="mb-0">Documentos Contratistas/Empleados</p>
     </blockquote>
 
+    <b-form-feedback class="d-block" v-if="form.errorsFor(`documents`)" style="padding-bottom: 10px;">
+      {{ form.errorsFor(`documents`) }}
+    </b-form-feedback>
+
     <template v-for="(document, index) in form.documents">
       <div :key="document.key">
           <b-form-row>

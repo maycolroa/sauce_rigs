@@ -57,7 +57,7 @@ class ActivityContractRequest extends FormRequest
 
         return [
             'name' => 'required|unique:sau_ct_activities,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'documents' => 'nullable|array',
+            'documents' => 'required|array',
             'documents.*.name' => 'required'
         ];
     }
