@@ -133,6 +133,18 @@ class ViewService
             return $configuration->value;
     }
 
+    public function getDeleteFilesAproverContracts()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'contracts_delete_file_upload');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
     public function allAuthData()
     {
         return [
@@ -144,6 +156,7 @@ class ViewService
             'dangerMatrixBlock' => $this->getDangerMatrixBlock(), 
             'legalMatrixRisk' => $this->getLegalMatrixRiskOpport(),
             'inspectionCriticality' => $this->getInspectionsCriticality(),
+            'deleteFilesAproverContracts' => $this->getDeleteFilesAproverContracts(),
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),

@@ -420,7 +420,9 @@ class ContractLesseeController extends Controller
                     'sau_ct_file_upload_contracts_leesse.file AS file',
                     'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate',
                     'sau_ct_file_upload_contracts_leesse.apply_file AS apply_file',
-                    'sau_ct_file_upload_contracts_leesse.apply_motive AS apply_motive'
+                    'sau_ct_file_upload_contracts_leesse.apply_motive AS apply_motive',
+                    'sau_ct_file_upload_contracts_leesse.state AS state',
+                    'sau_ct_file_upload_contracts_leesse.reason_rejection AS reason_rejection'
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_contract', 'sau_ct_file_document_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')

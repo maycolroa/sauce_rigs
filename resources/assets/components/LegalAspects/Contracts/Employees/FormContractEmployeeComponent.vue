@@ -178,7 +178,7 @@
                                         <span class="collapse-icon"></span>
                                       </b-btn>
                                       <b-btn @click.prevent="removeFile(document, indexFile)"
-                                        v-if="!viewOnly"
+                                        v-if="(auth.deleteFilesAproverContracts == 'SI' && isEdit && !viewOnly) || (auth.deleteFilesAproverContracts == 'NO' && file.state == 'PENDIENTE' && isEdit && !viewOnly) || !file.id"
                                         size="sm" 
                                         variant="secondary icon-btn borderless"
                                         v-b-tooltip.top title="Eliminar Archivo">
@@ -444,7 +444,6 @@ export default {
       });
     },*/
     addFile(documento) {
-      console.log(documento); 
 			let required = false;
 
 			if (documento.required_expired_date === 'SI')
@@ -454,7 +453,7 @@ export default {
 				
 			let content = {
 				key: new Date().getTime(),
-				name: '',
+				name: documento.name,
 				expirationDate: '',
 				file: '',
 				required_expiration_date: 'SI',

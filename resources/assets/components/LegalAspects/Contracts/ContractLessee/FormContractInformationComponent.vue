@@ -128,6 +128,7 @@
 				                                        <span class="collapse-icon"></span>
 				                                      </b-btn>
 				                                      <b-btn @click.prevent="removeFile(document, indexFile)"
+													  v-if="(auth.deleteFilesAproverContracts == 'SI') || (auth.deleteFilesAproverContracts == 'NO' && file.state == 'PENDIENTE') || !file.id"
 				                                        size="sm" 
 				                                        variant="secondary icon-btn borderless"
 				                                        v-b-tooltip.top title="Eliminar Archivo">
@@ -313,7 +314,7 @@ export default {
 				
 			let content = {
 				key: new Date().getTime(),
-				name: '',
+				name: documento.name,
 				expirationDate: '',
 				file: '',
 				required_expiration_date: 'SI',
