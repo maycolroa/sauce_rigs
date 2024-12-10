@@ -897,6 +897,7 @@ class ActionPlan
             $this->activities['activities'][$keyItem]['oldObservation'] = $activity->observation;
             $this->activities['activities'][$keyItem]['oldResponsible_id'] = $activity->responsible_id;
             $this->activities['activities'][$keyItem]['user_id'] = $activity->user_id;
+            $this->activities['activities'][$keyItem]['detail_procedence'] = $activity->detail_procedence;
 
             if ($this->dateSimpleFormat)
             {

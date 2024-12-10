@@ -360,40 +360,100 @@
       </b-card-header>
       <b-collapse :id="`accordion-risk-oportunity`" visible :accordion="`accordion-master`">
         <b-card-body>
-          <b-form-row>
-            <vue-radio :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.type_risk" :options="riskOport" name="type_risk" :checked="form.type_risk" @input="riskOpotLaw()" label="Tipo">
-              </vue-radio>
-          </b-form-row>
-          <b-form-row>
-            <vue-ajax-advanced-select-tag-unic v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw()"></vue-ajax-advanced-select-tag-unic>
-          </b-form-row>
-          <b-form-row>
-            <vue-textarea @onBlur="riskOpotLaw()" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="form.risk_oport_description" label="Descripción" name="risk_oport_description" placeholder="Descripción" :error="form.errorsFor(`risk_oport_description`)" rows="3"/>                  
-          </b-form-row>
-          <b-form-row> 
-            <b-btn v-if="form.type_risk == 'Riesgo' || form.type_risk == 'Oportunidad' || form.type_risk == 'Riesgo y oportunidad'" @click="showModalRisk('modalPlanLawRiskOport')" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
-
-            <b-modal ref="modalPlanLawRiskOport" :hideFooter="true" id="modals-default-law-risk-oport" class="modal-top" size="lg" @hidden="riskOpotLaw()">
-              <div slot="modal-title">
-                Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
-                <small class="text-muted">Crea planes de acción para tu justificación.</small>
+          <div class="col-md-12">
+            <blockquote class="blockquote text-center">
+              <p class="mb-0">Riesgos y oportunidades de la norma</p>
+            </blockquote>
+            <b-form-row>
+              <div class="col-md-12">
+                <div class="float-right" style="padding-top: 10px;">
+                  <b-btn variant="primary" @click.prevent="addRiskOpp()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Registro</b-btn>
+                </div>
               </div>
+            </b-form-row>
+            <b-form-row style="padding-top: 15px;">
+              <b-form-feedback class="d-block" v-if="form.errorsFor(`risk_opportunities`)" style="padding-bottom: 10px;">
+                {{ form.errorsFor(`risk_opportunities`) }}
+              </b-form-feedback>
+              <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 500px; padding-right: 15px; width: 100%;">
+                <template v-for="(riskOppor, index) in form.risk_opportunities">
+                  <b-card no-body class="mb-2 border-secondary" :key="riskOppor.key" style="width: 100%;">
+                    <b-card-header class="bg-secondary">
+                      <b-row>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ riskOppor.type ? riskOppor.type+' #'+(index+1) : `Nuevo Registro ${index + 1}` }}</b-col>
+                        <b-col cols="2">
+                          <div class="float-right">
+                            <b-button-group>
+                              <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + riskOppor.key+'-1'" variant="link">
+                                <span class="collapse-icon"></span>
+                              </b-btn>
+                              <b-btn @click.prevent="removeRiskOpp(index)" 
+                                size="sm" 
+                                variant="secondary icon-btn borderless"
+                                v-b-tooltip.top title="Eliminar registro">
+                                  <span class="ion ion-md-close-circle"></span>
+                              </b-btn>
+                            </b-button-group>
+                          </div>
+                        </b-col>
+                      </b-row>
+                    </b-card-header>
+                    <b-collapse :id="`accordion${riskOppor.key}-1`" :accordion="`accordion-123`">
+                      <b-card-body>
+                        <b-form-row>
+                          <vue-radio :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.type" :options="riskOport" :name="`type${index}`"  :checked="riskOppor.type" @input="riskOpotLaw(index)" label="Tipo">
+                            </vue-radio>
+                        </b-form-row>
+                        <b-form-row>
+                          <vue-ajax-advanced-select-tag-unic v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw(index)"></vue-ajax-advanced-select-tag-unic>
+                        </b-form-row>
+                        <b-form-row>
+                          <vue-textarea @onBlur="riskOpotLaw(index)" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`description`)" rows="3"/>                  
+                        </b-form-row>
+                        <b-form-row> 
+                          <b-btn v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Oportunidad' || riskOppor.type == 'Riesgo y oportunidad'" @click="showModal(`modalPlanLawRiskOport${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                <action-plan-component
-                  :is-edit="!viewOnly"
-                  :view-only="viewOnly"
-                  :form="form"
-                  :action-plan-states="actionPlanStates"
-                  v-model="form.actionPlanRisk"
-                  :action-plan="form.actionPlanRisk"/>
-              </b-card>
-              <br>
-              <div class="row float-right pt-12 pr-12y">
-                <b-btn variant="primary" @click="hideModalRisk('modalPlanLawRiskOport')">Cerrar</b-btn>
-              </div>
-            </b-modal>
-          </b-form-row>
+                          <b-modal :ref="`modalPlanLawRiskOport${index}`" :hideFooter="true" id="modals-default-law-risk-oport" class="modal-top" size="lg" @hidden="riskOpotLaw(index)">
+                            <div slot="modal-title">
+                              Plan de acción <span class="font-weight-light">Riesgos y Oportunudades</span><br>
+                              <small class="text-muted">Crea planes de acción para tu justificación.</small>
+                            </div>
+
+                            <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                              <action-plan-component
+                                :is-edit="!viewOnly"
+                                :view-only="viewOnly"
+                                :form="form"
+                                :action-plan-states="actionPlanStates"
+                                :prefix-index="`risk_opportunities.${index}.`"
+                                v-model="riskOppor.actionPlanRisk"
+                                :action-plan="riskOppor.actionPlanRisk"/>
+                            </b-card>
+                            <br>
+                            <div class="row float-right pt-12 pr-12y">
+                              <b-btn variant="primary" @click="hideModal(`modalPlanLawRiskOport${index}`)">Cerrar</b-btn>
+                            </div>
+                          </b-modal>
+                        </b-form-row>
+                      </b-card-body>
+                    </b-collapse>
+                  </b-card>
+                </template>
+                <b-form-row v-if="form.risk_opportunities && form.risk_opportunities.length > 0">
+                  <div class="col-md-12" v-if="!viewOnly">
+                    <div class="float-right" style="padding-top: 10px;">
+                      <b-btn variant="primary" @click.prevent="addRiskOpp()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Resgistro</b-btn>
+                    </div>
+                  </div>
+                </b-form-row>
+              </perfect-scrollbar>
+            </b-form-row>
+          </div>
+        </b-card-body>
+      </b-collapse>
+      <b-collapse :id="`accordion-risk-oportunity`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -418,6 +478,7 @@ import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.v
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Alerts from '@/utils/Alerts.js';
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 
 export default {
   components: {
@@ -429,7 +490,8 @@ export default {
     VueFileSimple,
     ActionPlanComponent,
     VueRadio,
-    VueAjaxAdvancedSelectTagUnic
+    VueAjaxAdvancedSelectTagUnic,
+    PerfectScrollbar
   },
   props: {
     url: { type: String },
@@ -802,19 +864,47 @@ export default {
         this.saveAllArticles()
       }
     },
-    riskOpotLaw()
+    addRiskOpp() {
+        this.form.risk_opportunities.push({
+            key: new Date().getTime() + Math.round(Math.random() * 10000),
+            description: '',
+            type: 'No aplica',
+            risk: '',
+            actionPlanRisk: {
+              activities: [],
+              activitiesRemoved: []
+            }
+        })
+    },
+    removeRiskOpp(index)
+    {
+      if (this.form.risk_opportunities[index].id != undefined)
+        this.form.delete.push(this.form.risk_opportunities[index].id)
+
+      this.form.risk_opportunities.splice(index, 1)
+    },
+    riskOpotLaw(index)
     {     
         let data = new FormData();
-        
-        data.append('id', this.form.id);
-        data.append('type', this.form.type_risk);
-        data.append('risk_oport_description', this.form.risk_oport_description);
-        data.append('actionPlan', JSON.stringify(this.form.actionPlanRisk));
-        data.append('risk', JSON.stringify(this.form.risk));
+
+        let riskOpp = this.form.risk_opportunities[index]
+
+        data.append('law_id', this.form.id);
+        data.append('id', riskOpp.id);
+        data.append('type', riskOpp.type);
+        data.append('description', riskOpp.description);
+        data.append('actionPlanRisk', JSON.stringify(riskOpp.actionPlanRisk));
+        data.append('risk', JSON.stringify(riskOpp.risk));
 
         this.form
           .submit('/legalAspects/legalMatrix/law/saveRiskOportLawComplete', false, data)
-          .then(response => {}).catch(error => {console.log(error)});
+          .then(response => {
+            _.forIn(response.data.data, (value, key) => {
+              console.log(key)
+              console.log(value)
+              riskOpp[key] = value
+            })
+          }).catch(error => {console.log(error)});
     },
     hideOrShowLaw() 
     {
@@ -940,6 +1030,7 @@ export default {
       if (this.activateEvent && !this.loading)
       {
         let article = this.form.articles[index]
+
 
         /*if (article.fulfillment_value_id != 3 && article.fulfillment_value_id != 5)//No cumple
         {

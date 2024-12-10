@@ -591,31 +591,25 @@ class LawController extends Controller
 
             $lawHideTotal = LawHide::where('company_id', $this->company)->where('law_id', $law->id)->first();
 
-            $law_risk_opport = LawRiskOpportunity::where('company_id', $this->company)->where('law_id', $law->id)->first();
+            $law_risk_opport = LawRiskOpportunity::where('company_id', $this->company)->where('law_id', $law->id)->get();
 
-            if ($law_risk_opport)
-            {
-                $law->type_risk = $law_risk_opport->type;
-                $law->risk = $law_risk_opport->risk;
-                $law->risk_oport_description = $law_risk_opport->description;
-                $law->actionPlanRisk = [
+            $law_risk_opport->transform(function($riskOppor, $index) {
+                $riskOppor->key = (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20);
+                $riskOppor->type_risk = $riskOppor->type ?? 'No aplica';
+                $riskOppor->risk = $riskOppor->risk ?? '';
+                $riskOppor->risk_oport_description = $riskOppor->description ?? '';
+                $riskOppor->actionPlanRisk = [
                     "activities" => [],
                     "activitiesRemoved" => []
                 ];
 
-                if ($law_risk_opport->type == 'Riesgo' || $law_risk_opport->type == 'Oportunidad' || $law_risk_opport->type == 'Riesgo y oportunidad')
-                    $law->actionPlanRisk = ActionPlan::model($law)->prepareDataComponent();
-            }
-            else
-            {
-                $law->type_risk = 'No aplica';
-                $law->risk = '';
-                $law->risk_oport_description = '';
-                $law->actionPlanRisk = [
-                    "activities" => [],
-                    "activitiesRemoved" => []
-                ];
-            }
+                if ($riskOppor->type == 'Riesgo' || $riskOppor->type == 'Oportunidad' || $riskOppor->type == 'Riesgo y oportunidad')
+                    $riskOppor->actionPlanRisk = ActionPlan::model($riskOppor)->prepareDataComponent();
+
+                return $riskOppor;
+            });
+
+            $law->risk_opportunities = $law_risk_opport;
 
             if ($lawActionPlan && $lawActionPlan->action_plan)
                 $law->action_plan_cumple = 'SI';
@@ -965,6 +959,7 @@ class LawController extends Controller
                             ->save();
 
                         $data['actionPlan'] = ActionPlan::getActivities();
+
                     }
 
                     if (!$qualification->save())
@@ -1073,8 +1068,6 @@ class LawController extends Controller
 
     public function actionPlanCumple(Request $request)
     {
-        \Log::info($request);
-
         $lawActionPlan = LawActionPlan::where('company_id', $this->company)->where('law_id', $request->law_id)->first();
 
         if ($lawActionPlan)
@@ -1157,21 +1150,31 @@ class LawController extends Controller
     public function saveRiskOportLawComplete(LawRiskRequest $request)
     {     
         DB::beginTransaction();
+        \Log::info($request);
 
         try
-        {           
-            $law = Law::find($request->id);
+        {       
+            $law = Law::find($request->law_id);
 
-            if ($request->risk)
+            if (($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && $request->risk) 
             {
-                $risk = $this->tagsPrepare($request->get('risk')[0]);
-                $this->tagsSave($risk, TagRisk::class);
+                foreach ($request->get('risk') as $key => $risk_tag) 
+                {              
+                    if(!is_string($risk_tag))
+                    { 
+                        $risk = $this->tagsPrepare($risk_tag);
+                        $this->tagsSave($risk, TagRisk::class);
+                    }
+                    else
+                        $risk = $risk_tag;
+                }
             }
             else
                 $risk = [];
 
             $risk_oport = LawRiskOpportunity::updateOrCreate(
                 [
+                    'id' => $request->id,
                     'company_id' => $this->company, 
                     'law_id' => $law->id
                 ],
@@ -1180,27 +1183,50 @@ class LawController extends Controller
                     'law_id' => $law->id, 
                     'user_id' => $this->user->id,
                     'type' => $request->type,
-                    'description' => $request->risk_oport_description == 'null' ? NULL : $request->risk_oport_description, 
-                    'risk' => COUNT($risk) > 0 ? $risk->implode(',') : NULL,
+                    'description' => $request->description == 'null' ? NULL : $request->description, 
+                    'risk' => ($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && !is_string($risk_tag) ? (COUNT($risk) > 0 ? $risk->implode(',') : NULL) : (($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && is_string($risk_tag) ? $risk_tag : NULL),
                 ]
             );
 
-            $actionPlan = json_decode($request->actionPlan, true);
+            $actionPlanRisk = json_decode($request->actionPlanRisk, true);
 
-            if ($request->has('actionPlan') && count($actionPlan['activities']) > 0)
+            if ($request->has('actionPlanRisk') && count($actionPlanRisk['activities']) > 0)
             {
-                $detail_procedence = 'Mátriz Legal - Norma: ' . $law->name . '.';
+                $detail_procedence = 'Mátriz Legal - Norma: ' . $law->name;
+
+                if ($request->type == 'Riesgo' && $risk_oport->risk)
+                    $detail_procedence = $detail_procedence.' - Riesgo: '.$risk_oport->risk.' - '.$risk_oport->description;
+                else if ($request->type == 'Riesgo y oportunidad' && $risk_oport->risk) 
+                    $detail_procedence = $detail_procedence.' - Riesgo: '.$risk_oport->risk.' - '.$risk_oport->description;
+                else if ($request->type == 'Oportunidad')
+                    $detail_procedence = $detail_procedence.' - '.$risk_oport->description;
+                else                
+                    $detail_procedence = $detail_procedence.' - '.$risk_oport->description;
+
 
                 ActionPlan::user($this->user)
                 ->module('legalMatrix')
                 ->url(url('/administrative/actionplans'))
-                ->model($law)
+                ->model($risk_oport)
                 ->detailProcedence($detail_procedence)
-                ->activities($actionPlan)
+                ->activities($actionPlanRisk)
                 ->save();
             }
 
+            $activities = ActionPlan::getActivities();
+
+            $activities_default = [
+                "activities" => [],
+                "activitiesRemoved" => []
+            ];
+
+            $risk_oport->actionPlanRisk = $activities ? $activities : $activities_default;
+
             DB::commit();
+
+            return $this->respondHttp200([
+                'data' => $risk_oport
+            ]);
 
         } catch (Exception $e){
             \Log::info($e->getMessage());
