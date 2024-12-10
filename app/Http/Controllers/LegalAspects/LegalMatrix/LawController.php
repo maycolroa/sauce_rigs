@@ -1150,7 +1150,6 @@ class LawController extends Controller
     public function saveRiskOportLawComplete(LawRiskRequest $request)
     {     
         DB::beginTransaction();
-        \Log::info($request);
 
         try
         {       
