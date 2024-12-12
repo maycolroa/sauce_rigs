@@ -450,10 +450,13 @@ export default {
 			{
 				required = true;
 			}
+
+      let document_name = documento.name.replace('.', '')
+      document_name = document_name.replace('/', '-')
 				
 			let content = {
 				key: new Date().getTime(),
-				name: documento.name,
+				name: document_name,
 				expirationDate: '',
 				file: '',
 				required_expiration_date: 'SI',
