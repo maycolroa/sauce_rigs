@@ -439,13 +439,6 @@
                     </b-collapse>
                   </b-card>
                 </template>
-                <b-form-row v-if="form.risk_opportunities && form.risk_opportunities.length > 0">
-                  <div class="col-md-12" v-if="!viewOnly">
-                    <div class="float-right" style="padding-top: 10px;">
-                      <b-btn variant="primary" @click.prevent="addRiskOpp()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Resgistro</b-btn>
-                    </div>
-                  </div>
-                </b-form-row>
               </perfect-scrollbar>
             </b-form-row>
           </div>
