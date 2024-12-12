@@ -639,13 +639,34 @@ export default {
     {
       if (this.auth.legalMatrixRisk == 'SI')
       {
-        if (!this.form.type_risk)
+        let validateRisk = false
+        let validateRiskValue = false
+
+        let localizateError = ''
+
+        _.forIn(this.form.risk_opportunities, (riskOpp, key) => {
+          let index = key
+          if (!riskOpp.type_risk)
+          {
+            index++
+            validateRisk = true
+            localizateError = '#'+index
+          }
+          else if (!riskOpp.risk && (riskOpp.type_risk == 'Riesgo' || riskOpp.type_risk == 'Riesgo y oportunidad'))
+          {
+            index++
+            validateRiskValue = true
+            localizateError = riskOpp.type+' #'+index
+          }
+        })
+
+        if (validateRisk)
         {
-          Alerts.error('Error', 'El campo Tipo de la sección de Riesgo y Oportunidades es requerido');
+          Alerts.error('Error', 'El campo Tipo de la sección de Riesgo y Oportunidades es requerido, en el registro '+localizateError);
         }
-        else if (!this.form.risk && (this.form.type_risk == 'Riesgo' || this.form.type_risk == 'Riesgo y oportunidad'))
+        else if (validateRiskValue)
         {
-          Alerts.error('Error', 'El campo Riesgo de la sección de Riesgo y Oportunidades es requerido');
+          Alerts.error('Error', 'El campo Riesgo de la sección de Riesgo y Oportunidades es requerido, en el registro '+localizateError);
         }
         else
         {
