@@ -646,13 +646,13 @@ export default {
 
         _.forIn(this.form.risk_opportunities, (riskOpp, key) => {
           let index = key
-          if (!riskOpp.type_risk)
+          if (!riskOpp.type || riskOpp.type == 'Registro')
           {
             index++
             validateRisk = true
             localizateError = '#'+index
           }
-          else if (!riskOpp.risk && (riskOpp.type_risk == 'Riesgo' || riskOpp.type_risk == 'Riesgo y oportunidad'))
+          else if (!riskOpp.risk && (riskOpp.type == 'Riesgo' || riskOpp.type == 'Riesgo y oportunidad'))
           {
             index++
             validateRiskValue = true
@@ -889,7 +889,7 @@ export default {
         this.form.risk_opportunities.push({
             key: new Date().getTime() + Math.round(Math.random() * 10000),
             description: '',
-            type: 'No aplica',
+            type: 'Registro',
             risk: '',
             actionPlanRisk: {
               activities: [],
