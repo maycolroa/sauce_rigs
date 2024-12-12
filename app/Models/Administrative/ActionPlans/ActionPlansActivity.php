@@ -4,6 +4,8 @@ namespace App\Models\Administrative\ActionPlans;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use Session;
+
 
 class ActionPlansActivity extends Model
 {
@@ -89,7 +91,7 @@ class ActionPlansActivity extends Model
      * @param  array $modules
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInModules($query, $modules, $typeSearch = 'IN')
+    public function scopeInModules($query, $modules, $typeSearch = 'IN', $riskModule = false, $riskLegal = false, $company_id = NULL)
     {
         $ids = [];
 
@@ -102,11 +104,24 @@ class ActionPlansActivity extends Model
         {
             $ids = explode(",", implode(",", $ids));
 
+            if ($riskModule && !$riskLegal)
+                $ids = array_diff($ids, array(17));
+
             if ($typeSearch == 'IN')
                 $query->whereIn('sau_modules.id', $ids);
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_modules.id', $ids);
+
+            if ($riskModule)
+            {
+                $company = $company_id ? $company_id : Session::get('company_id');
+
+                if ($typeSearch == 'IN')
+                    $query->orWhereRaw("sau_action_plans_activity_module.item_table_name = 'sau_lm_law_risk_opportunity' and company_id = $company");
+                else if ($typeSearch == 'NOT IN')
+                    $query->orWhereRaw("sau_action_plans_activity_module.item_table_name <> 'sau_lm_law_risk_opportunity' and company_id = $company");
+            }
         }
 
         return $query;

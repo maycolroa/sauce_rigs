@@ -221,8 +221,26 @@ class ActionPlanController extends Controller
         if (isset($filters["creators"]))
             $activities->inUsers($this->getValuesForMultiselect($filters["creators"]), $filters['filtersType']['creators']);
 
-        if (isset($filters["modules"]))
-            $activities->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+        if (isset($filters["modules"]) && COUNT($filters["modules"]) > 0)
+        {
+            $risk_opportunity = $this->getLegalMatrixRiskOpportunity();
+
+            $riskModule = false;
+            $riskModuleLegal = false;
+
+            if ($risk_opportunity == 'SI')
+            {
+                foreach ($filters["modules"] as $key => $module) 
+                {
+                    if ($module['name'] == 'Matriz Legal - Riesgos y Oportunidades')
+                        $riskModule = true;
+                    else if ($module['name'] == 'Matriz Legal')
+                        $riskModuleLegal = true;
+                }
+            }
+                
+            $activities->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules'], $riskModule, $riskModuleLegal);
+        }
 
         if (isset($filters["states"]))
             $activities->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
@@ -329,11 +347,23 @@ class ActionPlanController extends Controller
 
     public function actionPlanModules(Request $request)
     {
-        $modules = ActionPlansActivity::selectRaw(
+        $risk_opportunity = $this->getLegalMatrixRiskOpportunity();
+
+        if ($risk_opportunity == 'SI')
+        {
+            $modules = ActionPlansActivity::selectRaw(
                 "GROUP_CONCAT(sau_modules.id) as ids,
-                 sau_modules.display_name as name")
-            ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
-            ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id');
+                 IF(sau_action_plans_activity_module.item_table_name = 'sau_lm_law_risk_opportunity', 'Matriz Legal - Riesgos y Oportunidades', sau_modules.display_name) as name");
+        }
+        else
+        {
+            $modules = ActionPlansActivity::selectRaw(
+                "GROUP_CONCAT(sau_modules.id) as ids,
+                sau_modules.display_name as name");
+        }
+
+        $modules->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+        ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id');
 
         if (!$this->user->hasRole('Superadmin', $this->team))
         {
@@ -363,7 +393,7 @@ class ActionPlanController extends Controller
             }
         }
 
-        $modules = $modules->groupBy('sau_modules.display_name')->pluck('ids', 'name');
+        $modules = $modules->groupBy('sau_modules.display_name', 'sau_action_plans_activity_module.item_table_name')->pluck('ids', 'name');
         
         return $this->multiSelectFormat($modules);
     }
@@ -381,13 +411,34 @@ class ActionPlanController extends Controller
             $modules = $this->getValuesForMultiselect($request->modules);
             $states = $this->getValuesForMultiselect($request->states);
 
+            if (isset($request->modules) && COUNT($request->modules) > 0)
+            {
+                $risk_opportunity = $this->getLegalMatrixRiskOpportunity();
+
+                $riskModule = false;
+                $riskModuleLegal = false;
+
+                if ($risk_opportunity == 'SI')
+                {
+                    foreach ($request->modules as $key => $module) 
+                    {
+                        if ($module['name'] == 'Matriz Legal - Riesgos y Oportunidades')
+                            $riskModule = true;
+                        else if ($module['name'] == 'Matriz Legal')
+                            $riskModuleLegal = true;
+                    }
+                }
+            }
+
             $filtersType = $request->filtersType;
 
             $filters = [
                 'responsibles' => $responsibles,
                 'modules' => $modules,
                 'states' => $states,
-                'filtersType' => $filtersType
+                'filtersType' => $filtersType,
+                'filterParamRisk' => $riskModule,
+                'filterParamRiskLegal' => $riskModuleLegal
             ];
 
             $isContract = false;

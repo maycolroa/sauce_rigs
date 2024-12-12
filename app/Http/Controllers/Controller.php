@@ -79,4 +79,14 @@ class Controller extends BaseController
         else
             return $configuration->value;
     }
+
+    public function getLegalMatrixRiskOpportunity()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'legal_matrix_risk_opportunity')->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
 }

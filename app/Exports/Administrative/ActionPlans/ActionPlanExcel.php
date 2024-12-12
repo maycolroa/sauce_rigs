@@ -53,7 +53,7 @@ class ActionPlanExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
         ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
         ->inResponsibles($this->filters['responsibles'], $this->filters['filtersType']['responsibles'])
-        ->inModules($this->filters['modules'], $this->filters['filtersType']['modules'])
+        ->inModules($this->filters['modules'], $this->filters['filtersType']['modules'], $this->filters['filterParamRisk'], $this->filters['filterParamRiskLegal'], $this->company_id)
         ->inStates($this->filters['states'], $this->filters['filtersType']['states']);
         
       if (!$this->isSuperAdmin)
