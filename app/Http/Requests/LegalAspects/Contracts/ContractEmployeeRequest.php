@@ -98,8 +98,8 @@ class ContractEmployeeRequest extends FormRequest
             'income_date' => 'required',
             'activities' => 'required|array',
             'activities.*.selected' => 'required',
-            'activities.*.documents.*.files.*.name' => 'required',
-            'activities.*.documents.*.files.*.file' => 'required',
+            'activities.*.documents.*.files.*.name' => 'required_if:activities.*.documents.*.apply_file,SI',
+            'activities.*.documents.*.files.*.file' => 'required_if:activities.*.documents.*.apply_file,SI',
             'activities.*.documents.*.files.*.expirationDate' => 'required_if:activities.*.documents.*.files.*.required_expiration_date,SI',
             'activities.*.documents.*.apply_motive' => 'required_if:activities.*.documents.*.apply_file,NO|nullable|string|min:10'
         ];

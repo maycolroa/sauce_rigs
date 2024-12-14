@@ -387,9 +387,18 @@ export default {
       _.forIn(this.form.activities, (activity, keyActvity) => {
         _.forIn(activity.documents, (documento, keyDocument) => {
           _.forIn(documento.files, (file, keyFile) => {
-            if (file.file)
-              this.form.addFileBinary(`${keyActvity}_${keyDocument}_${keyFile}`, file.file);
-          });
+              if (file.file)
+                this.form.addFileBinary(`${keyActvity}_${keyDocument}_${keyFile}`, file.file);
+              else
+              {
+                if (documento.apply_file == 'NO')
+                {
+                  if (!file.id)
+                    documento.files.splice(keyFile, 1)
+                }
+              }
+            
+            });
         });
       });
 
