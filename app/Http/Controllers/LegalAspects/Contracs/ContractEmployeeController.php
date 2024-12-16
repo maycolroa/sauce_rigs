@@ -280,7 +280,7 @@ class ContractEmployeeController extends Controller
             $employee->activities()->sync($activities['activities']->values());
 
             $employee->update(
-                [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
+                [ 'state' => $documents_complets]
             );
 
             TrainingSendNotificationJob::dispatch($this->company, '', $employee->id);
@@ -468,7 +468,7 @@ class ContractEmployeeController extends Controller
             }
 
             $employeeContract->update(
-                [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
+                [ 'state' => $documents_complets]
             );
 
             if ($request->has('delete'))
@@ -792,6 +792,10 @@ class ContractEmployeeController extends Controller
             $documents_counts = COUNT($activity['documents']);
             $count = 0;
 
+            $rejected = false;
+            $pending = false;
+            $expired = false;
+
             foreach ($activity['documents'] as $document)
             {
                 $apply = $document['apply_file'] == 'SI' ? true : false;
@@ -806,15 +810,67 @@ class ContractEmployeeController extends Controller
                         {
                             $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
 
-                            if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                            if ($fileUpload->expirationDate)
                             {
-                                if ($fileUpload->state == 'ACEPTADO')
-                                    $count_aprobe++;
+                                if($fileUpload->expirationDate > date('Y-m-d'))
+                                {
+                                    if ($fileUpload->state == 'ACEPTADO')
+                                    {
+                                        $count_aprobe++;
+                                        $rejected = false;
+                                        $pending = false;
+                                        $expired = false;
+                                    }
+                                    else if ($fileUpload->state == 'RECHAZADO')
+                                    {
+                                        $rejected = true;
+                                        $pending = false;
+                                        $expired = false;
+                                    }
+                                    else if ($fileUpload->state == 'PENDIENTE')
+                                    {
+                                        $rejected = false;
+                                        $pending = true;
+                                        $expired = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if ($fileUpload->state == 'RECHAZADO')
+                                    {
+                                        $rejected = true;
+                                        $pendiente = false;
+                                        $expired = true;
+                                    }
+                                    else if ($fileUpload->state == 'PENDIENTE')
+                                    {
+                                        $rejected = false;
+                                        $pendiente = true;
+                                        $expired = true;
+                                    }
+                                }
                             }
                             else if (!$fileUpload->expirationDate)
                             {
                                 if ($fileUpload->state == 'ACEPTADO')
+                                {
                                     $count_aprobe++;
+                                    $rejected = false;
+                                    $pending = false;
+                                    $expired = false;
+                                }
+                                else if ($fileUpload->state == 'RECHAZADO')
+                                {
+                                    $rejected = true;
+                                    $pending = false;
+                                    $expired = false;
+                                }
+                                else if ($fileUpload->state == 'PENDIENTE')
+                                {
+                                    $rejected = false;
+                                    $pending = true;
+                                    $expired = false;
+                                }
                             }
                         }
                     }
@@ -830,7 +886,21 @@ class ContractEmployeeController extends Controller
                                 $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
 
                                 if ($fileUpload->state == 'ACEPTADO')
+                                {
                                     $count_aprobe++;
+                                    $rejected = false;
+                                    $pending = false;
+                                }
+                                else if ($fileUpload->state == 'RECHAZADO')
+                                {
+                                    $rejected = true;
+                                    $pending = false;
+                                }
+                                else if ($fileUpload->state == 'PENDIENTE')
+                                {
+                                    $rejected = false;
+                                    $pending = true;
+                                }
                             }
                         }
                     }
@@ -838,13 +908,19 @@ class ContractEmployeeController extends Controller
 
                 if ($count_aprobe == $file_counts && $file_counts > 0)
                     $count++;
+
+                
+                if ($rejected)
+                    return 'Rechazado';
+                else if ($pending || $expired)
+                    return 'Pendiente';
             }
 
             if ($documents_counts > $count)
-                return false;
+                return 'Pendiente';
         }
 
-        return true;
+        return 'Aprobado';
     }
 
 

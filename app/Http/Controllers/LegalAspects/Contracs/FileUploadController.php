@@ -565,10 +565,6 @@ class FileUploadController extends Controller
           $employee = ContractEmployee::find($request['employee_id']);
         }
 
-        $pendiente = false;
-        $rejected = false;
-        $expired = false;
-
         if ((isset($file) && $file) || (isset($employee) && $employee))
         {
           foreach ($employee->activities as $activity)
@@ -579,6 +575,10 @@ class FileUploadController extends Controller
 
             $documents_counts = $documents_counts->count();
             $count = 0;
+
+            $pendiente = false;
+            $rejected = false;
+            $expired = false;
 
             foreach ($activity->documents_files as $document)
             {
@@ -655,7 +655,6 @@ class FileUploadController extends Controller
                             }
                         }
                     }
-
                     
                     if ($count_files > 0 && $count_aprobe >= $count_files)
                         $count++;
@@ -664,29 +663,29 @@ class FileUploadController extends Controller
                     else if ($count_files < 1)
                         $pendiente = true;
                 }
-            }
 
-            if ($rejected)
-            {
-              $employee->update(
-                [ 'state' => 'Rechazado']
-              );
-              break;
-            }
-            else if ($pendiente || $expired)
-            {
-                $employee->update(
-                    [ 'state' => 'Pendiente']
-                );
-                break;
-            }
-            else if ($documents_counts > $count)
-            {
-                $pendiente = true;
-                $employee->update(
-                  [ 'state' => 'Pendiente']
-                );
-                break;
+                if ($rejected)
+                {
+                  $employee->update(
+                    [ 'state' => 'Rechazado']
+                  );
+                  break;
+                }
+                else if ($pendiente || $expired)
+                {
+                    $employee->update(
+                        [ 'state' => 'Pendiente']
+                    );
+                    break;
+                }
+                else if ($documents_counts > $count)
+                {
+                    $pendiente = true;
+                    $employee->update(
+                      [ 'state' => 'Pendiente']
+                    );
+                    break;
+                }
             }
           }
 

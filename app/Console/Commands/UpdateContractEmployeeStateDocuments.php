@@ -168,26 +168,25 @@ class UpdateContractEmployeeStateDocuments extends Command
                             else if ($count_files > 0 && !$pendiente && !$rejected && !$expired)
                                 $count++;
                             else if ($count_files < 1)
-                            {
                                 $pendiente = true;
+                            
+                            if ($rejected)
+                            {
+                                $employee->update(
+                                    [ 'state' => 'Rechazado']
+                                );
+                                break;
+                            }
+                            else if ($pendiente || $expired)
+                            {
+                                $employee->update(
+                                    [ 'state' => 'Pendiente']
+                                );
+                                break;
                             }
                         }
 
-                        if ($rejected)
-                        {
-                            $employee->update(
-                                [ 'state' => 'Rechazado']
-                            );
-                            break;
-                        }
-                        else if ($pendiente || $expired)
-                        {
-                            $employee->update(
-                                [ 'state' => 'Pendiente']
-                            );
-                            break;
-                        }
-                        else if ($documents_counts > $count)
+                        if ($documents_counts > $count)
                         {
                             $employee->update(
                                 [ 'state' => 'Pendiente']
