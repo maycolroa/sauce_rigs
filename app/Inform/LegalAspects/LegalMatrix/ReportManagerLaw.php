@@ -6,6 +6,7 @@ use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Models\LegalAspects\LegalMatrix\SystemApply;
 use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\QualificationColorDinamic;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Session;
 use DB;
 
@@ -79,6 +80,7 @@ class ReportManagerLaw
     protected $qualificationsTypes;
     protected $dates;
     protected $company;
+    protected $useRiskOppoortunity;
 
     /**
      * create an instance and set the attribute class
@@ -102,6 +104,19 @@ class ReportManagerLaw
         $this->totalLaws = $this->getTotalLaws();
         $this->category = $category;
         $this->dates = $dates ? $dates : [];
+        $this->useRiskOppoortunity = $this->getLegalMatrixRiskOpport();
+    }
+
+    public function getLegalMatrixRiskOpport()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'legal_matrix_risk_opportunity');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
     }
 
     /**
@@ -568,38 +583,43 @@ class ReportManagerLaw
 
     private function reportTableRisk()
     {
-        $laws = Law::selectRaw(
-            "sau_lm_system_apply.name AS category,
-            SUM(IF(sau_lm_law_risk_opportunity.type = 'Riesgo' OR sau_lm_law_risk_opportunity.type = 'Riesgo y oportunidad', 1, 0)) AS count_risk,
-            SUM(IF(sau_lm_law_risk_opportunity.type = 'Oportunidad' OR sau_lm_law_risk_opportunity.type = 'Riesgo y oportunidad', 1, 0)) AS count_opport,
-            SUM(IF(sau_lm_law_risk_opportunity.type = 'No aplica', 1, 0)) AS count_n_a"
-        )
-        ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
-        ->join('sau_lm_law_risk_opportunity', function ($join) 
+        if ($this->useRiskOppoortunity == 'SI')
         {
-          $join->on("sau_lm_law_risk_opportunity.law_id", "sau_lm_laws.id"); 
-          $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
-        })
-        ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
-        ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
-        ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
-        ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
-        ->inLawTypes($this->lawTypes, $this->filtersType['lawTypes'])
-        ->inRiskAspects($this->riskAspects, $this->filtersType['riskAspects'])
-        ->inEntities($this->entities, $this->filtersType['entities'])
-        ->inSstRisks($this->sstRisks, $this->filtersType['sstRisks'])
-        ->inSystemApply($this->systemApply, $this->filtersType['systemApply'])
-        ->inLawNumbers($this->lawNumbers, $this->filtersType['lawNumbers'])
-        ->inLawYears($this->lawYears, $this->filtersType['lawYears'])
-        ->inRepealed($this->repealed, $this->filtersType['repealed'])
-        ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
-        ->inInterestsCompany($this->interests,$this->filtersType['interests'])
-        ->inState($this->states,$this->filtersType['states'])
-        ->betweenDate($this->dates ? $this->dates : [])
-        ->groupBy('category')
-        ->orderBy('category')
-        ->get();
+            $laws = Law::selectRaw(
+                "sau_lm_system_apply.name AS category,
+                SUM(IF(sau_lm_law_risk_opportunity.type = 'Riesgo' OR sau_lm_law_risk_opportunity.type = 'Riesgo y oportunidad', 1, 0)) AS count_risk,
+                SUM(IF(sau_lm_law_risk_opportunity.type = 'Oportunidad' OR sau_lm_law_risk_opportunity.type = 'Riesgo y oportunidad', 1, 0)) AS count_opport,
+                SUM(IF(sau_lm_law_risk_opportunity.type = 'No aplica', 1, 0)) AS count_n_a"
+            )
+            ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
+            ->join('sau_lm_law_risk_opportunity', function ($join) 
+            {
+            $join->on("sau_lm_law_risk_opportunity.law_id", "sau_lm_laws.id"); 
+            $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
+            })
+            ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+            ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+            ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+            ->inLawTypes($this->lawTypes, $this->filtersType['lawTypes'])
+            ->inRiskAspects($this->riskAspects, $this->filtersType['riskAspects'])
+            ->inEntities($this->entities, $this->filtersType['entities'])
+            ->inSstRisks($this->sstRisks, $this->filtersType['sstRisks'])
+            ->inSystemApply($this->systemApply, $this->filtersType['systemApply'])
+            ->inLawNumbers($this->lawNumbers, $this->filtersType['lawNumbers'])
+            ->inLawYears($this->lawYears, $this->filtersType['lawYears'])
+            ->inRepealed($this->repealed, $this->filtersType['repealed'])
+            ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
+            ->inInterestsCompany($this->interests,$this->filtersType['interests'])
+            ->inState($this->states,$this->filtersType['states'])
+            ->betweenDate($this->dates ? $this->dates : [])
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
 
-        return $laws;
+            return $laws;
+        }
+        else
+            return [];
     }
 }
