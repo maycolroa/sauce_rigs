@@ -617,7 +617,7 @@ class CheckManager
                     if ($create_file)
                     {
                         $file_tmp = $file['file'];
-                        $nameFile = base64_encode($madeByUser->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                        $nameFile = base64_encode($madeByUser->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
                         $file_tmp->storeAs($directory, $nameFile, 's3');
                         $fileUpload->file = $nameFile;
                         $fileUpload->file_name = $file_tmp->getClientOriginalName();

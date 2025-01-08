@@ -34,7 +34,7 @@
                                                 </div>
                                             </b-form-row>
                                             <b-form-row>
-                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual (${item.file_name}), haga click <a href='/biologicalmonitoring/reinstatements/check/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" accept=".pdf" v-model="item.file" label="Archivo (*.pdf)" name="file" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual (${item.file_name}), haga click <a href='/biologicalmonitoring/reinstatements/check/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1"  v-model="item.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
                                             </b-form-row>
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>

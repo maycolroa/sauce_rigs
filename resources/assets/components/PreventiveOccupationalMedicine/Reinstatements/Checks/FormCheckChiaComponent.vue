@@ -491,7 +491,7 @@ export default {
           in_process_pcl: '',
           process_pcl_done: '',
           process_pcl_done_date: '',
-          pcl: '',
+          pcl: 0.00,
           entity_rating_pcl: '',
           is_firm_process_pcl: '',
           process_origin_file: '',

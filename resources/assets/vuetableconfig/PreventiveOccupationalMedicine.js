@@ -441,7 +441,7 @@ export default [
       }, {
         config: {
             name: 'viewVisor',
-            color: 'outline-info',
+            color: 'outline-success',
             borderless: true,
             icon: 'ion ion-md-eye',
             title: 'Ver Reporte'
@@ -455,7 +455,7 @@ export default [
       },{
         config: {
             name: 'viewVisorRecommendations',
-            color: 'outline-info',
+            color: 'outline-danger',
             borderless: true,
             icon: 'ion ion-md-eye',
             title: 'Ver Reporte'
