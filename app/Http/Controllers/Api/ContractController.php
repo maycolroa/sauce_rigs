@@ -144,9 +144,11 @@ class ContractController extends ApiController
 
         foreach ($employee->activities as $key => $activity) 
         {
-          if (in_array('Certificado alturas', $class_document))
+          if (in_array('Certificado alturas', $class_document) || in_array('Certificado espacios confinados', $class_document))
           {
             $content = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado alturas');
+
+            $content2 = $this->getFilesByActivity($activity->id, $employee->id, $contract->id, 'Certificado espacios confinados');
 
             if ($content && COUNT($content) > 0)
             {
@@ -173,6 +175,37 @@ class ContractController extends ApiController
                 else
                 {
                   $cert->push($content[0]);
+                  $certificaciones = true;
+                  $certificaciones_date = false;
+                  $habilitado++;
+                }
+              }
+            }
+            else if ($content2 && COUNT($content2) > 0)
+            {
+              if ($content2[0])
+              {
+                if(isset($content2[0]->expirationDate) && $content2[0]->expirationDate)
+                {
+                  $fecha = Carbon::parse($content2[0]->expirationDate);
+
+                  if ($fecha->gt($now))
+                  {
+                    $cert->push($content2[0]);
+                    $certificaciones = true;
+                    $habilitado++;
+                    $certificaciones_date = false;
+                    break;
+                  }
+                  else
+                  {
+                    $cert->push($content2[0]);
+                    $certificaciones_date = true;
+                  }
+                }
+                else
+                {
+                  $cert->push($content2[0]);
                   $certificaciones = true;
                   $certificaciones_date = false;
                   $habilitado++;

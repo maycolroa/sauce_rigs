@@ -219,7 +219,9 @@
                 <vue-datepicker :disabled="viewOnly" v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" class="col-md-6" v-model="form.process_pcl_done_date" label="Fecha proceso PCL" :full-month-name="true" :error="form.errorsFor('process_pcl_done_date')" name="process_pcl_done_date">
                   </vue-datepicker>
 
-                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')" :step="0.1" min="0.00" max="100.00"/>
+                <!--<vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl && isStringPcl" v-model="form.pcl" label="Calificación PCL" type="text" name="pcl" :error="form.errorsFor('pcl')" @onBlur="pclForm()"/>-->
+
+                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')"/>
 
                 <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
 
@@ -539,6 +541,13 @@ export default {
     'form.relocated_process_id'() {
       if (this.disableWacth)
         this.disableWacth = false
+    },
+    'form.pcl'() {
+      if (this.form.pcl == '')
+      {
+        this.isNumberPcl = false;
+        this.isStringPcl = true;
+      }
     }
   },
   computed: {
@@ -603,6 +612,12 @@ export default {
       this.is_firm_process_pcl = 'SI';
     }
 
+    if (this.form.pcl > 0)
+    {
+      this.isNumberPcl = false;
+      this.isStringPcl = true;
+    }
+
     setTimeout(() => {
       this.disableWacth = false
     }, 3000)
@@ -624,10 +639,18 @@ export default {
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
       laborNotesOtherReport: [],
-      showOld: false
+      showOld: false,
+      isStringPcl: true,
+      isNumberPcl: false
     };
   },
   methods: {
+    pclForm() {
+      let numero = this.form.pcl.replace(/[^0-9.]/g, '');
+      this.isStringPcl = false;
+      this.form.pcl = parseFloat(numero)
+      this.isNumberPcl = true;
+    },
     submit(e) {
 
       this.loading = true;
