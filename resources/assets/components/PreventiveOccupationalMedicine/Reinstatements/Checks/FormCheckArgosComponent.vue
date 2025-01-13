@@ -180,7 +180,12 @@
                 <vue-datepicker :disabled="viewOnly" v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" class="col-md-6" v-model="form.process_pcl_done_date" label="Fecha proceso PCL" :full-month-name="true" :error="form.errorsFor('process_pcl_done_date')" name="process_pcl_done_date">
                   </vue-datepicker>
 
-                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')"></vue-input>
+                <!--<vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')"></vue-input>-->
+
+                <div v-show="showPcl">
+                  <div style="color: #4E5155; font-weight: 400; margin-bottom: 5px;     font-size: 13.3px">Calificación PCL</div>
+                  <input v-model="form.pcl" class="form-control" :error="form.errorsFor('pcl')" type="number"/>
+                </div>
 
                 <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
 
