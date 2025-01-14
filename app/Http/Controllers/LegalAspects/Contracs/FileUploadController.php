@@ -678,18 +678,17 @@ class FileUploadController extends Controller
                     );
                     break;
                 }
-                else if ($documents_counts > $count)
-                {
-                    $pendiente = true;
-                    $employee->update(
-                      [ 'state' => 'Pendiente']
-                    );
-                    break;
-                }
             }
           }
 
-          if(!$pendiente && !$rejected && !$expired)
+          if ($documents_counts > $count)
+          {
+              $pendiente = true;
+              $employee->update(
+                [ 'state' => 'Pendiente']
+              );
+          }
+          else if(!$pendiente && !$rejected && !$expired)
           {
             $employee->update(
               [ 'state' => 'Aprobado']
