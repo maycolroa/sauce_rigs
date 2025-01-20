@@ -16,7 +16,6 @@
 <script>
 export default {
   props: {
-    
     cancelUrl: {type: String, required: true},
   },
   watch: {}, 
