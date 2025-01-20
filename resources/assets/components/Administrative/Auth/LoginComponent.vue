@@ -33,6 +33,7 @@
         ></vue-input>
         <div class="d-flex justify-content-between align-items-center m-0">
           <b-check name="rememberMe" v-model="form.rememberMe" class="m-0">Recuérdame<br><a :href="passwordResetAction" class="d-block" style="color: #5d605e;">¿Olvidaste tu contraseña?</a></b-check>
+          <br><a :href="passwordResetHelper" class="d-block" style="color: #5d605e;">¿Como reestablecer tu contraseña?</a>
           <b-btn type="submit" variant="primary" :disabled="loading">Iniciar sesión</b-btn>
         </div>
       </form>
@@ -78,6 +79,7 @@ export default {
     loginAction: {type: String, required: true},
     loginMethod: {type: String, required: true},
     passwordResetAction: {type:String, required: true},
+    passwordResetHelper: {type:String, required: true},
     credentials: {
       default(){
         return {

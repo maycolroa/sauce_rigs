@@ -67,9 +67,9 @@ class HelperController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf'  && $ext != 'mp4' && $ext != 'pptx' && $ext != 'ppt')
+                        if ($ext != 'pdf'  && $ext != 'mp4' && $ext != 'pptx' && $ext != 'ppt' && $ext != 'mov')
                         {
-                            $fail('Archivo debe ser un pdf, mp4, ppt, pptx');
+                            $fail('Archivo debe ser un pdf, mp4, mov, ppt, pptx');
                         }
                     }
                 }
@@ -146,9 +146,9 @@ class HelperController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf'  && $ext != 'mp4' && $ext != 'pptx' && $ext != 'ppt')
+                        if ($ext != 'pdf'  && $ext != 'mp4' && $ext != 'pptx' && $ext != 'ppt' && $ext != 'mov')
                         {
-                            $fail('Archivo debe ser un pdf, mp4, ppt, pptx');
+                            $fail('Archivo debe ser un pdf, mp4, mov, ppt, pptx');
                         }
                     }
                 }

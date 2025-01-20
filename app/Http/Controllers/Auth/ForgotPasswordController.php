@@ -32,6 +32,11 @@ class ForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
+    public function showLinkRequestHelper()
+    {
+        return view('auth.passwords.resetHelper');
+    }
+
     /**
      * Send a reset link to the given user.
      *

@@ -21,6 +21,7 @@ Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@genera
 Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
 Route::get('/accidentWork/causesExport/{id}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@prueba')->name('diagrama.foto');
 Route::get('a2bf4bd63b86602070807dd7f62fb49a/{token}', 'Auth\LoginController@authToken');
+Route::get('/password/helperRecuperate', 'Auth\ForgotPasswordController@showLinkRequestHelper');
 
 Route::prefix('training')->group(function () {
   Route::get('{training}/{token}', 'LegalAspects\Contracs\TrainingEmployeeController@index');

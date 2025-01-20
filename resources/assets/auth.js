@@ -58,9 +58,10 @@ import PasswordReset from './components/Administrative/Auth/PasswordResetCompone
 import TrainingEmployee from './components/LegalAspects/Contracts/Trainings/FormTrainingEmployeeComponent.vue';
 import DeliveryEmployee from './components/IndustrialSecure/Epp/FormDeliveryFirmEmployeeComponent.vue';
 import CausesExport from './components/IndustrialSecure/AccidentsWork/FormCausesExportComponent.vue';
+import PasswordResetHelper from './components/Administrative/Auth/PasswordResetHelperComponent.vue';
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset,TrainingEmployee, DeliveryEmployee, CausesExport}
+  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset,TrainingEmployee, DeliveryEmployee, CausesExport,PasswordResetHelper}
 })
