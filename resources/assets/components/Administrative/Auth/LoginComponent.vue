@@ -31,9 +31,11 @@
           placeholder="Contraseña"
           :error="form.errorsFor('password')"
         ></vue-input>
+        <div class="d-flex align-items-left m-0" style="margin-top: 10%">
+          <br><br><a :href="passwordResetHelper" class="d-block" style="color: #5d605e;">Ayuda para reestablecer tu contraseña</a>
+        </div>
         <div class="d-flex justify-content-between align-items-center m-0">
           <b-check name="rememberMe" v-model="form.rememberMe" class="m-0">Recuérdame<br><a :href="passwordResetAction" class="d-block" style="color: #5d605e;">¿Olvidaste tu contraseña?</a></b-check>
-          <br><a :href="passwordResetHelper" class="d-block" style="color: #5d605e;">¿Como reestablecer tu contraseña?</a>
           <b-btn type="submit" variant="primary" :disabled="loading">Iniciar sesión</b-btn>
         </div>
       </form>

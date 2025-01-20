@@ -25,6 +25,7 @@
     <div id="app">
         <password-reset-helper
             cancel-url="{{route('login')}}"
+            password-reset-action="{{ action('Auth\ForgotPasswordController@showLinkRequestForm') }}"
         >
         </password-reset-helper>
         <footerlogin></footerlogin>

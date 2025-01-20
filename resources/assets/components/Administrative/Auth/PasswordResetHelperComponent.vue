@@ -5,9 +5,10 @@
         <source src="https://appsauce.s3.us-east-1.amazonaws.com/system/helpers/files/1/Restablecimiento+de+contrase%C3%B1a+(1).mp4" type="video/mp4">
       </video>
     </b-row>
-    <b-row style="margin-left: 80%; margin-top: 2%">
+    <b-row style="margin-left: 70%; margin-top: 2%">
       <div>
-          <b-btn variant="primary" :to="cancelUrl">Atras</b-btn>&nbsp;&nbsp;
+          <b-btn variant="default" :to="cancelUrl">Atras</b-btn>&nbsp;&nbsp;
+          <b-btn variant="primary" :to="passwordResetAction">Ir a "Olvidaste tu contraseña"</b-btn>&nbsp;&nbsp;
       </div>
     </b-row>
   </div>
@@ -17,6 +18,7 @@
 export default {
   props: {
     cancelUrl: {type: String, required: true},
+    passwordResetAction: {type:String, required: true},
   },
   watch: {}, 
   data() {
