@@ -73,7 +73,8 @@ class LawController extends Controller
             $laws_hides = LawHide::select('law_id')->pluck('law_id')->toArray();
 
             $laws = Law::selectRaw(
-                'sau_lm_laws.law_number,
+                'sau_lm_laws.name,
+                 sau_lm_laws.law_number,
                  sau_lm_laws.id,
                  sau_lm_laws.law_year,
                  IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
@@ -129,7 +130,8 @@ class LawController extends Controller
         else
         {
             $laws = Law::selectRaw(
-                'sau_lm_laws.law_number,
+                'sau_lm_laws.name,
+                 sau_lm_laws.law_number,
                  sau_lm_laws.id,
                  sau_lm_laws.law_year,
                  IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
