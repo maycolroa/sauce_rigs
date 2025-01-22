@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ LEGAL"
       subtitle="EDITAR TIPO"
-      url="legalaspects-lm-type-company"
+      :url="data.company_id ? 'legalaspects-lm-type-company' : 'legalaspects-lm-type'"
     />
 
     <div class="col-md">

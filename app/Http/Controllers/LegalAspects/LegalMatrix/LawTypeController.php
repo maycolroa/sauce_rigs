@@ -17,10 +17,10 @@ class LawTypeController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:typesCustom_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:typesCustom_r, {$this->team}", ['except' => 'multiselect']);
-        $this->middleware("permission:typesCustom_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:typesCustom_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:typesCustom_c|risksAspects_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:typesCustom_r|risksAspects_r, {$this->team}", ['except' => 'multiselect']);
+        $this->middleware("permission:typesCustom_u|risksAspects_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:typesCustom_d|risksAspects_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -127,7 +127,7 @@ class LawTypeController extends Controller
     {
         if (COUNT($type->laws) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la entidad porque hay registros asociados a ella');
+            return $this->respondWithError('No se puede eliminar el tipo de norma porque hay registros asociados a ella');
         }
 
         $this->saveLogActivitySystem('Matriz legal - Tipos de normas', 'Se elimino el tipo de norma '.$type->name);
@@ -138,7 +138,7 @@ class LawTypeController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la entidad'
+            'message' => 'Se elimino el tipo de norma'
         ]);
     }
 

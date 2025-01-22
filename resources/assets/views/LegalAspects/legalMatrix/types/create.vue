@@ -2,15 +2,16 @@
   <div>
     <header-module
       title="MATRIZ LEGAL"
-      subtitle="CREAR ENTIDAD"
-      url="legalaspects-lm-entity"
+      subtitle="CREAR TIPO"
+      url="legalaspects-lm-type"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-entity-component
-                url="/legalAspects/legalMatrix/entity"
+            <form-type-component
+                url="/legalAspects/legalMatrix/type"
+                :cancel-url="{ name: 'legalaspects-lm-type'}"
                 method="POST"/>
         </b-card-body>
       </b-card>
@@ -19,16 +20,16 @@
 </template>
 
 <script>
-import FormEntityComponent from '@/components/LegalAspects/LegalMatrix/Entity/FormEntityComponent.vue';
+import FormTypeComponent from '@/components/LegalAspects/LegalMatrix/Type/FormTypeComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'legalaspects-lm-entity-create',
+  name: 'legalaspects-lm-type-create',
   metaInfo: {
-    title: 'Entidades - Crear'
+    title: 'Tipos - Crear'
   },
   components:{
-    FormEntityComponent
+    FormTypeComponent
   },
   data(){
     return {

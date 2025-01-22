@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ LEGAL"
       subtitle="VER TIPO"
-      url="legalaspects-lm-type-company"
+      :url="data.company_id ? 'legalaspects-lm-type-company' : 'legalaspects-lm-type'"
     />
 
     <div class="col-md">
@@ -12,7 +12,7 @@
             <form-type-component
                 :type="data"
                 :view-only="true"
-                :cancel-url="{ name: 'legalaspects-lm-type-company'}"/>
+                :cancel-url="{ name: data.company_id ? 'legalaspects-lm-type-company' : 'legalaspects-lm-type' }"/>
         </b-card-body>
       </b-card>
     </div>

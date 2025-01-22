@@ -1784,6 +1784,58 @@ export default [
         }
     },
     {
+        name: 'legalaspects-lm-type',
+        fields: [
+            { name: 'sau_lm_laws_types.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_laws_types.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-type-edit' },
+                    id: 'id',
+                },
+                permission: 'risksAspects_u'
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-type-view' },
+                    id: 'id',
+                },
+                permission: 'risksAspects_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/type/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tipo __name__'
+            },
+            permission: 'risksAspects_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/type/data',
+            filterColumns: true,
+        }
+    },
+    {
         name: 'legalaspects-lm-type-company',
         fields: [
             { name: 'sau_lm_laws_types.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

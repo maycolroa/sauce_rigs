@@ -57,7 +57,12 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-lm-type-company" });
+
+          if (this.custom)
+            this.$router.push({ name: "legalaspects-lm-type-company" });
+          else
+            this.$router.push({ name: "legalaspects-lm-type" });
+
         })
         .catch(error => {
           this.loading = false;
