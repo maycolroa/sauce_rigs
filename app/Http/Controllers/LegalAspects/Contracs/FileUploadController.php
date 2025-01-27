@@ -1039,7 +1039,7 @@ class FileUploadController extends Controller
         $contract_id = null;
 
         $select = [];
-
+        
         $select[] = "sau_ct_file_upload_contracts_leesse.id AS file_id";
         $select[] = "sau_ct_information_contract_lessee.id AS id";
         $select[] = "sau_ct_file_upload_contracts_leesse.name";  
@@ -1098,6 +1098,9 @@ class FileUploadController extends Controller
           
           if (isset($filters['users']))
             $files->inUsers($this->getValuesForMultiselect($filters["users"]), $filters['filtersType']['users']);
+
+          if (isset($filters['modules']))
+            $files->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
         }
 
         if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
@@ -1110,5 +1113,15 @@ class FileUploadController extends Controller
         
         return Vuetable::of($files)
             ->make();
+    }
+
+    public function multiselectModuleFiles(Request $request)
+    {
+        $modules = FileUpload::select("module")
+            ->orderBy('name')
+            ->whereIn('sau_ct_file_upload_contracts_leesse.module', ['Empleados', 'Documentos globales'])
+            ->pluck('module', 'module');
+
+        return $this->multiSelectFormat($modules);
     }
 }

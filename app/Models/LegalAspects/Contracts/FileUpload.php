@@ -83,6 +83,20 @@ class FileUpload extends Model
         return $query;
     }
 
+    public function scopeInModules($query, $modules, $typeSearch = 'IN')
+    {
+        if (COUNT($modules) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_file_upload_contracts_leesse.module', $modules);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_file_upload_contracts_leesse.module', $modules);
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given items
      * @param  Illuminate\Database\Eloquent\Builder $query

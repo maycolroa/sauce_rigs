@@ -355,6 +355,12 @@ export default [
           label: 'Usuarios'
         },
         {
+          url: '/selects/moduleReportFiles',
+          key: 'modules',
+          type: 'select',
+          label: 'Tipo'
+        },
+        {
           key: 'dateRange',
           type: 'dateRange',
           label: 'Rango de fecha',
