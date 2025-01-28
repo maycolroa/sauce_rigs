@@ -9,8 +9,8 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-          <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 800px; width: 800px; padding-right: 10px;">
-            <iframe :src="data.url" class="col-md-12" height="800" frameborder="0" id="iframeInforme"></iframe>
+          <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; width: 1200px; padding-right: 10px;">
+            <iframe :src="data.url" class="col-md-12" height="800" width="1800" frameborder="0" id="iframeInforme"></iframe>
           </perfect-scrollbar>
         </b-card-body>
       </b-card>
