@@ -8,6 +8,11 @@
 
     <div class="col-md">
         <b-card no-body>
+            <b-card-header class="with-elements">
+              <div class="card-title-elements">
+                <p><b>Nota:</b> Para mejorar la experiencia dentro del reporte puede hacer uso de los filtros disponibles.</p>
+              </div>
+            </b-card-header>
             <b-card-body>
                 <vue-table
                     configName="legalaspects-fileUpload-reports"
