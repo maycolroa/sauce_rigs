@@ -9,7 +9,7 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <iframe :src="data.url" class="col-md-12" height="800" frameborder="0" id="iframeInforme"></iframe>
+            <iframe :src="data.url" class="col-md-12" height="800" width="1200" frameborder="0" id="iframeInforme"></iframe>
         </b-card-body>
       </b-card>
     </div>
