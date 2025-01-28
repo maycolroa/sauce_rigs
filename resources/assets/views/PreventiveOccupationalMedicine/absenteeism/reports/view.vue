@@ -9,7 +9,9 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+          <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
             <iframe :src="data.url" class="col-md-12" height="800" width="1200" frameborder="0" id="iframeInforme"></iframe>
+          </perfect-scrollbar>
         </b-card-body>
       </b-card>
     </div>
@@ -18,11 +20,15 @@
 
 <script>
 import Alerts from '@/utils/Alerts.js';
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar'
 
 export default {
   name: 'absenteeism-reports-view',
   metaInfo: {
     title: 'Informes - Ver'
+  },
+  components: {
+    PerfectScrollbar
   },
   data () {
     return {
