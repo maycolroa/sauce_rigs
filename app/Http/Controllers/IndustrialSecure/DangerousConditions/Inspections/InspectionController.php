@@ -40,7 +40,7 @@ class InspectionController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:ph_inspections_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:ph_inspections_r, {$this->team}");
+        $this->middleware("permission:ph_inspections_r, {$this->team}", ['except' =>['multiselectTypes']]);
         $this->middleware("permission:ph_inspections_u, {$this->team}", ['only' => ['update', 'toggleState']]);
         $this->middleware("permission:ph_inspections_d, {$this->team}", ['only' => 'destroy']);
         $this->middleware("permission:ph_inspections_export, {$this->team}", ['only' => 'export']);
