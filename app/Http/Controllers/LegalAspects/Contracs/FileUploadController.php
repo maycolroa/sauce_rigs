@@ -567,6 +567,9 @@ class FileUploadController extends Controller
 
         if ((isset($file) && $file) || (isset($employee) && $employee))
         {
+          $document_states = [];
+          $files_states = [];
+
           foreach ($employee->activities as $activity)
           {
             $activity->documents_files = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
@@ -654,6 +657,11 @@ class FileUploadController extends Controller
                                 $expired = false;
                             }
                         }
+
+                        if ($count_files == ($key+1))
+                        {
+                          array_push($files_states, $fileUpload->state);
+                        }
                     }
                     
                     if ($count_files > 0 && $count_aprobe >= $count_files)
@@ -664,7 +672,7 @@ class FileUploadController extends Controller
                         $pendiente = true;
                 }
 
-                if ($rejected)
+                /*if ($rejected)
                 {
                   $employee->update(
                     [ 'state' => 'Rechazado']
@@ -677,18 +685,29 @@ class FileUploadController extends Controller
                         [ 'state' => 'Pendiente']
                     );
                     break;
-                }
+                }*/
             }
           }
 
-          if ($documents_counts > $count)
+          if (in_array('RECHAZADO', $files_states))
           {
-              $pendiente = true;
+              $employee->update(
+                [ 'state' => 'Rechazado']
+              );
+          }
+          else if ($documents_counts > $count)
+          {
               $employee->update(
                 [ 'state' => 'Pendiente']
               );
           }
-          else if(!$pendiente && !$rejected && !$expired)
+          else if (in_array('PENDIENTE', $files_states))
+          {
+              $employee->update(
+                [ 'state' => 'Pendiente']
+              );
+          }
+          else if(in_array('ACEPTADO', $files_states))
           {
             $employee->update(
               [ 'state' => 'Aprobado']
