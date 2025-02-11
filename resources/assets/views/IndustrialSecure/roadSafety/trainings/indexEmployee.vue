@@ -9,7 +9,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'industrialsecure-roadSafety-trainings'}" variant="secondary">Regresar</b-btn>
+            <b-btn :to="{name:'industrialsecure-roadsafety-trainings'}" variant="secondary">Regresar</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

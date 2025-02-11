@@ -3,7 +3,7 @@
    <header-module
       title="CAPACITACIONES"
       subtitle="EDITAR CAPACITACIÓN"
-      url="industrialsecure-roadSafety-trainings"
+      url="industrialsecure-roadsafety-trainings"
     />
 
     <div class="col-md">
@@ -14,7 +14,7 @@
                 method="PUT"
                 :training="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'industrialsecure-roadSafety-trainings'}"
+                :cancel-url="{ name: 'industrialsecure-roadsafety-trainings'}"
                 activitiesUrl="/selects/contracts/ctActivities"
                 typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
         </b-card-body>
