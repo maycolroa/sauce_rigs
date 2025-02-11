@@ -239,7 +239,7 @@ class DriversController extends Controller
 
             $driver->multiselect_employee = $driver->employee->multiselect();
             $driver->multiselect_type_license = $driver->typeLicense ? $driver->typeLicense->multiselect() : [];
-            $driver->multiselect_responsible = $driver->responsible->multiselect();
+            $driver->multiselect_responsible = $driver->responsible && $driver->responsible->multiselect() ? $driver->responsible->multiselect() : [];
 
             $driver->documents = $this->getFiles($driver->id);
 
