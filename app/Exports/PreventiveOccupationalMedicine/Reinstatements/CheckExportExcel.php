@@ -10,8 +10,9 @@ use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckExcelChia;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckExcelMitsubishi;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckEmpresarialExcel;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckFamiliaExcel;
-use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckHarineraEx;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckHarineraExcel;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckEnkaExcel;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckExcelAguas;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\MonitoringsExcel;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\TracingExcel;
 use App\Traits\ConfigurableFormTrait;
@@ -85,8 +86,7 @@ class CheckExportExcel implements WithMultipleSheets
             $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
         else if ($formModel == 'familia')
-        {
-            
+        {            
             $sheets[] = new CheckFamiliaExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
@@ -94,8 +94,7 @@ class CheckExportExcel implements WithMultipleSheets
             $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
         else if ($formModel == 'harinera')
-        {
-            
+        {            
             $sheets[] = new CheckHarineraExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
@@ -103,17 +102,23 @@ class CheckExportExcel implements WithMultipleSheets
             $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
         else if ($formModel == 'enka')
-        {
-            
+        {            
             $sheets[] = new CheckEnkaExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
             $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
             $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
+        else if ($formModel == 'aguas')
+        {            
+            $sheets[] = new CheckExcelAguas($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
+            $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
+            $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
+        }
         else
-        {
-            
+        {            
             $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
