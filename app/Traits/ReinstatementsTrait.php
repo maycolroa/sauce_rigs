@@ -83,7 +83,7 @@ trait ReinstatementsTrait
                 'type_controversy_origin_2' => 'nullable'
             ]);
         }
-        else if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'familia' || $formModel == 'mitsubishi' || $formModel == 'harinera')
+        else if ($formModel == 'chia' || $formModel == 'enka' || $formModel == 'familia' || $formModel == 'mitsubishi' || $formModel == 'harinera' || $formModel == 'aguas')
         {
             $rules = array_merge($rules, [
                 'dxs' => 'required|array',

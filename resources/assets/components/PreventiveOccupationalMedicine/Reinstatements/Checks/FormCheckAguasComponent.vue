@@ -97,11 +97,8 @@
                   <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addDx()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
               </div>
             </b-form-row>
-            <b-form-row>
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.qualification_dme" :error="form.errorsFor('qualification_dme')" :multiple="false" :options="qualificationsDme" :hide-selected="false" name="qualification_dme" label="Calificación DME" placeholder="Seleccione una opción"></vue-advanced-select>
-            </b-form-row>
           </b-card>
-          
+
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
@@ -139,7 +136,7 @@
                   </vue-ajax-advanced-select>
             </b-form-row>
             <b-form-row>
-              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder="" help-text="El detalle no debe contener caracteres especiales como '<', '>'"></vue-textarea>
             </b-form-row>
           </div>
 
@@ -243,11 +240,13 @@
                 <vue-datepicker :disabled="viewOnly" v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" class="col-md-6" v-model="form.process_pcl_done_date" label="Fecha proceso PCL" :full-month-name="true" :error="form.errorsFor('process_pcl_done_date')" name="process_pcl_done_date">
                   </vue-datepicker>
 
-                <!--<vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" min="0.00" max="100.00" :step="0.01" :error="form.errorsFor('pcl')"></vue-input>-->
+                <!--<vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl && isStringPcl" v-model="form.pcl" label="Calificación PCL" type="text" name="pcl" :error="form.errorsFor('pcl')" @onBlur="pclForm()"/>
+
+                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl && isNumberPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')"/>-->
 
                 <div v-show="showPcl">
                   <div style="color: #4E5155; font-weight: 400; margin-bottom: 5px;     font-size: 13.3px">Calificación PCL</div>
-                  <input v-model="form.pcl" class="form-control" :error="form.errorsFor('pcl')" type="number"/>
+                  <input v-model="form.pcl" class="form-control" :error="form.errorsFor('pcl')" type="number" step='0.01'/>
                 </div>
 
                 <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
@@ -263,7 +262,7 @@
                         
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" type="text" name="emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')"></vue-input>
 
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_1" label="Calificación" type="number" name="punctuation_controversy_plc_1" min="0" max="100" :error="form.errorsFor('punctuation_controversy_plc_1')"></vue-input>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_1" label="Calificación" type="number" name="punctuation_controversy_plc_1" :error="form.errorsFor('punctuation_controversy_plc_1')"></vue-input>
 
                   <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_pcl_1" class="col-md-6" v-model="form.is_firm_controversy_pcl_1" :options="siNo" name="is_firm_controversy_pcl_1" :error="form.errorsFor('is_firm_controversy_pcl_1')" label="¿Es definitiva esta decisión?"></vue-radio>
 
@@ -276,7 +275,7 @@
 
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_2" label="Entidad que Califica la segunda controversia" type="text" name="emitter_controversy_pcl_2" :error="form.errorsFor('emitter_controversy_pcl_2')"></vue-input>
 
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_2" label="Calificación" type="number" name="punctuation_controversy_plc_2" min="0" max="100" :error="form.errorsFor('punctuation_controversy_plc_2')"></vue-input>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_2" label="Calificación" type="number" name="punctuation_controversy_plc_2" :error="form.errorsFor('punctuation_controversy_plc_2')"></vue-input>
                 </b-form-row>
 
               </b-form-row>
@@ -430,12 +429,6 @@ export default {
         return [];
       }
     },
-    qualificationsDme: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
     siNo: {
       type: Array,
       default: function() {
@@ -484,7 +477,6 @@ export default {
           origin_recommendations: '',
           relocated: '',
           laterality: '',
-          qualification_dme: '',
           detail: '',
           monitoring_recommendations: '',
           in_process_origin: '',
@@ -504,8 +496,6 @@ export default {
           process_pcl_file: '',
           process_pcl_file_name: '',
           cie10_code_id: '',
-          cie10_code_2_id: '',
-          cie10_code_3_id: '',
           restriction_id: '',
           has_restrictions: '',
           relocated_regional_id: '',
@@ -565,15 +555,9 @@ export default {
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
       this.oldCheck();
     },
-    /*'form.cie10_code_id': function() {
+    'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
     },
-    'form.cie10_code_2_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_2_id}`, 'cie10CodeDetail2');
-    },
-    'form.cie10_code_3_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_3_id}`, 'cie10CodeDetail3');
-    },*/
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
       this.emptySelect('relocated_headquarter_id', 'headquarter')
@@ -584,6 +568,13 @@ export default {
     'form.relocated_process_id'() {
       if (this.disableWacth)
         this.disableWacth = false
+    },
+    'form.pcl'() {
+      if (this.form.pcl == '')
+      {
+        this.isNumberPcl = false;
+        this.isStringPcl = true;
+      }
     }
   },
   computed: {
@@ -627,6 +618,7 @@ export default {
     }
   },
   mounted() {
+
     this.form.dxs.forEach((dx, keydx) => {
         axios.get(`/biologicalmonitoring/reinstatements/cie10/${dx.cie10_code_id}`)
         .then(response => {
@@ -641,14 +633,8 @@ export default {
         });
     });
     /*if (this.form.cie10_code_id)
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');*/
     
-    if (this.form.cie10_code_2_id)
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_2_id}`, 'cie10CodeDetail2');
-
-    if (this.form.cie10_code_3_id)
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_3_id}`, 'cie10CodeDetail3');*/
-
     if (this.form.employee_id)
     {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
@@ -667,6 +653,12 @@ export default {
       this.is_firm_process_pcl = 'SI';
     }
 
+    if (this.form.pcl > 0)
+    {
+      this.isNumberPcl = false;
+      this.isStringPcl = true;
+    }
+
     setTimeout(() => {
       this.disableWacth = false
     }, 3000)
@@ -678,8 +670,6 @@ export default {
       form: Form.makeFrom(this.check, this.method),
       employeeDetail: [],
       cie10CodeDetail: [],
-      cie10CodeDetail2: [],
-      cie10CodeDetail3: [],
       disabledDates: {
         from: new Date()
       },
@@ -690,10 +680,18 @@ export default {
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
       laborNotesOtherReport: [],
-      showOld: false
+      showOld: false,
+      isStringPcl: true,
+      isNumberPcl: false
     };
   },
   methods: {
+    pclForm() {
+      let numero = this.form.pcl.replace(/[^0-9.]/g, '');
+      this.isStringPcl = false;
+      this.form.pcl = parseFloat(numero)
+      this.isNumberPcl = true;
+    },
     submit(e) {
 
       this.loading = true;
@@ -729,38 +727,6 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-        });
-    },
-    addDx()
-    {
-      this.form.dxs.push({
-          key: new Date().getTime(),
-          disease_origin: '',
-          cie10_code_id: '',
-          system: '',
-          category: '',
-          qualification_dme: '',
-          laterality: '',
-      });
-    },
-	  removeDx(index)
-    {
-      if (this.form.dxs[index].id != undefined)
-        this.form.delete.dxs.push(this.form.dxs[index].id)
-
-      this.form.dxs.splice(index, 1)
-    },
-    getDetailsCie(index)
-    {
-      axios.get(`/biologicalmonitoring/reinstatements/cie10/${this.form.dxs[index].cie10_code_id}`)
-        .then(response => {
-            this.form.dxs[index].system = response.data.data.system;
-            this.form.dxs[index].category = response.data.data.category;
-            this.isLoading = false;
-        })
-        .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
         });
     },
     oldCheck()
@@ -859,6 +825,38 @@ export default {
     pushRemoveFile(value)
     {
       this.form.delete.files.push(value)
+    },
+    addDx()
+    {
+      this.form.dxs.push({
+          key: new Date().getTime(),
+          disease_origin: '',
+          cie10_code_id: '',
+          system: '',
+          category: '',
+          qualification_dme: '',
+          laterality: '',
+      });
+    },
+	  removeDx(index)
+    {
+      if (this.form.dxs[index].id != undefined)
+        this.form.delete.dxs.push(this.form.dxs[index].id)
+
+      this.form.dxs.splice(index, 1)
+    },
+    getDetailsCie(index)
+    {
+      axios.get(`/biologicalmonitoring/reinstatements/cie10/${this.form.dxs[index].cie10_code_id}`)
+        .then(response => {
+            this.form.dxs[index].system = response.data.data.system;
+            this.form.dxs[index].category = response.data.data.category;
+            this.isLoading = false;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
     },
   }
 };
