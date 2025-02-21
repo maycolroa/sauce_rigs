@@ -70,6 +70,7 @@ class DriversController extends Controller
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')
         ->groupBy('sau_rs_drivers.id')
+        ->where('sau_employees.company_id', $this->company)
         ->orderBy('id', 'DESC');
 
         $url = "/industrialsecure/roadsafety/drivers";
