@@ -64,6 +64,15 @@ class DriverRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('responsible') && $this->responsible)
+        {
+            foreach ($this->input('responsible') as $key => $value)
+            {
+                $data['responsible'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
@@ -79,7 +88,7 @@ class DriverRequest extends FormRequest
         return [
             'employee_id' => 'required',
             'documents' => 'nullable|array',
-            'responsible_id' => 'required',
+            'responsible' => 'required',
             'type_license_id' => 'required',
             'date_license' => 'required'
         ];

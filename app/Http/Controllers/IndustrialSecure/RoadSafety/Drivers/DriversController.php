@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\RoadSafety\DriverDocument;
 use App\Models\IndustrialSecure\RoadSafety\Position;
 use App\Models\IndustrialSecure\RoadSafety\PositionDocument;
 use App\Models\IndustrialSecure\RoadSafety\TagsTypeLicense;
+use App\Models\IndustrialSecure\RoadSafety\TagsResponsibles;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Drivers\DriverRequest;
 use App\Models\Administrative\Positions\EmployeePosition;
 use Illuminate\Support\Facades\Storage;
@@ -120,13 +121,15 @@ class DriversController extends Controller
         DB::beginTransaction();
 
         try
-        {
+        {            
+            $responsible = $this->tagsPrepare($request->get('responsible'));
+            $this->tagsSave($responsible, TagsResponsibles::class);
+
             $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
 
             $driver = new Driver;
             $driver->employee_id = $request->employee_id;
-            $driver->responsible_id = $request->responsible_id;
-            //$driver->vehicle_id = $request->vehicle_id 
+            $driver->responsible = $responsible->implode(',');
             $driver->type_license_id = $request->type_license_id;
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
@@ -239,7 +242,7 @@ class DriversController extends Controller
 
             $driver->multiselect_employee = $driver->employee->multiselect();
             $driver->multiselect_type_license = $driver->typeLicense ? $driver->typeLicense->multiselect() : [];
-            $driver->multiselect_responsible = $driver->responsible && $driver->responsible->multiselect() ? $driver->responsible->multiselect() : [];
+            //$driver->multiselect_responsible = $driver->responsible && $driver->responsible->multiselect() ? $driver->responsible->multiselect() : [];
 
             $driver->documents = $this->getFiles($driver->id);
 
@@ -272,11 +275,12 @@ class DriversController extends Controller
 
         try
         {
+            $responsible = $this->tagsPrepare($request->get('responsible'));
+            $this->tagsSave($responsible, TagsResponsibles::class);
             $vehicles = $this->getValuesForMultiselect($request->vehicle_id);
 
             $driver->employee_id = $request->employee_id;
-            $driver->responsible_id = $request->responsible_id;
-            //$driver->vehicle_id = $request->vehicle_id;
+            $driver->responsible = $responsible->implode(',');
             $driver->type_license_id = $request->type_license_id;
             $driver->date_license = $request->date_license ? (Carbon::createFromFormat('D M d Y', $request->date_license))->format('Y-m-d') : null;
 
@@ -382,6 +386,36 @@ class DriversController extends Controller
             $tags = TagsTypeLicense::selectRaw("
                 sau_rs_tag_type_license.id as id,
                 sau_rs_tag_type_license.name as name
+            ")
+            ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
+    }
+
+    public function multiselectResponsibles(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsResponsibles::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsResponsibles::selectRaw("
+                sau_rs_tag_responsibles.id as id,
+                sau_rs_tag_responsibles.name as name
             ")
             ->where('company_id', $this->company)
             ->orderBy('name')

@@ -49,8 +49,8 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.responsible_id" :error="form.errorsFor('responsible_id')" :selected-object="form.multiselect_responsible" name="responsible_id" label="Responsable del conductor" placeholder="Seleccione una opción" :url="employeesDataUrl">
-          </vue-ajax-advanced-select>
+      <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-12" v-model="form.responsible" name="responsible" :error="form.errorsFor('responsible')" label="Responsable del conductor" placeholder="Seleccione el responsable" :url="tagsResponsibleDriverDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+      </vue-ajax-advanced-select-tag-unic>
     </b-form-row>
 
     <div class="col-md-12">      
@@ -59,8 +59,8 @@
       </blockquote>
 
       <template v-for="(document, index) in form.documents">
-        <b-card no-body class="mb-2" :key="document.key" style="width: 100%;">
-          <b-form-row>
+        <b-card no-body class="mb-2" style="width: 100%;">
+          <b-form-row :key="document.key">
             <vue-file-simple :disabled="viewOnly" :help-text="document.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/drivers/download/${document.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="document.file" :label="document.name" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.file`)" :maxFileSize="20"/>
             <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="document.expiration_date" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor(`documents.${index}.expiration_date`)" name="date_license">
                 </vue-datepicker>
@@ -150,6 +150,7 @@ export default {
       employeesDataUrl: "/selects/employees",
       vehiclesDataUrl: "/selects/vehicles",
       typeLicenseDataUrl: "/selects/tagTypeLicense",
+      tagsResponsibleDriverDataUrl: "/selects/tagResponsibleDriver"
 
     };
   },

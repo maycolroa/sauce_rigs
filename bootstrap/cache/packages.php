@@ -1,13 +1,13 @@
 <?php return array (
   'barryvdh/laravel-dompdf' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
   'chumper/zipper' => 
@@ -48,13 +48,13 @@
   ),
   'laravel/horizon' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
-    ),
     'aliases' => 
     array (
       'Horizon' => 'Laravel\\Horizon\\Horizon',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
     ),
   ),
   'laravel/telescope' => 
@@ -73,13 +73,20 @@
   ),
   'maatwebsite/excel' => 
   array (
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
     'providers' => 
     array (
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
-    'aliases' => 
+  ),
+  'matthewbdaly/laravel-azure-storage' => 
+  array (
+    'providers' => 
     array (
-      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+      0 => 'Matthewbdaly\\LaravelAzureStorage\\AzureStorageServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -98,13 +105,13 @@
   ),
   'santigarcor/laratrust' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laratrust\\LaratrustServiceProvider',
-    ),
     'aliases' => 
     array (
       'Laratrust' => 'Laratrust\\LaratrustFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laratrust\\LaratrustServiceProvider',
     ),
   ),
   'spatie/laravel-cors' => 

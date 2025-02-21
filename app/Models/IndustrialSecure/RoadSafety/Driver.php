@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
-
     protected $table = 'sau_rs_drivers';
     
     protected $fillable = [
@@ -14,7 +13,7 @@ class Driver extends Model
         'type_license_id',
         'date_license',
         //'vehicle_id',
-        'responsible_id'
+        'responsible'
     ];
 
     public function employee()
@@ -25,11 +24,6 @@ class Driver extends Model
     public function typeLicense()
     {
         return $this->belongsTo(TagsTypeLicense::class, 'type_license_id');
-    }
-
-    public function responsible()
-    {
-        return $this->belongsTo('App\Models\Administrative\Employees\Employee', 'responsible_id');
     }
 
     public function vehicles()

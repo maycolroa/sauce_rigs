@@ -13,7 +13,7 @@ class CreateSauRsTagsResponsiblesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sau_rs_tags_responsibles', function (Blueprint $table) {
+        Schema::create('sau_rs_tag_responsibles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('company_id');
@@ -31,6 +31,6 @@ class CreateSauRsTagsResponsiblesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_rs_tags_responsibles');
+        Schema::dropIfExists('sau_rs_tag_responsibles');
     }
 }

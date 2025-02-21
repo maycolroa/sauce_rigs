@@ -349,6 +349,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsRsColor', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectColor');
         Route::post('tagsRsLoadingCapacity', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselectLoadingCapacity');
         Route::post('tagTypeLicense', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselectTypeLicense');
+        Route::post('tagResponsibleDriver', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselectResponsibles');
         Route::post('vehicles', 'IndustrialSecure\RoadSafety\Vehicles\VehiclesController@multiselect');
         Route::post('drivers', 'IndustrialSecure\RoadSafety\Drivers\DriversController@multiselect');
 
