@@ -160,6 +160,7 @@ class DriversController extends Controller
 
     public function saveFile($files, $driver)
     {
+        \Log::info($files);
         if ($files && count($files) > 0)
         {
             foreach ($files as $keyF => $value) 
@@ -171,6 +172,7 @@ class DriversController extends Controller
                     if (isset($value['id']))
                     {
                         $fileUpload = DriverDocument::findOrFail($value['id']);
+                        $fileUpload->position_document_id = $value['position_document_id'];
                         $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
 
                         if ($value['old_name'] == $value['file'] )
@@ -181,6 +183,7 @@ class DriversController extends Controller
                         $fileUpload = new DriverDocument();                    
                         $fileUpload->driver_id = $driver->id;
                         $fileUpload->name = $value['name'];
+                        $fileUpload->position_document_id = $value['position_document_id'];
                         $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
                     }
 
@@ -204,23 +207,45 @@ class DriversController extends Controller
 
     public function getFiles($driver)
     {
-        $get_files = DriverDocument::where('driver_id', $driver)->get();
-
         $files = [];
 
-        if ($get_files->count() > 0)
-        {               
-            $get_files->transform(function($get_file, $index) {
-                $get_file->id = $get_file->id;
-                $get_file->key = Carbon::now()->timestamp + rand(1,10000);
-                $get_file->name = $get_file->name;
-                $get_file->old_name = $get_file->file;
-                $get_file->expiration_date = $get_file->expiration_date ? (Carbon::createFromFormat('Y-m-d', $get_file->expiration_date))->format('D M d Y') : NULL;;
+        $position = Position::where('employee_position_id', $driver->employee->employee_position_id)->first();
 
-                return $get_file;
-            });
+        if ($position)
+        {
+            $documents = PositionDocument::where('position_id', $position->id)->get();
 
-            $files = $get_files;
+            if ($documents->count() > 0)
+            {
+                foreach ($documents as $key => $document) 
+                {
+                    $get_file = DriverDocument::where('driver_id', $driver->id)->where('position_document_id', $document->id)->first();
+
+                    if ($get_file)
+                    {
+                        $content = [
+                            'id' => $get_file->id,
+                            'key' => Carbon::now()->timestamp + rand(1,10000),
+                            'name' => $document->name,
+                            'position_document_id' => $document->id,
+                            'file' => '',
+                            'expiration_date' => $get_file->expiration_date ? (Carbon::createFromFormat('Y-m-d', $get_file->expiration_date))->format('D M d Y') : NULL
+                        ];
+                    }
+                    else
+                    {
+                        $content = [
+                            'key' => Carbon::now()->timestamp + rand(1,10000),
+                            'name' => $document->name,
+                            'position_document_id' => $document->id,
+                            'file' => '',
+                            'expiration_date' => ''
+                        ];
+                    }
+
+                    array_push($files, $content);
+                }
+            }
         }
 
         return $files;
@@ -245,7 +270,7 @@ class DriversController extends Controller
             $driver->multiselect_type_license = $driver->typeLicense ? $driver->typeLicense->multiselect() : [];
             //$driver->multiselect_responsible = $driver->responsible && $driver->responsible->multiselect() ? $driver->responsible->multiselect() : [];
 
-            $driver->documents = $this->getFiles($driver->id);
+            $driver->documents = $this->getFiles($driver);
 
             foreach ($driver->vehicles as $key => $value)
             {                

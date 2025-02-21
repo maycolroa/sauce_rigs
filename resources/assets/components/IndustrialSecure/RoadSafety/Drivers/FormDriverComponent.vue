@@ -110,7 +110,7 @@ export default {
       default() {
         return {
             employee_id: '',
-            responsible_id: '',
+            responsible: '',
             type_license_id: '',
             date_license: '',
             vehicle_id: '',
@@ -210,7 +210,6 @@ export default {
         this.isLoading = true;
         axios.post('/industrialSecurity/roadsafety/drivers/getDocuments', postData)
         .then(response => {
-          console.log(response.data.data)
             this.form.documents = response.data.data;
             this.isLoading = false;
         })
