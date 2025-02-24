@@ -14,6 +14,7 @@ class DriverDocument extends Model
         'driver_id',
         'name',
         'file',
+        'required_expiration_date',
         'expiration_date',
         'position_document_id'
     ];

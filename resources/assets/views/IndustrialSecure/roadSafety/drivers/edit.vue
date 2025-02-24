@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body style="height: 1000px">
+        <b-card-body style="height: 1500px">
             <driver-form
                 :url="`/industrialSecurity/roadsafety/drivers/${this.$route.params.id}`"
                 method="PUT"

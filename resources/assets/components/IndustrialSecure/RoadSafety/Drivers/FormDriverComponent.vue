@@ -62,7 +62,9 @@
         <b-card no-body class="mb-2" style="width: 100%;">
           <b-form-row :key="document.key">
             <vue-file-simple :disabled="viewOnly" :help-text="document.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/roadsafety/drivers/download/${document.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="document.file" :label="document.name" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.file`)" :maxFileSize="20"/>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="document.expiration_date" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor(`documents.${index}.expiration_date`)" name="date_license">
+            <vue-radio :disabled="viewOnly" class="col-md-2" v-model="document.required_expiration_date" :options="siNo" :name="`siNo${index}`" label="¿Tiene fecha de vencimiento?" :checked="document.required_expiration_date">
+              </vue-radio>
+            <vue-datepicker v-if="document.required_expiration_date == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="document.expiration_date" label="Fecha de vencimiento" :full-month-name="true" placeholder="Fecha de vencimiento" :error="form.errorsFor(`documents.${index}.expiration_date`)" name="date_license">
                 </vue-datepicker>
           </b-form-row>
         </b-card>
@@ -150,8 +152,11 @@ export default {
       employeesDataUrl: "/selects/employees",
       vehiclesDataUrl: "/selects/vehicles",
       typeLicenseDataUrl: "/selects/tagTypeLicense",
-      tagsResponsibleDriverDataUrl: "/selects/tagResponsibleDriver"
-
+      tagsResponsibleDriverDataUrl: "/selects/tagResponsibleDriver",
+      siNo: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
     };
   },
   methods: {

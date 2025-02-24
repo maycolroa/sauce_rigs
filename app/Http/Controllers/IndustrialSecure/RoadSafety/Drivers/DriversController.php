@@ -160,7 +160,6 @@ class DriversController extends Controller
 
     public function saveFile($files, $driver)
     {
-        \Log::info($files);
         if ($files && count($files) > 0)
         {
             foreach ($files as $keyF => $value) 
@@ -173,6 +172,7 @@ class DriversController extends Controller
                     {
                         $fileUpload = DriverDocument::findOrFail($value['id']);
                         $fileUpload->position_document_id = $value['position_document_id'];
+                        $fileUpload->required_expiration_date = $value['required_expiration_date'];
                         $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
 
                         if ($value['old_name'] == $value['file'] )
@@ -184,6 +184,7 @@ class DriversController extends Controller
                         $fileUpload->driver_id = $driver->id;
                         $fileUpload->name = $value['name'];
                         $fileUpload->position_document_id = $value['position_document_id'];
+                        $fileUpload->required_expiration_date = $value['required_expiration_date'];
                         $fileUpload->expiration_date = $value['expiration_date'] ? (Carbon::createFromFormat('D M d Y', $value['expiration_date']))->format('Y-m-d') : NULL;
                     }
 
@@ -193,7 +194,7 @@ class DriversController extends Controller
 
                         $file_tmp = $value['file'];
                         $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                        $file_tmp->storeAs($path, $nameFile, 's3');
+                        //$file_tmp->storeAs($path, $nameFile, 's3');
                         $fileUpload->file = $nameFile;
                     }
 
@@ -226,9 +227,11 @@ class DriversController extends Controller
                         $content = [
                             'id' => $get_file->id,
                             'key' => Carbon::now()->timestamp + rand(1,10000),
-                            'name' => $document->name,
+                            'name' => $get_file->name,
+                            'old_name' => $get_file->file,
                             'position_document_id' => $document->id,
-                            'file' => '',
+                            'file' => $get_file->file,                            
+                            'required_expiration_date' => $get_file->required_expiration_date,
                             'expiration_date' => $get_file->expiration_date ? (Carbon::createFromFormat('Y-m-d', $get_file->expiration_date))->format('D M d Y') : NULL
                         ];
                     }
@@ -239,6 +242,7 @@ class DriversController extends Controller
                             'name' => $document->name,
                             'position_document_id' => $document->id,
                             'file' => '',
+                            'required_expiration_date' => 'SI',
                             'expiration_date' => ''
                         ];
                     }
@@ -377,7 +381,9 @@ class DriversController extends Controller
                     $content = [
                         'key' => Carbon::now()->timestamp + rand(1,10000),
                         'name' => $document->name,
+                        'position_document_id' => $document->id,
                         'file' => '',
+                        'required_expiration_date' => 'SI',
                         'expiration_date' => ''
                     ];
 
