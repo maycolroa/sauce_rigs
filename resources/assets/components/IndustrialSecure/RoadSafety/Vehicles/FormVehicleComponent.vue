@@ -27,9 +27,11 @@
                 @configLocation="setConfigLocation"/>
           </b-form-row>
 
-          <b-form-row>
-            <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.type_vehicle" name="type_vehicle" :error="form.errorsFor('type_vehicle')" label="Tipo de vehiculo" placeholder="Seleccione el tipo de vehiculo" :url="tagsTypeVehicleDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
-            </vue-ajax-advanced-select-tag-unic>
+          <b-form-row>            
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_vehicle" name="type_vehicle" :error="form.errorsFor('type_vehicle')" label="Tipo de vehículo" placeholder="Seleccione el tipo" :url="typeVehicleDataUrl" :multiple="false" :allowEmpty="true" :selectedObject="form.multiselect_type" :btnLabelPopover="createHelp()">
+            </vue-ajax-advanced-select>         
+            <vue-advanced-select :disabled="viewOnly || !form.type_vehicle" class="col-md-6" v-model="form.year_vehicle" :multiple="false" :options="years" :hide-selected="false" name="year_vehicle" :error="form.errorsFor('year_vehicle')" label="Año" placeholder="Seleccione el año" :searchable="true">
+              </vue-advanced-select>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.code_vehicle" label="Código del vehiculo" type="text" name="code_vehicle" :error="form.errorsFor('code_vehicle')" placeholder="Código del vehiculo"></vue-input>
           </b-form-row>    
         </b-card-body>
@@ -68,7 +70,7 @@
         </b-card-body>
     </b-card>
 
-    <b-card border-variant="primary" title="Información SOAT" class="mb-3 box-shadow-none">
+    <b-card v-if="form.type_vehicle && [1,2,3,4].includes(form.type_vehicle)" border-variant="primary" title="Información SOAT" class="mb-3 box-shadow-none">
         <b-card-body>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.soat_number" label="Número del SOAT" type="number" name="soat_number" :error="form.errorsFor('soat_number')" placeholder="Número del SOAT"></vue-input>            
@@ -112,7 +114,7 @@
         </b-card-body>
     </b-card>
 
-    <b-card border-variant="primary" title="Información Tecno mecánica" class="mb-3 box-shadow-none">
+    <b-card v-if="(form.type_vehicle && [1,2,3,4].includes(form.type_vehicle) && yearValid())" border-variant="primary" title="Información Tecno mecánica" class="mb-3 box-shadow-none">
         <b-card-body>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.mechanical_tech_number" label="Número del Tecno mecánica" type="number" name="mechanical_tech_number" :error="form.errorsFor('mechanical_tech_number')" placeholder="Número del Tecno mecánica"></vue-input>            
@@ -240,7 +242,13 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
-    positionsDataUrl: { type: String, default: "" },
+    positionsDataUrl: { type: String, default: "" },    
+    years: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     vehicles: {
       default() {
         return {
@@ -285,7 +293,9 @@ export default {
             change_soat: '',
             change_mechanical: '',
             change_resposability: '',
-            activeChange: false
+            activeChange: false,
+            activeTech: false,
+            multiselect_type: null
         };
       }
     }
@@ -447,7 +457,7 @@ export default {
       tagsMarkDataUrl: '/selects/tagsRsMark',
       tagsCapacityLoadingDataUrl: '/selects/tagsRsLoadingCapacity',
       tagsNamePropietaryDataUrl: '/selects/tagsRsNamePropietary',
-      tagsTypeVehicleDataUrl: '/selects/tagsRsTypeVehicle',
+      typeVehicleDataUrl: '/selects/tagsRsTypeVehicle',
       configLocation: {},
       showChangeSoat: false,
       showChangeMecanical: false,
@@ -507,10 +517,96 @@ export default {
         }
         
     },
+    yearValid() {
+      if (this.form.type_vehicle && [1,3,4].includes(this.form.type_vehicle))
+      {
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+
+        let diff = currentYear - this.form.year_vehicle;
+
+        this.form.activeTech = diff > 4;
+
+        return diff > 4;
+      }
+      if (this.form.type_vehicle && [2].includes(this.form.type_vehicle))
+      {
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+
+        let diff = currentYear - this.form.year_vehicle;
+
+        this.form.activeTech = diff > 2;
+
+        return diff > 2;
+      }
+    },
+    createHelp() {
+      if (this.form.type_vehicle)
+      {
+        if (this.form.type_vehicle == 1)
+        {
+          return {
+              title: "Automóviles",
+              icon: 'fas fa-info',
+              content: "Descripción: Vehículos motorizados de cuatro ruedas diseñados principalmente para el transporte de pasajeros. \n Incluye: \n- Sedanes. \n - Hatchbacks \n - SUVs y Crossovers \n - Camionetas pickup ligeras \n - Vehículos deportivos \n - Minivans"
+          }
+        }
+        else if (this.form.type_vehicle == 2)
+        {
+          return {
+              title: "Motocicletas",
+              icon: 'fas fa-info',
+              content: "Descripción: Vehículos de dos ruedas impulsados por motor. \n Incluye: \n- Motocicletas deportivas. \n - Motocicletas de turismo \n - Motocicletas cruiser \n - Scooters \n - Motocicletas off-road/todoterreno \n - Motocicletas naked/estándar \n - Motocicletas adventure/touring"
+          }
+        }
+        else if (this.form.type_vehicle == 3)
+        {
+          return {
+              title: "Vehículos Pesados",
+              icon: 'fas fa-info',
+              content: "Descripción:  Maquinaria y vehículos de gran tamaño utilizados principalmente para construcción, minería y agricultura. \n Incluye: \n- Excavadoras. \n - Retroexcavadoras \n - Cargadores frontales \n - Bulldozers \n - Grúas móviles \n - Compactadoras \n -  Tractores agrícolas"
+          }
+        }
+        else if (this.form.type_vehicle == 4)
+        {
+          return {
+              title: "Camiones",
+              icon: 'fas fa-info',
+              content: "Descripción: Vehículos motorizados diseñados principalmente para el transporte de mercancías y cargas. \n Incluye: \n- Camiones ligeros (hasta 3.5 toneladas). \n - Camiones medianos (3.5-12 toneladas) \n - Camiones pesados (más de 12 toneladas) \n - Tractocamiones \n - Vehículos especializados (bomberos, basura, cisterna, frigoríficos)."
+          }
+        }
+        else if (this.form.type_vehicle == 5)
+        {
+          return {
+              title: "Montacargas",
+              icon: 'fas fa-info',
+              content: "Descripción: Vehículos industriales especializados para levantar y transportar materiales en almacenes, centros de distribución y zonas industriales. \n Incluye: \n- Montacargas contrapesados. \n - Montacargas eléctricos. \n - Montacargas de combustión interna. \n - Apiladores. \n - Transpaletas manuales y eléctricas. \n - Carretillas elevadoras de alcance. \n - Montacargas para terrenos irregulares. \n - Montacargas telescópicos."
+          }
+        }
+        else if (this.form.type_vehicle == 6)
+        {
+          return {
+              title: "Vehículos Eléctricos",
+              icon: 'fas fa-info',
+              content: "Descripción: Vehículos impulsados por uno o más motores eléctricos con baterías recargables. \n Incluye: \n- Automóviles eléctricos. \n - SUVs y crossovers eléctricos. \n - Motocicletas eléctricas. \n - Camiones eléctricos. \n - Autobuses eléctricos. \n - Vehículos comerciales ligeros eléctricos. \n - Scooters eléctricos."
+          }
+        }
+      }
+      else
+      {
+        return {
+              title: "Sin Seleccionar",
+              icon: 'fas fa-info',
+              content: "Descripción: "
+          }
+      }
+    }
   },
   mounted() {
     setTimeout(() => {
       this.activeChange = true;
+      this.createHelp()
     }, 3000);
   },
 };

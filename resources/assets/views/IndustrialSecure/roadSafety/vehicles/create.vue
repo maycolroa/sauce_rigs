@@ -13,6 +13,7 @@
                 url="/industrialSecurity/roadsafety/vehicles"
                 method="POST"
                 positions-data-url="/selects/positions"
+                :years="years"
                 :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles'}"/>
         </b-card-body>
       </b-card>
@@ -37,11 +38,24 @@ export default {
   },
   data(){
 		return {
+      years: [],
 		}
 	},
 	created(){
+    this.fetchSelect('years', '/selects/legalMatrix/years')
 	},
   methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            //this.$router.go(-1);
+        });
+    },
 	}
 }
 </script>

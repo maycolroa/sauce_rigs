@@ -15,6 +15,7 @@ use App\Models\IndustrialSecure\RoadSafety\TagsNamePropietary;
 use App\Models\IndustrialSecure\RoadSafety\TagsPlate;
 use App\Models\IndustrialSecure\RoadSafety\TagsTypeVehicle;
 use App\Models\IndustrialSecure\RoadSafety\HistoryChanges;
+use App\Models\IndustrialSecure\RoadSafety\VehicleType;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Vehicles\VehicleRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -56,6 +57,7 @@ class VehiclesController extends Controller
     {
         $vehicles = Vehicle::select(
             'sau_rs_vehicles.*',
+            'sau_rs_vehicles_types.name AS type_vehicle',
             'sau_employees_regionals.name AS regional',
             'sau_employees_headquarters.name AS headquarter',
             'sau_employees_processes.name AS process',
@@ -65,6 +67,7 @@ class VehiclesController extends Controller
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rs_vehicles.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rs_vehicles.employee_area_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rs_vehicles.employee_process_id')
+        ->leftJoin('sau_rs_vehicles_types', 'sau_rs_vehicles_types.id', 'sau_rs_vehicles.type_vehicle')
         ->orderBy('id', 'DESC');
 
         $url = "/industrialsecure/roadsafety/vehicles";
@@ -194,8 +197,8 @@ class VehiclesController extends Controller
             $name_propietary = $this->tagsPrepare($request->get('name_propietary'));
             $this->tagsSave($name_propietary, TagsNamePropietary::class);
 
-            $type_vehicle = $this->tagsPrepare($request->get('type_vehicle'));
-            $this->tagsSave($type_vehicle, TagsTypeVehicle::class);
+            /*$type_vehicle = $this->tagsPrepare($request->get('type_vehicle'));
+            $this->tagsSave($type_vehicle, TagsTypeVehicle::class);*/
 
             $mark = $this->tagsPrepare($request->get('mark'));
             $this->tagsSave($mark, TagsMark::class);
@@ -220,8 +223,9 @@ class VehiclesController extends Controller
             $vehicle->name_propietary = $name_propietary->implode(',');
             $vehicle->registration_number = $request->registration_number;
             $vehicle->registration_number_date = $request->registration_number_date ? (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d') : null;
-            $vehicle->type_vehicle = $type_vehicle->implode(',');
+            $vehicle->type_vehicle = $request->type_vehicle;
             $vehicle->code_vehicle = $request->code_vehicle;
+            $vehicle->year_vehicle = $request->year_vehicle;
 
             ///Informacion matricula
             $vehicle->mark = $mark->implode(',');
@@ -320,6 +324,8 @@ class VehiclesController extends Controller
             $vehicle->old_file_mechanical_tech = $vehicle->file_mechanical_tech;
             $vehicle->old_file_policy = $vehicle->file_policy;
             $vehicle->locations = $this->prepareDataLocationForm($vehicle);
+            $vehicle->type_vehicle = $vehicle->type_vehicle;
+            $vehicle->multiselect_type = $vehicle->type ? $vehicle->type->multiselect() : [];
             $vehicle->registration_number_date = $vehicle->registration_number_date ? (Carbon::createFromFormat('Y-m-d', $vehicle->registration_number_date))->format('D M d Y') : null;
             $vehicle->expedition_date_soat = $vehicle->expedition_date_soat ? (Carbon::createFromFormat('Y-m-d', $vehicle->expedition_date_soat))->format('D M d Y') : null;            
            //$vehicle->required_due_date_soat = $vehicle->required_due_date_soat;
@@ -363,8 +369,8 @@ class VehiclesController extends Controller
             $name_propietary = $this->tagsPrepare($request->get('name_propietary'));
             $this->tagsSave($name_propietary, TagsNamePropietary::class);
 
-            $type_vehicle = $this->tagsPrepare($request->get('type_vehicle'));
-            $this->tagsSave($type_vehicle, TagsTypeVehicle::class);
+            /*$type_vehicle = $this->tagsPrepare($request->get('type_vehicle'));
+            $this->tagsSave($type_vehicle, TagsTypeVehicle::class);*/
 
             $mark = $this->tagsPrepare($request->get('mark'));
             $this->tagsSave($mark, TagsMark::class);
@@ -386,8 +392,9 @@ class VehiclesController extends Controller
             $vehicle->name_propietary = $name_propietary->implode(',');
             $vehicle->registration_number = $request->registration_number;
             $vehicle->registration_number_date = $request->registration_number_date ? (Carbon::createFromFormat('D M d Y', $request->registration_number_date))->format('Y-m-d') : null;
-            $vehicle->type_vehicle = $type_vehicle->implode(',');
+            $vehicle->type_vehicle = $request->type_vehicle;
             $vehicle->code_vehicle = $request->code_vehicle;
+            $vehicle->year_vehicle = $request->year_vehicle;
 
             ///Informacion matricula
             $vehicle->mark = $mark->implode(',');
@@ -595,7 +602,7 @@ class VehiclesController extends Controller
         }
     }
 
-    public function multiselectTypeVehicle(Request $request)
+    public function multiselectTypeVehicleOff(Request $request)
     {
         if($request->has('keyword'))
         {
@@ -618,6 +625,35 @@ class VehiclesController extends Controller
                 sau_rs_tag_type_vehicles.name as name
             ")
             ->where('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
+    }
+
+    public function multiselectTypeVehicle(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = VehicleType::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = VehicleType::selectRaw("
+                sau_rs_vehicles_types.id as id,
+                sau_rs_vehicles_types.name as name
+            ")
             ->orderBy('name')
             ->pluck('name', 'name');
         

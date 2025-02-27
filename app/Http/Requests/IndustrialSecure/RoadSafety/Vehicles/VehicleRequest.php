@@ -47,14 +47,14 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        if ($this->has('type_vehicle') && $this->type_vehicle)
+        /*if ($this->has('type_vehicle') && $this->type_vehicle)
         {
             foreach ($this->input('type_vehicle') as $key => $value)
             {
                 $data['type_vehicle'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
-        }
+        }*/
 
         if ($this->has('mark') && $this->mark)
         {
@@ -137,15 +137,15 @@ class VehicleRequest extends FormRequest
             'passenger_capacity' => 'required',
             'loading_capacity' => 'required',
             'state' => 'required',
-            'soat_number' => 'required',
-            'insurance' => 'required',
-            'expedition_date_soat' => 'required',
-            'due_date_soat' => 'required',
+            'soat_number' => 'required_if:type_vehicle,1,2,3,4',
+            'insurance' => 'required_if:type_vehicle,1,2,3,4',
+            'expedition_date_soat' => 'required_if:type_vehicle,1,2,3,4',
+            'due_date_soat' => 'required_if:type_vehicle,1,2,3,4',
             'file_soat' => 'nullable',
-            'mechanical_tech_number' => 'required',
-            'issuing_entity' => 'required',
-            'expedition_date_mechanical_tech' => 'required',
-            'due_date_mechanical_tech' => 'required',
+            'mechanical_tech_number' => 'required_if:activeTech,1',
+            'issuing_entity' => 'required_if:activeTech,1',
+            'expedition_date_mechanical_tech' => 'required_if:activeTech,1',
+            'due_date_mechanical_tech' => 'required_if:activeTech,1',
             'file_mechanical_tech' => 'nullable',
             'policy_number' => 'nullable',
             'policy_entity' => 'nullable',

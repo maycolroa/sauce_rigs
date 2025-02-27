@@ -12,6 +12,7 @@
             <vehicle-form
                 :vehicles="data"
                 :view-only="true"
+                :years="years"
                 :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles'}"/>
         </b-card-body>
       </b-card>
@@ -34,13 +35,15 @@ export default {
   },
   data () {
     return {
-      data: []
+      data: [],
+      years: [],
     }
   },
   created(){
     axios.get(`/industrialSecurity/roadsafety/vehicles/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        this.fetchSelect('years', '/selects/legalMatrix/years');
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

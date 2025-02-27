@@ -45,7 +45,7 @@ class LawController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:laws_c|lawsCustom_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:laws_r|lawsCustom_r, {$this->team}", ['except' => 'getArticlesQualification']);
+        $this->middleware("permission:laws_r|lawsCustom_r, {$this->team}", ['except' => 'getArticlesQualification', 'lmYears']);
         $this->middleware("permission:laws_u|lawsCustom_u, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:laws_d|lawsCustom_d, {$this->team}", ['only' => 'destroy']);
         $this->middleware("permission:laws_qualify, {$this->team}", ['only' => 'saveArticlesQualification']);

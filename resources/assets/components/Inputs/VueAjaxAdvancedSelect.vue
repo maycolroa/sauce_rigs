@@ -1,8 +1,17 @@
 <template>
     <b-form-group>
-        <div slot="label" :class="classBlock">
-            <div v-if="label">{{label}}</div>
-            <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
+        <div slot="label" :class="classBlock">            
+            <b-row align-v="end">
+              <b-col>
+                <div v-if="label">{{label}}</div>
+                <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
+              </b-col>
+              <b-col v-if="btnLabelPopover && Object.keys(btnLabelPopover).length > 0">
+                <div class="float-right" style="padding-right: 10px;">
+                    <b-btn v-b-popover.hover.focus.left="btnLabelPopover.content" :title="btnLabelPopover.title" variant="primary" class="btn-circle-micro"><span :class="btnLabelPopover.icon"></span></b-btn>
+                </div>
+              </b-col>
+            </b-row>
         </div>
         <multiselect v-model="selectValue"
                          :options="options"
@@ -58,7 +67,8 @@ export default {
         parameters: { type: Object},
         emptyAll: {type: Boolean, default: false},
         taggable: {type: Boolean, default: false},
-        allowEmpty: {type: Boolean, default: false}
+        allowEmpty: {type: Boolean, default: false},
+        btnLabelPopover: { type: Object },
     },
     components:{
         Multiselect,

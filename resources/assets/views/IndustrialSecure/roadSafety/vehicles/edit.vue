@@ -10,11 +10,12 @@
       <b-card no-body>
         <b-card-body>
             <vehicle-form
-                :url="`/industrialSecurity/roadsafety/vehicles/${this.$route.params.id}`"
-                method="PUT"
-                :vehicles="data"
-                :is-edit="true"
-                :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles'}"/>
+              :url="`/industrialSecurity/roadsafety/vehicles/${this.$route.params.id}`"
+              method="PUT"
+              :years="years"
+              :vehicles="data"
+              :is-edit="true"
+              :cancel-url="{ name: 'industrialsecure-roadsafety-vehicles'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -25,6 +26,7 @@
 import VehicleForm from '@/components/IndustrialSecure/RoadSafety/Vehicles/FormVehicleComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'industrialsecure-roadsafety-vehicles-edit',
@@ -32,23 +34,40 @@ export default {
     title: 'Vehiculos - Editar'
   },
   components:{
-    VehicleForm
+    VehicleForm,
+    Loading
   },
   data () {
     return {
       data: [],
+      years: [],
+      ready: false,
     }
   },
   created(){
     axios.get(`/industrialSecurity/roadsafety/vehicles/${this.$route.params.id}`)
     .then(response => {
+      this.fetchSelect('years', '/selects/legalMatrix/years')
         this.data = response.data.data;
+        this.ready = true
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
   },
-  methods: {}
+  methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            //this.$router.go(-1);
+        });
+    },
+  }
 }
 </script>

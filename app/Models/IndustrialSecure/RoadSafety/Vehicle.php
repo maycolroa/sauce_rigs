@@ -52,6 +52,7 @@ class Vehicle extends Model
         //'required_due_date_policy',
         'due_date_policy',
         'file_policy',
+        'year_vehicle'
     ];
 
     public function regional()
@@ -79,10 +80,10 @@ class Vehicle extends Model
         return $this->hasMany(HistoryChanges::class, 'vehicle_id');
     }
 
-    /*public function position()
+    public function type()
     {
-        return $this->belongsTo('App\Models\Administrative\Positions\EmployeePosition', 'employee_position_id');
-    }*/
+        return $this->belongsTo(VehicleType::class, 'type_vehicle');
+    }
 
     public function multiselect()
     {
