@@ -607,6 +607,7 @@ export default {
     setTimeout(() => {
       this.activeChange = true;
       this.createHelp()
+      this.yearValid();
     }, 3000);
   },
 };
