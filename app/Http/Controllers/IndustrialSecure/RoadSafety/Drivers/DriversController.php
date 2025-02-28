@@ -194,7 +194,7 @@ class DriversController extends Controller
 
                         $file_tmp = $value['file'];
                         $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                        //$file_tmp->storeAs($path, $nameFile, 's3');
+                        $file_tmp->storeAs($path, $nameFile, 's3');
                         $fileUpload->file = $nameFile;
                     }
 
@@ -220,7 +220,7 @@ class DriversController extends Controller
             {
                 foreach ($documents as $key => $document) 
                 {
-                    $get_file = DriverDocument::where('driver_id', $driver->id)->where('position_document_id', $document->id)->first();
+                    $get_file = DriverDocument::where('driver_id', $driver->id)->where('position_document_id', $document->id)->orderBy('id', 'DESC')->first();
 
                     if ($get_file)
                     {

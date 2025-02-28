@@ -145,6 +145,48 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($consultas);
     }
 
+    public function driverDocument(Request $request)
+    {
+        $documentsEmployee = Driver::selectRaw("
+                sau_ct_information_contract_lessee.id AS id,
+                sau_ct_information_contract_lessee.social_reason AS contract,
+                sau_ct_contract_employees.name AS employee,
+                sau_ct_activities.name As activity,
+                sau_ct_activities_documents.name AS document,
+                case when sau_ct_file_document_employee.employee_id is not null then 'SI' else 'NO' end as cargado
+            ")
+            ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
+            ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
+            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contract_employee_activities.activity_contract_id')
+            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
+            ->leftJoin('sau_ct_file_document_employee', function ($join) 
+            {
+                $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
+                $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
+            });
+
+        
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $documentsEmployee->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
+            
+        $url = "/legalaspects/report/contracts";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
+        return Vuetable::of($documentsEmployee)
+                    ->make();
+    }
+
     public function reportDinamic(Request $request)
     {
         $url = "/industrialsecure/roadsafety/report";
