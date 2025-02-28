@@ -682,6 +682,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('training/dataEmployee', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@dataEmployee');
         Route::get('training/showEmployee/{id}', 'IndustrialSecure\RoadSafety\Training\TrainingEmployeeController@showEmployee');
 
+        ////Reportes/////
+        Route::post('reports', 'IndustrialSecure\RoadSafety\RoadSafetyReportController@reportDinamic');
+
       });
 
 //tags

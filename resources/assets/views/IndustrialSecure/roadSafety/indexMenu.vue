@@ -21,7 +21,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['roadsafety_vehicles_c']">
+							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['roadsafety_vehicles_r']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-roadsafety-vehicles'}">
 									<i class="lnr lnr-car display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -32,7 +32,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['roadsafety_drivers_c']">
+							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['roadsafety_drivers_r']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-roadsafety-drivers'}">
 									<i class="lnr lnr-car display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -74,34 +74,14 @@
 								</router-link>
 							</div>
 
-							<!--<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['transaction_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-transactions-menu'}">
-									<i class="ion ion-md-git-compare display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Transacciones</span>
-										<br>
-										<small class="text-muted">Administrar Transacciones</small>
-									</span>
-								</router-link>
-							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['transaction_r'] && auth.inventaryEpp == 'SI'">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-reports'}">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['roadsafety_vehicles_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-roadSafety-report'}">
 									<i class="lnr lnr-chart-bars display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Reportes</span>
 									</span>
 								</router-link>
 							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['elements_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'epp-customHelpers'}">
-									<i class="ion ion-md-settings display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Ayudas</span>
-									</span>
-								</router-link>
-							</div>-->
 						</div>
 					</div>
 				</b-card-header>
@@ -114,7 +94,7 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "audiometry",
+	name: "roadSafety",
 	metaInfo: {
 		title: "Seguridad Vial"
 	},

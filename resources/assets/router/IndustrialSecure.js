@@ -1524,6 +1524,14 @@ export default [{
             import('@/views/IndustrialSecure/roadSafety/inspections/import')
         }
       ]),
+      ...middleware({ 'check-permission': 'roadsafety_vehicles_r' }, [
+        {
+          name: 'industrialsecure-roadSafety-report',
+          path: 'roadSafety/report',
+          component: () =>
+            import('@/views/IndustrialSecure/roadSafety/report')
+        }
+      ]),
       /*...middleware({ 'check-permission': 'roadsafety_inspections_r' }, [
         {
           name: 'roadSafety-inspections-request-firm',
