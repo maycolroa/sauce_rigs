@@ -194,7 +194,7 @@ class DriversController extends Controller
 
                         $file_tmp = $value['file'];
                         $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->getClientOriginalExtension();
-                        $file_tmp->storeAs($path, $nameFile, 's3');
+                       // $file_tmp->storeAs($path, $nameFile, 's3');
                         $fileUpload->file = $nameFile;
                     }
 

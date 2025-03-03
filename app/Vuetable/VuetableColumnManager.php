@@ -57,6 +57,7 @@ class VuetableColumnManager
         'industrialsecureriskmatrixreportresidual',
         'industrialsecureeppslocation',
         'industrialsecureroadsafetyvehicles',
+        'industrialsecureroadsafetyreportdocumentvehicles',
         'industrialsecureroadsafetydrivers',
         'industrialsecureroadsafetyinspections',
         'roadsafetyinspectionsqualification',
@@ -849,6 +850,25 @@ class VuetableColumnManager
         $colums = array_merge($colums, $this->getColumnsLocations());
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureroadsafetyreportdocumentvehicles()
+    {
+        $colums = [
+            ['name' => 'sau_rs_vehicles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rs_vehicles.type_vehicle', 'data'=> 'type_vehicle', 'title'=> 'Tipo de Vehiculo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rs_vehicles.plate', 'data'=> 'plate', 'title'=> 'Placa', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees.name', 'data'=> 'driver', 'title'=> 'Conductor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => 'report_vehicle_soat_vencido', 'data'=> 'report_vehicle_soat_vencido', 'title'=> '¿SOAT vencido?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'report_vehicle_mechanical_vencido', 'data'=> 'report_vehicle_mechanical_vencido', 'title'=> '¿Tecnomecanica vencida?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'report_vehicle_policy_vencido', 'data'=> 'report_vehicle_policy_vencido', 'title'=> '¿Poliza Responsabilida civil vencida?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ]);
 
         return $colums;

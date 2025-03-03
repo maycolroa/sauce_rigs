@@ -96,6 +96,37 @@ class EloquentVuetableBuilder
                 {
                     $q->whereRaw("date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') LIKE '%{$query}%'");
                 }
+                else if ($field == 'cargado_documento_driver')
+                {
+                    $q->whereRaw("case when sau_rs_drivers_documents.driver_id is not null then 'SI' else 'NO' end LIKE '%{$query}%'");
+                }
+                else if ($field == 'report_vehicle_soat_vencido')
+                {
+                    $q->whereRaw("case when sau_rs_vehicles.due_date_soat is not null  
+                        then 
+                            case when sau_rs_vehicles.due_date_soat >= curdate()
+                                then 'NO'
+                                else 'SI' end
+                        else 'NO' end LIKE '%{$query}%'");
+                }
+                else if ($field == 'report_vehicle_mechanical_vencido')
+                {
+                    $q->whereRaw("case when sau_rs_vehicles.due_date_mechanical_tech is not null  
+                        then 
+                            case when sau_rs_vehicles.due_date_mechanical_tech >= curdate()
+                                then 'NO'
+                                else 'SI' end
+                        else 'NO' end LIKE '%{$query}%'");
+                }
+                else if ($field == 'report_vehicle_policy_vencido')
+                {
+                    $q->whereRaw("case when sau_rs_vehicles.due_date_policy is not null  
+                        then 
+                            case when sau_rs_vehicles.due_date_policy >= curdate()
+                                then 'NO'
+                                else 'SI' end
+                        else 'NO' end LIKE '%{$query}%'");
+                }
                 else
                 {
                     if (is_string($query)) {

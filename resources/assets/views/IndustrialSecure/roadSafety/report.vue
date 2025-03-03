@@ -7,23 +7,25 @@
     />
 
     <div class="col-md">
-        <!--<b-card no-body>
-            <b-card-header class="with-elements">
-                <div class="card-title-elements"> 
-                    <b-btn v-if="auth.can['ph_inspections_report_export']" variant="primary" @click="exportReport()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
-                </div>
-            </b-card-header>
+        <b-card border-variant="primary" title="Documentos Conductores" class="mb-3 box-shadow-none">
             <b-card-body>
                 <vue-table
-                    ref="tableReport"
-                    v-if="auth.can['ph_inspections_r']"
-                    configName="dangerousconditions-inspections-report"
-                    :customColumnsName="true" 
+                    ref="tableReportDocumentDrivers"
+                    configName="industrialsecure-roadsafety-report-document-drivers"
                     @filtersUpdate="setFilters"
-                    :params="{table: table}"
                 ></vue-table>
             </b-card-body>
-        </b-card>-->
+        </b-card>
+        <b-card border-variant="primary" title="Documentos Vehículos" class="mb-3 box-shadow-none">
+            <b-card-body>
+                <vue-table
+                    ref="tableReportDocumentVehicles"
+                    configName="industrialsecure-roadsafety-report-document-vehicles"
+                    :customColumnsName="true" 
+                    @filtersUpdate="setFilters"
+                ></vue-table>
+            </b-card-body>
+        </b-card>
         <b-row>
             <b-col>
                 <b-card border-variant="primary" title="Reportes" class="mb-3 box-shadow-none">

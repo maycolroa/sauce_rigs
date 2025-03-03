@@ -684,6 +684,8 @@ Route::middleware(['auth'])->group(function () {
 
         ////Reportes/////
         Route::post('reports', 'IndustrialSecure\RoadSafety\RoadSafetyReportController@reportDinamic');
+        Route::post('reports/documentDrivers', 'IndustrialSecure\RoadSafety\RoadSafetyReportController@driverDocument');
+        Route::post('reports/vehiclesDocument', 'IndustrialSecure\RoadSafety\RoadSafetyReportController@vehiclesDocument');
 
       });
 

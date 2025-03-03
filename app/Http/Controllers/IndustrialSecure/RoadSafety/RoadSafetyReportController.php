@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\RoadSafety\Driver;
 use App\Models\IndustrialSecure\RoadSafety\DriverInfraction;
+use App\Models\IndustrialSecure\RoadSafety\Vehicle;
 use App\Models\General\Module;
 use App\Traits\Filtertrait;
 use App\Traits\LocationFormTrait;
@@ -93,80 +94,37 @@ class RoadSafetyReportController extends Controller
         }
     }
 
-    public function reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
-    {
-      $consultas = Driver::select(
-            "sau_employees.name as category", 
-            DB::raw('COUNT(DISTINCT sau_rs_driver_infractions.id) as count')
-      )
-      ->join('sau_employees','sau_employees.id', 'sau_rs_drivers.employee_id')
-      ->join('sau_rs_driver_infractions','sau_rs_driver_infractions.driver_id', 'sau_rs_drivers.id')
-      ->where('sau_employees.company_id', $this->company)
-      ->groupBy('sau_rs_drivers.id');
-
-        /*if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
-        }
-        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
-        }
-        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
-        }
-        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
-        }
-
-        if (COUNT($this->regionals) > 0)
-            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
-
-        if (COUNT($this->headquarters) > 0)
-            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
-
-        if (COUNT($this->processes) > 0)
-            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
-
-        if (COUNT($this->areas) > 0)
-            $consultas->inAreas($this->areas, $this->filtersType['areas']);*/
-
-        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
-        ->selectRaw("
-             t.category AS category,
-             SUM(t.count) AS total
-        ")
-        ->mergeBindings($consultas->getQuery())
-        ->groupBy('t.category')
-        ->pluck('total', 'category');
-
-        return $this->buildDataChart($consultas);
-    }
-
     public function driverDocument(Request $request)
     {
-        $documentsEmployee = Driver::selectRaw("
-                sau_ct_information_contract_lessee.id AS id,
-                sau_ct_information_contract_lessee.social_reason AS contract,
-                sau_ct_contract_employees.name AS employee,
-                sau_ct_activities.name As activity,
-                sau_ct_activities_documents.name AS document,
-                case when sau_ct_file_document_employee.employee_id is not null then 'SI' else 'NO' end as cargado
+        $documentsDriver = Driver::selectRaw("
+                sau_rs_position_documents.id AS id,
+                sau_employees.id,
+                sau_employees_positions.name AS position,
+                sau_employees.name AS driver,
+                sau_employees.identification AS identification,
+                sau_rs_position_documents.name AS document,
+                case when sau_rs_drivers_documents.driver_id is not null then 'SI' else 'NO' end AS cargado_documento_driver,
+                case when sau_rs_drivers_documents.expiration_date is not null  
+                    then 
+                        case when sau_rs_drivers_documents.expiration_date >= curdate()
+                            then 'NO'
+                            else 'SI' end
+                    else 'NO' end AS vencido_documento_driver
             ")
-            ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
-            ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')
-            ->join('sau_ct_activities', 'sau_ct_activities.id', 'sau_ct_contract_employee_activities.activity_contract_id')
-            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
-            ->leftJoin('sau_ct_file_document_employee', function ($join) 
+            ->join('sau_employees','sau_employees.id', 'sau_rs_drivers.employee_id')
+            ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
+            ->join('sau_rs_positions', 'sau_rs_positions.employee_position_id', 'sau_employees_positions.id')
+            ->join('sau_rs_position_documents', 'sau_rs_position_documents.position_id', 'sau_rs_positions.id')
+            ->leftJoin('sau_rs_drivers_documents', function ($join) 
             {
-                $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
-                $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
-            });
+                $join->on("sau_rs_drivers_documents.driver_id", "sau_rs_drivers.id");
+                $join->on("sau_rs_drivers_documents.position_document_id", "sau_rs_position_documents.id");
+            })
+            ->where('sau_employees.company_id', $this->company)
+            ->groupBy('sau_employees.id', 'sau_rs_position_documents.id', 'sau_rs_drivers_documents.driver_id', 'sau_rs_drivers_documents.expiration_date');
 
         
-        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $contract_user_id = $this->getContractIdUser($this->user->id);
 
@@ -181,9 +139,71 @@ class RoadSafetyReportController extends Controller
         {
             $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
             $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
-        }
+        }*/
 
-        return Vuetable::of($documentsEmployee)
+        return Vuetable::of($documentsDriver)
+                    ->make();
+    }
+
+    public function vehiclesDocument(Request $request)
+    {
+        $documentsVehicles = Vehicle::selectRaw("
+                sau_rs_vehicles.id AS id,  
+                sau_rs_vehicles_types.name AS type_vehicle, 
+                sau_rs_vehicles.plate AS plate,  
+                sau_employees.name AS driver,
+                sau_employees_regionals.name AS regional,
+                sau_employees_headquarters.name AS headquarter,
+                sau_employees_processes.name AS process,
+                sau_employees_areas.name AS area,
+                case when sau_rs_vehicles.due_date_soat is not null  
+                    then 
+                        case when sau_rs_vehicles.due_date_soat >= curdate()
+                            then 'NO'
+                            else 'SI' end
+                    else 'NO' end as report_vehicle_soat_vencido,
+                case when sau_rs_vehicles.due_date_mechanical_tech is not null  
+                    then 
+                        case when sau_rs_vehicles.due_date_mechanical_tech >= curdate()
+                            then 'NO'
+                            else 'SI' end
+                    else 'NO' end as report_vehicle_mechanical_vencido,
+                case when sau_rs_vehicles.due_date_policy is not null  
+                    then 
+                        case when sau_rs_vehicles.due_date_policy >= curdate()
+                            then 'NO'
+                            else 'SI' end
+                    else 'NO' end as report_vehicle_policy_vencido
+            ")
+            ->join('sau_rs_vehicles_types', 'sau_rs_vehicles_types.id', 'sau_rs_vehicles.type_vehicle')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rs_vehicles.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rs_vehicles.employee_headquarter_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rs_vehicles.employee_area_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rs_vehicles.employee_process_id')
+            ->leftJoin('sau_rs_driver_vehicles', 'sau_rs_driver_vehicles.vehicle_id', 'sau_rs_vehicles.id')
+            ->leftJoin('sau_rs_drivers', 'sau_rs_drivers.id', 'sau_rs_driver_vehicles.driver_id')
+            ->leftJoin('sau_employees','sau_employees.id', 'sau_rs_drivers.employee_id')
+            ->where('sau_rs_vehicles.company_id', $this->company);
+
+        
+        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $documentsEmployee->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
+            
+        $url = "/legalaspects/report/contracts";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }*/
+
+        return Vuetable::of($documentsVehicles)
                     ->make();
     }
 
@@ -234,6 +254,58 @@ class RoadSafetyReportController extends Controller
         $informData->put('driverInfractions', $this->reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
 
         return $this->respondHttp200($informData->toArray());
+    }
+
+    public function reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    {
+      $consultas = Driver::select(
+            "sau_employees.name as category", 
+            DB::raw('COUNT(DISTINCT sau_rs_driver_infractions.id) as count')
+      )
+      ->join('sau_employees','sau_employees.id', 'sau_rs_drivers.employee_id')
+      ->join('sau_rs_driver_infractions','sau_rs_driver_infractions.driver_id', 'sau_rs_drivers.id')
+      ->where('sau_employees.company_id', $this->company)
+      ->groupBy('sau_rs_drivers.id');
+
+        /*if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
+        }
+
+        if (COUNT($this->regionals) > 0)
+            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+
+        if (COUNT($this->headquarters) > 0)
+            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas) > 0)
+            $consultas->inAreas($this->areas, $this->filtersType['areas']);*/
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->pluck('total', 'category');
+
+        return $this->buildDataChart($consultas);
     }
 
     protected function buildDataChart($rawData)

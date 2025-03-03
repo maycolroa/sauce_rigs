@@ -3384,6 +3384,34 @@ export default [
     }
 },
 {
+    name: 'industrialsecure-roadsafety-report-document-drivers',
+    fields: [
+        { name: 'sau_rs_position_documents.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees.name', data: 'driver', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees.identification', data: 'identification', title: 'Cedula', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_rs_position_documents.name', data: 'document', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'cargado_documento_driver', data: 'cargado_documento_driver', title: '¿Cargado?', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'vencido_documento_driver', data: 'vencido_documento_driver', title: '¿Vencido?', sortable: true, searchable: false, detail: false, key: false },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/reports/documentDrivers',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-evaluations-contracts'
+    }
+},
+{
+    name: 'industrialsecure-roadsafety-report-document-vehicles',
+    fields: [
+        { name: 'sau_rs_vehicles.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/roadsafety/reports/vehiclesDocument',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-evaluations-contracts'
+    }
+},
+{
     name: 'industrialsecure-complementary-methodology',
     fields: [
         { name: 'sau_dm_complementary_methodologies.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
