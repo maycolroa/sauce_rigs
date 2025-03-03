@@ -285,7 +285,7 @@
 
                 <div v-show="showPcl">
                   <div style="color: #4E5155; font-weight: 400; margin-bottom: 5px;     font-size: 13.3px">Calificación PCL</div>
-                  <input v-model="form.pcl" class="form-control" :error="form.errorsFor('pcl')" type="number"/>
+                  <input v-model="form.pcl" class="form-control" :error="form.errorsFor('pcl')" type="number" step='0.01'/>
                 </div>
 
                 <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
