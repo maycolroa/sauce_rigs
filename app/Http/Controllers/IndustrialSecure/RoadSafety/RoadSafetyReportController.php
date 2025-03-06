@@ -252,6 +252,10 @@ class RoadSafetyReportController extends Controller
         $informData = collect([]);
 
         $informData->put('driverInfractions', $this->reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
+        $informData->put('reportMaintenancePlate', $this->reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
+        $informData->put('reportMaintenanceYear', $this->reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
+        $informData->put('reportMaintenanceMonth', $this->reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
+        $informData->put('reportMaintenanceType', $this->reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
 
         return $this->respondHttp200($informData->toArray());
     }
@@ -306,6 +310,168 @@ class RoadSafetyReportController extends Controller
         ->pluck('total', 'category');
 
         return $this->buildDataChart($consultas);
+    }
+
+    private function reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    {
+        $checksPerPlate = Vehicle::selectRaw("
+            sau_rs_vehicles.plate,
+            COUNT(vehicle_id) AS count_per_plate
+        ")
+        ->join('sau_rs_vehicle_maintenance', 'sau_rs_vehicle_maintenance.vehicle_id', 'sau_rs_vehicles.id')
+        ->groupBy('plate');
+
+
+        /*if (COUNT($this->headquarters_filters))
+            $checksPerYear->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerYear->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerYear->inAreas($this->areas, $this->filtersType['areas']);
+
+        if ($this->nextFollowDays)
+            $checksPerYear->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerYear->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerYear->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerYear->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);*/
+
+        $checksPerPlate = $checksPerPlate->pluck('count_per_plate', 'plate');
+
+        return $this->buildDataChart($checksPerPlate);
+    }
+
+    public function reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    {
+        $checksPerYear = Vehicle::selectRaw("
+            YEAR(sau_rs_vehicle_maintenance.date) AS year,
+            COUNT(vehicle_id) AS count_per_year
+        ")
+        ->join('sau_rs_vehicle_maintenance', 'sau_rs_vehicle_maintenance.vehicle_id', 'sau_rs_vehicles.id')
+        ->groupBy('year');
+
+
+        /*if (COUNT($this->headquarters_filters))
+            $checksPerMonth->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerMonth->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerMonth->inAreas($this->areas, $this->filtersType['areas']);
+
+        if ($this->nextFollowDays)
+            $checksPerMonth->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerMonth->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerMonth->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerMonth->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);*/
+
+        $checksPerYear = $checksPerYear->pluck('count_per_year', 'year');
+
+        return $this->buildDataChart($checksPerYear);
+    }
+
+    public function reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    {
+        $checksPerMonth = Vehicle::selectRaw("
+            MONTH(sau_rs_vehicle_maintenance.date) AS month,
+            COUNT(vehicle_id) AS count_per_month
+        ")
+        ->join('sau_rs_vehicle_maintenance', 'sau_rs_vehicle_maintenance.vehicle_id', 'sau_rs_vehicles.id')
+        ->groupBy('month');
+
+
+        /*if (COUNT($this->headquarters_filters))
+            $checksPerMonth->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerMonth->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerMonth->inAreas($this->areas, $this->filtersType['areas']);
+
+        if ($this->nextFollowDays)
+            $checksPerMonth->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerMonth->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerMonth->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerMonth->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);*/
+
+        $checksPerMonth = $checksPerMonth->pluck('count_per_month', 'month');
+
+        $months = [];
+        $data = [];
+        $total = 0;
+
+        for ($i = 1; $i <= 12; $i++)
+        {
+            array_push($months, trans("months.$i"));
+            $value = isset($checksPerMonth[$i]) ? $checksPerMonth[$i] : 0;
+            array_push($data, $value);
+            $total += $value;
+        }
+
+        return collect([
+            'labels' => $months,
+            'datasets' => [
+                'data' => $data,
+                'count' => $total
+            ]
+        ]);
+    }
+
+    public function reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    {
+        $checksPerType = Vehicle::selectRaw("
+            sau_rs_vehicle_maintenance.type AS type,
+            COUNT(vehicle_id) AS count_per_type
+        ")
+        ->join('sau_rs_vehicle_maintenance', 'sau_rs_vehicle_maintenance.vehicle_id', 'sau_rs_vehicles.id')
+        ->groupBy('type');
+
+
+        /*if (COUNT($this->headquarters_filters))
+            $checksPerMonth->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerMonth->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerMonth->inAreas($this->areas, $this->filtersType['areas']);
+
+        if ($this->nextFollowDays)
+            $checksPerMonth->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerMonth->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerMonth->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerMonth->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);*/
+
+        $checksPerType = $checksPerType->pluck('count_per_type', 'type');
+
+        return $this->buildDataChart($checksPerType);
     }
 
     protected function buildDataChart($rawData)

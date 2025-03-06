@@ -40,90 +40,48 @@
                                 :chart-data="informs.driverInfractions"
                                 title="Número de infracciones por conductos"
                                 color-line="red"
-                                ref=""/>
+                                ref="driverInfractions"/>
                         </div>
                     </b-row>
                 </b-card>
             </b-col>
         </b-row>
-        <!--<b-card>
-            <b-card-body>
-                <div>
-                    <center><h3>Tipo 2</h3></center>
-                </div>
-                 <div style="padding-top: ">
-                    <b-card bg-variant="transparent" border-variant="dark" title="Totales" class="mb-3 box-shadow-none">
-                        <b-row>
-                            <b-col>
-                                <div><b># Inspecciones:</b> {{ informationType2.inspections }}</div>
-                                <div><b># Cumplimientos:</b> {{informationType2.t_cumple}}</div>
-                                <div><b># No Cumplimientos:</b> {{informationType2.t_no_cumple}}</div>
-                                <div><b># Cumplimientos Parciales:</b> {{informationType2.t_cumple_p}}</div>
-                            </b-col>
-                            <b-col>
-                                <div><b>% Cumplimientos:</b> {{informationType2.p_cumple}}</div>
-                                <div><b>% No Cumplimientos:</b> {{informationType2.p_no_cumple}}</div>
-                                <div><b>% Cumplimientos Parciales:</b> {{informationType2.p_parcial}}</div>
-                            </b-col>
-                            <b-col>
-                                <div><b># Planes de acción realizados:</b> {{ informationType2.pa_realizados }}</div>
-                                <div><b># Planes de acción no realizados:</b> {{ informationType2.pa_no_realizados }}</div>
-                            </b-col>
-                        </b-row>
-                    </b-card>
-                </div>
-                <div>
-                    <vue-advanced-select class="col-md-6" v-model="table" :multiple="false" :options="options" :hide-selected="false" @input="refreshData2" name="table" label="Tabla" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-                </div>
-                <vue-table
-                    ref="tableReport2"
-                    v-if="auth.can['ph_inspections_r']"
-                    configName="dangerousconditions-inspections-report-type-2"
-                    :customColumnsName="true" 
-                    @filtersUpdate="setFilters"
-                    :params="{table: table, filters}"
-                ></vue-table>
-            </b-card-body>
-        </b-card>
         <b-row>
             <b-col>
-                <b-card border-variant="primary" title="Inspecciones" class="mb-3 box-shadow-none">
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="inspectionsSelectedType2" :options="selectBar" :allowEmpty="false" :searchable="true" name="inspectionsSelectedType2">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Número de Inspecciones Planeadas</h4>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <div class="col-md-12">
-                            <chart-bar 
-                                :chart-data="inspectionType2Data"
-                                title="Número de Inspecciones Planeadas realizadas"
-                                color-line="red"
-                                ref=""/>
-                        </div>
-                    </b-row>
-                    <b-row>
-                        <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Porcentaje de Cumplimiento</h4>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <div class="col-md-12">
-                            <chart-bar-compliance 
-                                :chart-data="complianceType2Data"
-                                title="Porcentaje de Cumplimiento"
-                                color-line="red"
-                                ref=""/>
-                        </div>
-                    </b-row>
+                <b-card border-variant="primary" title="Reportes mantenimiento de vehículos por placa" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="informs.reportMaintenancePlate"
+                        title="Reportes mantenimiento de vehículos por placa"
+                        ref="reportMaintenancePlate"/>
                 </b-card>
             </b-col>
-        </b-row>-->
+            <b-col>
+                <b-card border-variant="primary" title="Reportes mantenimiento de vehículos por año" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="informs.reportMaintenanceYear"
+                        title="Reportes mantenimiento de vehículos por año"
+                        ref="reportMaintenanceYear"/>
+                </b-card>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Reportes mantenimiento de vehículos por mes" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="informs.reportMaintenanceMonth"
+                        title="Reportes mantenimiento de vehículos por mes"
+                        ref="reportMaintenanceMonth"/>
+                </b-card>
+            </b-col>
+            <b-col>
+                <b-card border-variant="primary" title="Reportes mantenimiento de vehículos por tipo" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="informs.reportMaintenanceType"
+                        title="Reportes mantenimiento de vehículos por tipo"
+                        ref="reportMaintenanceType"/>
+                </b-card>
+            </b-col>
+        </b-row>
     </div>
   </div>
 </template>
@@ -155,19 +113,23 @@ export default {
                 driverInfractions: {
                     labels: [],
                     datasets: []
-                }/*,
-                theme: {
+                },
+                reportMaintenancePlate: {
                     labels: [],
                     datasets: []
                 },
-                headquarter: {
+                reportMaintenanceYear: {
                     labels: [],
                     datasets: []
                 },
-                area: {
+                reportMaintenanceMonth: {
                     labels: [],
                     datasets: []
-                }*/
+                },
+                reportMaintenanceType: {
+                    labels: [],
+                    datasets: []
+                }
             },
         }
     },
@@ -233,9 +195,7 @@ export default {
 
                 axios.post('/industrialSecurity/roadsafety/reports', postData)
                 .then(data => {
-                    console.log(data)
                     this.update(data);
-                    console.log(this.informs)
                     this.isLoading = false;
                 })
                 .catch(error => {
