@@ -139,7 +139,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'tipo_trabajo_alto_riesgo' => array_map('trim', explode(",", strtolower($row[9]))),            
             'actividades' => array_map('trim', explode(",", $row[10])),// explode(",", $row[10]),
             'proyectos' => isset($row[11]) && $row[11] ? explode(",", $row[11]) : [],
-            'responsables' => strpos($row[12], '.') ? explode(".", $row[12]) : explode(",", $row[12]),
+            'responsables' => strpos($row[12], '.') ? array_filter(array_map('trim', explode(".", $row[12]))) : array_filter(array_map('trim', explode(",", $row[12]))),
             'direccion' => $row[13],
             'telefono' => $row[14],
             'nombre_representante_legal' => $row[15],
@@ -242,7 +242,11 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->highRiskType()->sync($risks);
                 $contracts->activities()->sync($data['actividades']);
                 $contracts->proyects()->sync($data['proyectos']);
-                $contracts->responsibles()->sync($data['responsables']);
+
+                if (COUNT($data['responsables']) > 0)
+                {
+                    $contracts->responsibles()->sync($data['responsables']);
+                }
 
                 ///////////////////Creacion Usiario//////////////////
 
