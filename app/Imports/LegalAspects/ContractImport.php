@@ -137,7 +137,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'razon_social' => $row[7],
             'trabajo_alto_riesgo' => strtoupper($row[8]),
             'tipo_trabajo_alto_riesgo' => array_map('trim', explode(",", strtolower($row[9]))),            
-            'actividades' => array_map('trim', explode(",", $row[10])),// explode(",", $row[10]),
+            'actividades' => array_filter(array_map('trim', explode(",", $row[10]))),// explode(",", $row[10]),
             'proyectos' => isset($row[11]) && $row[11] ? explode(",", $row[11]) : [],
             'responsables' => strpos($row[12], '.') ? array_filter(array_map('trim', explode(".", $row[12]))) : array_filter(array_map('trim', explode(",", $row[12]))),
             'direccion' => $row[13],
