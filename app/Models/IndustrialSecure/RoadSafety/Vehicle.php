@@ -276,4 +276,22 @@ class Vehicle extends Model
 
         return $query;
     }
+
+    public function scopeBetweenMaintenance($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_rs_vehicle_maintenance.date', $dates);
+            return $query;
+        }
+    }
+
+    public function scopeBetweenCombustible($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_rs_vehicle_combustibles.date', $dates);
+            return $query;
+        }
+    }
 }
