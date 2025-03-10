@@ -82,6 +82,30 @@
                 </b-card>
             </b-col>
         </b-row>
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Reporte Combustible" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="reportSelected" :options="informs.selectBar" :allowEmpty="false" :searchable="true" name="reportSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <h4>Número de Galones</h4>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-12">
+                            <chart-bar 
+                                :chart-data="combustibleData"
+                                title="Número de Galones"
+                                color-line="red"
+                                ref=""/>
+                        </div>
+                    </b-row>
+                </b-card>
+            </b-col>
+        </b-row>
     </div>
   </div>
 </template>
@@ -129,14 +153,37 @@ export default {
                 reportMaintenanceType: {
                     labels: [],
                     datasets: []
-                }
-            },
+                },
+                reporCombustiblePlate: {
+                    labels: [],
+                    datasets: []
+                },
+                reportCombustibleMonth: {
+                    labels: [],
+                    datasets: []
+                },
+                reportCombustibleYear: {
+                    labels: [],
+                    datasets: []
+                },
+                reportCombustibleCost: {
+                    labels: [],
+                    datasets: []
+                },
+                selectBar: [],
+            },            
+            reportSelected: 'reporCombustiblePlate',
         }
     },
     created() {
         /*this.updateTotales()
         this.fetchSelect('selectBar', '/selects/multiselectBarInspection')*/
         this.fetch()
+    },
+    computed: {
+        combustibleData: function() {
+            return this.informs[this.reportSelected]
+        },
     },
     watch: {
         /*filters: {
