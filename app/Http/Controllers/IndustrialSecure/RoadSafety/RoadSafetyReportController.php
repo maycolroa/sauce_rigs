@@ -81,7 +81,8 @@ class RoadSafetyReportController extends Controller
                 'themes' => $themes,
                 'inspections' => $inspections,
                 'qualifiers' => $qualifiers,
-                'dates' => $dates,
+                'datesM' => $datesMaintenance, 
+                'datesC' => $datesCombustible,
                 'filtersType' => $filtersType,
                 'table' => $request->table
             ];
@@ -122,24 +123,28 @@ class RoadSafetyReportController extends Controller
             })
             ->where('sau_employees.company_id', $this->company)
             ->groupBy('sau_employees.id', 'sau_rs_position_documents.id', 'sau_rs_drivers_documents.driver_id', 'sau_rs_drivers_documents.expiration_date');
-
-        
-        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-        {
-            $contract_user_id = $this->getContractIdUser($this->user->id);
-
-            $documentsEmployee->where('sau_ct_information_contract_lessee.id', $contract_user_id);
-        }
             
-        $url = "/legalaspects/report/contracts";
+        $url = "/industrialsecure/roadsafety/report";
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
-            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
-            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
-        }*/
+            if (isset($filters["regionals"]))
+                $documentsDriver->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+            if (isset($filters["headquarters"]))
+                $documentsDriver->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+            if (isset($filters["processes"]))
+                $documentsDriver->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            
+            if (isset($filters["areas"]))
+                $documentsDriver->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            if (isset($filters["drivers"]))
+                $documentsDriver->inDrivers($this->getValuesForMultiselect($filters["drivers"]), $filters['filtersType']['drivers']);
+        }
 
         return Vuetable::of($documentsDriver)
                     ->make();
@@ -151,7 +156,7 @@ class RoadSafetyReportController extends Controller
                 sau_rs_vehicles.id AS id,  
                 sau_rs_vehicles_types.name AS type_vehicle, 
                 sau_rs_vehicles.plate AS plate,  
-                sau_employees.name AS driver,
+                group_concat(sau_employees.name) AS driver,
                 sau_employees_regionals.name AS regional,
                 sau_employees_headquarters.name AS headquarter,
                 sau_employees_processes.name AS process,
@@ -183,25 +188,33 @@ class RoadSafetyReportController extends Controller
             ->leftJoin('sau_rs_driver_vehicles', 'sau_rs_driver_vehicles.vehicle_id', 'sau_rs_vehicles.id')
             ->leftJoin('sau_rs_drivers', 'sau_rs_drivers.id', 'sau_rs_driver_vehicles.driver_id')
             ->leftJoin('sau_employees','sau_employees.id', 'sau_rs_drivers.employee_id')
-            ->where('sau_rs_vehicles.company_id', $this->company);
+            ->where('sau_rs_vehicles.company_id', $this->company)
+            ->groupBy('sau_rs_vehicles.id');
 
-        
-        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-        {
-            $contract_user_id = $this->getContractIdUser($this->user->id);
+            $url = "/industrialsecure/roadsafety/report";
 
-            $documentsEmployee->where('sau_ct_information_contract_lessee.id', $contract_user_id);
-        }
-            
-        $url = "/legalaspects/report/contracts";
+            $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-
-        if (COUNT($filters) > 0)
-        {
-            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
-            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
-        }*/
+            if (COUNT($filters) > 0)
+            {    
+                if (isset($filters["regionals"]))
+                    $documentsVehicles->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+    
+                if (isset($filters["headquarters"]))
+                    $documentsVehicles->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+    
+                if (isset($filters["processes"]))
+                    $documentsVehicles->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+                
+                if (isset($filters["areas"]))
+                    $documentsVehicles->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+                    
+                if (isset($filters["drivers"]))
+                    $documentsVehicles->inDrivers($this->getValuesForMultiselect($filters["drivers"]), $filters['filtersType']['drivers']);
+                    
+                if (isset($filters["vehicles"]))
+                    $documentsVehicles->inVehicles($this->getValuesForMultiselect($filters["vehicles"]), $filters['filtersType']['vehicles']);
+            }
 
         return Vuetable::of($documentsVehicles)
                     ->make();
@@ -218,48 +231,61 @@ class RoadSafetyReportController extends Controller
         else 
             $filters = $this->filterDefaultValues($this->user->id, $url);
 
-        $regionals = [];//!$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
 
-        $qualifiers = [];// !$init ? $this->getValuesForMultiselect($request->qualifiers) : (isset($filters['qualifiers']) ? $this->getValuesForMultiselect($filters['qualifiers']) : []);
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
 
-        $headquarters = [];// !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
-
-        $processes = [];// !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
         
-        $areas = [];// !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
-        
-        $themes = [];// !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
 
-        $drivers = [];// !$init ? $this->getValuesForMultiselect($request->drivers) : (isset($filters['drivers']) ? $this->getValuesForMultiselect($filters['drivers']) : []);
+        $drivers = !$init ? $this->getValuesForMultiselect($request->drivers) : (isset($filters['drivers']) ? $this->getValuesForMultiselect($filters['drivers']) : []);
 
-        $filtersType =  [];//!$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        $vehicles = !$init ? $this->getValuesForMultiselect($request->vehicles) : (isset($filters['vehicles']) ? $this->getValuesForMultiselect($filters['vehicles']) : []);
 
-        $dates = [];
+        $filtersType =  !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
-        $datesF =  [];//!$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+        $datesMaintenance = [];
 
-        /*if (isset($datesF) && $datesF)
+        $datesM = !$init ? $request->dateRangeMaintenance : (isset($filters['dateRangeMaintenance']) ? $filters['dateRangeMaintenance'] : null);
+
+        if (isset($datesM) && $datesM)
         {
-            $dates_request = explode('/', $datesF);
+            $dates_request_m = explode('/', $datesM);
 
-            if (COUNT($dates_request) == 2)
+            if (COUNT($dates_request_m) == 2)
             {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+                array_push($datesMaintenance, (Carbon::createFromFormat('D M d Y',$dates_request_m[0]))->format('Y-m-d 00:00:00'));
+                array_push($datesMaintenance, (Carbon::createFromFormat('D M d Y',$dates_request_m[1]))->format('Y-m-d 23:59:59'));
             }
         }
-*/
+
+        $datesCombustible = [];
+
+        $datesC = !$init ? $request->dateRangeCombustible : (isset($filters['dateRangeCombustible']) ? $filters['dateRangeCombustible'] : null);
+
+        if (isset($datesC) && $datesC)
+        {
+            $dates_request_c = explode('/', $datesC);
+
+            if (COUNT($dates_request_c) == 2)
+            {
+                array_push($datesCombustible, (Carbon::createFromFormat('D M d Y',$dates_request_c[0]))->format('Y-m-d 00:00:00'));
+                array_push($datesCombustible, (Carbon::createFromFormat('D M d Y',$dates_request_c[1]))->format('Y-m-d 23:59:59'));
+            }
+        }
+
         $informData = collect([]);
 
-        $informData->put('driverInfractions', $this->reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportMaintenancePlate', $this->reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportMaintenanceYear', $this->reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportMaintenanceMonth', $this->reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportMaintenanceType', $this->reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reporCombustiblePlate', $this->reporCombustiblePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportCombustibleYear', $this->reportCombustibleYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportCombustibleMonth', $this->reportCombustibleMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
-        $informData->put('reportCombustibleCost', $this->reportCombustibleCost($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers));
+        $informData->put('driverInfractions', $this->reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $drivers));
+        $informData->put('reportMaintenancePlate', $this->reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $vehicles));
+        $informData->put('reportMaintenanceYear', $this->reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $vehicles));
+        $informData->put('reportMaintenanceMonth', $this->reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $vehicles));
+        $informData->put('reportMaintenanceType', $this->reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $vehicles));
+        $informData->put('reporCombustiblePlate', $this->reporCombustiblePlate($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $vehicles));
+        $informData->put('reportCombustibleYear', $this->reportCombustibleYear($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $vehicles));
+        $informData->put('reportCombustibleMonth', $this->reportCombustibleMonth($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $vehicles));
+        $informData->put('reportCombustibleCost', $this->reportCombustibleCost($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $vehicles));
         $informData->put('selectBar', $this->multiselectBar());
         
 
@@ -278,7 +304,7 @@ class RoadSafetyReportController extends Controller
       return $this->multiSelectFormat(collect($select));
     }
 
-    public function reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportDriverInfractions($regionals, $headquarters, $processes, $areas, $filtersType, $drivers)
     {
       $consultas = Driver::select(
             "sau_employees.name as category", 
@@ -289,34 +315,20 @@ class RoadSafetyReportController extends Controller
       ->where('sau_employees.company_id', $this->company)
       ->groupBy('sau_rs_drivers.id');
 
-        /*if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
-        }
-        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
-        }
-        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
-        }
-        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
-        {
-            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
-        }
+        if (COUNT($regionals) > 0)
+            $consultas->inRegionals($regionals, $filtersType['regionals']);
 
-        if (COUNT($this->regionals) > 0)
-            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+        if (COUNT($headquarters) > 0)
+            $consultas->inHeadquarters($headquarters, $filtersType['headquarters']);
 
-        if (COUNT($this->headquarters) > 0)
-            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+        if (COUNT($processes) > 0)
+            $consultas->inProcesses($processes, $filtersType['processes']);
 
-        if (COUNT($this->processes) > 0)
-            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
+        if (COUNT($areas) > 0)
+            $consultas->inAreas($areas, $filtersType['areas']);
 
-        if (COUNT($this->areas) > 0)
-            $consultas->inAreas($this->areas, $this->filtersType['areas']);*/
+        if (COUNT($drivers) > 0)
+            $consultas->inDrivers($drivers, $filtersType['drivers']);
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
@@ -330,8 +342,10 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($consultas);
     }
 
-    private function reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    private function reportMaintenancePlate($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $vehicles)
     {
+        \Log::info($vehicles);
+
         $checksPerPlate = Vehicle::selectRaw("
             sau_rs_vehicles.plate,
             COUNT(vehicle_id) AS count_per_plate
@@ -340,33 +354,27 @@ class RoadSafetyReportController extends Controller
         ->groupBy('plate');
 
 
-        /*if (COUNT($this->headquarters_filters))
-            $checksPerYear->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+        if (COUNT($regionals) > 0)
+            $checksPerPlate->inRegionals($regionals, $filtersType['regionals']);
 
-        if (COUNT($this->processes))
-            $checksPerYear->inProcesses($this->processes, $this->filtersType['processes']);
+        if (COUNT($headquarters) > 0)
+            $checksPerPlate->inHeadquarters($headquarters, $filtersType['headquarters']);
 
-        if (COUNT($this->areas))
-            $checksPerYear->inAreas($this->areas, $this->filtersType['areas']);
+        if (COUNT($processes) > 0)
+            $checksPerPlate->inProcesses($processes, $filtersType['processes']);
 
-        if ($this->nextFollowDays)
-            $checksPerYear->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+        if (COUNT($areas) > 0)
+            $checksPerPlate->inAreas($areas, $filtersType['areas']);
 
-        if ($this->sveAssociateds)
-            $checksPerYear->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
-
-        if ($this->medicalCertificates)
-            $checksPerYear->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
-
-        if ($this->relocatedTypes)
-            $checksPerYear->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);*/
+        if (COUNT($vehicles) > 0)
+            $checksPerPlate->inVehicles($vehicles, $filtersType['vehicles']);
 
         $checksPerPlate = $checksPerPlate->pluck('count_per_plate', 'plate');
 
         return $this->buildDataChart($checksPerPlate);
     }
 
-    public function reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportMaintenanceYear($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $drivers)
     {
         $checksPerYear = Vehicle::selectRaw("
             YEAR(sau_rs_vehicle_maintenance.date) AS year,
@@ -402,7 +410,7 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($checksPerYear);
     }
 
-    public function reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportMaintenanceMonth($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $drivers)
     {
         $checksPerMonth = Vehicle::selectRaw("
             MONTH(sau_rs_vehicle_maintenance.date) AS month,
@@ -456,7 +464,7 @@ class RoadSafetyReportController extends Controller
         ]);
     }
 
-    public function reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportMaintenanceType($regionals, $headquarters, $processes, $areas, $filtersType, $datesMaintenance, $drivers)
     {
         $checksPerType = Vehicle::selectRaw("
             sau_rs_vehicle_maintenance.type AS type,
@@ -492,7 +500,7 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($checksPerType);
     }
     
-    private function reporCombustiblePlate($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    private function reporCombustiblePlate($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $drivers)
     {
         $checksPerPlate = Vehicle::selectRaw("
             sau_rs_vehicles.plate,
@@ -528,7 +536,7 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($checksPerPlate);
     }
 
-    public function reportCombustibleCost($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportCombustibleCost($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $drivers)
     {
         $checksPerYear = Vehicle::selectRaw("
             sau_rs_vehicle_combustibles.price_galon AS cost,
@@ -564,7 +572,7 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($checksPerYear);
     }
 
-    public function reportCombustibleYear($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportCombustibleYear($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $drivers)
     {
         $checksPerYear = Vehicle::selectRaw("
             YEAR(sau_rs_vehicle_combustibles.date) AS year,
@@ -600,7 +608,7 @@ class RoadSafetyReportController extends Controller
         return $this->buildDataChart($checksPerYear);
     }
 
-    public function reportCombustibleMonth($regionals, $headquarters, $processes, $areas, $filtersType, $dates, $drivers)
+    public function reportCombustibleMonth($regionals, $headquarters, $processes, $areas, $filtersType, $datesCombustible, $drivers)
     {
         $checksPerMonth = Vehicle::selectRaw("
             MONTH(sau_rs_vehicle_combustibles.date) AS month,

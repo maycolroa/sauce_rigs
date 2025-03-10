@@ -84,6 +84,11 @@ class Vehicle extends Model
     {
         return $this->belongsTo(VehicleType::class, 'type_vehicle');
     }
+    
+    public function drivers()
+    {
+        return $this->hasMany(Driver::class, 'sau_rs_driver_vehicles', 'driver_id', 'vehicle_id');
+    }
 
     public function multiselect()
     {
@@ -239,6 +244,34 @@ class Vehicle extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->where('sau_rs_vehicles.type_vehicle', 'NOT REGEXP', $regexp);
+        }
+
+        return $query;
+    }
+
+    public function scopeInDrivers($query, $drivers, $typeSearch = 'IN')
+    {
+        if (COUNT($drivers) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_rs_driver_vehicles.driver_id', $drivers);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_rs_driver_vehicles.driver_id', $drivers);
+        }
+
+        return $query;
+    }
+
+    public function scopeInVehicles($query, $vehicles, $typeSearch = 'IN')
+    {
+        if (COUNT($vehicles) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_rs_vehicles.id', $vehicles);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_rs_vehicles.id', $vehicles);
         }
 
         return $query;

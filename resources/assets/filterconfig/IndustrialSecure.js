@@ -972,4 +972,55 @@ export default [
         }
       ]
     },
+    {
+      name: 'industrialsecure-roadsafety-reports',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/vehicles',
+          key: 'vehicles',
+          type: 'select',
+          label: 'Placas'
+        },
+        {
+          url: '/selects/drivers',
+          key: 'drivers',
+          type: 'select',
+          label: 'Conductores'
+        },
+        {
+          key: 'dateRangeMaintenance',
+          type: 'dateRange',
+          label: 'Fecha de mantenimiento',
+        },
+        {
+          key: 'dateRangeCombustible',
+          type: 'dateRange',
+          label: 'Fecha de carga de combustible',
+        }
+      ]
+    },
 ];

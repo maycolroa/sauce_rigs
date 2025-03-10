@@ -7,12 +7,17 @@
     />
 
     <div class="col-md">
+        <div>
+            <filter-general 
+                v-model="filters" 
+                configName="industrialsecure-roadsafety-reports" />
+        </div>
         <b-card border-variant="primary" title="Documentos Conductores" class="mb-3 box-shadow-none">
             <b-card-body>
                 <vue-table
                     ref="tableReportDocumentDrivers"
                     configName="industrialsecure-roadsafety-report-document-drivers"
-                    @filtersUpdate="setFilters"
+                    :params="{filters}"
                 ></vue-table>
             </b-card-body>
         </b-card>
@@ -22,7 +27,7 @@
                     ref="tableReportDocumentVehicles"
                     configName="industrialsecure-roadsafety-report-document-vehicles"
                     :customColumnsName="true" 
-                    @filtersUpdate="setFilters"
+                    :params="{filters}"
                 ></vue-table>
             </b-card-body>
         </b-card>
@@ -176,8 +181,6 @@ export default {
         }
     },
     created() {
-        /*this.updateTotales()
-        this.fetchSelect('selectBar', '/selects/multiselectBarInspection')*/
         this.fetch()
     },
     computed: {
@@ -186,34 +189,18 @@ export default {
         },
     },
     watch: {
-        /*filters: {
+        filters: {
             handler(val) {
-                this.$refs.tableReport2.refresh()
+                this.$refs.tableReportDocumentDrivers.refresh()
+                this.$refs.tableReportDocumentVehicles.refresh()
+                this.fetch()
             },
             deep: true,
-        },*/
+        },
     },
     methods: {
-        refreshData()
-        {
-            if (!this.isLoading)
-                this.$refs.tableReport.refresh()
-            //this.updateTotales()
-        },
-        refreshData2()
-        {
-            if (!this.isLoading)
-                this.$refs.tableReport2.refresh()
-            //this.updateTotales()
-        },
-        setFilters(value)
-        { 
-            this.filters = value
-            this.updateTotales()
-            this.fetch()
-        },
         exportReport() {
-            let postData = Object.assign({}, {table: this.table}, this.filters);
+            let postData = Object.assign({}, this.filters);
             axios.post('/industrialSecurity/dangerousConditions/inspection/exportReport', postData)
                 .then(response => {
                     Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
@@ -258,24 +245,6 @@ export default {
                     this.informs[key] = value;
                 }
             });
-        },
-        updateTotales()
-        {
-            let postData = Object.assign({}, {table: this.table}, this.filters);
-            axios.post('/industrialSecurity/dangerousConditions/inspection/report/getTotals', postData)
-                .then(response => {
-                    this.information = response.data.data;
-                })
-                .catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                });
-            axios.post('/industrialSecurity/dangerousConditions/inspection/report/getTotalsType2', postData)
-                .then(response => {
-                    this.informationType2 = response.data.data;
-                })
-                .catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                });
         }
     }
 }

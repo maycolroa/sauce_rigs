@@ -39,6 +39,34 @@ class Driver extends Model
         ];
     }
 
+    public function scopeInDrivers($query, $drivers, $typeSearch = 'IN')
+    {
+        if (COUNT($drivers) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_rs_drivers.id', $drivers);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_rs_drivers.id', $drivers);
+        }
+
+        return $query;
+    }
+
+    public function scopeInVehicles($query, $vehicles, $typeSearch = 'IN')
+    {
+        if (COUNT($vehicles) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_rs_driver_vehicles.vehicle_id', $vehicles);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_rs_driver_vehicles.vehicle_id', $vehicles);
+        }
+
+        return $query;
+    }
+
     public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
     {
         if (COUNT($regionals) > 0)
