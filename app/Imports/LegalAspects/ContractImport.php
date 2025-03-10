@@ -85,11 +85,14 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 }
                 else
                 {
+                    \Log::info('entro en el error de archivo');
                     $nameExcel = 'export/1/contracts_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
                     Excel::store(new ContractsImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
+                    
+                    \Log::info($paramUrl);
             
                     NotificationMail::
                         subject('Importación de contratistas')
@@ -101,6 +104,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                         ->event('Job: ContractImportJob')
                         ->company($this->company_id)
                         ->send();
+
+                        
+                    \Log::info('envio el correo de archivo de errores');
                 }
                 
             } catch (\Exception $e)
