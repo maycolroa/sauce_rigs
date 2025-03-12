@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\Administrative\Positions\PositionsTemplate;
 use App\Exports\Administrative\Positions\ElementTemplate;
+use App\Exports\WarningImportTemplate;
 
 class PositionImportTemplateExcel implements WithMultipleSheets
 {
@@ -26,6 +27,7 @@ class PositionImportTemplateExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new PositionsTemplate(collect([]), $this->company_id);
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new ElementTemplate($this->company_id);
         return $sheets;
     }

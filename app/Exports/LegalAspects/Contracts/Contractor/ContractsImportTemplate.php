@@ -9,6 +9,7 @@ use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
 use App\Exports\LegalAspects\Contracts\Contractor\ActivityTemplate;
 use App\Exports\LegalAspects\Contracts\Contractor\ProyectTemplate;
 use App\Exports\LegalAspects\Contracts\Contractor\UsersExcel;
+use App\Exports\WarningImportTemplate;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 
 class ContractsImportTemplate implements WithMultipleSheets
@@ -48,6 +49,7 @@ class ContractsImportTemplate implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new ContractsImportTemplateExcel(collect([]), $configuration ? $configuration->value : 'NO');
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new ContractsImportLeyendTemplate($this->data);
         $sheets[] = new UsersExcel($this->company_id);
         $sheets[] = new ActivityTemplate($this->company_id);

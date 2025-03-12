@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\IndustrialSecure\RiskMatrix\RiskMatrixImportTemplate;
 use App\Exports\IndustrialSecure\RiskMatrix\RiskCategoriesExcel;
 use App\Models\IndustrialSecure\RiskMatrix\TagsRmCategoryRisk;
+use App\Exports\WarningImportTemplate;
 
 class RiskMatrixImportTemplateExcel implements WithMultipleSheets
 {
@@ -62,6 +63,7 @@ class RiskMatrixImportTemplateExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new RiskMatrixImportTemplate($this->data, $this->company_id);
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new RiskCategoriesExcel($this->data_cat);
 
         return $sheets;

@@ -101,7 +101,7 @@ class UserImport implements ToCollection, WithCalculatedFormulas
                 NotificationMail::
                     subject('Importación de usuarios')
                     ->recipients($this->user)
-                    ->message('Se produjo un error durante el proceso de importación de usuarios. Contacte con el administrador')
+                    ->message('Se produjo un error durante el proceso de importación de usuarios. Por favor revise la estructura del archivo que coincida con la plantilla emitida por SAUCE y que la información suministrada este plasmada de forma correcta, siguiendo los estandares establecidos en esta, de estar bien todo lo anteriormente explicado por favor contacte con el administrado')
                     ->module('users')
                     ->event('Job: UserImportJob')
                     ->company($this->company_id)

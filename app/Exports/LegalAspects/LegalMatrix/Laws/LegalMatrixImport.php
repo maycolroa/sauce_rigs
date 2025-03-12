@@ -10,6 +10,7 @@ use App\Exports\LegalAspects\LegalMatrix\Laws\LawTypeTemplate;
 use App\Exports\LegalAspects\LegalMatrix\Laws\RiskAspectstTemplate;
 use App\Exports\LegalAspects\LegalMatrix\Laws\SstRiskTemplate;
 use App\Exports\LegalAspects\LegalMatrix\Laws\EntityTemplate;
+use App\Exports\WarningImportTemplate;
 
 class LegalMatrixImport implements WithMultipleSheets
 {
@@ -30,6 +31,7 @@ class LegalMatrixImport implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new LegalMatrixImportTemplate(collect([]), $this->company_id);
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new InterestTemplate($this->company_id);
         $sheets[] = new LawTypeTemplate($this->company_id);
         $sheets[] = new RiskAspectstTemplate($this->company_id);

@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\IndustrialSecure\Epp\ElementIdentImportTemplateExcel;
 use App\Exports\IndustrialSecure\Epp\ElementTemplate;
 use App\Exports\IndustrialSecure\Epp\LocationsTemplate;
+use App\Exports\WarningImportTemplate;
 
 class ElementIdentExcel implements WithMultipleSheets
 {
@@ -27,6 +28,7 @@ class ElementIdentExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new ElementIdentImportTemplateExcel(collect([]), $this->company_id);
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new ElementTemplate($this->company_id, 1);
         $sheets[] = new LocationsTemplate($this->company_id);
         

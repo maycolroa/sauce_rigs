@@ -13,6 +13,7 @@ use App\Exports\LegalAspects\Contracts\Contracts\WorkingDayTemplate;
 use App\Exports\LegalAspects\Contracts\Contracts\DepartamentMunicipalityTemplateExcel;
 use App\Exports\Administrative\Employees\AfpTemplateExcel;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Exports\WarningImportTemplate;
 
 class ContractsEmployeesImport implements WithMultipleSheets
 {
@@ -66,6 +67,7 @@ class ContractsEmployeesImport implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new ContractsEmployeesTemplate(collect([]), $this->company_id, $this->contract, $configuration ? $configuration->value : 'NO');
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new ActivityContractTemplate($this->contract,$this->company_id);
         $sheets[] = new AfpTemplateExcel($this->company_id);
         $sheets[] = new EpsTemplateExcel($this->company_id);

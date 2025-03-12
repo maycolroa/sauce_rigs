@@ -9,6 +9,7 @@ use App\Exports\Administrative\Employees\AfpTemplateExcel;
 use App\Exports\Administrative\Employees\ArlTemplateExcel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportEpsTemplateExcel;
 use App\Traits\ConfigurableFormTrait;
+use App\Exports\WarningImportTemplate;
 
 class EmployeeImportTemplate implements WithMultipleSheets
 {
@@ -33,6 +34,7 @@ class EmployeeImportTemplate implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new EmployeeImportDataTemplateExcel(collect([]), $formModel, $this->company_id);
+        $sheets[] = new WarningImportTemplate();
         $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
         $sheets[] = new AfpTemplateExcel($this->company_id);
 
