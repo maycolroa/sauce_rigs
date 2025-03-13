@@ -16,7 +16,7 @@
                 :is-edit="true"
                 :cancel-url="{ name: 'industrialsecure-roadsafety-trainings'}"
                 activitiesUrl="/selects/contracts/ctActivities"
-                typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
+                typeQuestionUrl="/selects/rsTrainingTypeQuestions"/>
         </b-card-body>
       </b-card>
     </div>

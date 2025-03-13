@@ -356,6 +356,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('typeInfraction', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@multiselectType');
 
         Route::post('typeInfractionCode', 'IndustrialSecure\RoadSafety\Drivers\InfractionController@multiselectTypeCode');
+        Route::post('rsTrainingTypeQuestions', 'IndustrialSecure\RoadSafety\Training\TrainingController@multiselectTypeQuestion');   
 
         Route::post('roadSafety/inspections', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectInspection');
         Route::post('roadSafety/themes', 'IndustrialSecure\RoadSafety\Inspections\InspectionController@multiselectThemes');

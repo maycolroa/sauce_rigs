@@ -53,8 +53,8 @@
       <b-collapse :id="`accordion-file`" visible :accordion="`accordion-master`">
       <b-card-body>
         <template v-for="(file, index) in form.files">
-          <div :key="file.key">
-              <b-form-row>
+          <div>
+              <b-form-row :key="file.key">
                 <div class="col-md-12">
                     <div class="float-right">
                         <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
@@ -113,8 +113,8 @@
             </b-form-row>
 
             <template v-for="(question, index) in form.questions">
-              <b-card no-body class="mb-2 border-secondary" :key="question.key" style="width: 100%;">
-                <b-card-header class="bg-secondary">
+              <b-card no-body class="mb-2 border-secondary"  style="width: 100%;">
+                <b-card-header :key="question.key" class="bg-secondary">
                   <b-row>
                       <b-col cols="10" class="d-flex justify-content-between"> <strong>{{ question.description ? (question.description.length > 200 ? `${question.description.substring(0, 200)}...` : question.description) : `Nueva Pregunta ${index + 1}` }}</strong>  </b-col>
                       <b-col cols="2">
@@ -157,13 +157,13 @@
                       <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones de respuestas (Separadas por enter)" name="options" placeholder="Opciones de respuestas" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
                       <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas validas (Separadas por enter. Deben estar dentro de las opciones dadas en el campo anterior)" name="answers" placeholder="Respuestas validas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
 
-                      <!--Si o NO-->
+                      <!--Si o NO
                       <vue-radio v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" :error="form.errorsFor(`questions.${index}.answers`)" label="Elige la opciòn correcta" :checked="question.answers">
-                      </vue-radio>
+                      </vue-radio>-->
 
                       <!--Emparejamiento-->
-                      <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones (Separadas por enter)" name="options" placeholder="Opciones" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
-                      <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas (Separadas por enter. Deben estar en el mismo orden de las opciones)" name="answers" placeholder="Respuestas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones (Separadas por enter)" name="options" placeholder="Opciones" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas (Separadas por enter. Deben estar en el mismo orden de las opciones)" name="answers" placeholder="Respuestas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
                       
                     </b-form-row>
                   </b-card-body>

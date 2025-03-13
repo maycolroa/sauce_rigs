@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Models\LegalAspects\Contracts;
+namespace App\Models\IndustrialSecure\RoadSafety\Training;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TrainingTypeQuestion extends Model
 {
 
-    protected $table = 'sau_ct_training_types_questions';
+    protected $table = 'sau_rs_training_type_questions';
     
     protected $fillable = [
         'name',
-        'description',
-        'company_id'
+        'description'
     ];
 
     public function multiselect()

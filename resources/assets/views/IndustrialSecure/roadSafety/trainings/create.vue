@@ -13,7 +13,7 @@
                 url="/industrialSecurity/roadsafety/training"
                 method="POST"
                 :cancel-url="{ name: 'industrialsecure-roadsafety-trainings'}"    
-                typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
+                typeQuestionUrl="/selects/rsTrainingTypeQuestions"/>
         </b-card-body>
       </b-card>
     </div>

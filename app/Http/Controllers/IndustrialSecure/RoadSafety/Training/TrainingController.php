@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\RoadSafety\Training\Training;
 use App\Http\Requests\IndustrialSecure\RoadSafety\Training\TrainingRequest;
 use App\Models\IndustrialSecure\RoadSafety\Training\TrainingQuestions;
-use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
+use App\Models\IndustrialSecure\RoadSafety\Training\TrainingTypeQuestion;
 use App\Models\IndustrialSecure\RoadSafety\Training\TrainingFiles;
 use App\Jobs\IndustrialSecure\RoadSafety\Training\TrainingRsSendNotificationJob;
 use Carbon\Carbon;
