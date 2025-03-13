@@ -447,12 +447,25 @@ class ContractTrainingController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $typeQuestions = TrainingTypeQuestion::select("id", "description")
+
+            if ($this->company =! 702)
+                $typeQuestions = TrainingTypeQuestion::select("id", "description")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('description', 'like', $keyword);
+                })
+                ->whereNull('company_id')
+                ->orderBy('description')
+                ->take(30)->pluck('id', 'description');
+            else
+            {
+                $typeQuestions = TrainingTypeQuestion::select("id", "description")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
                 })
                 ->orderBy('description')
                 ->take(30)->pluck('id', 'description');
+            }
+            
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($typeQuestions)
