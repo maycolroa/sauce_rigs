@@ -91,6 +91,10 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('contract', 'Api\ContractController@getContract');
         Route::post('employeeSimple', 'Api\ContractController@getEmployeeIdentification');
     });
+    
+    Route::group(['prefix'=>'reinstatements'], function () {
+        Route::post('recomendaciones_medicas', 'Api\ReinstatementsController@getCheck');
+    });
 });
 
 Route::post('amazon-sns/notifications', 'Api\AmazonController@handleBounceOrComplaint');
