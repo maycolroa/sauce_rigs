@@ -22,6 +22,7 @@ export default class Form {
     this.errors = new FormErrors();
     this.showMessage = showMessage
     this.files_binary = [];
+    this.files_binary_intern = [];
   }
 
   static makeFrom(data, method = 'post', clearAfterResponse = false, showMessage = true) {
@@ -98,6 +99,14 @@ export default class Form {
       this.files_binary.forEach(file => {
         if (file.value) {
           data.append(`files_binary[${file.key}]`, file.value);
+        }
+      });
+    }
+
+    if (this.files_binary_intern.length > 0) {
+      this.files_binary_intern.forEach(file => {
+        if (file.value) {
+          data.append(`files_binary_intern[${file.key}]`, file.value);
         }
       });
     }
@@ -199,6 +208,17 @@ export default class Form {
 
   addFileBinary(key, file) {
     this.files_binary.push({
+      key: key,
+      value: file
+    });
+  }
+
+  clearFilesBinaryInternt() {
+    this.files_binary_intern.splice(0);
+  }
+
+  addFileBinaryIntern(key, file) {
+    this.files_binary_intern.push({
       key: key,
       value: file
     });

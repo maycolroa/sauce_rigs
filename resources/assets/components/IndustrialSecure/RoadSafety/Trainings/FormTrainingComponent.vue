@@ -53,8 +53,8 @@
       <b-collapse :id="`accordion-file`" visible :accordion="`accordion-master`">
       <b-card-body>
         <template v-for="(file, index) in form.files">
-          <div>
-              <b-form-row :key="file.key">
+          <div :key="file.key">
+              <b-form-row>
                 <div class="col-md-12">
                     <div class="float-right">
                         <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>

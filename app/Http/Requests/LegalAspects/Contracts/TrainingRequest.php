@@ -64,6 +64,23 @@ class TrainingRequest extends FormRequest
             $this->merge($data);
         }
 
+        if ($this->has('files_binary_intern') && COUNT($this->files_binary_intern) > 0)
+        {
+            $data = $this->all();
+
+            foreach ($this->files_binary_intern as $key => $value)
+            {
+                $allKeys = explode("_", $key);
+                $keyQues = $allKeys[0];
+                $keyImg = $allKeys[1];
+                $keyFile = $allKeys[2];
+
+                $data['questions'][$keyQues]['images'][$keyImg]['files'][$keyFile]['file'] = $value;
+            }
+
+            $this->merge($data);
+        }
+
         return $this->all();
     }
 
@@ -74,6 +91,7 @@ class TrainingRequest extends FormRequest
      */
     public function rules()
     {
+        \Log::info($this);
         $id = $this->input('id');
 
         return [
@@ -88,7 +106,10 @@ class TrainingRequest extends FormRequest
             'questions.*.type_question_id' => 'required',
             //'questions.*.value_question' => 'required',
             'questions.*.options' => 'required_if:questions.*.type_question_id,1,3',
-            'questions.*.answers' => 'required'
+            'questions.*.answers' => 'required',
+            /*'questions.*.images' => 'required_if:questions.*.type_question_id,7,8',
+            'questions.*.images.*.file' => 'required_if:questions.*.type_question_id,7,8',
+            'questions.*.images.*.text' => 'required_if:questions.*.type_question_id,8'*/
         ];
     }
 
@@ -100,7 +121,10 @@ class TrainingRequest extends FormRequest
     public function messages()
     {
         return [
-            'questions.*.options.required_if' => 'El campo Opciones de respuesta es obligatorio'
+            'questions.*.options.required_if' => 'El campo Opciones de respuesta es obligatorio',
+            /*'questions.*.images.required_if' => 'El campo Imagen es obligatorio',
+            'questions.*.images.*.file.required_if' => 'El campo Imagen es obligatorio',
+            'questions.*.images.*.text.required_if' => 'El campo Texto es obligatorio',*/
         ];
     }
 }

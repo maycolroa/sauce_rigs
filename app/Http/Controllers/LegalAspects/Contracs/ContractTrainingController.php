@@ -82,6 +82,21 @@ class ContractTrainingController extends Controller
                     }
                 }
 
+            ],
+            "questions.*.images.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                        if ($ext != 'png' && $ext != 'jpg' && $ext != 'jpeg')
+                        {
+                            $fail('La imagen debe ser un png, jpg, jpeg');
+                        }
+                    }
+                }
+
             ]
         ])->validate();
 
@@ -175,7 +190,8 @@ class ContractTrainingController extends Controller
 
             $training->delete = [
                 'questions' => [],
-                'files' => []
+                'files' => [],
+                'images' => []
             ];
 
             $activity_id = [];
@@ -448,7 +464,7 @@ class ContractTrainingController extends Controller
         {
             $keyword = "%{$request->keyword}%";
 
-            if ($this->company =! 702)
+            //if ($this->company =! 702)
                 $typeQuestions = TrainingTypeQuestion::select("id", "description")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
@@ -456,7 +472,7 @@ class ContractTrainingController extends Controller
                 ->whereNull('company_id')
                 ->orderBy('description')
                 ->take(30)->pluck('id', 'description');
-            else
+            /*else
             {
                 $typeQuestions = TrainingTypeQuestion::select("id", "description")
                 ->where(function ($query) use ($keyword) {
@@ -464,7 +480,7 @@ class ContractTrainingController extends Controller
                 })
                 ->orderBy('description')
                 ->take(30)->pluck('id', 'description');
-            }
+            }*/
             
 
             return $this->respondHttp200([

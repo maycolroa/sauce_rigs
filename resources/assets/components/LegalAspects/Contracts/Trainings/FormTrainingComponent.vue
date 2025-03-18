@@ -166,13 +166,30 @@
                       <!--Emparejamiento-->
                       <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones (Separadas por enter)" name="options" placeholder="Opciones" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
                       <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas (Separadas por enter. Deben estar en el mismo orden de las opciones)" name="answers" placeholder="Respuestas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
-                      
-                    </b-form-row>
-                    
 
-                    <!--<b-form-row>
-                      <vue-input :disabled="viewOnly" class="col-md-12" v-model="question.value_question" label="Valor de la pregunta" type="number" name="value_question" min="1" :error="form.errorsFor(`questions.${index}.value_question`)" placeholder="Valor de la pregunta"></vue-input>
-                    </b-form-row>-->
+                      <b-card v-if="question.type_question_id == '7'" no-body class="mb-2 border-secondary" style="width: 100%;">
+                        <b-card-body>
+                          <template v-for="(image, indexI) in question.images">
+                            <div :key="image.key">
+                                <b-form-row>
+                                  <div class="col-md-12">
+                                      <div class="float-right">
+                                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeImageQuestion(index, indexI)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                      </div>
+                                  </div>
+                                  <vue-file-simple :disabled="viewOnly" :help-text="image.id ? `Para descargar la imagen actual, haga click <a href='/legalAspects/trainingContract/download/question/image/${image.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="image.file" label="Imagen" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`questions.${index}.images.${indexI}.file`)" :maxFileSize="20"/>
+                                </b-form-row>
+                            </div>
+                          </template>
+
+                          <b-form-row style="padding-bottom: 20px;">
+                            <div class="col-md-12">
+                                <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addImageQuestion(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+                            </div>
+                          </b-form-row>          
+                        </b-card-body>
+                      </b-card>                      
+                    </b-form-row>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -233,7 +250,8 @@ export default {
           type_pairing: [],
           delete: {
             files: [],
-            questions: []
+            questions: [],
+            images: []
           }
         };
       }
@@ -273,6 +291,15 @@ export default {
             this.form.addFileBinary(`${keyFile}`, file.file);
         });
 
+      /*this.form.clearFilesBinaryInternt();
+        this.form.questions.forEach((questions, keyQuestions) => {
+          questions.images.forEach((image, keyImage) => {
+            image.forEach((file, keyFile) => {
+              this.form.addFileBinaryIntern(`${keyQuestions}_${keyImage}_${keyFile}`, file.file)
+            })
+          })
+        })*/
+
       this.form
         .submit(e.target.action)
         .then(response => {
@@ -304,9 +331,10 @@ export default {
         this.form.questions.push({
             key: new Date().getTime(),
             description: '',
-            type_question_id: [],
-            
-            value_question: ''
+            type_question_id: [],            
+            value_question: '',
+            images: [],
+            images_paring: []
         })
     },
     removeQuestion(index)
@@ -315,6 +343,21 @@ export default {
         this.form.delete.questions.push(this.form.questions[index].id)
 
       this.form.questions.splice(index, 1)
+    },
+    addImageQuestion(indexQ) 
+    {
+      this.form.questions[indexQ].images.push({
+          key: new Date().getTime(),
+          file: ''
+      })
+    },
+	  removeImageQuestion(indexQ, indexI)
+    {
+      console.log(indexQ, indexI)
+      if (this.form.questions[indexQ].images[indexI].id != undefined)
+        this.form.delete.images.push(this.form.questions[indexQ].images[indexI].id)
+
+      this.form.questions[indexQ].images.splice(indexI, 1)
     }
   }
 }

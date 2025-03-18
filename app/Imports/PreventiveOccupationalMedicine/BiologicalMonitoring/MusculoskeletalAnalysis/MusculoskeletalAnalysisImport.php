@@ -91,7 +91,7 @@ class MusculoskeletalAnalysisImport implements ToCollection
                 NotificationMail::
                     subject('Importación de los Análisis Osteomuscular')
                     ->recipients($this->user)
-                    ->message('Se produjo un error durante el proceso de importación de los Análisis Osteomuscular. Por favor revise la estructura del archivo que coincida con la plantilla emitida por SAUCE y que la información suministrada este plasmada de forma correcta, siguiendo los estandares establecidos en esta, de estar bien todo lo anteriormente explicado por favor contacte con el administrado')
+                    ->message('Se produjo un error durante el proceso de importación de los Análisis Osteomuscular. Por favor revise la estructura del archivo que coincida con la plantilla emitida por SAUCE y que la información suministrada este plasmada de forma correcta, siguiendo los estandares establecidos en esta, de estar bien todo lo anteriormente explicado por favor contacte con el administrador')
                     //->message($e->getMessage())
                     ->module('biologicalMonitoring/musculoskeletalAnalysis')
                     ->event('Job: MusculoskeletalAnalysisImportJob')
