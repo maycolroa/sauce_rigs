@@ -14,12 +14,24 @@ class AuthController extends ApiController
 {
     public function login(LoginRequest $request)
     {
-        $user = User::select(
-            'sau_users.*'
-        )
-        ->where('document', $request->document)
-        ->active()
-        ->first();
+        if($request->has('email'))
+        {
+            $user = User::select(
+                'sau_users.*'
+            )
+            ->where('email', $request->email)
+            ->active()
+            ->first(); 
+        }
+        else
+        {
+            $user = User::select(
+                'sau_users.*'
+            )
+            ->where('document', $request->document)
+            ->active()
+            ->first();
+        }
 
         if (!$user) 
         {
@@ -48,7 +60,8 @@ class AuthController extends ApiController
 
                 if ($companies->count() > 0)
                 {
-                    $user->companies = $companies->values();
+                    if (!$request->has('reincorporaciones'))
+                        $user->companies = $companies->values();
 
                     return $this->responderOk(['user' => $user]);
                 }
