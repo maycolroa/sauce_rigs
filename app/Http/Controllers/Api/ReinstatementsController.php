@@ -109,11 +109,11 @@ class ReinstatementsController extends ApiController
           if (!$employee)
             return $this->respondWithError('El codigoEmpleado no existe en nuestro sistema');
           else
-            $checks->where('employee_id', $employee->id);
+            $checks->where('sau_reinc_checks.employee_id', $employee->id);
         }
 
         if ($request->has('id') && $request->id > 0)
-          $checks->where('id', $request->id);
+          $checks->where('sau_reinc_checks.id', $request->id);
 
         if ($request->has('documentoEmpleado') && $request->documentoEmpleado)
         {
