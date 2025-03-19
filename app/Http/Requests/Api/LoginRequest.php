@@ -26,8 +26,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'required_without:document',
             'document' => 'required_without:email',
-            'password' => 'required',
-            'reincorporaciones' => 'required_without:document',
+            'password' => 'required'
         ];
     }
 }
