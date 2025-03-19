@@ -60,7 +60,7 @@ class AuthController extends ApiController
 
                 if ($companies->count() > 0)
                 {
-                    if (!$request->has('reincorporaciones'))
+                    if (!$request->has('email'))
                         $user->companies = $companies->values();
 
                     return $this->responderOk(['user' => $user]);
