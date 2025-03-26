@@ -10,6 +10,10 @@ use Illuminate\Support\Str;
 use App\Http\Requests\Api\CheckRequest;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\Administrative\Employees\Employee;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\DiseaseOrigin;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\OriginAdvisor;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\Restriction;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 
 class ReinstatementsController extends ApiController
 {
@@ -37,6 +41,82 @@ class ReinstatementsController extends ApiController
     public function create()
     {
         return $this->responderError('No encontrado');
+    }
+
+    public function getDiseaseOrigin()
+    {        
+        $disease_origin = DiseaseOrigin::withoutGlobalScopes()->where('company_id', 669)->get();
+
+        $data = [];
+
+        foreach ($disease_origin as $key => $value)
+        {
+            $data[] = [
+                    'id' => $value->id,
+                    'name' => $value->name
+                ];
+        }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
+    public function getOriginAdvisor()
+    {        
+        $origin_advisor = OriginAdvisor::withoutGlobalScopes()->where('company_id', 669)->get();
+
+        $data = [];
+
+        foreach ($origin_advisor as $key => $value)
+        {
+            $data[] = [
+                    'id' => $value->id,
+                    'name' => $value->name
+                ];
+        }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
+    public function getRestriction()
+    {        
+        $restriction = Restriction::withoutGlobalScopes()->where('company_id', 669)->get();
+
+        $data = [];
+
+        foreach ($restriction as $key => $value)
+        {
+            $data[] = [
+                    'id' => $value->id,
+                    'name' => $value->name
+                ];
+        }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
+    public function getTagsMotiveClose()
+    {        
+        $motive_close = TagsMotiveClose::withoutGlobalScopes()->where('company_id', 669)->get();
+
+        $data = [];
+
+        foreach ($motive_close as $key => $value)
+        {
+            $data[] = [
+                    'id' => $value->id,
+                    'name' => $value->name
+                ];
+        }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
     }
 
     public function getCheck(CheckRequest $request)

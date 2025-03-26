@@ -94,6 +94,10 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     
     Route::group(['prefix'=>'reinstatements'], function () {
         Route::post('recomendaciones_medicas', 'Api\ReinstatementsController@getCheck');
+        Route::post('disease_origin', 'Api\ReinstatementsController@getDiseaseOrigin');
+        Route::post('origin_advisor', 'Api\ReinstatementsController@getOriginAdvisor');
+        Route::post('restriction', 'Api\ReinstatementsController@getRestriction');
+        Route::post('motive_close', 'Api\ReinstatementsController@getTagsMotiveClose');
     });
 });
 
