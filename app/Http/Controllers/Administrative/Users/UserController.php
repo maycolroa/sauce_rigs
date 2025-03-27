@@ -103,7 +103,7 @@ class UserController extends Controller
                 'sau_users.active AS active',
                 'sau_users.last_login_at AS last_login_at',
                 DB::raw('GROUP_CONCAT(sau_roles.name) AS role'),
-                "sau_users.token_login AS token_login"
+                "sau_users.api_token AS token_login"
             )
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_role_user', function($q) use ($team) { 

@@ -188,7 +188,7 @@ class LoginController extends Controller
 
     public function authToken($token)
     {
-        $user = User::where('token_login', $token)->withoutGlobalScopes()->first();
+        $user = User::where('api_token', $token)->withoutGlobalScopes()->first();
 
         if ($user)
         {
