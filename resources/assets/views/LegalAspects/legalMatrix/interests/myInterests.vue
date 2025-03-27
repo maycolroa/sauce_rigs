@@ -65,7 +65,6 @@ export default {
 		GlobalMethods.getDataMultiselect(`/radios/legalMatrix/interestsSystemDescription`)
         .then(response => {
 			this.descriptions = response;
-			console.log(this.descriptions);
 			setTimeout(() => {
 				this.ready = true
 			}, 3000)
