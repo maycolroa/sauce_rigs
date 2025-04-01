@@ -129,6 +129,8 @@ class ElementController extends Controller
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
+        $element->serial = $request->serial;
+        $element->reference = $request->reference;
         $element->size = $request->size;
         $element->class_element = $request->class_element;
         $element->observations = $request->observations;
@@ -310,6 +312,8 @@ class ElementController extends Controller
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
+        $element->serial = $request->serial;
+        $element->reference = $request->reference;
         $element->class_element = $request->class_element;
         $element->observations = $request->observations;
         $element->size = $request->size;

@@ -2275,43 +2275,19 @@ class TransactionController extends Controller
             }
             else
             {
-                /*$element_disponibles = ElementBalanceLocation::select('element_id')
-                ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-                ->where('location_id', $request->location_id)
-                ->where('sau_epp_elements.company_id', $this->company)
-                ->where('sau_epp_elements.class_element', $request->class_element)
-                ->get()
-                ->toArray();
-
-                $ids_disponibles = [];
-
-                foreach ($element_disponibles as $key => $value) {
-                    $ele = Element::find($value['element_id']);
-
+                foreach ($request->position_elements as $key => $value) 
+                {
+                    $ele = Element::find($value['id_ele']);
                     array_push( $multiselect, $ele->multiselect());
-                    array_push( $ids_disponibles, $ele->id);
-                }*/
 
-                foreach ($request->position_elements as $key => $value) {
+                    $content = [
+                        'id_ele' => $ele->id,
+                        'quantity' => '',
+                        'type' => $ele->identify_each_element ? 'Identificable' : 'No Identificable',
+                        'code' => ''
+                    ];
 
-                    /*if (in_array($value['id_ele'], $ids_disponibles))
-                    {*/
-                        $ele = Element::find($value['id_ele']);
-                        array_push( $multiselect, $ele->multiselect());
-
-                        /*$element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
-                        ->where('element_id', $ele->id)
-                        ->first();*/
-
-                        $content = [
-                            'id_ele' => $ele->id,
-                            'quantity' => '',
-                            'type' => $ele->identify_each_element ? 'Identificable' : 'No Identificable',
-                            'code' => ''
-                        ];
-
-                        array_push( $elements_id, ['element' => $content, 'options' => []]);
-                    //}
+                    array_push( $elements_id, ['element' => $content, 'options' => []]);
                 }
 
                 $eles = Element::where('company_id', $this->company)->get();

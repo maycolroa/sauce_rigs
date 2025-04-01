@@ -33,7 +33,9 @@ class Element extends Model
         'size',
         'data_sheet',
         'user_manual',
-        'cost'
+        'cost',
+        'serial',
+        'reference'
     ];
 
     public function multiselect()
