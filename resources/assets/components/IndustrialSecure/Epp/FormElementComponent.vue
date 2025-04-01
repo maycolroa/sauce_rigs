@@ -12,10 +12,10 @@
                     </vue-ajax-advanced-select>
     </b-form-row>
 
-    <b-form-row  v-if="form.class_element == 'Equipo'">
+    <!--<b-form-row  v-if="form.class_element == 'Equipo'">
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.serial" label="Serial" type="text" name="serial" :error="form.errorsFor('serial')" placeholder="Serial"></vue-input>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.reference" label="Referencia" name="reference" ::error="form.errorsFor('reference')"  placeholder="Referencia"></vue-input>
-    </b-form-row>
+    </b-form-row>--->
 
     <b-form-row>
       <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.mark" name="mark" :error="form.errorsFor('mark')" label="Marca" placeholder="Seleccione la marca" :url="tagsMarkDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">

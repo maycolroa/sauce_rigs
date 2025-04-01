@@ -263,7 +263,7 @@ export default {
       classElement: [
         {text: 'Elemento de protección personal', value: 'Elemento de protección personal'},
         {text: 'Dotación', value: 'Dotación'},        
-        {text: 'Equipo', value: 'Equipo'}
+        //{text: 'Equipo', value: 'Equipo'}
       ],
       cargar: true,
       inventary: auth.inventaryEpp,
