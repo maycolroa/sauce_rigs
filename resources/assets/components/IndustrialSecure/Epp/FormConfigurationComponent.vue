@@ -12,6 +12,9 @@
     <b-form-row>
       <vue-textarea class="col-md-12" v-model="form.text_letter_dotation" label="Texto a mostrar en la carta de entregas de elementos de dotación (Opcional, existe un texto por defecto)" name="text_letter_dotation" placeholder="Texto" :error="form.errorsFor('text_letter_dotation')" rows="5"></vue-textarea>  
     </b-form-row>
+    <b-form-row>
+      <vue-textarea class="col-md-12" v-model="form.text_letter_team" label="Texto a mostrar en la carta de entregas de elementos de equipo (Opcional, existe un texto por defecto)" name="text_letter_team" placeholder="Texto" :error="form.errorsFor('text_letter_team')" rows="5"></vue-textarea>  
+    </b-form-row>
 
     <b-form-row>
       <vue-radio :checked="form.expired_elements_asigned" class="col-md-12" v-model="form.expired_elements_asigned" :options="siNo" name="expired_elements_asigned" :error="form.errorsFor('expired_elements_asigned')" label="¿Desea recibir notificación por vencimiento de elementos asignados?">
