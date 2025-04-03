@@ -88,7 +88,8 @@ class ConfigurationsCompany
             'contract_notify_file_expired_user' => 'Usuario contratante a notificar sobre los archivos proximos a vencerse',
             'legal_matrix_risk_opportunity' => 'Activa la funcionalidad de riesgos y oportunidades en las calificaciones de las leyes',
             'criticality_level_inspections' => 'Muestra nuevo campo en el formulario de inspecciones planeadas para asignar un nivel de criticidad a los items',
-            'users_notify_criticality_level_inspections' => 'Uusarios a los cuales notificar la alerta por criticidad de alguno de los items'
+            'users_notify_criticality_level_inspections' => 'Uusarios a los cuales notificar la alerta por criticidad de alguno de los items',
+            'contracts_view_responsibles' => 'Permitir que solo los responsables de las contratistas puedan realizar alguna acción sobre ellas y todos los demas usuarios solo podran ver la informació que brinda la tabla'
         ];
     }
 

@@ -43,6 +43,11 @@
       <vue-ajax-advanced-select class="col-md-12" v-model="form.contract_notify_file_expired_user" :selected-object="form.multiselect_user_id" name="contract_notify_file_expired_user" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('contract_notify_file_expired_user')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
     </b-form-row> 
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.contracts_view_responsibles" class="col-md-12" v-model="form.contracts_view_responsibles" :options="siNo" name="contracts_view_responsibles" :error="form.errorsFor('contracts_view_responsibles')" label="¿Permitir que solo los responsables de las contratistas vean información o realicen acciones sobre ellas?">
+        </vue-radio>
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -83,7 +88,8 @@ export default {
           contract_notify_file_expired: '',
           contract_notify_file_expired_user: '',
           days_alert_expiration_date_contract_file_upload: '',
-          days_alert_without_activity: ''
+          days_alert_without_activity: '',
+          contracts_view_responsibles: ''
         };
       }
     }

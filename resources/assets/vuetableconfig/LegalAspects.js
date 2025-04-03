@@ -512,6 +512,21 @@ export default [
                     },
                     permission: 'contracts_u'
                 },
+                /*{
+                    name: 'delete2',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'ion ion-md-close',
+                        title: 'Eliminar'
+                    },
+                    data: {
+                        action: '/legalAspects/contracts/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de borrar la contratrista? De hacerlo se borraran todos los registros asociados a esta, tales como: evaluaciones, calificaciones de listas de estandares minimos, empleados y todos los documentos cargados'
+                    },
+                    permission: 'contracts_d'
+                }/*,*/
                 {
                     name: 'delete',
                     data: {

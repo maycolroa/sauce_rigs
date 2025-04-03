@@ -86,6 +86,16 @@ class ContractLesseeController extends Controller
     */
     public function data(Request $request)
     {
+        try
+        {
+            $validate_responsibles = ConfigurationsCompany::findByKey('contracts_view_responsibles');
+            
+        } catch (\Exception $e) {
+            $validate_responsibles = 'NO';
+        }
+        
+        $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
         $contracts = ContractLesseeInformation::select(
             'sau_ct_information_contract_lessee.*',
             'sau_ct_list_check_resumen.total_standard AS total_standard',
@@ -95,7 +105,8 @@ class ContractLesseeController extends Controller
             'sau_ct_list_check_resumen.total_p_c AS total_p_c',
             'sau_ct_list_check_resumen.total_p_nc AS total_p_nc',
             'sau_ct_list_check_resumen.list_qualification_id AS id_qualification',
-            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects')
+            DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects'),
+            DB::raw('GROUP_CONCAT(sau_ct_contract_responsibles.user_id) as responsibles')
         )
         ->leftJoin('sau_ct_list_check_qualifications', function ($join) 
         {
@@ -105,6 +116,7 @@ class ContractLesseeController extends Controller
         ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
         ->leftJoin('sau_ct_contracts_proyects', 'sau_ct_contracts_proyects.contract_id', 'sau_ct_information_contract_lessee.id')
         ->leftJoin('sau_ct_proyects', 'sau_ct_proyects.id', 'sau_ct_contracts_proyects.proyect_id')
+        ->leftJoin('sau_ct_contract_responsibles', 'sau_ct_contract_responsibles.contract_id', 'sau_ct_information_contract_lessee.id')
         ->groupBy('sau_ct_information_contract_lessee.id')
         ->orderBy('sau_ct_information_contract_lessee.social_reason');
 
@@ -117,35 +129,107 @@ class ContractLesseeController extends Controller
             $contracts->rangePercentageCumple($filters["rangePC"]);
         }
 
-        return Vuetable::of($contracts)
-            ->addColumn('legalaspects-contracts-view-list-check', function ($contract) {
-                
-                if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
-                    return true;
+        if ($validate_responsibles == 'SI')
+        {
+            return Vuetable::of($contracts)
+                ->addColumn('legalaspects-contracts-view-list-check', function ($contract) use ($isSuper) {
+                    
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                    {
+                        if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
+                            return true;
+                    }
+                        
+                    return false;
+                })
+                ->addColumn('retrySendMail', function ($contract) use ($isSuper)  {
 
-                return false;
-            })
-            ->addColumn('retrySendMail', function ($contract) {
-                $users = $this->getUserMasterContract($contract, $this->company, true);
-                if ($users && $users->active == 'SI')
-                    return true;
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                    {
+                        $users = $this->getUserMasterContract($contract, $this->company, true);
+                        if ($users && $users->active == 'SI')
+                            return true;
+                    }
 
-                return false;
-            })
-            ->addColumn('reactiveUser', function ($contract) {
-                $users = $this->getUserMasterContract($contract, $this->company, true);
-                if ($users && $users->active == 'NO')
-                    return true;
+                    return false;
+                })
+                ->addColumn('reactiveUser', function ($contract) use ($isSuper)  {
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                    {
+                        $users = $this->getUserMasterContract($contract, $this->company, true);
+                        if ($users && $users->active == 'NO')
+                            return true;
+                    }
 
-                return false;
-            })
-            ->addColumn('downloadFile', function ($contract) {
-                if ($contract->id_qualification)
-                    return true;
+                    return false;
+                })
+                ->addColumn('downloadFile', function ($contract) use ($isSuper)  {
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                    {
+                        if ($contract->id_qualification)
+                            return true;
+                    }
 
-                return false;
-            })
-            ->make();
+                    return false;
+                })            
+                ->addColumn('legalaspects-contractor-edit', function ($contract) use ($isSuper)  {
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                        return true;
+
+                    return false;
+                })            
+                ->addColumn('legalaspects-contractor-view', function ($contract) use ($isSuper)  {
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                        return true;
+
+                    return false;
+                })                      
+                ->addColumn('legalaspects-contracts-employees-view-contract', function ($contract) use ($isSuper)  {
+                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                        return true;
+
+                    return false;
+                })                                    
+                ->addColumn('control_delete', function ($contract) use ($isSuper)  {
+                   if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
+                        return true;
+
+                    return false;
+                })
+                ->make();
+        }
+        else
+        {
+            return Vuetable::of($contracts)
+                ->addColumn('legalaspects-contracts-view-list-check', function ($contract) {
+                    
+                    if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
+                                return true;
+                        
+                    return false;
+                })
+                ->addColumn('retrySendMail', function ($contract) {
+                    $users = $this->getUserMasterContract($contract, $this->company, true);
+                    if ($users && $users->active == 'SI')
+                        return true;
+
+                    return false;
+                })
+                ->addColumn('reactiveUser', function ($contract) {
+                    $users = $this->getUserMasterContract($contract, $this->company, true);
+                    if ($users && $users->active == 'NO')
+                        return true;
+
+                    return false;
+                })
+                ->addColumn('downloadFile', function ($contract) {
+                    if ($contract->id_qualification)
+                        return true;
+
+                    return false;
+                })
+                ->make();
+        }
     }
 
     public function store(ContractRequest $request)
