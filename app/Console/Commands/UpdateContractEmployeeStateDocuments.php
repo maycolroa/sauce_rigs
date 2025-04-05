@@ -53,7 +53,7 @@ class UpdateContractEmployeeStateDocuments extends Command
         ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
         ->withoutGlobalScopes()
         ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-        ->where('sau_license_module.module_id', 16 /*32 prod, 34 local*/);
+        ->where('sau_license_module.module_id', 16);
 
         $companies = $companies->pluck('sau_licenses.company_id');
 
@@ -66,13 +66,10 @@ class UpdateContractEmployeeStateDocuments extends Command
             {
                 \Log::info('contract: '. $contract->id);
                 $employees = ContractEmployee::where('contract_id', $contract->id)
-                //->where('id', 1)
                 ->withoutGlobalScopes()->get();
 
                 foreach ($employees as $key3 => $employee) 
                 {
-                    \Log::info('employee: '. $employee->id);
-                    \Log::info('employee state inicial: '. $employee->state);
                     $pendiente = false;
                     $rejected = false;
                     $expired = false;
@@ -83,6 +80,9 @@ class UpdateContractEmployeeStateDocuments extends Command
         
                         return $activity;
                     });
+
+                    
+                    $files_states = [];
 
                     foreach ($activities as $key4 => $activity) 
                     {
@@ -161,57 +161,46 @@ class UpdateContractEmployeeStateDocuments extends Command
                                         $expired = false;
                                     }
                                 }
+                                
+                                if ($count_files == ($key+1))
+                                {
+                                    array_push($files_states, $file->state);
+                                }
                             }
 
                             if ($count_files > 0 && $count_aprobe >= $count_files)
                                 $count++;
-                            else if ($count_files > 0 && !$pendiente && !$rejected && !$expired)
+                            else if (!$pendiente && !$rejected && !$expired)
                                 $count++;
                             else if ($count_files < 1)
                                 $pendiente = true;
-                            
-                            if ($rejected)
-                            {
-                                $employee->update(
-                                    [ 'state' => 'Rechazado']
-                                );
-                                break;
-                            }
-                            else if ($pendiente || $expired)
-                            {
-                                $employee->update(
-                                    [ 'state' => 'Pendiente']
-                                );
-                                break;
-                            }
-                        }
-
-                        if ($documents_counts > $count)
-                        {
-                            $employee->update(
-                                [ 'state' => 'Pendiente']
-                            );
-                            break;
                         }
                     }
 
-                    if ($activity_asigned)
+                    if (in_array('RECHAZADO', $files_states))
                     {
-                        if(!$pendiente && !$rejected && !$expired)
-                        {
-                            $employee->update(
-                                [ 'state' => 'Aprobado']
-                            );
-                        }
+                        $employee->update(
+                            [ 'state' => 'Rechazado']
+                        );
                     }
-                    else
+                    else if ($documents_counts > $count)
                     {
                         $employee->update(
                             [ 'state' => 'Pendiente']
                         );
                     }
-
-                    \Log::info('employee state final: '. $employee->state);
+                    else if (in_array('PENDIENTE', $files_states))
+                    {
+                        $employee->update(
+                            [ 'state' => 'Pendiente']
+                        );
+                    }
+                    else if(in_array('ACEPTADO', $files_states))
+                    {
+                        $employee->update(
+                        [ 'state' => 'Aprobado']
+                        );
+                    }
                 }
             }
         }
