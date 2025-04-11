@@ -431,6 +431,7 @@ return [
       'documents.*.apply_motive' => 'Motivo',
       'documents.*.apply_file' => '¿Aplica el documento?',
       'activities.*.documents.*.apply_motive' => 'Motivo',
+      'users_responsibles' => 'Responsable del contratista'
       //'activities.*.documents.*.apply_file' => '¿Aplica el documento?'
 
     ],
