@@ -753,6 +753,23 @@ class ContractLesseeController extends Controller
                 }
             }
 
+            if ($request->active == 'NO')
+            {
+                $users_contracts = $this->getUsersContract($contract->id);
+
+                if ($users_contracts->count() > 0)
+                {
+                    foreach ($users_contracts as $user)
+                    {
+                        $contract_user = $this->getMultiplesContracstUser($user->id, $this->company);
+                        $role_user = $user->roleUser();
+                        
+                        if ($contract_user->count() <= 1 && $role_user->count() == 1)
+                            $user->update(['active' => 'NO']);
+                    }
+                }
+            }
+
             if (!$contract->update())
                 return $this->respondHttp500();
 
