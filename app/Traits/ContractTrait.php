@@ -100,7 +100,18 @@ trait ContractTrait
             ->where('sau_user_information_contract_lessee.user_id', $user_id);
 
         if ($company_id)
-            $contract->company_scope = $company_id;
+        {
+            $active_company = DB::table('sau_company_user')
+                ->where('company_id', $company_id)
+                ->where('user_id', $user_id)
+                ->where('active', 'SI')
+                ->first();
+
+            if ($active_company)
+                $contract->company_scope = $company_id;
+            else
+                return NULL;
+        }
 
         $contract = $contract->first();
 

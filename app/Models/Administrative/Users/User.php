@@ -68,7 +68,7 @@ class User extends Authenticatable
     }
 
     public function companies(){
-      	return $this->belongsToMany('App\Models\General\Company','sau_company_user')->where('active', 'SI');
+      	return $this->belongsToMany('App\Models\General\Company','sau_company_user')->where('sau_company_user.active', 'SI')->withPivot('active');
     }
 
     public function contractResponsibles(){
@@ -201,12 +201,28 @@ class User extends Authenticatable
         $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
     }
 
-    public function scopeActive($query, $active = true)
+    public function scopeActive($query, $active = true, $company_id = null)
     {
         if ($active)
-            $query->where('sau_users.active', 'SI');
+        {
+            $query->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+
+            if ($company_id)
+                $query->where('sau_company_user.company_id', $company_id);
+            else
+            {
+                $query->where('sau_company_user.company_id', Session::get('company_id'))
+                ->where('sau_company_user.active', 'SI')
+                ->where('sau_users.active', 'SI');
+            }
+        }
         else
-            $query->where('sau_users.active', 'NO');
+        {            
+            $query->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->where('sau_company_user.company_id', Session::get('company_id'))
+                ->where('sau_company_user.active', 'NO')
+                ->where('sau_users.active', 'NO');
+        }
 
         return $query;
     }

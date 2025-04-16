@@ -60,6 +60,9 @@ class LoginController extends Controller
                 {
                     foreach ($companies as $val)
                     {
+                        if ($val->pivot->active == 'NO')
+                            continue;
+
                         $license = DB::table('sau_licenses')
                                 ->whereRaw('company_id = ? 
                                             AND ? BETWEEN started_at AND ended_at', 
@@ -202,6 +205,9 @@ class LoginController extends Controller
                 {
                     foreach ($companies as $val)
                     {
+                        if ($val->pivot->active == 'NO')
+                            continue;
+
                         $license = DB::table('sau_licenses')
                                 ->whereRaw('company_id = ? 
                                             AND ? BETWEEN started_at AND ended_at', 
@@ -216,8 +222,12 @@ class LoginController extends Controller
 
                             if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                             {
-                                $contract = $this->getContractUserLogin(Auth::user()->id);
-                                Session::put('contract_id', $contract->id);
+                                $contract = $this->getContractUserLogin(Auth::user()->id, $val->pivot->company_id);
+
+                                if ($contract)
+                                    Session::put('contract_id', $contract->id);
+                                else
+                                    continue;
 
                                 if ($contract->active == 'SI')
                                 {

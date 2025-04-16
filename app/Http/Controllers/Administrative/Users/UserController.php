@@ -270,6 +270,14 @@ class UserController extends Controller
             $user->multiselect_filter_headquarter = $headquarters;
             $user->filter_headquarter = $headquarters;
 
+            $active_company = DB::table('sau_company_user')
+            ->where('company_id', $this->company)
+            ->where('user_id', $user->id)
+            ->first();
+
+            if ($active_company)
+                $user->active = $active_company->active;
+
             $systemsApply = [];
 
             foreach ($user->systemsApply as $key => $value)
@@ -385,8 +393,18 @@ class UserController extends Controller
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
-                return $this->respondWithError('Este usuario no puede ser desactivado, ya que se encuentra asociado a varias compañias');
+                DB::table('sau_company_user')
+                ->where('company_id', $this->company)
+                ->where('user_id', $user->id)
+                ->update([
+                    'active' => 'NO'
+                ]);
+
+                $user->active = 'SI';
+                //return $this->respondWithError('Este usuario no puede ser desactivado, ya que se encuentra asociado a varias compañias');
             }
+            else
+                $user->active = $request->active;
             
             if (!$user->update())
                 return $this->respondHttp500();
