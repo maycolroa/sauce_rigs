@@ -100,7 +100,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         {
             $users = User::select('sau_users.email')
                 ->active()
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->join('sau_role_user', function($q) use ($team) { 
                     $q->on('sau_role_user.user_id', '=', 'sau_users.id')
                     ->on('sau_role_user.team_id', '=', DB::raw($team->id));
