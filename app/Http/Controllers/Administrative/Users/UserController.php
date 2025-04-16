@@ -582,10 +582,10 @@ class UserController extends Controller
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                   ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
-        else
+        /*else
         {
             $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
-        }
+        }*/
 
         if($request->has('keyword'))
         {
@@ -936,7 +936,7 @@ class UserController extends Controller
                     )
                     ->active()
                     ->withoutGlobalScopes()
-                    ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                    //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                     ->leftJoin('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
                     ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
                     ->whereNotIn('sau_roles.id', [8,9,5])
@@ -957,7 +957,7 @@ class UserController extends Controller
         )
         ->active()
         ->withoutGlobalScopes()
-        ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+        //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
         ->groupBy('id')
         ->pluck('id', 'name');
                 
@@ -972,7 +972,7 @@ class UserController extends Controller
                     sau_users.name as name
                 ")->active();
 
-        $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+        //$users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
         if($request->has('keyword'))
         {

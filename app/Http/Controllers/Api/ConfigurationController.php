@@ -147,10 +147,10 @@ class ConfigurationController extends ApiController
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                   ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
-        else
+        /*else
         {
             $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
-        }
+        }*/
         
         $users = $users->get();
 

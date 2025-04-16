@@ -61,7 +61,7 @@ class ReincSendMail extends Command
 
             $users = User::select('sau_users.*')
                             ->active()
-                            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+                            //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
             $users->company_scope = $company;
             $users = $users->get();

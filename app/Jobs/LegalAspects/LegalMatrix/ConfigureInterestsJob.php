@@ -49,7 +49,7 @@ class ConfigureInterestsJob implements ShouldQueue
 
       $users = User::select('sau_users.*')
                 ->active()
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');      
+                //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');      
       
       $users->company_scope = $this->company_id;
 

@@ -72,7 +72,7 @@ class ReincPendienteResumen extends Command
             $users = User::select('sau_users.*')
             ->withoutGlobalScopes()
             ->active()
-            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->where('sau_company_user.company_id', $company)
             ->get();
 
