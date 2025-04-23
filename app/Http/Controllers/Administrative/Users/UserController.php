@@ -395,7 +395,6 @@ class UserController extends Controller
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
-                \Log::info('aqui');
                 DB::table('sau_company_user')
                 ->where('company_id', $this->company)
                 ->where('user_id', $user->id)
@@ -406,7 +405,18 @@ class UserController extends Controller
                 $user->active = 'SI';
                 //return $this->respondWithError('Este usuario no puede ser desactivado, ya que se encuentra asociado a varias compañias');
             }
-            else
+            else if ($request->active == 'NO' && $user->companies->count() == 1)
+            {
+                DB::table('sau_company_user')
+                ->where('company_id', $this->company)
+                ->where('user_id', $user->id)
+                ->update([
+                    'active' => 'NO'
+                ]);
+                
+                $user->active = 'NO';
+            }
+            else if ($request->active == 'SI')
                 $user->active = $request->active;
             
             if (!$user->update())
