@@ -30,8 +30,12 @@ class AuthController extends ApiController
                 'sau_users.*'
             )
             ->where('document', $request->document)
-            ->active()
-            ->first();
+            ->active();
+
+            \Log::info($user->toSql());
+            $user = $user->first();
+
+            \log::info($user);
         }
 
         if (!$user) 
