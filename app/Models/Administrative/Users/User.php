@@ -227,6 +227,16 @@ class User extends Authenticatable
         return $query;
     }
 
+    public function scopeActiveApi($query, $active = true)
+    {
+        if ($active)
+            $query->where('sau_users.active', 'SI');
+        else
+            $query->where('sau_users.active', 'NO');
+
+        return $query;
+    }
+
     public function getKeywords($company = null)
     {
         $company = $company ? $company : Session::get('company_id');

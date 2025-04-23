@@ -21,7 +21,7 @@ class AuthController extends ApiController
                 'sau_users.*'
             )
             ->where('email', $request->email)
-            ->active()
+            ->activeApi()
             ->first(); 
         }
         else
@@ -30,12 +30,8 @@ class AuthController extends ApiController
                 'sau_users.*'
             )
             ->where('document', $request->document)
-            ->active();
-
-            \Log::info($user->toSql());
-            $user = $user->first();
-
-            \log::info($user);
+            ->activeApi()
+            ->first();
         }
 
         if (!$user) 
