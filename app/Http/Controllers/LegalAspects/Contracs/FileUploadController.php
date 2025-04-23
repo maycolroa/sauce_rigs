@@ -660,7 +660,10 @@ class FileUploadController extends Controller
 
                         if ($count_files == ($key+1))
                         {
-                          array_push($files_states, $fileUpload->state);
+                          if ($fileUpload->state == 'ACEPTADO' && $expired)
+                            array_push($files_states, 'PENDIENTE');
+                          else
+                            array_push($files_states, $fileUpload->state);
                         }
                     }
                     
