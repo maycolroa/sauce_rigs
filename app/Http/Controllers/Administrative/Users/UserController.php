@@ -392,29 +392,17 @@ class UserController extends Controller
                     $modification = $modification . 'Se modifico la contraseña - ';
             }
 
-            if ($request->active == 'NO' && $user->companies->count() > 1)
-            {
-                DB::table('sau_company_user')
+            DB::table('sau_company_user')
                 ->where('company_id', $this->company)
                 ->where('user_id', $user->id)
                 ->update([
-                    'active' => 'NO'
+                    'active' => $request->active
                 ]);
 
+            if ($request->active == 'NO' && $user->companies->count() > 1)
                 $user->active = 'SI';
-                //return $this->respondWithError('Este usuario no puede ser desactivado, ya que se encuentra asociado a varias compañias');
-            }
-            else if ($request->active == 'NO' && $user->companies->count() == 1)
-            {
-                DB::table('sau_company_user')
-                ->where('company_id', $this->company)
-                ->where('user_id', $user->id)
-                ->update([
-                    'active' => 'NO'
-                ]);
-                
+            else if ($request->active == 'NO' && $user->companies->count() == 1)    
                 $user->active = 'NO';
-            }
             else if ($request->active == 'SI')
                 $user->active = $request->active;
             
