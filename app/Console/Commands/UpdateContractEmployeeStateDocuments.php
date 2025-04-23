@@ -164,16 +164,19 @@ class UpdateContractEmployeeStateDocuments extends Command
                                 
                                 if ($count_files == ($key+1))
                                 {
-                                    array_push($files_states, $file->state);
+                                    if ($fileUpload->state == 'ACEPTADO' && $expired)
+                                        array_push($files_states, 'PENDIENTE');
+                                    else
+                                        array_push($files_states, $fileUpload->state);
                                 }
                             }
 
                             if ($count_files > 0 && $count_aprobe >= $count_files)
                                 $count++;
-                            else if (!$pendiente && !$rejected && !$expired)
+                            /*else if (!$pendiente && !$rejected && !$expired)
                                 $count++;
                             else if ($count_files < 1)
-                                $pendiente = true;
+                                $pendiente = true;*/
                         }
                     }
 
