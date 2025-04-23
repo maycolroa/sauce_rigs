@@ -394,6 +394,7 @@ class UserController extends Controller
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
+                \Log::info('aqui');
                 DB::table('sau_company_user')
                 ->where('company_id', $this->company)
                 ->where('user_id', $user->id)
