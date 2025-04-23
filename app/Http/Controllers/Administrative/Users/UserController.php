@@ -391,6 +391,7 @@ class UserController extends Controller
                 if ($user->password != $request->password)
                     $modification = $modification . 'Se modifico la contraseña - ';
             }
+            \Log::info($request);
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
