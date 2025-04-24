@@ -15,7 +15,7 @@ trait UserTrait
 
     public function createUser($request)
     {
-        $document_exist = User::where('document', $request->document)->active()->first();
+        $document_exist = User::where('document', $request->document)->activeApi()->first();
 
         if (!$document_exist)
         {            

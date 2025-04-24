@@ -109,7 +109,7 @@ class NotifyReportsOpenConfig extends Command
                 foreach ($this->responsibles as $email)
                 {
                     $expired_reports = [];
-                    $user = User::select('*')->active()->withoutGlobalScopes()->where('email', $email)->first();
+                    $user = User::select('*')->active(true, $company)->withoutGlobalScopes()->where('email', $email)->first();
 
                     if ($user)
                     {

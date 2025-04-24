@@ -44,7 +44,7 @@ class NotifyResponsibleContractJob implements ShouldQueue
     public function handle()
     {
         $recipients = User::select('sau_users.email')
-            ->active()
+            ->active(true, $this->company_id)
             ->whereIn('sau_users.id', $this->users)
             ->groupBy('sau_users.id', 'sau_users.email');
 

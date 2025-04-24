@@ -48,7 +48,7 @@ class ReincNotificationNextFollowUp extends Command
         foreach ($companies as $company)
         {
             $users = User::select('sau_users.*')
-                        ->active();
+                        ->active(true, $company->id);
                         //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
             $users->company_scope = $company->id;
