@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('userActivity', 'General\ApplicationController@userActivity');
     Route::get('get_terms_conditions', 'General\ApplicationController@getTermsConditionsUsers');
     Route::post('accept_terms_conditions', 'General\ApplicationController@accepTermsConditionsUsers');
+    Route::post('verifyCodeLogin', 'General\ApplicationController@verifyCodeLogin');
 
     Route::prefix('configurableForm')->group(function () {
       Route::post('formModel', 'General\ConfigurableFormControlle@formModel');

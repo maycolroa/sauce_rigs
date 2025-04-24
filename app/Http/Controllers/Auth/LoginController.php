@@ -14,6 +14,7 @@ use App\Models\General\Team;
 use Carbon\Carbon;
 use Session;
 use DB;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class LoginController extends Controller
 {
@@ -48,6 +49,23 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    function getCodeLogin($longitud): string
+    {
+        $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+        $longitudCaracteres = strlen($caracteres);
+
+        $codigo = '';
+
+        for ($i = 0; $i < $longitud; $i++) 
+        {
+            $indiceAleatorio = rand(0, $longitudCaracteres - 1);
+            $codigo .= $caracteres[$indiceAleatorio];
+        }
+        
+        return $codigo;
+    }
+
     public function login(Request $request)
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')]))
@@ -55,6 +73,7 @@ class LoginController extends Controller
             if (Auth::user()->active == 'SI')
             {
                 $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
+                $user = Auth::user();
 
                 if ($companies->count() > 0)
                 {
@@ -75,62 +94,110 @@ class LoginController extends Controller
                             Session::put('company_id', $val->pivot->company_id);
                             $team = Team::where('name', Session::get('company_id'))->first()->id;
 
-                            if (!Auth::user()->terms_conditions)
+                            if (!$user->code_login)
                             {
-                                $this->userActivity();
-                                
+                                $code = $this->getCodeLogin(6);
+
+                                Auth::user()->update([
+                                    'validate_login' => false,
+                                    'code_login' => $code
+                                ]);
+
+                                NotificationMail::
+                                    subject('Código para inicio de sesión')
+                                    ->message("Usted ha intentado iniciar sesión en nuestro sistema, por favor ingrese el siguiente codigo para completar su inicio de sesión: {$code}")
+                                    ->recipients($user)
+                                    ->module('users')
+                                    ->company(Session::get('company_id'))
+                                    ->send();
+
                                 return $this->respondHttp200([
-                                    'redirectTo' => 'termsconditions'
+                                    'redirectTo' => 'codelogin'
                                 ]);
                             }
                             else
                             {
-                                if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                                if ($user->validate_login)
                                 {
-                                    $contract = $this->getContractUserLogin(Auth::user()->id);
-                                    Session::put('contract_id', $contract->id);
-
-                                    if ($contract->active == 'SI')
+                                    if (!Auth::user()->terms_conditions)
                                     {
-                                        if ($contract->completed_registration == 'NO')
+                                        $this->userActivity();
+                                        
+                                        return $this->respondHttp200([
+                                            'redirectTo' => 'termsconditions'
+                                        ]);
+                                    }
+                                    else
+                                    {
+                                        if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                                         {
-                                            Auth::user()->update([
-                                                'last_login_at' => Carbon::now()->toDateTimeString()
-                                            ]);
+                                            $contract = $this->getContractUserLogin(Auth::user()->id);
+                                            Session::put('contract_id', $contract->id);
+        
+                                            if ($contract->active == 'SI')
+                                            {
+                                                if ($contract->completed_registration == 'NO')
+                                                {
+                                                    Auth::user()->update([
+                                                        'last_login_at' => Carbon::now()->toDateTimeString()
+                                                    ]);
+        
+                                                    $this->userActivity();
+                                                    
+                                                    return $this->respondHttp200([
+                                                        'redirectTo' => 'legalaspects/contracts/information'
+                                                    ]);
+                                                }
+        
+                                                return $this->defaultUrl();
+                                            }
+                                            else 
+                                            {
+                                                Auth::user()->update([
+                                                    'validate_login' => false
+                                                ]);
 
-                                            $this->userActivity();
-                                            
-                                            return $this->respondHttp200([
-                                                'redirectTo' => 'legalaspects/contracts/information'
-                                            ]);
+                                                Auth::logout();
+                                                return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                                            }
                                         }
-
+        
                                         return $this->defaultUrl();
                                     }
-                                    else 
-                                    {
-                                        Auth::logout();
-                                        return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
-                                    }
                                 }
-
-                                return $this->defaultUrl();
-                            }
-                            
+                                else
+                                {
+                                    return $this->respondHttp200([
+                                        'redirectTo' => 'codeLogin'
+                                    ]);
+                                }
+                            }                            
                         }
                     }
                     
+                    Auth::user()->update([
+                        'validate_login' => false
+                    ]);
+
                     Auth::logout();
                     return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);
                 }
                 else 
                 {
+                    Auth::user()->update([
+                        'validate_login' => false
+                    ]);
+
                     Auth::logout();
                     return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario no posee una compañia activa para poder ingresar al sistema']], 422);
                 }
             }
             else 
             {
+                Auth::user()->update([
+                    'validate_login' => false
+                ]);
+
                 Auth::logout();
                 return $this->respondWithError(['errors'=>['email'=>'Usuario inhabilitado']], 422);
             }
@@ -180,6 +247,11 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        Auth::user()->update([
+            'validate_login' => false,
+            'code_login' => NULL
+        ]);
+
         $this->userActivity('Cerrado de sesión');
 
         $this->guard()->logout();
