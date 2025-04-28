@@ -987,7 +987,7 @@ class CheckController extends Controller
             $record_letter->check_id = $request->check_id;
             $record_letter->company_id = $this->company;
             $record_letter->user_id = $this->user->id;
-            $record_letter->detail = $check->detail;
+            $record_letter->detail = $check->check_detail;
             $record_letter->start_recommendations = $check->start_recommendations;
             $record_letter->end_recommendations = $check->end_recommendations;
             $record_letter->indefinite_recommendations = $check->indefinite_recommendations;
