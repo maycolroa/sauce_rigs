@@ -975,10 +975,10 @@ class CheckController extends Controller
             
         $company = Company::select('logo')->where('id', $this->company)->first();
 
-        $record_letter = LetterHistory::where('check_id', $request->check_id)->where('to', $request->to)->where('from', $request->from)->where('subject', $request->subject)->where('user_id', $this->user->id)->first();
+        //$record_letter = LetterHistory::where('check_id', $request->check_id)->where('to', $request->to)->where('from', $request->from)->where('subject', $request->subject)->where('user_id', $this->user->id)->first();*/
 
-        if (!$record_letter)
-        {
+        /*if (!$record_letter)
+        {*/
             $record_letter = new LetterHistory;
             $record_letter->to = $request->to;
             $record_letter->from = $request->from;
@@ -987,9 +987,17 @@ class CheckController extends Controller
             $record_letter->check_id = $request->check_id;
             $record_letter->company_id = $this->company;
             $record_letter->user_id = $this->user->id;
+            $record_letter->detail = $check->detail;
+            $record_letter->start_recommendations = $check->start_recommendations;
+            $record_letter->end_recommendations = $check->end_recommendations;
+            $record_letter->indefinite_recommendations = $check->indefinite_recommendations;
+            $record_letter->origin_recommendations = $check->origin_recommendations;
+            $record_letter->disease_origin = $check->disease_origin;
+            $record_letter->Observations_recommendatios = $check->Observations_recommendatios;
+            $record_letter->position_functions_assigned_reassigned = $check->position_functions_assigned_reassigned;
             $record_letter->save();
-            $record_letter->user_name = $record_letter->user->name;
-        }
+            $record_letter->user_name = $this->user->name;
+        //}
 
         $data = [
             'to' => $request->to,
@@ -1399,27 +1407,28 @@ class CheckController extends Controller
         $record_letter = LetterHistory::find($id);
 
         $check = Check::selectRaw(
-           'sau_reinc_checks.detail as check_detail,
-            sau_reinc_checks.start_recommendations AS start_recommendations,
-            sau_reinc_checks.disease_origin AS disease_origin,
-            sau_reinc_checks.Observations_recommendatios AS Observations_recommendatios,
+           "IFNULL(sau_reinc_letter_recommendations_history.detail, sau_reinc_checks.detail) AS check_detail,
+            IFNULL(sau_reinc_letter_recommendations_history.start_recommendations, sau_reinc_checks.start_recommendations) AS start_recommendations,
+            IFNULL(sau_reinc_letter_recommendations_history.disease_origin, sau_reinc_checks.disease_origin) AS disease_origin,
+            IFNULL(sau_reinc_letter_recommendations_history.Observations_recommendatios, sau_reinc_checks.Observations_recommendatios) AS Observations_recommendatios,
             sau_employees.income_date AS income_date,
-            sau_reinc_checks.end_recommendations AS end_recommendations,
-            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
-            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+            IFNULL(sau_reinc_letter_recommendations_history.end_recommendations, sau_reinc_checks.end_recommendations) AS end_recommendations,
+            IFNULL(DATEDIFF(sau_reinc_letter_recommendations_history.end_recommendations, sau_reinc_letter_recommendations_history.start_recommendations), DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations)) AS time_different,
+            IFNULL(sau_reinc_letter_recommendations_history.indefinite_recommendations, sau_reinc_checks.indefinite_recommendations) AS indefinite_recommendations,
             sau_employees_regionals.name as regional,
             sau_employees_headquarters.name AS headquarter,
             sau_employees.name AS name,
             sau_employees.identification AS identification,
-            sau_reinc_checks.origin_recommendations as origin_recommendations,
+            sau_reinc_letter_recommendations_history.origin_recommendations as origin_recommendations,
             sau_employees_positions.name AS position,
-            sau_reinc_checks.position_functions_assigned_reassigned as position_functions_assigned_reassigned'
+            IFNULL(sau_reinc_letter_recommendations_history.position_functions_assigned_reassigned, sau_reinc_checks.position_functions_assigned_reassigned) AS position_functions_assigned_reassigned"
         )
+        ->join('sau_reinc_letter_recommendations_history', 'sau_reinc_letter_recommendations_history.check_id', 'sau_reinc_checks.id')
         ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', '=', 'sau_employees.employee_headquarter_id')
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
-        ->where('sau_reinc_checks.id', $record_letter->check_id)
+        ->where('sau_reinc_letter_recommendations_history.id', $record_letter->id)
         ->first();
 
         $now = Carbon::now();
