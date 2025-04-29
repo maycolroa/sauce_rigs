@@ -87,7 +87,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['reinc_checks_r'] && !auth.hasRole['Rol Visor Reincorporaciones'] && !auth.hasRole['Rol Visor Reincorporaciones Recomendaciones']">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(auth.can['reinc_checks_r'] && !auth.hasRole['Rol Visor Reincorporaciones'] && !auth.hasRole['Rol Visor Reincorporaciones Recomendaciones']) || (auth.can['reinc_checks_configuration'] && !auth.hasRole['Rol Visor Reincorporaciones'] && !auth.hasRole['Rol Visor Reincorporaciones Recomendaciones'])">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'reinstatements-configuration'}">
 									<i class="ion ion-md-settings display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
