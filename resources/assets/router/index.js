@@ -7,6 +7,7 @@ import IndexPage from '@/views/indexPage'
 import ChangePassword from '@/views/Administrative/users/changePassword'
 import DefaultModule from '@/views/Administrative/users/defaultModule'
 import TermsCondition from '@/views/Administrative/users/termsConditions'
+import CodeLogin from '@/views/Administrative/users/codeLogin'
 import Firm from '@/views/Administrative/users/firm'
 import UserActivity from '@/views/Administrative/userActivity/index'
 import Alerts from '@/utils/Alerts.js';
@@ -54,6 +55,11 @@ const router = new Router({
             name: 'termsconditions',
             path: 'termsconditions',
             component: TermsCondition
+          },          
+          {
+            name: 'codelogin',
+            path: 'codelogin',
+            component: CodeLogin
           },
           {
             name: 'firm',

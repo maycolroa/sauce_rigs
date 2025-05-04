@@ -23,6 +23,8 @@ use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Vuetable\VuetableColumnManager;
 use App\Facades\General\PermissionService;
 use App\Traits\ContractTrait;
+use App\Models\General\Team;
+use Carbon\Carbon;
 
 class ApplicationController extends Controller
 {
@@ -505,12 +507,12 @@ class ApplicationController extends Controller
         return $this->multiSelectFormat(collect($data));
     }
 
-    public function userActivity(Request $request)
+    public function userActivity($description)
     {
         $activity = new LogUserActivity;
         $activity->user_id = $this->user->id;
         $activity->company_id = $this->company;
-        $activity->description = $request->description;
+        $activity->description = $description;
         $activity->save();
     }
 
@@ -532,4 +534,99 @@ class ApplicationController extends Controller
     $user->terms_conditions = true;
     $user->update();
   }
+
+  private function defaultUrl($ajax = true)
+  {
+      Auth::user()->update([
+          'last_login_at' => Carbon::now()->toDateTimeString()
+      ]);
+
+      $this->userActivity('Inicio de Sesion por Código');
+
+      if (Auth::user()->default_module_url)
+      {
+          if ($ajax)
+              return $this->respondHttp200([
+                  'redirectTo' => strtolower(Auth::user()->default_module_url)
+              ]);
+          else
+              return redirect(strtolower(Auth::user()->default_module_url));
+      }
+
+      if ($ajax)
+          return $this->respondHttp200();
+      else
+          return redirect('/');
+  }
+
+  public function verifyCodeLogin(Request $request)
+  {
+      $user = Auth::user();
+
+      if ($request->code_validation)
+      {
+          if ($user->code_login == $request->code_validation)
+          {
+              $user->update([
+                  'validate_login' => true,
+                  'code_login' => NULL
+              ]);
+
+              if (!$user->terms_conditions)
+              {
+                  $this->userActivity('Inicio de Sesion por Código - Terminos y condiciones');
+                  
+                  return $this->respondHttp200([
+                      'redirectTo' => 'termsconditions'
+                  ]);
+              }
+              else
+              {                
+                $team = Team::where('name', Session::get('company_id'))->first()->id;
+
+                  if ($user->hasRole('Arrendatario', $team) || $user->hasRole('Contratista', $team))
+                  {
+                      $contract = $this->getContractUserLogin($user->id);
+                      Session::put('contract_id', $contract->id);
+
+                      if ($contract->active == 'SI')
+                      {
+                          if ($contract->completed_registration == 'NO')
+                          {
+                              $user->update([
+                                  'last_login_at' => Carbon::now()->toDateTimeString()
+                              ]);
+                              
+                              return $this->respondHttp200([
+                                  'redirectTo' => 'legalaspects/contracts/information'
+                              ]);
+                          }
+
+                          return $this->defaultUrl();
+                      }
+                      else 
+                      {
+                          $user->update([
+                              'validate_login' => false
+                          ]);
+
+                          Auth::logout();
+                          return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                      }
+                  }
+
+                  return $this->defaultUrl();
+              }
+          }
+          else if ($user->code_login != $request->code_validation)
+          {
+              return $this->respondWithError('Estimado Usuario el código ingresado no coincide con el generado para el inicio de la sesión, por favor verifique y vuelva a intentarlo');
+          }
+      }
+      else
+      {
+          return $this->respondWithError('Estimado Usuario debe ingresar el código enviado a su correo electronico para continuar con el inicio de sesión');
+      }
+  }
+
 }
