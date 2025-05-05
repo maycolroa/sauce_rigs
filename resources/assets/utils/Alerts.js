@@ -32,4 +32,14 @@ export default class Alerts {
       duration: 10000
     });
   }
+
+  static info(title= 'Información', message = 'A tener en consideración', time = 10000) {
+    Vue.notify({
+      group: 'app',
+      type: 'bg-info text-white',
+      title: title,
+      text: message,
+      duration: time
+    });
+  }
 }

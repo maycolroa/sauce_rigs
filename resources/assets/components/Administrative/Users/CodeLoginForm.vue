@@ -33,6 +33,7 @@
 <script>
 import Form from "@/utils/Form.js";
 import VueInput from "@/components/Inputs/VueInput.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -59,6 +60,10 @@ export default {
   },
   mounted() {
     setTimeout(() => {
+      Alerts.info('Información', 'Si no ha recibido el código de validación, por favor verifique su bandeja de entrada o la bandeja de correo no deseado. Si el código tarda mucho en llegar, presione el botón Mostrar Código el cual aparecera 90seg despues de la solicitud de inicio de sesion.', 15000);
+    }, 15000);
+
+    setTimeout(() => {
         this.getCode = true;
     }, 90000)
   },
@@ -73,7 +78,6 @@ export default {
         .catch(error => {});
     },
     showCode() {
-      console.log('aqui');  
       this.viewCode = true;
     } 
   }
