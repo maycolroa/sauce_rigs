@@ -507,12 +507,12 @@ class ApplicationController extends Controller
         return $this->multiSelectFormat(collect($data));
     }
 
-    public function userActivity($description)
+    public function userActivity($description = NULL)
     {
         $activity = new LogUserActivity;
         $activity->user_id = $this->user->id;
         $activity->company_id = $this->company;
-        $activity->description = $description;
+        $activity->description = $description ?? 'Acceso al sistema';
         $activity->save();
     }
 
