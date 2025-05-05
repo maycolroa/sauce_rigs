@@ -612,7 +612,7 @@ class ReportManagerLaw
             ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
             ->inInterestsCompany($this->interests,$this->filtersType['interests'])
             ->inState($this->states,$this->filtersType['states'])
-            ->betweenDate($this->dates ? $this->dates : [])
+            ->betweenDateRiskOpportunity($this->dates ? $this->dates : [])
             ->groupBy('category')
             ->orderBy('category')
             ->get();
