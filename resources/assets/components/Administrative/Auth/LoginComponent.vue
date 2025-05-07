@@ -13,6 +13,17 @@
 
       <hr class="border-dark mt-0 mb-4" style="padding-bottom: 30px;">
 
+      <b-modal ref="modalInfo" :hideFooter="true" class="modal-top" size="lg">
+        <div slot="modal-title">
+          Información<br>
+        </div>
+        <div class="text-center">
+          <i class="ion ion-md-person display-2 d-block text-info"></i>
+        </div>
+        <br><br>
+        <p class="text-center"><b>Pensando en tu seguridad, hemos implementado doble autentificación para el ingreso a SAUCE.
+           Este cambio lo podras ver reflejado a partir de la proxima semana 5/05/2025.</b></p>
+      </b-modal>
 
       <!-- Form -->
       <form class="my-3" :action="loginAction" @submit.prevent="submit">
@@ -99,6 +110,7 @@ export default {
     }
   },
   mounted(){
+    this.$refs.modalInfo.show()
     //this.$refs.inforUser.show()
   },
   methods: {
@@ -129,7 +141,7 @@ export default {
           });
       },
       hideModal() {
-        this.$refs.inforUser.hide()
+        this.$refs.modalInfo.hide()
       },
   },
 }

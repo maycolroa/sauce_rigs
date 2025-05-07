@@ -75,7 +75,7 @@ class AudiometryNotification extends Command
                 foreach ($data as $key => $value)
                 {
                     $recipients = User::select('sau_users.*')
-                                ->active();
+                                ->active(true, $key);
                                 //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
                     $recipients->company_scope = $key;

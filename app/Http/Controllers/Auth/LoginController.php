@@ -292,6 +292,11 @@ class LoginController extends Controller
                             Session::put('company_id', $val->pivot->company_id);
                             $team = Team::where('name', Session::get('company_id'))->first()->id;
 
+                            $user->update([
+                                'validate_login' => true,
+                                'code_login' => NULL
+                            ]);
+
                             if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                             {
                                 $contract = $this->getContractUserLogin(Auth::user()->id, $val->pivot->company_id);
@@ -309,7 +314,7 @@ class LoginController extends Controller
                                             'last_login_at' => Carbon::now()->toDateTimeString()
                                         ]);
 
-                                        $this->userActivity();
+                                        $this->userActivity('Inicio de sesión por token');
                                         
                                         return redirect('legalaspects/contracts/information');
                                     }

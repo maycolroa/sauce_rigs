@@ -427,4 +427,13 @@ class Law extends Model
             return $query;
         }
     }
+
+    public function scopeBetweenDateRiskOpportunity($query, $dates = [])
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_lm_law_risk_opportunity.updated_at', $dates);
+            return $query;
+        }
+    }
 }

@@ -139,7 +139,7 @@ class ConfigurationController extends ApiController
         $users = User::selectRaw("
                     sau_users.id as id,
                     sau_users.name as name
-                ")->active();
+                ")->active(true, $request->company_id);
         $users->company_scope = $request->company_id;
 
         if ($this->user->hasRole('Arrendatario', $team->id) || $this->user->hasRole('Contratista', $team->id))

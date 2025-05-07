@@ -58,14 +58,15 @@ Vue.use(VueRouterMiddleware, {
   middlewares: {
     // Convert to camelcase to dash string ex. requireAuth saves require-auth
     requireAuth(params, to, from, next) {
-      if (to.name != 'codelogin' && !auth.user_auth.validate_login)
+      if ( to.name != 'codelogin' && to.name != 'termsconditions' && !auth.user_auth.validate_login)
         next({ name: 'codelogin' });
-      else {
-        if (to.name != 'termsconditions' && !auth.terms)
+      else
+      {
+        if (to.name != 'codelogin' && to.name != 'termsconditions' && !auth.terms)
           next({ name: 'termsconditions' });
         else
           next();
-      }        
+      }
     },
     checkPermission(params, to, from, next) {
       let valid = false;

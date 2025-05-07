@@ -271,7 +271,7 @@ class ContractLesseeController extends Controller
 
             if (!$user)
             {
-                $document_user = User::where('document', $request->document)->active()->first();
+                $document_user = User::where('document', $request->document)->activeApi()->first();
 
                 if(!$document_user)
                 {

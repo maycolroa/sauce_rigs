@@ -669,28 +669,11 @@ class FileUploadController extends Controller
                     
                     if ($count_files > 0 && $count_aprobe >= $count_files)
                         $count++;
-                    /*else if (!$pendiente && !$rejected && !$expired)
+                    else if (!$pendiente && !$rejected && !$expired)
                         $count++;
                     else if ($count_files < 1)
-                        $pendiente = true;*/
+                        $pendiente = true;
                 }
-                else
-                  array_push($files_states, 'PENDIENTE');
-
-                /*if ($rejected)
-                {
-                  $employee->update(
-                    [ 'state' => 'Rechazado']
-                  );
-                  break;
-                }
-                else if ($pendiente || $expired)
-                {
-                    $employee->update(
-                        [ 'state' => 'Pendiente']
-                    );
-                    break;
-                }*/
             }
           }
 
