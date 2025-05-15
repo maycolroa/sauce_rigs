@@ -385,7 +385,10 @@ class ContractController extends ApiController
     public function getContract(Request $request)
     {        
       try {
-        $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->whereIn('company_id', [159, 722])->first();
+        if ($request->has('company_id'))
+          $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->where('company_id', $request->company_id)->first();
+        else
+          $contract = ContractLesseeInformation::withoutGlobalScopes()->where('nit', $request->nit)->whereIn('company_id', [159, 722])->first();
 
         if (!$contract)
           return $this->respondWithError('Contratista no encontrado');
@@ -424,12 +427,22 @@ class ContractController extends ApiController
         return $this->respondWithError('Debe ingresar la identificación');
 
       try {
-
-        $employee = ContractEmployee::withoutGlobalScopes()
-        ->where('identification', $request->identification)
-        ->whereIn('company_id', [159, 722])
-        ->orderBy('id', 'DESC')
-        ->first();
+        if ($request->has('company_id'))
+        {
+          $employee = ContractEmployee::withoutGlobalScopes()
+          ->where('identification', $request->identification)
+          ->where('company_id', $request->company_id)
+          ->orderBy('id', 'DESC')
+          ->first();
+        }
+        else
+        {
+          $employee = ContractEmployee::withoutGlobalScopes()
+          ->where('identification', $request->identification)
+          ->whereIn('company_id', [159, 722])
+          ->orderBy('id', 'DESC')
+          ->first();
+        }
 
         if (!$employee)
           return $this->respondWithError('La identificación no existe en nuestro sistema');
