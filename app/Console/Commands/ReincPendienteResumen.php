@@ -82,7 +82,8 @@ class ReincPendienteResumen extends Command
 
             $users->map(function($user) use ($company, $now)
             {
-                $headquarters = User::find($user->id)->headquarters()->pluck('id')->toArray();
+                $headquarters = $this->getHeadquarters($user, $company);//User::find($user->id)->headquarters()->pluck('id')->toArray();
+                \Log::info($headquarters);
 
                 $data = Check::select(
                     'sau_reinc_checks.company_id',
@@ -181,6 +182,32 @@ class ReincPendienteResumen extends Command
                     }     
                 });
         }
+    }
+
+    public function getHeadquarters($user, $company_id)
+    {
+        try
+        {
+            $headquarters_users = DB::table('sau_users')
+            ->select('sau_employees_headquarters.*')
+            ->join('sau_reinc_user_headquarter', 'sau_users.id', 'sau_reinc_user_headquarter.user_id')
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_reinc_user_headquarter.employee_headquarter_id')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where('sau_reinc_user_headquarter.user_id', $user->id)
+            ->where('sau_employees_regionals.company_id', $company_id)
+            ->pluck('sau_employees_headquarters.id')
+            ->toArray();
+
+            if (!$headquarters_users)
+                $headquarters_users = [];
+
+            return $headquarters_users;
+                
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
+        }
+
     }
 
     public static function getSqlWithBinding(Builder $query): string 

@@ -53,6 +53,7 @@ class NotifyReportsOpenConfig extends Command
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->withoutGlobalScopes()
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+           // ->where('sau_licenses.company_id', 1)
             ->where('sau_license_module.module_id', '21');
 
         $companies = $companies->pluck('sau_licenses.company_id');
@@ -81,7 +82,6 @@ class NotifyReportsOpenConfig extends Command
                 'sau_employees.name AS name',
                 'sau_employees.employee_headquarter_id AS sede',
                 'sau_employees_headquarters.name AS sede_name',
-                //DB::raw("IFNULL((SELECT DATE_FORMAT(MAX(rt.created_at), '%Y-%m-%d') FROM sau_reinc_tracings rt WHERE rt.check_id = sau_reinc_checks.id), DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d')) AS created_at")
                 DB::raw("DATE_FORMAT(sau_reinc_checks.monitoring_recommendations, '%Y-%m-%d') as created_at")
             )
             ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
@@ -89,6 +89,7 @@ class NotifyReportsOpenConfig extends Command
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
             ->whereRaw("CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -{$configDay} DAY)")
+            //->where('sau_reinc_checks.company_id', 1)
             ->isOpen()
             ->groupBy([
                 'sau_reinc_checks.company_id',
@@ -113,7 +114,7 @@ class NotifyReportsOpenConfig extends Command
 
                     if ($user)
                     {
-                        $headquarters = $this->getHeadquarters($user);
+                        $headquarters = $this->getHeadquarters($user, $company);
 
                         foreach ($reports as $key => $check) 
                         { 
@@ -121,74 +122,32 @@ class NotifyReportsOpenConfig extends Command
                             {
                                 if (in_array($check->sede,$headquarters))
                                 {
-                                    /*$now = Carbon::now();
+                                    $content = [
+                                        'Empleado' => $check->name,
+                                        'Tipo de Evento' => $check->disease_origin,
+                                        'Codigo CIE' => $check->code,
+                                        'Descripción CIE' => $check->dx,
+                                        'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
+                                        'Sede' => $check->sede_name,
+                                        'Estado' => $check->state
+                                    ];
 
-                                    if ($check->created_at)
-                                    {
-                                        /*$second_fecha = Carbon::createFromFormat('D M d Y', $check->created_at);
-
-                                        $definitive = $now->greaterThan($second_fecha);
-
-                                        if ($definitive)
-                                        {
-                                            $diff = $now->diffInDays($check->created_at);
-
-                                            if ($diff >= $configDay)
-                                            {*/
-                                                $content = [
-                                                    'Empleado' => $check->name,
-                                                    'Tipo de Evento' => $check->disease_origin,
-                                                    'Codigo CIE' => $check->code,
-                                                    'Descripción CIE' => $check->dx,
-                                                    'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                                    'Sede' => $check->sede_name,
-                                                    'Estado' => $check->state
-                                                ];
-
-                                                array_push($expired_reports, $content);
-                                            /*}
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }*/
-                                    /*}
-                                    else
-                                        continue;*/
+                                    array_push($expired_reports, $content);
                                 }
                             }
                             else
-                            {
-                                /*$now = Carbon::now();
+                            {                                
+                                $content = [
+                                    'Empleado' => $check->name,
+                                    'Tipo de Evento' => $check->disease_origin,
+                                    'Codigo CIE' => $check->code,
+                                    'Descripción CIE' => $check->dx,
+                                    'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
+                                    'Sede' => $check->sede_name,
+                                    'Estado' => $check->state
+                                ];
 
-                                if ($check->created_at)
-                                {
-                                    /*$second_fecha = Carbon::createFromFormat('D M d Y', $check->created_at);
-
-                                    $definitive = $now->greaterThan($second_fecha);
-
-                                    if ($definitive)
-                                    {
-                                        $diff = $now->diffInDays($check->created_at);
-
-                                        if ($diff >= $configDay)
-                                        {*/
-                                            $content = [
-                                                'Empleado' => $check->name,
-                                                'Tipo de Evento' => $check->disease_origin,
-                                                'Codigo CIE' => $check->code,
-                                                'Descripción CIE' => $check->dx,
-                                                'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                                'Sede' => $check->sede_name,
-                                                'Estado' => $check->state
-                                            ];
-
-                                            array_push($expired_reports, $content);
-                                        //}
-                                    //}
-                                /*}
-                                else
-                                    continue;*/
+                                array_push($expired_reports, $content);
                             }
                         }
 
@@ -216,15 +175,21 @@ class NotifyReportsOpenConfig extends Command
         }
     }
 
-    public function getHeadquarters($user)
-    {        
+    public function getHeadquarters($user, $company_id)
+    {
         try
         {
-            $headquarters_users = $user->headquarters;
+            $headquarters_users = DB::table('sau_users')
+            ->select('sau_employees_headquarters.*')
+            ->join('sau_reinc_user_headquarter', 'sau_users.id', 'sau_reinc_user_headquarter.user_id')
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_reinc_user_headquarter.employee_headquarter_id')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where('sau_reinc_user_headquarter.user_id', $user->user_id)
+            ->where('sau_employees_regionals.company_id', $company_id)
+            ->pluck('sau_employees_headquarters.id')
+            ->toArray();
 
-            if ($headquarters_users)
-                $headquarters_users = $user->headquarters()->pluck('id')->toArray();
-            else
+            if (!$headquarters_users)
                 $headquarters_users = [];
 
             return $headquarters_users;
