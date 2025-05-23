@@ -12,9 +12,12 @@
 */
 Auth::routes();
 
-Route::get('export/{url}',function($url){
+/*Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
-});
+});*/
+
+
+Route::get('export/{url}', 'Controller@downloadFileGeneral');
 
 //Generar contraseña
 Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@generatePassword');
