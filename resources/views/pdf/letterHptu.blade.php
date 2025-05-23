@@ -51,7 +51,7 @@
         @endif
         
     @endif
-    <p>Nota División Medica: En el momento de aplicar este concepto revise si debe actualizar privilegios o credencialización con Desarrollo Humano.</p>
+    <p><b>NOTA EXCLUSIVA para la Dirección Médica:</b> En el momento de aplicar este concepto revise si debe actualizar o modificar privilegios o credencialización  con Desarrollo Humano</p>
     
     <br/><br/><br/>
     <p><b>FIRMA MEDICO LABORAL</b></p>
