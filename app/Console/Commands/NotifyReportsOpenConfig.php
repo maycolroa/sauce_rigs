@@ -198,7 +198,6 @@ class NotifyReportsOpenConfig extends Command
             \Log::info($e->getMessage());
             return [];
         }
-
     }
 
     public function getConfig($company_id)

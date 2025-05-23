@@ -82,8 +82,7 @@ class ReincPendienteResumen extends Command
 
             $users->map(function($user) use ($company, $now)
             {
-                $headquarters = $this->getHeadquarters($user, $company);//User::find($user->id)->headquarters()->pluck('id')->toArray();
-                \Log::info($headquarters);
+                $headquarters = $this->getHeadquarters($user, $company);
 
                 $data = Check::select(
                     'sau_reinc_checks.company_id',
@@ -207,7 +206,6 @@ class ReincPendienteResumen extends Command
             \Log::info($e->getMessage());
             return [];
         }
-
     }
 
     public static function getSqlWithBinding(Builder $query): string 

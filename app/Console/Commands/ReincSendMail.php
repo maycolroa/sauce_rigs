@@ -61,7 +61,6 @@ class ReincSendMail extends Command
 
             $users = User::select('sau_users.*')
                             ->active(true, $company);
-                            //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
             $users->company_scope = $company;
             $users = $users->get();
@@ -72,7 +71,7 @@ class ReincSendMail extends Command
 
             $users->map(function($user) use ($company)
             {
-                $headquarters = User::find($user->id)->headquarters()->pluck('id')->toArray();
+                $headquarters = $this->getHeadquarters($user, $company);
 
                 $data = Check::select(
                     'sau_reinc_checks.company_id',
@@ -144,9 +143,6 @@ class ReincSendMail extends Command
                             ]);
                         }
 
-                        /*if ($user->email == 'santiago.cuartas@floreseltrigal.com' || $user->email == 'laura.bajonero@floresdelhato.com')
-                        {*/
-
                             NotificationMail::
                                 subject('Reincorporaciones: Eventos pendientes')
                                 ->view('notification')
@@ -173,5 +169,30 @@ class ReincSendMail extends Command
         }
 
         return $sql;
+    }
+
+    public function getHeadquarters($user, $company_id)
+    {
+        try
+        {
+            $headquarters_users = DB::table('sau_users')
+            ->select('sau_employees_headquarters.*')
+            ->join('sau_reinc_user_headquarter', 'sau_users.id', 'sau_reinc_user_headquarter.user_id')
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_reinc_user_headquarter.employee_headquarter_id')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where('sau_reinc_user_headquarter.user_id', $user->id)
+            ->where('sau_employees_regionals.company_id', $company_id)
+            ->pluck('sau_employees_headquarters.id')
+            ->toArray();
+
+            if (!$headquarters_users)
+                $headquarters_users = [];
+
+            return $headquarters_users;
+                
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
+        }
     }
 }
