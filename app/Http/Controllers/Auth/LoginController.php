@@ -232,6 +232,9 @@ class LoginController extends Controller
 
     public function userActivity($description = NULL)
     {
+        if (!Session::get('company_id'))
+        return;
+      
         $activity = new LogUserActivity;
         $activity->user_id = Auth::user()->id;
         $activity->company_id = Session::get('company_id');
