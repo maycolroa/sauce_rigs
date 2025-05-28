@@ -48,7 +48,6 @@ class NotifyUploadDocumentsContracts extends Command
     public function handle()
     {
         $date = Carbon::now()->subDay()->format('Y-m-d');
-        $date = '2024-10-13';
 
         $companies = License::selectRaw('DISTINCT company_id')
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
