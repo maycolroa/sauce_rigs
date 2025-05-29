@@ -53,7 +53,7 @@ class NotifyReportsOpenConfig extends Command
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->withoutGlobalScopes()
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-           // ->where('sau_licenses.company_id', 1)
+            ->where('sau_licenses.company_id', 130)
             ->where('sau_license_module.module_id', '21');
 
         $companies = $companies->pluck('sau_licenses.company_id');
@@ -89,7 +89,7 @@ class NotifyReportsOpenConfig extends Command
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
             ->whereRaw("CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -{$configDay} DAY)")
-            //->where('sau_reinc_checks.company_id', 1)
+            ->where('sau_reinc_checks.company_id', 130)
             ->isOpen()
             ->groupBy([
                 'sau_reinc_checks.company_id',
