@@ -45,13 +45,17 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por médico de la empresa y son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}}.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por médico de la empresa y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}}.</p>
         @endif
         
     @endif
-    <br/><br/><br/><br/><br/><br/><br/>
+    <p><b>NOTA EXCLUSIVA para la Dirección Médica:</b> En el momento de aplicar este concepto revise si debe actualizar o modificar privilegios o credencialización  con Desarrollo Humano</p>
+    
+    <br/><br/><br/>
+    <p><b>FIRMA MEDICO LABORAL</b></p>
+    <br/>
     @if($firm_user)
     <center>
         <img src="{{$firm_user}}" width="150px" height="75px"/>
