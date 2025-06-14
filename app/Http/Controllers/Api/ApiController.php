@@ -16,4 +16,11 @@ class ApiController extends Controller
     {
         $this->user = Auth::guard('api')->user();
     }
+
+    public function test()
+    {
+        return $this->respondHttp200([
+            'data' => 'Prueba de API',
+        ]);  
+    }
 }

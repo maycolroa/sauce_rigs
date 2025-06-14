@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Http\Controllers\IndustrialSecure\RoadSafety\Inspections;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

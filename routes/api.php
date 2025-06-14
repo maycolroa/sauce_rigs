@@ -102,3 +102,4 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 });
 
 Route::post('amazon-sns/notifications', 'Api\AmazonController@handleBounceOrComplaint');
+Route::get('apiTest', 'Api\ApiController@test');

@@ -77,7 +77,7 @@ RUN mkdir -p /var/www/storage/framework/cache/data \
 # Expose port 80 and start PHP server
 EXPOSE 80/tcp
 
-#CMD php artisan serve --host=0.0.0.0 --port=80
+CMD php artisan serve --host=0.0.0.0 --port=80
 
 # Mantener el contenedor en ejecución
-CMD ["tail", "-f", "/dev/null"]
+#CMD ["tail", "-f", "/dev/null"]

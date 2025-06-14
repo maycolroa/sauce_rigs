@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Http\Requests\IndustrialSecure\RoadSafety\Inspections;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;

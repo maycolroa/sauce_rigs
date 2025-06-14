@@ -1,24 +1,13 @@
 <?php return array (
   'barryvdh/laravel-dompdf' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
     ),
-  ),
-  'chumper/zipper' => 
-  array (
     'providers' => 
     array (
-      0 => 'Chumper\\Zipper\\ZipperServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Zipper' => 'Chumper\\Zipper\\Zipper',
+      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
   'daltcore/lara-pdf-merger' => 
@@ -32,6 +21,17 @@
       'PdfMerger' => 'LynX39\\LaraPdfMerger\\Facades\\PdfMerger',
     ),
   ),
+  'facade/ignition' => 
+  array (
+    'aliases' => 
+    array (
+      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
+    ),
+    'providers' => 
+    array (
+      0 => 'Facade\\Ignition\\IgnitionServiceProvider',
+    ),
+  ),
   'fideloper/proxy' => 
   array (
     'providers' => 
@@ -39,22 +39,15 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
-  'jdavidbakr/mail-tracker' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'jdavidbakr\\MailTracker\\MailTrackerServiceProvider',
-    ),
-  ),
   'laravel/horizon' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
-    ),
     'aliases' => 
     array (
       'Horizon' => 'Laravel\\Horizon\\Horizon',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
     ),
   ),
   'laravel/telescope' => 
@@ -69,6 +62,13 @@
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
+  'laravel/ui' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Ui\\UiServiceProvider',
     ),
   ),
   'maatwebsite/excel' => 
@@ -98,20 +98,13 @@
   ),
   'santigarcor/laratrust' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laratrust\\LaratrustServiceProvider',
-    ),
     'aliases' => 
     array (
       'Laratrust' => 'Laratrust\\LaratrustFacade',
     ),
-  ),
-  'spatie/laravel-cors' => 
-  array (
     'providers' => 
     array (
-      0 => 'Spatie\\Cors\\CorsServiceProvider',
+      0 => 'Laratrust\\LaratrustServiceProvider',
     ),
   ),
 );
