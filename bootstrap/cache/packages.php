@@ -1,13 +1,13 @@
 <?php return array (
   'barryvdh/laravel-dompdf' => 
   array (
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade',
-    ),
     'providers' => 
     array (
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'PDF' => 'Barryvdh\\DomPDF\\Facade',
     ),
   ),
   'chumper/zipper' => 
@@ -48,13 +48,13 @@
   ),
   'laravel/horizon' => 
   array (
-    'aliases' => 
-    array (
-      'Horizon' => 'Laravel\\Horizon\\Horizon',
-    ),
     'providers' => 
     array (
       0 => 'Laravel\\Horizon\\HorizonServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Horizon' => 'Laravel\\Horizon\\Horizon',
     ),
   ),
   'laravel/telescope' => 
@@ -82,13 +82,6 @@
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
-  'matthewbdaly/laravel-azure-storage' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Matthewbdaly\\LaravelAzureStorage\\AzureStorageServiceProvider',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
@@ -105,13 +98,13 @@
   ),
   'santigarcor/laratrust' => 
   array (
-    'aliases' => 
-    array (
-      'Laratrust' => 'Laratrust\\LaratrustFacade',
-    ),
     'providers' => 
     array (
       0 => 'Laratrust\\LaratrustServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Laratrust' => 'Laratrust\\LaratrustFacade',
     ),
   ),
   'spatie/laravel-cors' => 
