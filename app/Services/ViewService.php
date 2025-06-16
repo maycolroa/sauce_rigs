@@ -8,6 +8,7 @@ use App\Facades\Administrative\KeywordManager;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Session;
+use DB;
 
 class ViewService
 {
@@ -145,6 +146,20 @@ class ViewService
             return $configuration->value;
     }
 
+    public function isContratante()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('Arrendatario', Session::get('company_id')) || $user->hasRole('Contratista', Session::get('company_id')))
+        {
+            $rolesOld = DB::table('sau_role_user_multilogin')->where('user_id', $user->id)->count();
+
+            return $rolesOld > 0;
+        }
+
+        return true;
+    }
+
     public function allAuthData()
     {
         return [
@@ -160,7 +175,8 @@ class ViewService
             'terms' => $this->getTerms(),
             'user_auth' => Auth::user(),
             'company_id' => Session::get('company_id'),
-            'filter_inspections' => $this->getFilterInspection()
+            'filter_inspections' => $this->getFilterInspection(),
+            'isContratante' => $this->isContratante()
         ];
     }
 }

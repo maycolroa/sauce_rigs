@@ -15,7 +15,7 @@ class Role extends LaratrustRole
     protected $table = 'sau_roles';
 
     protected $fillable = [
-        'name', 'description', 'module_id'
+        'name', 'display_name', 'description', 'company_id', 'type_role', 'module_id'
     ];
 
     public function multiselect(){

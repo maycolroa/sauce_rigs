@@ -32,6 +32,17 @@
 
       <b-navbar-nav class="align-items-lg-center ml-auto">
 
+        <label class="nav-item navbar-text navbar-search-box p-0 active" style="cursor: pointer;" @click="returnContratante" title="Ingresar como contratante"
+        v-if=" (auth.hasRole['Contratista'] || auth.hasRole['Arrendatario']) && auth.isContratante">
+          <div class="media-body line-height-condenced ml-3">
+            <div class="text-dark">
+              <span class="d-inline-flex flex-lg-row-reverse align-items-center align-middle">
+                <i class="fas fa-random navbar-icon align-middle"></i>
+              </span>
+            </div>
+          </div>
+        </label>
+
         <label class="nav-item navbar-text navbar-search-box p-0 active">
           <div class="media-body line-height-condenced ml-3">
             <div class="text-dark">{{ auth.user_auth.email }}</div>
@@ -45,7 +56,7 @@
         </label>
 
         <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
-            v-if="Object.keys(company.data).length > 1">
+            v-if="Object.keys(company.data).length > 1 && (!auth.hasRole['Contratista'] && !auth.hasRole['Arrendatario'])">
           <template slot="button-content">
             <i class="fas fa-sync navbar-icon align-middle"></i>
             <span class="d-lg-none align-middle">&nbsp; </span>
@@ -110,6 +121,39 @@
             <template v-for="(item, index) in contractData">
               <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
                  :key="index" v-if="item.id != contract.selected && showItemContract(item.name)" @click="changeContract(item.id)">
+                <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
+                <div class="media-body line-height-condenced ml-3">
+                  <div class="text-dark">{{ item.name }}</div>
+                </div>
+              </b-list-group-item>
+            </template>
+          </b-list-group>
+        </b-nav-item-dropdown>
+
+        <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
+            v-if="Object.keys(contractMultilogin.data).length > 1" title="Ingresar como contratista">
+          <template slot="button-content">
+            <i class="fas fa-random navbar-icon align-middle"></i>
+            <span class="d-lg-none align-middle">&nbsp; </span>
+          </template>
+
+          <b-list-group-item class="media d-flex align-items-center" style="min-height: 40px;">
+            <div class="media-body line-height-condenced ml-3">
+              <div class="text-dark">
+                <b-input 
+                  placeholder="Buscar..." 
+                  type="text"
+                  autocomplete="off"
+                  v-model="searchContractMultilogin"
+                  />
+                </div>
+            </div>
+          </b-list-group-item>
+
+          <b-list-group flush style="max-height: 300px; overflow-y: scroll;">
+            <template v-for="(item, index) in contractMultiloginData">
+              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
+                 :key="index" v-if="showItemContractMultilogin(item.name)" @click="changeContractMultilogin(item.id)">
                 <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
                 <div class="media-body line-height-condenced ml-3">
                   <div class="text-dark">{{ item.name }}</div>
@@ -218,7 +262,12 @@ export default {
           selected: null,
           data: []
         },
-        searchContract: ''
+        contractMultilogin: {
+          selected: null,
+          data: []
+        },
+        searchContract: '',
+        searchContractMultilogin: ''
       }
     },
   methods: {
@@ -265,6 +314,17 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     },
+    getContractsMultilogin () {
+      axios
+        .get('/getContractsMultilogin')
+        .then(response => {
+            this.contractMultilogin.selected = response.data.selected
+            this.contractMultilogin.data = response.data.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
     changeCompany(company) {
       axios
         .post('/changeCompany', {
@@ -293,6 +353,28 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     }, 
+    changeContractMultilogin(contract) {
+      axios
+        .post('/changeContractMultilogin', {
+            contract_id: contract
+        })
+        .then(response => {
+            window.location = "/"
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    }, 
+    returnContratante() {
+      axios
+        .post('/returnContratante')
+        .then(response => {
+            window.location = "/"
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
     toggleApp(description) {
       document.getElementById('navbar-application-sauce__BV_button_').click()
       this.userActivity(description)
@@ -312,11 +394,22 @@ export default {
       }
       else
           return true
+    },
+    showItemContractMultilogin(label) {
+      if (this.searchContractMultilogin)
+      {
+          return label.toLowerCase().includes(this.searchContractMultilogin.toLowerCase())
+      }
+      else
+          return true
     }
   },
   created () {
     this.companies()
     this.getContract()
+
+    if (auth.can['contracts_multilogin'])
+      this.getContractsMultilogin()
   },
   computed: {
       apps: function () {
@@ -359,6 +452,17 @@ export default {
 
           data.sort((a, b) => (a.name > b.name) ? 1 : -1)
         }
+
+        return data;
+      },
+      contractMultiloginData() {
+        let data = [];
+
+        _.forIn(this.contractMultilogin.data, (value, key) => {
+            data.push(value);
+        })
+
+        data.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
         return data;
       }

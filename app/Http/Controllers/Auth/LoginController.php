@@ -94,6 +94,58 @@ class LoginController extends Controller
                             Session::put('company_id', $val->pivot->company_id);
                             $team = Team::where('name', Session::get('company_id'))->first()->id;
 
+                            ////////////////////////// Logica de multilogin de contratistas y arrendatarios
+
+                            if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                            {
+                                $contracts = DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->count();
+
+                                if ($contracts > 0)
+                                {
+                                    try
+                                    {
+                                        DB::beginTransaction();
+
+                                        DB::table('sau_user_information_contract_lessee')->where('user_id', Auth::user()->id)->delete();
+                                        DB::table('sau_role_user')->where('user_id', Auth::user()->id)->delete();
+
+                                        $contracts = DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', Auth::user()->id)->get();
+          
+                                        $contractsInsert = [];
+
+                                        foreach ($contracts as $row)
+                                        {
+                                            $contractsInsert[] = [
+                                                'user_id' => $row->user_id,
+                                                'information_id' => $row->information_id
+                                            ];
+                                        }
+
+                                        DB::table('sau_user_information_contract_lessee')->insert($contractsInsert);
+
+                                        $roles = DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->get();
+
+                                        foreach ($roles as $role)
+                                        {
+                                            Auth::user()->attachRole($role->role_id, $role->team_id);
+                                        }
+
+                                        DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', Auth::user()->id)->delete();
+                                        DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->delete();
+
+                                        DB::commit();
+
+                                    } catch (\Exception $e) {
+                                        DB::rollback();
+                                        \Log::info($e->getMessage());
+
+                                        return $this->respondHttp500();
+                                    }
+                                }
+                            }
+
+                            ///////////////////////////////////////////////////////////////////////////////
+
                             if (!$user->code_login)
                             {
                                 $code = $this->getCodeLogin(6);

@@ -52,8 +52,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('appWithModules', 'General\ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'General\ApplicationController@getCompanies');
     Route::get('getContract', 'General\ApplicationController@getContract');
+    Route::get('getContractsMultilogin', 'General\ApplicationController@getContractsMultilogin');
     Route::post('changeCompany', 'General\ApplicationController@changeCompany');
     Route::post('changeContract', 'General\ApplicationController@changeContract');
+    Route::post('changeContractMultilogin', 'General\ApplicationController@changeContractMultilogin');
+    Route::post('returnContratante', 'General\ApplicationController@returnContratante');
     Route::post('vuetableCustomColumns', 'General\ApplicationController@vuetableCustomColumns');
     Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
     Route::post('setStatePageVuetable', 'General\ApplicationController@setStatePageVuetable');
