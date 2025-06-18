@@ -13,6 +13,11 @@ import Popper from 'popper.js'
 import BlockUI from 'vue-blockui';
 import VueSignaturePad from 'vue-signature-pad';
 
+import VueTableComponent from './components/VueTableComponent.vue';
+import headerModule from './views/headerModule.vue';
+import LoadingBlock from './components/General/LoadingBlock.vue';
+
+
 /*import FlowyPlugin from "@hipsjs/flowy-vue";
 import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";*/
 
@@ -136,9 +141,9 @@ Vue.mixin({
   }
 })
 
-Vue.component('vue-table', require('./components/VueTableComponent.vue'));
-Vue.component('header-module', require('./views/headerModule.vue'));
-Vue.component('loading-block', require('./components/General/LoadingBlock.vue'));
+Vue.component('vue-table', VueTableComponent);
+Vue.component('header-module', headerModule);
+Vue.component('loading-block', LoadingBlock);
 
 /* eslint-disable no-new */
 new Vue({

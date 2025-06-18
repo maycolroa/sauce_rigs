@@ -8,6 +8,9 @@ import Popper from 'popper.js'
 
 import Notifications from 'vue-notification'
 import VueSignaturePad from 'vue-signature-pad';
+
+import headerModule from './views/headerModule.vue';
+
 /*import FlowyPlugin from "@hipsjs/flowy-vue";
 import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";*/
 
@@ -48,7 +51,7 @@ Vue.mixin({
   data: globals
 });
 
-Vue.component('header-module', require('./views/headerModule.vue'));
+Vue.component('header-module', headerModule);
 
 import Login from './components/Administrative/Auth/LoginComponent.vue';
 import Footerlogin from './components/LayoutFooter.vue';
