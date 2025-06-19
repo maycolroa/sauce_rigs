@@ -105,13 +105,13 @@ $nouislider-tick-label-font-size: .625rem !default;
 }
 
 .noUi-horizontal .noUi-handle {
-  top: -(($nouislider-handle-height - $nouislider-bar-height) / 2);
-  left: -($nouislider-handle-width / 2);
+  top: -(($nouislider-handle-height - $nouislider-bar-height) * 0.5);
+  left: -($nouislider-handle-width * 0.5);
   width: $nouislider-handle-width;
   height: $nouislider-handle-height;
 
   html:not([dir=rtl]) & {
-    right: -($nouislider-handle-width / 2);
+    right: -($nouislider-handle-width * 0.5);
     left: auto;
   }
 }
@@ -121,8 +121,8 @@ $nouislider-tick-label-font-size: .625rem !default;
 }
 
 .noUi-vertical .noUi-handle {
-  top: -($nouislider-handle-width / 2);
-  left: -(($nouislider-handle-height - $nouislider-bar-height) / 2);
+  top: -($nouislider-handle-width * 0.5);
+  left: -(($nouislider-handle-height - $nouislider-bar-height) * 0.5);
   width: $nouislider-handle-height;
   height: $nouislider-handle-width;
 }
@@ -208,7 +208,7 @@ $nouislider-tick-label-font-size: .625rem !default;
 .noUi-pips-horizontal {
   top: 100%;
   left: 0;
-  padding: (($nouislider-handle-height - $nouislider-bar-height) / 2 + .375rem) 0 0 0;
+  padding: (($nouislider-handle-height - $nouislider-bar-height) * 0.5 + .375rem) 0 0 0;
   width: 100%;
   height: 5rem;
 }
@@ -234,7 +234,7 @@ $nouislider-tick-label-font-size: .625rem !default;
 .noUi-pips-vertical {
   top: 0;
   left: 100%;
-  padding: 0 0 0 (($nouislider-handle-height - $nouislider-bar-height) / 2 + .375rem);
+  padding: 0 0 0 (($nouislider-handle-height - $nouislider-bar-height) * 0.5 + .375rem);
   height: 100%;
 
   [dir=rtl] & {

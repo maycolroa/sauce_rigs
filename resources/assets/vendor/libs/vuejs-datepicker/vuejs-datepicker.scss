@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import '~@/vendor/styles/_custom-variables/libs';
 
 $vuejs-datepicker-calendar-btn-width: 36px !default;
@@ -5,7 +7,7 @@ $vuejs-datepicker-clear-btn-width: 36px !default;
 $vuejs-datepicker-nav-arrow-size: 8px !default;
 $vuejs-datepicker-width: 250px !default;
 $vuejs-datepicker-padding: 4px !default;
-$vuejs-datepicker-cell-size: floor(($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2)) / 7) !default;
+$vuejs-datepicker-cell-size: floor(math.div($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2), 7)) !default;
 
 .vdp-datepicker {
   [dir=rtl] & {
@@ -110,10 +112,10 @@ $vuejs-datepicker-cell-size: floor(($vuejs-datepicker-width - ($vuejs-datepicker
     background-clip: padding-box;
 
     .cell {
-      width: floor(($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2)) / 7);
-      height: floor(($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2)) / 7);
+      width: floor(math.div($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2), 7));
+      height: floor(math.div($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2), 7));
       border: 0 !important;
-      line-height: floor(($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2)) / 7);
+      line-height: floor(math.div($vuejs-datepicker-width - ($vuejs-datepicker-padding * 2), 7));
     }
 
     .cell.day.blank {

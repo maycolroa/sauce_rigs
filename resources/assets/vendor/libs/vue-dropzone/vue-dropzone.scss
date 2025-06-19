@@ -157,7 +157,7 @@ $dropzone-icon-block-size: 3.75rem !default;
   right: 1.25rem;
   left: 1.25rem;
   z-index: 30;
-  margin-top: -$dropzone-progress-height / 2;
+  margin-top: -$dropzone-progress-height * 0.5;
 }
 
 .dz-complete .progress {
@@ -189,8 +189,8 @@ $dropzone-icon-block-size: 3.75rem !default;
   top: 50%;
   left: 50%;
   display: none;
-  margin-top: -$dropzone-icon-block-size / 2;
-  margin-left: -$dropzone-icon-block-size / 2;
+  margin-top: -$dropzone-icon-block-size * 0.5;
+  margin-left: -$dropzone-icon-block-size * 0.5;
   width: $dropzone-icon-block-size;
   height: $dropzone-icon-block-size;
   border-radius: 50%;

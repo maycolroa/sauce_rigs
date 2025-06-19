@@ -89,7 +89,7 @@ $vue-form-wizard-spacer: 2rem !default;
   position: absolute;
   top: 50%;
   left: 0;
-  margin-top: -$vue-form-wizard-icon-size / 2;
+  margin-top: -$vue-form-wizard-icon-size * 0.5;
   width: $vue-form-wizard-icon-size;
   height: $vue-form-wizard-icon-size;
   outline: 0;

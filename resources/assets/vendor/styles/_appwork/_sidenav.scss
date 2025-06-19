@@ -584,7 +584,7 @@
       bottom: $sidenav-vertical-link-padding-y;
       left: -1 * ($sidenav-collapsed-width * .75);
       display: block;
-      width: $sidenav-collapsed-width / 2;
+      width: $sidenav-collapsed-width * 0.5;
     }
   }
 
@@ -606,7 +606,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: calc(#{$sidenav-collapsed-width / 2} - 1px);
+      left: calc(#{$sidenav-collapsed-width * 0.5} - 1px);
       display: block;
       margin-left: -($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width);
       width: 0;
@@ -623,7 +623,7 @@
       left: 0;
       display: block;
       margin-top: -4px;
-      margin-left: calc(#{($sidenav-collapsed-width / 2) - ($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width)} - 4px);
+      margin-left: calc(#{($sidenav-collapsed-width * 0.5) - ($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width)} - 4px);
       width: 8px;
       height: 8px;
       border-radius: 50%;
@@ -668,7 +668,7 @@
   }
 
   .sidenav-inner > .sidenav-item.open > .sidenav-menu::before {
-    right: calc(#{$sidenav-collapsed-width / 2} - 1px);
+    right: calc(#{$sidenav-collapsed-width * 0.5} - 1px);
     left: auto;
     margin-right: -($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width);
     margin-left: 0;
@@ -678,7 +678,7 @@
   .sidenav-inner > .sidenav-item.open .sidenav-item.active > .sidenav-link::before {
     right: 0;
     left: auto;
-    margin-right: calc(#{($sidenav-collapsed-width / 2) - ($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width)} - 4px);
+    margin-right: calc(#{($sidenav-collapsed-width * 0.5) - ($sidenav-collapsed-width - $sidenav-vertical-link-padding-x - $sidenav-icon-expanded-width)} - 4px);
     margin-left: 0;
   }
 

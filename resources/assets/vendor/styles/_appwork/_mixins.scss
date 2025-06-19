@@ -4,6 +4,8 @@
 // *******************************************************************************
 // * RTL/LTR
 
+@use "sass:math";
+
 @mixin ltr-only() {
   @if $rtl-support {
     html:not([dir=rtl]) {
@@ -59,7 +61,7 @@
 // * Carets
 
 @mixin caret-down {
-  margin-top: -1 * ($caret-width / 1.5);
+  margin-top: -1 * math.div($caret-width, 1.5);
   width: $caret-width;
   height: $caret-width;
   border: 1px solid;
@@ -79,7 +81,7 @@
 }
 
 @mixin caret-right {
-  margin-top: -1 * ($caret-width / 2);
+  margin-top: -1 * ($caret-width * 0.5);
   width: $caret-width;
   height: $caret-width;
   border: 1px solid;
@@ -89,7 +91,7 @@
 }
 
 @mixin caret-left {
-  margin-top: -1 * ($caret-width / 2);
+  margin-top: -1 * ($caret-width * 0.5);
   width: $caret-width;
   height: $caret-width;
   border: 1px solid;
@@ -1090,7 +1092,7 @@
     line-height: $height;
 
     @if $line-height-computed > $height {
-      top: (($line-height-computed - $height) / 2) + $delta;
+      top: (($line-height-computed - $height) * 0.5) + $delta;
     } @else {
       top: 0 + $delta;
     }
@@ -1098,7 +1100,7 @@
 
   .switcher-label {
     @if $line-height-computed < $height {
-      top: ($height - $line-height-computed) / 2;
+      top: ($height - $line-height-computed) * 0.5;
     } @else {
       top: 0;
     }

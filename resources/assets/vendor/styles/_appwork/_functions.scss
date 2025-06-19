@@ -4,6 +4,8 @@
 // *******************************************************************************
 // * Math
 
+@use "sass:math";
+
 $pi: 3.14159265359;
 $_precision: 10;
 
@@ -16,7 +18,7 @@ $_precision: 10;
   }
   @if $exp < 1{
     @for $i from 0 through -$exp {
-      $value: $value / $base;
+      $value: math.div($value, $base);
     }
   }
   @return $value;
@@ -27,7 +29,7 @@ $_precision: 10;
   $x1: $x0;
 
   @for $i from 1 through 10 {
-    $x1: $x0 - ($x0 * $x0 - abs($r)) / (2 * $x0);
+    $x1: $x0 - math.div($x0 * $x0 - abs($r), 2 * $x0);
     $x0: $x1;
   }
 
@@ -46,10 +48,10 @@ $_precision: 10;
 
 @function _to_unitless_rad($angle) {
   @if unit($angle) == "deg" {
-    $angle: $angle / 180deg * $pi;
+    $angle: math.div($angle, 180deg) * $pi;
   }
   @if unit($angle) == "rad" {
-    $angle: $angle / 1rad;
+    $angle: math.div($angle, 1rad);
   }
   @return $angle;
 }
@@ -58,7 +60,7 @@ $_precision: 10;
   $a: _to_unitless_rad($angle);
   $sin: $a;
   @for $n from 1 through $_precision {
-    $sin: $sin + (pow(-1, $n) / fact(2 * $n + 1) ) * pow($a, (2 * $n + 1));
+    $sin: $sin + math.div(pow(-1, $n), fact(2 * $n + 1))  * pow($a, (2 * $n + 1));
   }
   @return $sin;
 }
@@ -67,13 +69,13 @@ $_precision: 10;
   $a: _to_unitless_rad($angle);
   $cos: 1;
   @for $n from 1 through $_precision {
-    $cos: $cos + ( pow(-1,$n) / fact(2*$n) ) * pow($a,2*$n);
+    $cos: $cos +  math.div(pow(-1,$n), fact(2*$n))  * pow($a,2*$n);
   }
   @return $cos;
 }
 
 @function tan($angle){
-  @return sin($angle) / cos($angle);
+  @return math.div(sin($angle), cos($angle));
 }
 
 // *******************************************************************************
@@ -152,7 +154,7 @@ $_precision: 10;
   $g: green($color);
   $b: blue($color);
 
-  @return (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+  @return (($r * 299) + ($g * 587) + ($b * 114)) * 0.001;
 }
 
 // Color contrast
@@ -171,7 +173,7 @@ $_precision: 10;
 
 @function strip-unit($number) {
   @if type-of($number) == 'number' and not unitless($number) {
-    @return $number / ($number * 0 + 1);
+    @return math.div($number, $number * 0 + 1);
   }
 
   @return $number;
@@ -179,7 +181,7 @@ $_precision: 10;
 
 @function px-to-rem($value) {
   // Assumes the browser default font size = `16px`
-  @return (strip-unit($value) / 16) * 1rem;
+  @return math.div(strip-unit($value), 16) * 1rem;
 }
 
 @function rem-to-px($value) {
@@ -202,7 +204,7 @@ $_precision: 10;
     );
   } @else if alpha($background) != 1 {
     $bg-alpha:   alpha($background);
-    $btn-shadow: rgba($background, $bg-alpha - ($bg-alpha * 55 / 100) );
+    $btn-shadow: rgba($background, $bg-alpha - ($bg-alpha * 55 * 0.01) );
 
     @return (
       bg-hover:  rgba($background, $bg-alpha + 0.05),
@@ -235,7 +237,7 @@ $_precision: 10;
   $bg: rgba-to-hex($bg);
   $active-color: rgba-to-hex($active-color);
   $active-color: if($active-color, $active-color, yiq($bg));
-  $yiq-percent: yiq-value($bg) / 255;
+  $yiq-percent: math.div(yiq-value($bg), 255);
   $yiq-percent-inverted: 1 - $yiq-percent;
 
   $opacity: if($active-color == #fff, .6 + (.4 * $yiq-percent), .6 + (.4 * (1 - $yiq-percent)));
@@ -243,7 +245,7 @@ $_precision: 10;
   $color: if($inactive-color, rgba-to-hex($inactive-color, $bg), rgba-to-hex(rgba($active-color, if($yiq-percent < .25, $opacity - .15, $opacity)), $bg));
   $disabled-color: rgba-to-hex(rgba($color, .6), $bg);
   $muted-color: rgba-to-hex(rgba($color, .75), $bg);
-  $border: if($border, $border, if($yiq-percent > .75, rgba($active-color, $opacity / 8), if($yiq-percent < .25, rgba($active-color, .06), rgba($active-color, .15))));
+  $border: if($border, $border, if($yiq-percent > .75, rgba($active-color, $opacity * 0.125), if($yiq-percent < .25, rgba($active-color, .06), rgba($active-color, .15))));
 
   @return (
     // Metadata

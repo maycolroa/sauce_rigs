@@ -213,7 +213,7 @@
     content: "";
     position: absolute;
     top: 50%;
-    right: $dropdown-item-padding-x / 2;
+    right: $dropdown-item-padding-x * 0.5;
     display: block;
     width: .375rem;
     height: .375rem;
@@ -224,7 +224,7 @@
 
     @include rtl-style {
       right: auto;
-      left: $dropdown-item-padding-x / 2;
+      left: $dropdown-item-padding-x * 0.5;
       transform: rotate(45deg) translate(0, -50%) scaleX(-1);
     }
   }

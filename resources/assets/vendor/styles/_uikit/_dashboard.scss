@@ -31,7 +31,7 @@ $ui-activity-icon-font-size: .875rem !default;
 .ui-feed-icon {
   position: absolute;
   top: 0;
-  right: -$ui-feed-icon-size / 2;
+  right: -$ui-feed-icon-size * 0.5;
   width: $ui-feed-icon-size;
   height: $ui-feed-icon-size;
   border: 0;
@@ -40,7 +40,7 @@ $ui-activity-icon-font-size: .875rem !default;
 
   [dir=rtl] & {
     right: auto;
-    left: -$ui-feed-icon-size / 2;
+    left: -$ui-feed-icon-size * 0.5;
   }
 }
 

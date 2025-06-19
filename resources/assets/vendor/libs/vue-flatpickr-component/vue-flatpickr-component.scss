@@ -788,7 +788,7 @@ span.flatpickr-weekday {
   }
 
   .flatpickr-current-month {
-    padding: ($flatpickr-month-height - ($font-size-base * strip-unit($big-font-size) / 100) - .25rem) 0 0;
+    padding: ($flatpickr-month-height - ($font-size-base * strip-unit($big-font-size) * 0.01) - .25rem) 0 0;
     font-size: $big-font-size;
   }
 
@@ -951,7 +951,7 @@ span.flatpickr-weekday {
   }
 
   .flatpickr-current-month {
-    padding: ($flatpickr-month-height - ($font-size-base * strip-unit($big-font-size) / 100) - .25rem) 0 0;
+    padding: ($flatpickr-month-height - ($font-size-base * strip-unit($big-font-size) * 0.01) - .25rem) 0 0;
     font-size: $big-font-size;
   }
 

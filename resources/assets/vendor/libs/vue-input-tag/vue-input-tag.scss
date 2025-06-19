@@ -80,7 +80,7 @@ $vue-input-tag-line-height: 1.5rem !default;
 .default-style {
   @import "~@/vendor/styles/_appwork/include";
 
-  $vue-input-tag-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $vue-input-tag-line-height) / 2)));
+  $vue-input-tag-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $vue-input-tag-line-height) * 0.5)));
 
   .vue-input-tag-wrapper {
     padding: $vue-input-tag-spacer 0 0 $vue-input-tag-spacer;
@@ -151,7 +151,7 @@ $vue-input-tag-line-height: 1.5rem !default;
 .material-style {
   @import "~@/vendor/styles/_appwork/include-material";
 
-  $vue-input-tag-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $vue-input-tag-line-height) / 2)));
+  $vue-input-tag-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $vue-input-tag-line-height) * 0.5)));
 
   .vue-input-tag-wrapper {
     padding: $vue-input-tag-spacer 0 0 $vue-input-tag-spacer;
