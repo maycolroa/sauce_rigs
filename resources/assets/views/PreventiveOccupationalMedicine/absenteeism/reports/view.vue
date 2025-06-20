@@ -10,8 +10,8 @@
       <b-card no-body>
         <b-card-body>
           <perfect-scrollbar>
-            <!--<iframe :src="data.url" class="col-md-12" height="800" frameborder="0" id="iframeInforme"></iframe>-->
-            <iframe title="Power BI Coninsa-05-05-2025" class="col-md-12" height="800" id="iframeInforme" src="https://app.powerbi.com/view?r=eyJrIjoiYWI4ZTBiNWEtZGRhZi00OTA5LTkzYjgtYTA0OWNmZmFiZmU2IiwidCI6IjU3OTVhNzgyLTdjN2UtNGU5NC05ZjUzLWM3MTM1YTk2M2ZkMCIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+            <iframe :src="data.url" class="col-md-12" height="800" frameborder="0" id="iframeInforme"></iframe>
+            <!--<iframe title="Power BI Coninsa-05-05-2025" class="col-md-12" height="800" id="iframeInforme" src="https://app.powerbi.com/view?r=eyJrIjoiYWI4ZTBiNWEtZGRhZi00OTA5LTkzYjgtYTA0OWNmZmFiZmU2IiwidCI6IjU3OTVhNzgyLTdjN2UtNGU5NC05ZjUzLWM3MTM1YTk2M2ZkMCIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>-->
           </perfect-scrollbar>
         </b-card-body>
       </b-card>
