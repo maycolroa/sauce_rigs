@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\General;
 
 use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Roles\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Facades\Configuration;
@@ -95,6 +96,28 @@ class ApplicationController extends Controller
       return $this->respondHttp401();
     }
 
+    public function getContractsMultilogin()
+    {
+      if (Auth::check())
+      {
+        $data = ContractLesseeInformation::select(
+          'sau_ct_information_contract_lessee.id',
+          'sau_ct_information_contract_lessee.social_reason AS name'
+        )
+        ->get()
+        ->mapWithKeys(function ($item, $key) {
+          return [$item->id => $item];
+        });
+
+        return collect([
+          "selected" => '', 
+          "data"     => $data
+        ]);
+      }
+
+      return $this->respondHttp401();
+    }
+
     /**
      * Update the company_id and check if the current route is allowed for the other company of the user, 
      * in case of not having permission, a route with a level lower than the current module is calculated 
@@ -124,6 +147,128 @@ class ApplicationController extends Controller
       $new_path = "/";
 
       return $new_path;
+    }
+
+    public function changeContractMultilogin(Request $request)
+    {
+      $user = Auth::user();
+
+      if (!$user->hasRole('Arrendatario', $this->team) && !$user->hasRole('Contratista', $this->team))
+      {
+        try
+        {
+          DB::beginTransaction();
+
+          DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', $user->id)->delete();
+          DB::table('sau_role_user_multilogin')->where('user_id', $user->id)->delete();
+
+          $roles = DB::table('sau_role_user')->where('user_id', $user->id)->get();
+          
+          $rolesInsert = [];
+
+          foreach ($roles as $role)
+          {
+            $rolesInsert[] = [
+              'role_id' => $role->role_id,
+              'user_id' => $role->user_id,
+              'user_type' => $role->user_type,
+              'team_id' => $role->team_id
+            ];
+          }
+
+          DB::table('sau_role_user_multilogin')->insert($rolesInsert);
+
+          $contracts = DB::table('sau_user_information_contract_lessee')->where('user_id', $user->id)->get();
+          
+          $contractsInsert = [];
+
+          foreach ($contracts as $row)
+          {
+            $contractsInsert[] = [
+              'user_id' => $row->user_id,
+              'information_id' => $row->information_id
+            ];
+          }
+
+          DB::table('sau_user_information_contract_lessee_multilogin')->insert($contractsInsert);
+
+          DB::table('sau_user_information_contract_lessee')->where('user_id', $user->id)->delete();
+          DB::table('sau_role_user')->where('user_id', $user->id)->delete();
+
+          DB::table('sau_user_information_contract_lessee')->insert(['user_id' => $user->id, 'information_id' => $request->input('contract_id')]);
+
+          $contract = ContractLesseeInformation::find($request->input('contract_id'));
+          $role_name = $contract->type == 'Proveedor' ? 'Contratista' : $contract->type;
+
+          $role = Role::defined()->where('name', $role_name)->first();
+          
+          $user->syncRoles([$role->id], $this->team);
+
+          Session::put('contract_id', $request->input('contract_id'));
+
+          DB::commit();
+
+        } catch (\Exception $e) {
+          DB::rollback();
+          \Log::info($e->getMessage());
+
+          return $this->respondHttp500();
+        }
+      }
+
+      return '';
+    }
+
+    public function returnContratante(Request $request)
+    {
+      $user = Auth::user();
+
+      if ($user->hasRole('Arrendatario', $this->team) || $user->hasRole('Contratista', $this->team))
+      {
+        try
+        {
+          DB::beginTransaction();
+
+          DB::table('sau_user_information_contract_lessee')->where('user_id', $user->id)->delete();
+          DB::table('sau_role_user')->where('user_id', $user->id)->delete();
+
+          $contracts = DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', $user->id)->get();
+          
+          $contractsInsert = [];
+
+          foreach ($contracts as $row)
+          {
+            $contractsInsert[] = [
+              'user_id' => $row->user_id,
+              'information_id' => $row->information_id
+            ];
+          }
+
+          DB::table('sau_user_information_contract_lessee')->insert($contractsInsert);
+
+          $roles = DB::table('sau_role_user_multilogin')->where('user_id', $user->id)->get();
+
+          foreach ($roles as $role)
+          {
+            $user->attachRole($role->role_id, $role->team_id);
+          }
+
+          DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', $user->id)->delete();
+          DB::table('sau_role_user_multilogin')->where('user_id', $user->id)->delete();
+
+          Session::forget('contract_id');
+
+          DB::commit();
+
+        } catch (\Exception $e) {
+          DB::rollback();
+          \Log::info($e->getMessage());
+
+          return $this->respondHttp500();
+        }
+      }
+
+      return '';
     }
 
     /**

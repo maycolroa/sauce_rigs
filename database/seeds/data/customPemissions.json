@@ -812,6 +812,10 @@
                     {
                         "name": "contracts_training_view_made",
                         "display_name": "Contratistas/Capacitaciones - ver capacitaciones realizadas"
+                    },
+                    {
+                        "name": "contracts_multilogin",
+                        "display_name": "Contratistas - multilogin"
                     }
                 ]
             },

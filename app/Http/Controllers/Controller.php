@@ -17,6 +17,7 @@ use App\Models\General\LogDelete;
 use App\Models\General\LogUserActivitySystem;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Session;
+use Illuminate\Support\Facades\Storage;
 
 class Controller extends BaseController
 {
@@ -88,5 +89,10 @@ class Controller extends BaseController
             return 'NO';
         else
             return $configuration->value;
+    }
+
+    public function downloadFileGeneral($url)
+    {
+        return Storage::disk('public')->download(base64_decode($url));
     }
 }
