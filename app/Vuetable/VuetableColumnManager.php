@@ -9,6 +9,7 @@ use App\Traits\LocationFormTrait;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\Table;
 
 class VuetableColumnManager
 {
@@ -72,18 +73,21 @@ class VuetableColumnManager
         'legalaspectscontractdocumentsconsultingemployeereportclosewinning',
         'legalaspectscontractdocumentsconsultingcontractreportclosewinning',
         'legalaspectscontractor',
-        'legalaspectsfileUploademployeecontractsreport'
+        'legalaspectsfileUploademployeecontractsreport',
+        'absenteeismtablesrecords'
     ];
 
+    protected $request;
     protected $customColumnsName;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($customColumnsName)
+    function __construct($request)
     {
-        $this->customColumnsName = str_replace('-', '', $customColumnsName);
+        $this->request = $request;
+        $this->customColumnsName = str_replace('-', '', $request['customColumnsName']);
         $this->team = Team::where('name', Session::get('company_id'))->first();
         $this->company = Session::get('company_id');
         $this->user = Auth::user();
@@ -1107,6 +1111,25 @@ class VuetableColumnManager
             $colums = array_merge($colums, [
                 ['name' => 'sau_ct_proyects.name', 'data' => 'proyects', 'title' => 'Proyecto', 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]
             ]);
+
+        return $colums;
+    }
+
+    public function absenteeismTablesRecords()
+    {
+        $table = Table::find($this->request['tableId']);
+        $colums = [
+            ['name' => 'id', 'data' => 'id', 'title' =>  'ID', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => true ]
+        ];
+
+        foreach ($table->columns['columns'] as $column)
+        {
+            array_push($colums, ['name' => $column, 'data' => $column, 'title' => $column, 'sortable' => true, 'searchable' => true, 'detail' => false, 'key' => false ]);
+        }
+
+        $colums = array_merge($colums, [
+            [ 'name' => '', 'data' => 'controlls', 'title' => 'Controles', 'sortable' => false, 'searchable' => false, 'detail' => false, 'key' => false ]
+        ]);
 
         return $colums;
     }

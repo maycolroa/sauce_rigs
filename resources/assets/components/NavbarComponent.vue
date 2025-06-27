@@ -56,7 +56,7 @@
         </label>
 
         <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
-            v-if="Object.keys(company.data).length > 1 && (!auth.hasRole['Contratista'] && !auth.hasRole['Arrendatario'])">
+            v-if="Object.keys(company.data).length > 1 /*&& (!auth.hasRole['Contratista'] && !auth.hasRole['Arrendatario'])*/">
           <template slot="button-content">
             <i class="fas fa-sync navbar-icon align-middle"></i>
             <span class="d-lg-none align-middle">&nbsp; </span>

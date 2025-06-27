@@ -118,6 +118,20 @@ class ApplicationController extends Controller
       return $this->respondHttp401();
     }
 
+    public function isContratante()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('Arrendatario', Session::get('company_id')) || $user->hasRole('Contratista', Session::get('company_id')))
+        {
+            $rolesOld = DB::table('sau_role_user_multilogin')->where('user_id', $user->id)->count();
+
+            return $rolesOld > 0;
+        }
+
+        return true;
+    }
+
     /**
      * Update the company_id and check if the current route is allowed for the other company of the user, 
      * in case of not having permission, a route with a level lower than the current module is calculated 
@@ -128,6 +142,14 @@ class ApplicationController extends Controller
      */
     public function changeCompany(Request $request)
     {
+      if (Auth::user()->hasRole('Arrendatario', Session::get('company_id')) || Auth::user()->hasRole('Contratista', Session::get('company_id')))
+      {
+        $isContratante = $this->isContratante();
+
+        if ($isContratante)
+          $this->returnContratante($request);
+      }
+
       Session::put('company_id', $request->input('company_id'));
 
       $contract = $this->getContractUserLogin(Auth::user()->id, $request->input('company_id'));
@@ -197,7 +219,7 @@ class ApplicationController extends Controller
 
           DB::table('sau_user_information_contract_lessee')->insert(['user_id' => $user->id, 'information_id' => $request->input('contract_id')]);
 
-          $contract = ContractLesseeInformation::find($request->input('contract_id'));
+          $contract = DB::table('sau_ct_information_contract_lessee')->where('id', $request->input('contract_id'))->first();
           $role_name = $contract->type == 'Proveedor' ? 'Contratista' : $contract->type;
 
           $role = Role::defined()->where('name', $role_name)->first();
@@ -443,7 +465,7 @@ class ApplicationController extends Controller
      */
     public function vuetableCustomColumns(Request $request)
     {
-      $columnsManager = new VuetableColumnManager($request->get('customColumnsName'));
+      $columnsManager = new VuetableColumnManager($request->all());
       return $this->respondHttp200($columnsManager->getColumnsData());
     }
 
