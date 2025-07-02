@@ -282,13 +282,13 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 		// Holidays relative to the easterDate
 		
 		// Fixed
-		$this->list[] = $this->calculateFromEasterDate ($year, -03, false ); // jueves santo (3 días antes de pascua)
-		$this->list[] = $this->calculateFromEasterDate ($year, -02, false ); // viernes santo (2 días antes de pascua)
+		$this->list[] = $this->calculateFromEasterDate($year, -03, false ); // jueves santo (3 días antes de pascua)
+		$this->list[] = $this->calculateFromEasterDate($year, -02, false ); // viernes santo (2 días antes de pascua)
 		
 		// Moved to monday
-		$this->list[] = $this->calculateFromEasterDate ($year, 36, true ); // Ascensión del Señor (Sexto domingo después de Pascua) - 36 días
-		$this->list[] = $this->calculateFromEasterDate ($year, 60, true ); // Corpus Christi (Octavo domingo después de Pascua) - 60 días
-		$this->list[] = $this->calculateFromEasterDate ($year, 68, true ); // Sagrado Corazón de Jesús (Noveno domingo después de Pascua) 68 días
+		$this->list[] = $this->calculateFromEasterDate($year, 36, true ); // Ascensión del Señor (Sexto domingo después de Pascua) - 36 días
+		$this->list[] = $this->calculateFromEasterDate($year, 60, true ); // Corpus Christi (Octavo domingo después de Pascua) - 60 días
+		$this->list[] = $this->calculateFromEasterDate($year, 68, true ); // Sagrado Corazón de Jesús (Noveno domingo después de Pascua) 68 días
 		
 		sort($this->list);
 	}
@@ -312,28 +312,88 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 		);
 		
 		// Día de la semana original
-		$monday = date( "w", mktime ( 0, 0, 0, $month, $day, $year ) );
+		$monday = date( "w", mktime( 0, 0, 0, $month, $day, $year ) );
 		
 		// Lunes siguiente al día original
 		$monday += $daysToAdd[$monday];
 		
 		// Es posible que el mes haya cambiado con la suma de días
-		$month = date( "m", mktime ( 0, 0, 0, $month, $monday, $year ) ) ;
+		$month = date( "m", mktime( 0, 0, 0, $month, $monday, $year ) ) ;
 		
-		return date( "d", mktime ( 0, 0, 0, $month, $monday, $year ) ) ;
+		return date( "d", mktime( 0, 0, 0, $month, $monday, $year ) ) ;
 	}
 	
-	public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false) {
+	/*public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false) {
 		
-		$easterMonth = date ( "m", easter_date ( $year ) );
-		$easterDay = date ( "d", easter_date ( $year ) );
+		$easterMonth = date( "m", \easter_date( $year ) );
+		$easterDay = date( "d", \easter_date( $year ) );
 		
-		$month = date ( "m", mktime ( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
-		$day = date ( "d", mktime ( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
+		$month = date( "m", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
+		$day = date( "d", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
 		
 		if ($toMonday)  return $this->moveToMonday ($year, $month, $day );
 		else return sprintf("%s-%s-%s",  $year, $month, $day );
-	}
+	}*/
+
+    private function calculateEasterSunday(int $year): \DateTime
+    {
+        // Algoritmo de Meeus/Jones/Butcher
+        $a = $year % 19;
+        $b = floor($year / 100);
+        $c = $year % 100;
+        $d = floor($b / 4);
+        $e = $b % 4;
+        $f = floor(($b + 8) / 25);
+        $g = floor(($b - $f + 1) / 3);
+        $h = (19 * $a + $b - $d - $g + 15) % 30;
+        $i = floor($c / 4);
+        $k = $c % 4;
+        $l = (32 + 2 * $e + 2 * $i - $h - $k) % 7;
+        $m = floor(($a + 11 * $h + 22 * $l) / 451);
+        $p = ($h + $l - 7 * $m + 114) % 31;
+
+        $month = floor(($h + $l - 7 * $m + 114) / 31);
+        $day = $p + 1;
+
+        return new \DateTime("{$year}-{$month}-{$day}");
+    }
+
+    /**
+     * Calcula una fecha basada en el Domingo de Pascua, sumando días.
+     *
+     * @param int $year El año.
+     * @param int $numDays Número de días a sumar al Domingo de Pascua.
+     * @param bool $toMonday Si la fecha final debe moverse al siguiente lunes.
+     * @return string
+     */
+    public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false): string
+    {
+        // 1. Obtén el Domingo de Pascua como un objeto DateTime usando nuestra función personalizada
+        
+        $year = date("Y");
+        $easterSunday = $this->calculateEasterSunday($year);
+
+        // 2. Clona el objeto para evitar modificar la fecha original de Pascua
+        $targetDate = clone $easterSunday;
+
+        // 3. Añade el número de días especificado
+        if ($numDays !== 0) {
+            $targetDate->modify("+{$numDays} days");
+        }
+
+        // 4. Obtén el mes y el día de la fecha resultante
+        $month = $targetDate->format('m');
+        $day = $targetDate->format('d');
+        // El año ya lo tenemos, es $year
+
+        // 5. Aplica la lógica de toMonday o retorna la fecha formateada
+        // Asumiendo que $this->moveToMonday es un método existente en tu clase
+        if ($toMonday) {
+            return $this->moveToMonday($year, $month, $day);
+        } else {
+            return sprintf("%s-%s-%s", $year, $month, $day);
+        }
+    }
 	
 	public function isHoliday($date) {
 		return in_array($date, $this->list);
