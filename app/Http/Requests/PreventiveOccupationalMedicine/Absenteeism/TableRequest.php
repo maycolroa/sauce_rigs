@@ -55,7 +55,7 @@ class TableRequest extends FormRequest
         $id = $this->input('id');
         
         return [
-            'name' => 'required|max:15|unique:sau_absen_tables,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'required|max:35|unique:sau_absen_tables,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'columnas' => 'required|array'
         ];
     }
