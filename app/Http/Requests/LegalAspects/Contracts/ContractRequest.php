@@ -111,7 +111,7 @@ class ContractRequest extends FormRequest
             $rules = [
                 'type'      => 'required',
                 'business_name' => 'required|string',
-                'nit' => 'required',//unique:sau_ct_information_contract_lessee,nit,' . $id . ',id,company_id,'.Session::get('company_id'),
+                'nit' => 'unique:sau_ct_information_contract_lessee,nit,' . $id . ',id,company_id,'.Session::get('company_id'),
                 'social_reason' => 'required|string',
                 'high_risk_work' => 'required',
                 'high_risk_type_id' => 'array|required_if:high_risk_work,SI',

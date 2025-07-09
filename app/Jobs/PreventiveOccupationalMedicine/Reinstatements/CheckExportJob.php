@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckExportExcel;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Facades\Mail\Facades\NotificationMail;
+use DB;
 
 class CheckExportJob implements ShouldQueue
 {
@@ -41,6 +42,8 @@ class CheckExportJob implements ShouldQueue
     {
       try
       {
+        $headquarters = $this->getHeadquarters($this->user->id, $this->company_id);
+
         $checks = Check::select('sau_reinc_checks.*')
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->inIdentifications($this->filters['identifications'], $this->filters['filtersType']['identifications'])
@@ -50,6 +53,12 @@ class CheckExportJob implements ShouldQueue
         ->inDiseaseOrigin($this->filters['diseaseOrigin'], $this->filters['filtersType']['diseaseOrigin'])
         ->inYears($this->filters['years'], $this->filters['filtersType']['years'])
         ->betweenDate($this->filters["dates"]);
+
+        if (count($headquarters) > 0)
+        {
+            $headquarters2 = implode(',', $headquarters);
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters2})");
+        }
 
         if ($this->filters["nextFollowDays"])
           $checks->inNextFollowDays($this->filters["nextFollowDays"], $this->filters['filtersType']['nextFollowDays']);
@@ -132,5 +141,30 @@ class CheckExportJob implements ShouldQueue
               ->send();
       }
 
+    }
+
+    public function getHeadquarters($user, $company_id)
+    {
+        try
+        {
+            $headquarters_users = DB::table('sau_users')
+            ->select('sau_employees_headquarters.*')
+            ->join('sau_reinc_user_headquarter', 'sau_users.id', 'sau_reinc_user_headquarter.user_id')
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_reinc_user_headquarter.employee_headquarter_id')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where('sau_reinc_user_headquarter.user_id', $user)
+            ->where('sau_employees_regionals.company_id', $company_id)
+            ->pluck('sau_employees_headquarters.id')
+            ->toArray();
+
+            if (!$headquarters_users)
+                $headquarters_users = [];
+
+            return $headquarters_users;
+                
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
+        }
     }
 }
