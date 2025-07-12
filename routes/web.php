@@ -84,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/inspectionsimport','IndustrialSecure\DangerousConditions\Inspections\InspectionController@downloadTemplateImport');
     Route::get('templates/riskmatriximport','IndustrialSecure\RiskMatrix\RiskMatrixController@downloadTemplateImport');
     Route::get('templates/musculoskeletalimport','PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@downloadTemplateImport');
+    Route::get('templates/absenteeismTableRecordsImport/{table}','PreventiveOccupationalMedicine\Absenteeism\TableRecordController@downloadTemplateImport');
     Route::get('templates/respiratoryAnalysisimport','PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@downloadTemplateImport');
     Route::get('templates/elementimport','IndustrialSecure\EPP\ElementController@downloadTemplateImport');
     Route::get('templates/locationimport','IndustrialSecure\EPP\LocationController@downloadTemplateImport');
@@ -204,6 +205,17 @@ Route::middleware(['auth'])->group(function () {
 
           Route::post('configuration', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@store');
           Route::get('configuration/view', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@show');
+
+          Route::post('tables/cleanData/{table}', 'PreventiveOccupationalMedicine\Absenteeism\TableController@cleanData');
+          Route::post('tables/data', 'PreventiveOccupationalMedicine\Absenteeism\TableController@data');
+          Route::ApiResource('tables', 'PreventiveOccupationalMedicine\Absenteeism\TableController');
+
+          Route::post('tableRecords/data', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController@data');
+          Route::get('tableRecords/get/{table}/{id}', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController@show');
+          Route::delete('tableRecords/destroy/{table}/{id}', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController@destroy');
+          Route::post('tableRecords/export/{table}', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController@export');
+          Route::post('tableRecords/import/{table}', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController@import');
+          Route::ApiResource('tableRecords', 'PreventiveOccupationalMedicine\Absenteeism\TableRecordController')->only(['index', 'store']);
         });
 
         Route::get('document/download/{document}', 'PreventiveOccupationalMedicine\Documents\DocumentController@download');

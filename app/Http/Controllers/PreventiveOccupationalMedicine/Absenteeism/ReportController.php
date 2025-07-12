@@ -81,7 +81,7 @@ class ReportController extends Controller
             
             $report->user_id = $user_id;
             $report->multiselect_user_id = $user_id;
-            $report->url= $report->getTableauCode()->generateReportURL();
+            //$report->url= $report->getTableauCode()->generateReportURL();
             
             return $this->respondHttp200([
                 'data' => $report,

@@ -1192,4 +1192,137 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'absenteeism-tables',
+    fields: [
+        { name: 'sau_absen_tables.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_absen_tables.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_absen_tables.created_at', data: 'created_at', title: 'Fecha Creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'absenteeism-tables-edit' },
+                id: 'id',
+            },
+            permission: 'absen_tables_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'absenteeism-tables-view' },
+                id: 'id',
+            },
+            permission: 'absen_tables_r'
+        }, {
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Datos'
+            },
+            data: {
+                routePush: { route: 'preventiveoccupationalmedicine/absenteeism/tables/records' },
+                id: 'id',
+            },
+            permission: 'absen_tables_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+            name: 'delete',
+            data: {
+                action: '/biologicalmonitoring/absenteeism/tables/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la tabla __name__'
+            },
+            permission: 'absen_tables_d'
+        },
+        {
+            name: 'switchStatus',
+            config: {
+                color: 'outline-danger',
+                borderless: true,
+                icon: 'fas fa-trash',
+                title: 'Limpiar tabla'
+            },
+            data: {
+                action: '/biologicalmonitoring/absenteeism/tables/cleanData/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de querer borrar todos los datos de la tabla __name__'
+            },
+            permission: 'absen_tables_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/absenteeism/tables/data',
+        filterColumns: true
+    }
+},
+{
+    name: 'absenteeism-tables-records',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'absenteeism-tables-records-edit' },
+                id: 'id',
+            },
+            permission: 'absen_tables_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'absenteeism-tables-records-view' },
+                id: 'id',
+            },
+            permission: 'absen_tables_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+            name: 'delete',
+            data: {
+                action: '/biologicalmonitoring/absenteeism/tableRecords/destroy/:table/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el registro',
+                urlQuery: [
+                    { "param": ":table", "field": "table_id" }
+                ]
+            },
+            permission: 'absen_tables_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/absenteeism/tableRecords/data',
+        filterColumns: true
+    }
+}
 ];

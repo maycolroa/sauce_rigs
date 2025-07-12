@@ -28,8 +28,6 @@ class ReportRequest extends FormRequest
 
         return [
             'name_show' => 'required|unique:sau_absen_reports,name_show,'.$id.',id,company_id,'.Session::get('company_id'),
-            'name_report' => 'required',
-            'user' => 'required',
             'site' => 'required',
             'user_id' => 'required'
         ];

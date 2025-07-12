@@ -463,7 +463,7 @@ export default {
   },
   methods: {
     loadCustomColumns() {
-      axios.post('/vuetableCustomColumns', {'customColumnsName': this.config.name})
+      axios.post('/vuetableCustomColumns', Object.assign(this.params, { 'customColumnsName': this.config.name }))
       .then(response => {
         this.config.fields = response.data.fields;
         //this.keyVuetable = 'changeVuetable'
@@ -517,6 +517,14 @@ export default {
       let id = row[controll.data.id];
 
       this.actionRemove = controll.data.action+id;
+
+      if (controll.data.urlQuery != undefined)
+      {
+        controll.data.urlQuery.forEach((item, key) => {
+          if (row[item.field] != undefined)
+            this.actionRemove = this.actionRemove.replace(item.param, row[item.field])
+        })
+      }
 
       this.messageConfirmationRemove = (controll.data.messageConfirmation.split("__")).map((e,i) => {
         if((i % 2) == 1){

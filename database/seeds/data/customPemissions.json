@@ -280,6 +280,22 @@
                     {
                         "name": "absen_config_r",
                         "display_name": "Ausentismo/Configuraciones - ver configuraciones"
+                    },
+                    {
+                        "name": "absen_tables_c",
+                        "display_name": "Ausentismo/Administrar tablas - crear"
+                    },
+                    {
+                        "name": "absen_tables_r",
+                        "display_name": "Ausentismo/Administrar tablas - ver"
+                    },
+                    {
+                        "name": "absen_tables_u",
+                        "display_name": "Ausentismo/Administrar tablas - editar"
+                    },
+                    {
+                        "name": "absen_tables_d",
+                        "display_name": "Ausentismo/Administrar tablas - eliminar"
                     }
                 ]
             }

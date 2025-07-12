@@ -259,6 +259,70 @@ export default [{
       path: 'absenteeism',
       component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/index')
     },
+    ...middleware({ 'check-permission': 'absen_tables_r' }, [
+      {
+        name: 'absenteeism-tables',
+        path: 'absenteeism/tables',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/index')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_tables_c' }, [
+      {
+        name: 'absenteeism-tables-create',
+        path: 'absenteeism/tables/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_tables_u' }, [
+      {
+        name: 'absenteeism-tables-edit',
+        path: 'absenteeism/tables/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/edit')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_tables_r' }, [
+      {
+        name: 'absenteeism-tables-view',
+        path: 'absenteeism/tables/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/view')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_tables_r' }, [
+      {
+        name: 'absenteeism-tables-records',
+        path: 'absenteeism/tables/records/:table',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/records/index')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_tables_c' }, [
+      {
+        name: 'absenteeism-tables-records-create',
+        path: 'absenteeism/tables/records/:table/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/records/create')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_tables_u' }, [
+      {
+        name: 'absenteeism-tables-records-edit',
+        path: 'absenteeism/tables/records/:table/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/records/edit')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_tables_r' }, [
+      {
+        name: 'absenteeism-tables-records-view',
+        path: 'absenteeism/tables/records/:table/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/tables/records/view')
+      }
+    ]),
     ...middleware({ 'check-permission': 'absen_reports_r' }, [
       {
         name: 'absenteeism-reports',
@@ -320,7 +384,7 @@ export default [{
 					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/viewError')
       }
     ]),
-    ...middleware({ 'check-permission': 'absen_uploadTalend_r' }, [
+    /*...middleware({ 'check-permission': 'absen_uploadTalend_r' }, [
       {
         name: 'absenteeism-talends',
         path: 'absenteeism/talends',
@@ -351,7 +415,7 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/view')
       }
-    ]),
+    ]),*/
     ...middleware({ 'check-permission': 'reinc_disease_origin_r' }, [
         {
           name: 'reinstatements-disease-origin',

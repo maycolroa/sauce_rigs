@@ -465,7 +465,7 @@ class ApplicationController extends Controller
      */
     public function vuetableCustomColumns(Request $request)
     {
-      $columnsManager = new VuetableColumnManager($request->get('customColumnsName'));
+      $columnsManager = new VuetableColumnManager($request->all());
       return $this->respondHttp200($columnsManager->getColumnsData());
     }
 
