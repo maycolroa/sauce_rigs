@@ -2483,7 +2483,7 @@ class TransactionController extends Controller
     {
         if ($typeElement == 'Elemento de protección personal' || $typeElement == 'EPP')
             $text = ConfigurationCompany::select('value')->where('key', 'text_letter_epp')->first();
-        else if ($typeElement == 'Dotación')
+        else if ($typeElement == 'Dotación' || $typeElement == 'Dotacion')
             $text = ConfigurationCompany::select('value')->where('key', 'text_letter_dotation')->first();
         else if ($typeElement == 'Equipo')
             $text = ConfigurationCompany::select('value')->where('key', 'text_letter_team')->first();
