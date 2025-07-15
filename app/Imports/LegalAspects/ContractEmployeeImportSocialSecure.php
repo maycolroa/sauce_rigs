@@ -199,7 +199,10 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 
             for ($i=0; $i < $num_days; $i++) 
             { 
-                $day_expiration = $day_expiration->addDay(1);
+                if ($i == $num_days - 1)
+                    $day_expiration = $day_expiration;
+                else
+                    $day_expiration = $day_expiration->addDay(1);
 
                 $day_week = $day_expiration->dayOfWeek;
 
