@@ -165,13 +165,16 @@ class TableController extends Controller
                 }
             });
 
-            Schema::table($table->table_name, function ($table2) use ($column_deleted) {
+            if($column_deleted && COUNT($column_deleted) > 0)
+            {
+                Schema::table($table->table_name, function ($table2) use ($column_deleted) {
 
-                foreach ($column_deleted as $column)
-                {
-                    $table2->dropColumn($column);
-                }
-            });
+                    foreach ($column_deleted as $column)
+                    {
+                        $table2->dropColumn($column);
+                    }
+                });
+            }
 
             Schema::table($table->table_name, function ($table2) use ($rename) {
 
@@ -186,6 +189,7 @@ class TableController extends Controller
         }
         catch(\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
 
