@@ -274,6 +274,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('afp', 'General\ApplicationController@multiselectAfp');
         Route::post('arl', 'General\ApplicationController@multiselectArl');
         Route::post('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller@multiselect');
+        Route::post('cie11', 'PreventiveOccupationalMedicine\Reinstatements\Cie11Controller@multiselect');
         Route::post('restrictions', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@multiselect');
         Route::post('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectDiseaseOrigin');
         Route::post('nextFollowDays', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectNextFollowDays');

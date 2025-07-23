@@ -559,6 +559,7 @@ class CheckController extends Controller
         $check->load([
             'employee',
             'cie10Code',
+            'cie11Code',
             'medicalMonitorings',
             'laborMonitorings',
             'tracings' => function ($query) use ($authUser) {
@@ -603,6 +604,7 @@ class CheckController extends Controller
 
         $check->multiselect_employee = $check->employee->multiselect();
         $check->multiselect_cie10Code = $check->cie10Code->multiselect();
+        $check->multiselect_cie11Code = $check->cie11_code_id ? $check->cie11Code->multiselect() : NULL;
         $check->multiselect_cie10Code2 = $check->cie10_code_2_id ? $check->cie10Code2->multiselect() : NULL;
         $check->multiselect_cie10Code3 = $check->cie10_code_3_id ? $check->cie10Code3->multiselect() : NULL;
         $check->multiselect_cie10Code4 = $check->cie10_code_4_id ? $check->cie10Code4->multiselect() : NULL;

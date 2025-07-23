@@ -256,6 +256,7 @@
                   :disease-origins="diseaseOrigins"
                   :lateralities="lateralities"
                   cie10-codes-data-url="/selects/cie10"
+                  cie11-codes-data-url="/selects/cie11"
                   :si-no="siNo"
                   :origin-advisors="originAdvisors"
                   :refund-classification="refundClassification"

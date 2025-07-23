@@ -141,7 +141,10 @@ class Check extends Model
         'disease_origin_recomendations_2',
         'disease_origin_recomendations_3',
         'disease_origin_recomendations_4',
-        'disease_origin_recomendations_5'
+        'disease_origin_recomendations_5',
+        'use_cie_10',
+        'update_cie_11',
+        'cie11_code_id'
     ];
 
     /**
@@ -180,6 +183,11 @@ class Check extends Model
     public function cie10Code()
     {
         return $this->belongsTo(Cie10Code::class, 'cie10_code_id');
+    }
+
+    public function cie11Code()
+    {
+        return $this->belongsTo(Cie11Code::class, 'cie11_code_id');
     }
 
     public function cie10Code2()

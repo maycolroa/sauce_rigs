@@ -97,11 +97,11 @@
 
           <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none" v-if="form.use_cie_10 == 'Cie 11' || form.use_cie_10 == 'Ambos' || form.update_cie_11 == 'SI'">
             <b-form-row>
-              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 11" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie11_code_id" :error="form.errorsFor('cie11_code_id')" :selected-object="form.multiselect_cie11Code" name="cie11_code_id" label="Código CIE 11" placeholder="Seleccione una opción" :url="cie11CodesDataUrl"> </vue-ajax-advanced-select>
             </b-form-row>
             <b-form-row>
-              <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
-              <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
             </b-form-row>
             <b-form-row>
               <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
@@ -496,6 +496,7 @@ export default {
     processesDataUrl: { type: String, default: "" },
     positionsDataUrl: { type: String, default: "" },
     cie10CodesDataUrl: { type: String, default: "" },
+    cie11CodesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
@@ -646,7 +647,8 @@ export default {
           files: [],
           refund_classification: '',
           use_cie_10: '',
-          update_cie_10: ''
+          update_cie_11: 'NO',
+          cie11_code_id: ''
         };
       }
     }
@@ -662,6 +664,9 @@ export default {
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
+    },
+    'form.cie11_code_id': function() {
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie11_code_id}`, 'cie11CodeDetail');
     },
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
@@ -719,6 +724,9 @@ export default {
     if (this.form.cie10_code_id)
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
     
+    if (this.form.cie11_code_id)
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie11_code_id}`, 'cie11CodeDetail');
+    
     if (this.form.employee_id)
     {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
@@ -749,6 +757,7 @@ export default {
       form: Form.makeFrom(this.check, this.method),
       employeeDetail: [],
       cie10CodeDetail: [],
+      cie11CodeDetail: [],
       disabledDates: {
         from: new Date()
       },
