@@ -75,9 +75,12 @@ class CheckController extends Controller
                     'sau_employees_regionals.name AS regional',
                     'sau_reinc_checks.state AS state',
                     'sau_employees.identification AS identification',
-                    'sau_employees.name AS name'
+                    'sau_employees.name AS name',
+                    'sau_reinc_cie11_codes.code AS code11',
+                    'sau_reinc_cie11_codes.description AS code11_description'
                 )
-                ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+                ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+                ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', 'sau_reinc_checks.cie11_code_id')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
                 ->orderBy('sau_reinc_checks.id', 'DESC');
@@ -338,8 +341,17 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
-
-        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
+            if ($formModel == 'hptu')
+            {
+                if ($check->use_cie_10 && $check->use_cie_10 == 'cie 10')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'cie 11')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie11Code->description.' con el ID de caso '.$check->id);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'Ambos')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico para Cie10 '. $check->cie10Code->description.' y para Cie11 '. $check->cie11Code->description.'con el ID de caso '.$check->id);
+            }
+            else
+                $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
 
             DB::commit();
 
@@ -502,8 +514,20 @@ class CheckController extends Controller
                 return $this->respondHttp500();
 
             CheckManager::deleteData($check, $request->get('delete'));
+
+            if ($formModel == 'hptu')
+            {
+                if ($check->use_cie_10 && $check->use_cie_10 == 'cie 10')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'cie 11')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie11Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+                else if (($check->use_cie_10 && $check->use_cie_10 == 'Ambos') || $check->update_cie_11 == 'SI')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico para Cie10 '. $check->cie10Code->description.' y para Cie11 '. $check->cie11Code->description.'con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+            }
+            else
+                $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
             
-            $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description . '. Con el id de caso '.$id.'. Pertenecia al empleado '.$employee_new);
+            //$this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description . '. Con el id de caso '.$id.'. Pertenecia al empleado '.$employee_new);
 
             DB::commit();
 
@@ -603,7 +627,7 @@ class CheckController extends Controller
         $check->old_process_pcl_file = $check->process_pcl_file;
 
         $check->multiselect_employee = $check->employee->multiselect();
-        $check->multiselect_cie10Code = $check->cie10Code->multiselect();
+        $check->multiselect_cie10Code = $check->cie10Code ? $check->cie10Code->multiselect() : NULL;
         $check->multiselect_cie11Code = $check->cie11_code_id ? $check->cie11Code->multiselect() : NULL;
         $check->multiselect_cie10Code2 = $check->cie10_code_2_id ? $check->cie10Code2->multiselect() : NULL;
         $check->multiselect_cie10Code3 = $check->cie10_code_3_id ? $check->cie10Code3->multiselect() : NULL;

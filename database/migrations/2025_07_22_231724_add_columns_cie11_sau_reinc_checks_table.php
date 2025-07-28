@@ -15,7 +15,7 @@ class AddColumnsCie11SauReincChecksTable extends Migration
     {
         Schema::table('sau_reinc_checks', function (Blueprint $table) {               
             $table->unsignedInteger('cie11_code_id')->nullable()->after('cie10_code_id');
-            $table->string('use_cie_10')->default('SI')->nullable();
+            $table->string('use_cie_10')->default('Cie 10')->nullable();
             $table->string('update_cie_11')->default('NO')->nullable(); 
             $table->unsignedInteger('cie10_code_id')->nullable()->change();
             

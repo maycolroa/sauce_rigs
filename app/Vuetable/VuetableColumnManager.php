@@ -510,12 +510,22 @@ class VuetableColumnManager
 
         $colums = [
             ['name' => 'sau_reinc_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_reinc_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],            
+        ];
+        if ($formModel == 'hptu')
+        {
+            $colums = array_merge($colums, [
+                ['name' => 'sau_reinc_cie11_codes.code', 'data'=> 'code11', 'title'=> 'Código CIE 11', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_reinc_cie11_codes.description', 'data'=> 'code11_description', 'title'=> 'Descripción1 CIE 11', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ]);
+        }
+
+        $colums = array_merge($colums, [
             ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_reinc_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywords['regional'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_reinc_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false],
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
-        ];
+        ]);
 
         if (!$formModel == 'argos')
         {

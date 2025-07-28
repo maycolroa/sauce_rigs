@@ -77,7 +77,7 @@
           <b-form-row v-if="!isEdit && !viewOnly">
             <vue-radio variant="primary" :checked="form.use_cie_10" class="col-md-6 offset-md-3" v-model="form.use_cie_10" :options="cieCode" name="use_cie_10" label="¿Usara Código CIE 10 o Código CIE 11?"></vue-radio>
           </b-form-row>
-          <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none" v-if="form.use_cie_10 == 'Cie 10' || form.use_cie_10 == 'Ambos' || isEdit || viewOnly">
+          <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none" v-if="form.use_cie_10 == 'Cie 10' || form.use_cie_10 == 'Ambos'">
             <b-form-row>
               <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
             </b-form-row>
@@ -85,13 +85,9 @@
               <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
               <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
             </b-form-row>
-            <b-form-row>
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
-                  </vue-advanced-select>
-            </b-form-row>
           </b-card>
 
-          <b-form-row v-if="isEdit || viewOnly">
+          <b-form-row v-if="!form.cie11_code_id && (isEdit || viewOnly)">
             <vue-radio variant="primary" :disabled="viewOnly" :checked="form.update_cie_11" class="col-md-6 offset-md-3" v-model="form.update_cie_11" :options="siNo" name="update_cie_11" label="¿Desea actualizar a Código CIE 11?"></vue-radio>
           </b-form-row>
 
@@ -103,11 +99,12 @@
               <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
               <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
             </b-form-row>
+          </b-card>
+
             <b-form-row>
               <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                   </vue-advanced-select>
             </b-form-row>
-          </b-card>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
