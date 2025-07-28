@@ -930,21 +930,27 @@ class UserController extends Controller
 
         if (COUNT($users_ids) > 0 && COUNT($companies_ids) > 0)
         {
+            \Log::info('entro a la consulta de usuarios');
             $users = User::select(
                         "sau_users.id AS id",
                         DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
                     )
-                    ->active()
                     ->withoutGlobalScopes()
-                    //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                    ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                     ->leftJoin('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
                     ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
                     ->whereNotIn('sau_roles.id', [8,9,5])
                     ->whereNotIn('sau_users.id', $users_ids)
                     ->whereIn('sau_company_user.company_id', $companies_ids)
-                    ->groupBy('id')
-                    ->pluck('id', 'name');
+                    ->where('sau_company_user.active', 'SI')
+                    ->where('sau_users.active', 'SI')                
+                    ->groupBy('id');
+
+                    \Log::info($users->toSql());
+                    $users = $users->pluck('id', 'name');
         }
+
+        \Log::info($this->multiSelectFormat($users));
                 
         return $this->multiSelectFormat($users);
     }
