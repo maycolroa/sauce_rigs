@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 
 class UpdateColumnUseCie10SauReincChecksTable extends Migration
 {
@@ -13,9 +14,7 @@ class UpdateColumnUseCie10SauReincChecksTable extends Migration
      */
     public function up()
     {
-        $checks = DB::table('sau_reinc_checks')
-            ->where('use_cie_10', 'SI')
-            ->get();
+        $checks = Check::where('use_cie_10', 'SI')->withoutGlobalScopes()->get();
 
         foreach ($checks as $check) 
         {
