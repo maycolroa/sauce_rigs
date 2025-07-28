@@ -46,8 +46,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\UpdateEmployeeContratFilesExpired',
         'App\Console\Commands\NotificationSendContract',
         'App\Console\Commands\NotifyNextMaintenanceVehicle',
-        'App\Console\Commands\UpdateContractEmployeeStateDocuments',
-        //'App\Console\Commands\RememberRepeatInspetion'
+        'App\Console\Commands\UpdateContractEmployeeStateDocuments',       
+        'App\Console\Commands\DeleteRecordLogEmailCodeLogin'
     ];
 
     /**
@@ -58,9 +58,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /*$schedule->command('audiometry-notification')
+        $schedule->command('delete-record-log-email-code-login')
             ->timezone('America/Bogota')
-            ->dailyAt('00:00');*/
+            ->cron('0 23 * * 0');
+
 
         $schedule->command('days-alert-expiration-date-action-plan')
             ->timezone('America/Bogota')

@@ -40,13 +40,11 @@ class DeleteRecordLogEmail extends Command
      */
     public function handle()
     {
-        $emails = LogMail::get();
+        //$emails = LogMail::get();
 
         $date = Carbon::now()->subMonth(10)->format('Y-m-d 00:00:00');
 
-        $emails = LogMail::
-        where('created_at', '<', $date)
-        ->delete();
+        $emails = LogMail::where('created_at', '<', $date)->get();
 
         try 
         {
