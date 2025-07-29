@@ -127,6 +127,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('restriction/data', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@data');
           Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
           Route::post('getMessageIncapacitate', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@getMessageIncapacitate');
+          Route::post('check/consultingCie11Chatbot', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@consultingCie11Chatbot');
 
           Route::post('saveLaborRelationsNotes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@saveLaborRelationsNotes');
           Route::post('check/sendEmailRecommendations', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@sendEmailRecommendations');

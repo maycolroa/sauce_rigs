@@ -67,9 +67,29 @@
       </b-col>
     </b-row>
 
+    <b-modal ref="modalConsulting" :hideFooter="true" id="modalConsulting" class="modal-top" size="lg">
+        <div slot="modal-title">
+          Consultas tus dudas sobre el Código CIE 11
+        </div>
+        <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">            
+              <vue-textarea class="col-md-12" v-model="question" label="Pregunta" name="question" placeholder="Escribe la pregunta que quieres consultar"></vue-textarea>
+              <vue-textarea v-if="answer" class="col-md-12" v-model="answer" label="Respuesta" name="answer" placeholder="" rows="6"></vue-textarea>
+        </b-card>
+
+        <div class="row float-right pt-12 pr-12y">
+          <b-btn v-if="question" variant="primary" @click="consultingQuestion(question)">Consultar</b-btn>
+          <b-btn variant="default" @click="hideConsulting()">Cerrar</b-btn>
+        </div>
+    </b-modal>
+
     <b-row>
       <b-col>
-        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">          
+          <div id="fixedbutton">
+              <b-btn variant="primary" type="button" @click="showConsulting" title="Consultar">
+                  <i class="ion ion-ios-list"></i>
+              </b-btn>
+          </div>
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
                 </vue-advanced-select>
@@ -776,6 +796,8 @@ export default {
         {text: 'Cie 11', value: 'Cie 11'},
         {text: 'Ambos', value: 'Ambos'}
       ],
+      question: '',
+      answer: ''
     };
   },
   methods: {
@@ -946,7 +968,25 @@ export default {
       {
         this.validation_mail_send = true;
       }
-    }
+    },
+    showConsulting() {
+      this.$refs.modalConsulting.show()
+    },
+    hideConsulting() {
+      this.$refs.modalConsulting.hide()
+      this.question = '';
+      this.answer = '';
+    },
+    consultingQuestion(question) {
+      let postData = Object.assign({question: question});
+
+          axios.post('/biologicalmonitoring/reinstatements/check/consultingCie11Chatbot', postData)
+            .then(response => {
+                this.answer = response.data;
+            }).catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+    },
   }
 };
 </script>
@@ -961,6 +1001,11 @@ export default {
     border-radius: 8px;
     margin-bottom: 5px;
     width: 300px;
+}
+#fixedbutton {
+    position: fixed;
+    bottom: 10%;
+    right: 5%; 
 }
 
 </style>

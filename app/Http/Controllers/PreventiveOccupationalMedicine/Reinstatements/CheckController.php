@@ -29,6 +29,9 @@ use DB;
 use PDF;
 use Datetime;
 use Validator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
 
 class CheckController extends Controller
 { 
@@ -1716,6 +1719,43 @@ class CheckController extends Controller
                     'role_visor' => 'SI'
                 ]
             );
+        }
+    }
+
+    public function consultingCie11Chatbot(Request $request)
+    {
+        $parametrosApi = [
+            'prompt' => $request->question
+        ];
+
+        try 
+        {
+            $client = new Client();
+
+            $response = $client->post('https://cie11-chatbot.jollypebble-ce4b443e.brazilsouth.azurecontainerapps.io/gpt/chat_bot', [
+                'json' => $parametrosApi
+            ]);
+
+            if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) 
+            {
+                $apiData = json_decode($response->getBody()->getContents(), true);
+
+                if (isset($apiData['success']) && $apiData['success'] == true)
+                {
+                    $responseData = $apiData['data'];
+                    $answer = $responseData['answer'] ?? 'No se encontró respuesta.';
+
+                    return $answer; // Devuelve la respuesta de la API
+                }
+
+            } else {
+                \Log::info('Error de conexión o inesperado al consultar la API POST: ' . $response->getStatusCode());            
+                return 'Error inesperado en la consulta';
+            }
+
+        } catch (RequestException $e) {
+            \Log::info('Error de conexión o inesperado al consultar la API POST: ' . $e->getMessage());            
+            return $this->respondHttp500();
         }
     }
 
