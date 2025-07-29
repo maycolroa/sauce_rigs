@@ -72,7 +72,10 @@
           Consultas tus dudas sobre el Código CIE 11
         </div>
         <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">            
-              <vue-textarea class="col-md-12" v-model="question" label="Pregunta" name="question" placeholder="Escribe la pregunta que quieres consultar"></vue-textarea>
+              <vue-textarea class="col-md-12" v-model="question" label="Pregunta" name="question" placeholder="Escribe la pregunta que quieres consultar"></vue-textarea>              
+
+              <loading-block text="Cargando respuesta" v-if="loadingAnswer"/>
+
               <vue-textarea v-if="answer" class="col-md-12" v-model="answer" label="Respuesta" name="answer" placeholder="" rows="6"></vue-textarea>
         </b-card>
 
@@ -797,7 +800,8 @@ export default {
         {text: 'Ambos', value: 'Ambos'}
       ],
       question: '',
-      answer: ''
+      answer: '',
+      loadingAnswer: false
     };
   },
   methods: {
@@ -971,18 +975,22 @@ export default {
     },
     showConsulting() {
       this.$refs.modalConsulting.show()
+      this.loadingAnswer = false;
     },
     hideConsulting() {
       this.$refs.modalConsulting.hide()
       this.question = '';
       this.answer = '';
+      this.loadingAnswer = false;
     },
     consultingQuestion(question) {
+      this.loadingAnswer = true;
       let postData = Object.assign({question: question});
 
           axios.post('/biologicalmonitoring/reinstatements/check/consultingCie11Chatbot', postData)
             .then(response => {
                 this.answer = response.data;
+                this.loadingAnswer = false;
             }).catch(error => {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             });
