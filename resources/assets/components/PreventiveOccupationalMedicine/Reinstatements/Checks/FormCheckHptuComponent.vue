@@ -765,6 +765,8 @@ export default {
     }
 
     this.getMessageIncapacitate();
+    
+    this.loadingAnswer = false;
 
     setTimeout(() => {
       this.disableWacth = false
@@ -992,6 +994,7 @@ export default {
                 this.answer = response.data;
                 this.loadingAnswer = false;
             }).catch(error => {
+                this.loadingAnswer = false;
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             });
     },
