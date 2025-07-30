@@ -22,6 +22,8 @@ trait UserTrait
             $user = new User($request->all());
             $tok = Hash::make($user->document . str_random(10));
             $user->api_token = str_replace("/", "a", $tok);
+            $tokLogin = Hash::make($user->document . str_random(10));
+            $user->token_login = str_replace("/", "a", $tokLogin);
             
             $generatePasswordUser = new GeneratePasswordUser();
 

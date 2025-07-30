@@ -161,7 +161,10 @@ class UserImport implements ToCollection, WithCalculatedFormulas
                     $user->document = $data['documento_usuario'];
                     $user->medical_record = $data['registro_medico'];
                     $user->sst_license = $data['licencia_sst'];
-                    $user->api_token = Hash::make($data['documento_usuario'] . str_random(10));
+                    $api_token = Hash::make($data['documento_usuario'] . str_random(10));
+                    $user->api_token = str_replace("/", "a", $api_token);
+                    $token_login = Hash::make($data['documento_usuario'] . str_random(10));
+                    $user->token_login = str_replace("/", "a", $token_login);
                     $user->save();
 
                     $user->companies()->sync($this->company_id);
