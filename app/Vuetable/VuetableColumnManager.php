@@ -46,6 +46,7 @@ class VuetableColumnManager
         'legalaspectslmlawsqualify',
         'reinstatementschecks',
         'reinstatementschecksform',
+        'reinstatementschecksinforms',
         'dangerousconditionsinspections',
         'dangerousconditionsinspectionsqualification',
         'dangerousconditionsinspectionsreport',
@@ -558,6 +559,24 @@ class VuetableColumnManager
     public function reinstatementschecksform()
     {
         return $this->reinstatementschecks();
+    }
+
+    public function reinstatementschecksinforms()
+    {
+        $formModel = $this->getFormModel('table_check');
+
+        $colums = [
+            ['name' => 'sau_reinc_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_reinc_checks.disease_origin', 'data'=> 'tipo_evento', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],   
+            ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'cie10', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_reinc_checks.code', 'data'=> 'actualizo', 'title'=> '¿Actualizo a Cie 11?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],         
+            ['name' => 'sau_reinc_cie11_codes.code', 'data'=> 'cie11', 'title'=> 'Código CIE 11', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees.name', 'data'=> 'name_employee', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+
+        return $colums;
     }
 
     /**

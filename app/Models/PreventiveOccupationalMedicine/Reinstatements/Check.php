@@ -650,6 +650,9 @@ class Check extends Model
 
     public function scopeInCodCie($query, $codsCie, $typeSearch = 'IN')
     {
+        if (!is_array($codsCie))
+            $codsCie = $codsCie ? $codsCie->toArray() : [];
+
         if ($codsCie && is_array($codsCie) && COUNT($codsCie) > 0)
         {
             if ($typeSearch == 'IN')
@@ -657,6 +660,23 @@ class Check extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_reinc_checks.cie10_code_id', $codsCie);
+        }
+
+        return $query;
+    }
+
+    public function scopeInCodCie11($query, $codsCie, $typeSearch = 'IN')
+    {
+        if (!is_array($codsCie))
+            $codsCie = $codsCie ? $codsCie->toArray() : [];
+
+        if ($codsCie && is_array($codsCie) && COUNT($codsCie) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.cie11_code_id', $codsCie);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.cie11_code_id', $codsCie);
         }
 
         return $query;

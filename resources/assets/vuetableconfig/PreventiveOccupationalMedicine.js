@@ -525,6 +525,25 @@ export default [
   }
 },
 {
+  name: 'reinstatements-checks-informs',
+  fields: [
+      { name: 'sau_reinc_checks.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+  ],
+  'controlls': [{
+      type: 'push',
+      buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }
+  ],
+  configuration: {
+      urlData: '/biologicalmonitoring/reinstatements/check/informsTable',
+      filterColumns: true
+  }
+},
+{
   name: 'reinstatements-checks-form',
   fields: [
       { name: 'sau_reinc_checks.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

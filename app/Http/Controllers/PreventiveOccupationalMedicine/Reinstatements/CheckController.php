@@ -100,6 +100,12 @@ class CheckController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            if (isset($filters["cie10"]))
+                $checks->inCodCie($this->getValuesForMultiselect($filters["cie10"]), $filters['filtersType']['cie10']);
+
+            if (isset($filters["cie11"]))
+                $checks->inCodCie11($this->getValuesForMultiselect($filters["cie11"]), $filters['filtersType']['cie11']);
+            
             if (isset($filters["identifications"]))
                 $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
 

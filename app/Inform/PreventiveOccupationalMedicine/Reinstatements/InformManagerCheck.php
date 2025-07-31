@@ -83,7 +83,7 @@ class InformManagerCheck
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10, $headquarters_filters = [], $processes = [], $areas = [])
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10, $headquarters_filters = [], $processes = [], $areas = [], $cie11)
     {
         $this->identifications = $identifications;
         $this->names = $names;
@@ -105,6 +105,7 @@ class InformManagerCheck
         $this->locationForm = $this->getLocationFormConfModule();
         $this->company = $company_id;
         $this->cie10 = $cie10->toArray();
+        $this->cie11 = $cie11->toArray();
     }
 
     /**
@@ -954,7 +955,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
-        //->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie11_codes.category')
         ->orderBy('count_per_cie11_code');

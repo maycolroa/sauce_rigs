@@ -140,6 +140,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('check/data', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@data');
           Route::ApiResource('check', 'PreventiveOccupationalMedicine\Reinstatements\CheckController');
           Route::post('check/informs', 'PreventiveOccupationalMedicine\Reinstatements\CheckInformController@data');
+          Route::post('check/informsTable', 'PreventiveOccupationalMedicine\Reinstatements\CheckInformController@dataReport');
           Route::put('check/switchStatus/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@toggleState');
           Route::post('check/tracingOthers', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@tracingOthers');
           Route::get('check/downloadFile/{file}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadFile');

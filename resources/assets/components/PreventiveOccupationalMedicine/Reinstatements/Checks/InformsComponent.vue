@@ -461,6 +461,21 @@
                             </b-card>
                         </div>
                     </b-tab>
+                    <b-tab v-if="form == 'hptu'">
+                        <template slot="title">
+                            <strong>Reportes cambios de Código Cie10 a Código Cie11</strong> 
+                        </template>
+                        <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+                            <b-card border-variant="primary" title="Reportes cambios de Código Cie10 a Código Cie11" class="mb-3 box-shadow-none">
+                                <vue-table
+                                    ref="tableCie10Cie11"
+                                    configName="reinstatements-checks-informs"
+                                    :customColumnsName="true"
+                                    :params="{filters}"
+                                ></vue-table>
+                            </b-card>
+                        </div>
+                    </b-tab>
                 </b-tabs>
             </b-card>
         </b-form-row>
@@ -618,12 +633,17 @@ export default {
     watch: {
         filters: {
             handler(val){
+                this.$refs.tableCie10Cie11.refresh()
                 this.fetch()
             },
             deep: true
         }
     },
     methods: {
+        setFilters(value)
+        {
+            this.filters = value
+        },
         fetch()
         {
             if (!this.isLoading)
