@@ -105,7 +105,7 @@ class CheckController extends Controller
 
             if (isset($filters["cie11"]))
                 $checks->inCodCie11($this->getValuesForMultiselect($filters["cie11"]), $filters['filtersType']['cie11']);
-            
+
             if (isset($filters["identifications"]))
                 $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
 
@@ -1269,6 +1269,7 @@ class CheckController extends Controller
 
     public function downloadPdf($id)
     {
+        
         $check = Check::select('sau_reinc_checks.*')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);

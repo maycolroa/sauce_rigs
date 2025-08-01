@@ -137,23 +137,59 @@
                 @endif
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <th colspan="2">Código CIE 10</th>
-                    
+                    @elseif($check->use_cie_10 == 'Cie 11')      
+                    <th colspan="2">Código CIE 11</th>
+                    @endif
                 </tr>
                 <tr>
                     <td>{{$check->disease_origin}}</td>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <td colspan="2">{{$check->cie10Code->code}} - {{$check->cie10Code->description}}</td>
+                    @elseif($check->use_cie_10 == 'Cie 11')      
+                    <td colspan="2">{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
+                    @endif
+                    
                 </tr>
                 <tr>
-                    <th>Sistema</th>
-                    <th>Categoría</th>
-                    <th>Lateralidad</th>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
+                    <th>Sistema Cie 10</th>
+                    <th>Categoría  Cie 10</th>
+                    @elseif($check->use_cie_10 == 'Cie 11') 
+                    <th>Sistema Cie 11</th>
+                    <th>Categoría  Cie 11</th>
+                    @endif  
+                    <th>Lateralidad</th> 
                 </tr>
                 <tr>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <td>{{$check->cie10Code->system}}</td>
                     <td>{{$check->cie10Code->category}}</td>
+                    @elseif($check->use_cie_10 == 'Cie 11')  
+                    <td>{{$check->cie11Code->system}}</td>
+                    <td>{{$check->cie11Code->category}}</td>  
+                    @endif  
                     <td>{{$check->laterality}}</td>
                 </tr>   
+                <tr>
+                    <th colspan="3">¿Se actualizo a Código Cie 11?</th>
+                </tr>
+                <tr>
+                    <td colspan="3">{{$check->update_cie_11}}</td>
+                </tr> 
+                @if($check->use_cie_10 == 'Ambos' || $check->update_cie_11 == 'SI')
+                <tr>     
+                    <th>Código CIE 11</th>
+                    <th>Sistema CIE 11</th>
+                    <th>Categoría CIE 11</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
+                    <td>{{$check->cie11Code->system}}</td>
+                    <td>{{$check->cie11Code->category}}</td>  
+                </tr>
+                @endif 
             </thead>
         </table>
     </div>
@@ -257,22 +293,26 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <th>¿Tiene Restricción?</th>
-                    @if($check->has_restrictions == 'SI')
+                    @if($check->has_restrictions == 'NO')
+                    <th colspan="3">¿Tiene Restricción?</th>
+                    @elseif($check->has_restrictions == 'SI')
+                    <th colspan="2">¿Tiene Restricción?</th>
                     <th>Parte del cuerpo afectada</th>
                     @endif
                 </tr>
                 <tr>
-                    <td>{{$check->has_restrictions}}</td>
-                    @if($check->has_restrictions == 'SI')
-                    <td>{{$check->restriction->name}}</td>
+                    @if($check->has_restrictions == 'NO')
+                     <td colspan="3">{{$check->has_restrictions}}</td>
+                    @elseif($check->has_restrictions == 'SI')
+                     <td colspan="2">{{$check->has_restrictions}}</td>
+                     <td>{{$check->restriction->name}}</td>
                     @endif
                 </tr>
                 <tr>
-                    <th colspan="2">¿Tiene estabilidad laboral reforzada?</th>
+                    <th colspan="3">¿Tiene estabilidad laboral reforzada?</th>
                 </tr>
                 <tr>
-                    <td colspan="2">{{$check->reinforced_job_stability}}</td>
+                    <td colspan="3">{{$check->reinforced_job_stability}}</td>
                 </tr>
             </thead>
         </table>
