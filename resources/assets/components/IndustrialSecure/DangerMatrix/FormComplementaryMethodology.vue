@@ -85,7 +85,8 @@ export default {
 			typeOptions: [
 				{name: 'Psicosocial', value: 'Psicosocial'},
 				{name: 'Carga fisica', value: 'Carga fisica'},
-				{name: 'Químico', value: 'Químico'}
+				{name: 'Químico', value: 'Químico'},				
+				{name: 'Riesgos viales', value: 'Riesgos viales'}
 			]
 		};
 	},
