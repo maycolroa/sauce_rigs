@@ -21,8 +21,7 @@
           <i class="ion ion-md-person display-2 d-block text-info"></i>
         </div>
         <br><br>
-        <p class="text-center"><b>Pensando en tu seguridad, hemos implementado doble autentificación para el ingreso a SAUCE.
-           Este cambio lo podras ver reflejado a partir de la proxima semana 5/05/2025.</b></p>
+        <p class="text-center"><b>Hemos activado la doble autenticación para proteger tu cuenta. Ahora, el acceso a SAUCE es más seguro.</b></p>
       </b-modal>
 
       <!-- Form -->
