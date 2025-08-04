@@ -853,6 +853,7 @@ class CheckController extends Controller
             sau_employees.identification AS identification,
             sau_employees_positions.name AS position,
             sau_reinc_cie10_codes.description AS diagnosis,
+            sau_reinc_cie11_codes.description AS diagnosisCie11,
             sau_reinc_checks.disease_origin AS disease_origin,
             sau_reinc_checks.start_recommendations AS start_recommendations,
             sau_reinc_checks.end_recommendations AS end_recommendations,
@@ -865,6 +866,7 @@ class CheckController extends Controller
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
         ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', 'sau_reinc_checks.cie11_code_id')
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
@@ -906,6 +908,10 @@ class CheckController extends Controller
         else if ($formModel == 'chia')
         {
             $pdf = PDF::loadView('pdf.tracingChia', $data);
+        }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.tracingHptu', $data);
         }
 
         return $pdf->stream('seguimiento.pdf');
