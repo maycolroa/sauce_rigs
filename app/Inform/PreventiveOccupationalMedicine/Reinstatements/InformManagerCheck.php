@@ -100,12 +100,12 @@ class InformManagerCheck
         $this->medicalCertificates = $medicalCertificates;
         $this->relocatedTypes = $relocatedTypes;
         $this->filtersType = $filtersType;
+        $this->cie10 = $cie10->toArray();
+        $this->cie11 = $cie11->toArray();
         $this->formModel = $this->getFormModel('form_check');
         $this->totalChecks = $this->getTotalChecks();
         $this->locationForm = $this->getLocationFormConfModule();
         $this->company = $company_id;
-        $this->cie10 = $cie10->toArray();
-        $this->cie11 = $cie11->toArray();
     }
 
     /**
@@ -154,6 +154,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
         if (COUNT($this->headquarters_filters))
@@ -194,6 +195,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
         if (COUNT($this->headquarters_filters))
@@ -234,6 +236,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
 
@@ -277,6 +280,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->whereRaw("YEAR(sau_reinc_checks.created_at) = ".date('Y'). " AND MONTH(sau_reinc_checks.created_at) = ".date('m'));
 
@@ -561,6 +565,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('month');
 
@@ -642,6 +647,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('year');
 
@@ -723,6 +729,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column)
@@ -779,6 +786,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         //->where($column, '<>', '')
         ->groupBy('motive_close')
@@ -863,7 +871,8 @@ class InformManagerCheck
         ")
         ->isOpen()
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', '=', 'sau_reinc_checks.cie11_code_id')
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
@@ -871,6 +880,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie10_codes.category')
         ->orderBy('count_per_cie10_code');
@@ -948,13 +958,15 @@ class InformManagerCheck
         ")
         ->isOpen()
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->join('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', '=', 'sau_reinc_checks.cie11_code_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', '=', 'sau_reinc_checks.cie11_code_id')
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie11_codes.category')
@@ -1045,6 +1057,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name')
         ->orderBy('count');
