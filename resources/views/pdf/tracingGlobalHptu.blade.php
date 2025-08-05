@@ -31,7 +31,7 @@
     <b>Fecha de seguimiento: </b>{{$check->monitoring_recommendations}}<br>
     <b>Cargo: </b>{{$check->position}}<br>
     <b>Área o unidad: </b>{{$check->headquarter}}<br>
-    <b>Diagnóstico Cie10: </b>{{$check->diagnosis}}<br>
+    <b>Diagnóstico CIE10: </b>{{$check->diagnosis}}<br>
     @if($check->diagnosisCie11)
     <b>Diagnóstico CIE11: </b>{{$check->diagnosisCie11}}<br>
     @endif
