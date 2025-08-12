@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\IndustrialSecure\DangerMatrix\DangerMatrixImport;
+use App\Imports\IndustrialSecure\DangerMatrix\DangerMatrixUpdateMassive;
 use App\Models\General\LogFilesImport;
 
 class DangerMatrixImportJob implements ShouldQueue
