@@ -350,7 +350,9 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
-            if ($formModel == 'hptu')
+            $formModel = $formModel ? $formModel : 'default';
+
+            if ($formModel == 'hptu' || $formModel == 'default')
             {
                 if ($check->use_cie_10 && $check->use_cie_10 == 'cie 10')
                     $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);

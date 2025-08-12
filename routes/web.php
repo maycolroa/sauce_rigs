@@ -152,6 +152,7 @@ Route::middleware(['auth'])->group(function () {
           Route::get('check/generatePdf/{id}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@regenerateLetter');
 
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
+          Route::ApiResource('cie11', 'PreventiveOccupationalMedicine\Reinstatements\Cie11Controller')->only('show');
 
           Route::post('diseaseOrigin/data', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController@data');
           Route::ApiResource('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController');

@@ -172,12 +172,14 @@
                     @endif  
                     <td>{{$check->laterality}}</td>
                 </tr>   
+               @if(!$check->cie11_code_id)
                 <tr>
                     <th colspan="3">¿Se actualizo a Código Cie 11?</th>
                 </tr>
                 <tr>
                     <td colspan="3">{{$check->update_cie_11}}</td>
                 </tr> 
+                @endif
                 @if($check->use_cie_10 == 'Ambos' || $check->update_cie_11 == 'SI')
                 <tr>     
                     <th>Código CIE 11</th>

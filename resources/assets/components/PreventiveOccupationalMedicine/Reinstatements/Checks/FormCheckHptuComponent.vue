@@ -686,7 +686,7 @@ export default {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
     },
     'form.cie11_code_id': function() {
-      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie11_code_id}`, 'cie11CodeDetail');
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie11/${this.form.cie11_code_id}`, 'cie11CodeDetail');
     },
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
