@@ -58,7 +58,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
       $this->user = $user;
       $this->company_id = $company_id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
-      $this->dangerMatrix = DangerMatrix::withoutGlobalScopes()->where('company_id', 1)->pluck('id');
+      $this->dangerMatrix = DangerMatrix::withoutGlobalScopes()->where('company_id', $this->company_id)->pluck('id');
     }
 
     public function collection(Collection $rows)
