@@ -194,23 +194,23 @@
                                 <div class="rounded ui-bordered p-3 mb-3">
                                   <div v-if="file.apply_file == 'SI'">
                                     <b-form-row>
-                                      <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
-                                      <vue-radio :disabled="viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
+                                      <vue-input :disabled="file.id || viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)" help-text="El nombre no debe contener caracteres especiales como '/', '.'"/>
+                                      <vue-radio :disabled="file.id || viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
                                       </vue-radio>
                                     </b-form-row>
                                     <b-form-row  v-if="file.required_expiration_date == 'SI'">
 
-                                      <vue-datepicker v-if="auth.company_id == 712" :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
-                                      <vue-datepicker v-else :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
+                                      <vue-datepicker v-if="auth.company_id == 712" :disabled="file.id || viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
+                                      <vue-datepicker v-else :disabled="file.id || viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
                                     </b-form-row>
 
                                     <b-form-row>
-                                      <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                      <vue-file-simple :disabled="file.id || viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
                                     </b-form-row>
                                   </div>
                                   <div v-if="file.apply_file == 'NO'">
                                     <b-form-row>
-                                      <vue-textarea class="col-md-12" v-model="file.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="viewOnly"></vue-textarea>
+                                      <vue-textarea class="col-md-12" v-model="file.apply_motive" label="Motivo por el cual no aplica" name="apply_motive" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.apply_motive`)" placeholder="Motivo por el cual no aplica" :disabled="file.id || viewOnly"></vue-textarea>
                                     </b-form-row>
                                   </div>
                                   <b-form-row>

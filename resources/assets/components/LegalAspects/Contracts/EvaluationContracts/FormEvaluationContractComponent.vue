@@ -207,7 +207,7 @@
                                                         <thead class="bg-secondary">
                                                             <tr>
                                                             <th scope="col" class="align-middle text-center">#</th>
-                                                            <th scope="col" class="align-middle">Descripción</th>
+                                                            <th scope="col" class="align-middle colunmFija">Descripción</th>
                                                             <template v-for="(type, indexType) in form.evaluation.types_rating">
                                                                 <th scope="col" class="align-middle text-center" :key="indexType">{{ type.name }}</th>
                                                             </template>
@@ -245,11 +245,11 @@
                                                                     </div>
                                                                   </b-modal>
                                                                 </td>                  
-                                                                <td style="padding: 0px;">
-                                                                <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
+                                                                <td style="padding: 0px;" class="colunmFija">
+                                                                    <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
                                                                 </td>
                                                                 <template v-for="(type, indexType) in form.evaluation.types_rating">
-                                                                <td :key="indexType" class="align-middle text-nowrap" style="padding: 0px;">
+                                                                <td :key="indexType" class="align-middle" style="padding: 0px;">
                                                                     <center>
 
                                                                     <template v-if="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].apply == 'SI'">
@@ -617,5 +617,9 @@ export default {
     position: fixed;
     bottom: 0px;
     right: 0px; 
+}
+.colunmFija {
+    width: 35%;
+    min-width: 35%;
 }
 </style>
