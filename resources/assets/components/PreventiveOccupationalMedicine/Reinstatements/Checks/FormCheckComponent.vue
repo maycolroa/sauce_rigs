@@ -112,10 +112,10 @@
             <b-form-row>
               <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie11_code_id" :error="form.errorsFor('cie11_code_id')" :selected-object="form.multiselect_cie11Code" name="cie11_code_id" label="Código CIE 11" placeholder="Seleccione una opción" :url="cie11CodesDataUrl"> </vue-ajax-advanced-select>
             </b-form-row>
-            <b-form-row>
+            <!--<b-form-row>
               <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
               <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
-            </b-form-row>
+            </b-form-row>-->
           </b-card>
 
           <b-form-row>

@@ -116,8 +116,8 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
         $data->update_cie_11 ?  $data->update_cie_11 : NULL,
         $data->cie11Code ? $data->cie11Code->code : NULL,
         $data->cie11Code ? $data->cie11Code->description : NULL,
-        $data->cie11Code ? $data->cie11Code->system : NULL,
-        $data->cie11Code ? $data->cie11Code->category : NULL,
+        /*$data->cie11Code ? $data->cie11Code->system : NULL,
+        $data->cie11Code ? $data->cie11Code->category : NULL,*/
 
         $data->laterality,
         $data->has_recommendations,
@@ -171,8 +171,8 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
         '¿Se actualizo a Código Cie 11?',
         'Código CIE11',
         'Descripción CIE11',
-        'Sistema CIE11',
-        'Categoría CIE11',
+        /*'Sistema CIE11',
+        'Categoría CIE11',*/
         'Lateralidad',
         '¿Tiene recomendaciones?',
         'Fecha Inicio Recomendaciones',

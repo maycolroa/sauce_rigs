@@ -182,14 +182,14 @@
                 @endif
                 @if($check->use_cie_10 == 'Ambos' || $check->update_cie_11 == 'SI')
                 <tr>     
-                    <th>Código CIE 11</th>
-                    <th>Sistema CIE 11</th>
-                    <th>Categoría CIE 11</th>
+                    <th colspan="3">Código CIE 11</th>
+                    <!--<th>Sistema CIE 11</th>
+                    <th>Categoría CIE 11</th>-->
                 </tr>
                 <tr>
-                    <td>{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
-                    <td>{{$check->cie11Code->system}}</td>
-                    <td>{{$check->cie11Code->category}}</td>  
+                    <td colspan="3">{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
+                    <!--<td>{{$check->cie11Code->system}}</td>
+                    <td>{{$check->cie11Code->category}}</td>  -->
                 </tr>
                 @endif 
             </thead>
