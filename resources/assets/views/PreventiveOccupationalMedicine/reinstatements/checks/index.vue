@@ -13,7 +13,7 @@
             <b-btn v-if="auth.can['reinc_checks_c']" :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Caso</b-btn>
             <b-btn v-if="auth.can['reinc_checks_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="!auth.hasRole['Rol Visor Reincorporaciones']" :to="{name:'reinstatements-checks-letter-regenerate'}" variant="primary">Consulta de Cartas</b-btn>
-            <b-btn v-if="auth.hasRole['Superadmin']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <!--<b-btn v-if="auth.hasRole['Superadmin']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>-->
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>
           </div>
         </b-card-header>
