@@ -246,7 +246,7 @@
                                                                   </b-modal>
                                                                 </td>                  
                                                                 <td style="padding: 0px;" class="colunmFija">
-                                                                    <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
+                                                                    <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="3"></vue-textarea>
                                                                 </td>
                                                                 <template v-for="(type, indexType) in form.evaluation.types_rating">
                                                                 <td :key="indexType" class="align-middle" style="padding: 0px;">
