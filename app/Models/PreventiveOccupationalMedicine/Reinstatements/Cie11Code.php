@@ -12,6 +12,8 @@ class Cie11Code extends Model
      * @var string
      */
     protected $table = 'sau_reinc_cie11_codes';
+    
+    protected $fillable = ['code', 'description'];
 
     public function multiselect()
     {

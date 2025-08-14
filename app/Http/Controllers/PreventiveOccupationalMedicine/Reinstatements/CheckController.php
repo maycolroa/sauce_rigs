@@ -20,6 +20,7 @@ use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
+use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckImportCie11Job;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
 use App\Facades\Mail\Facades\NotificationMail;
@@ -1778,6 +1779,18 @@ class CheckController extends Controller
             \Log::info('Error de conexión o inesperado al consultar la API POST: ' . $e->getMessage());            
             return $this->respondHttp500();
         }
+    }
+
+    public function importCie11(Request $request)
+    {
+      try
+      {
+        CheckImportCie11Job::dispatch($request->file);
+      
+        return $this->respondHttp200();
+      } catch(Exception $e) {
+        return $this->respondHttp500();
+      }
     }
 
 }
