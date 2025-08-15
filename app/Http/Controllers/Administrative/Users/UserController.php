@@ -930,7 +930,6 @@ class UserController extends Controller
 
         if (COUNT($users_ids) > 0 && COUNT($companies_ids) > 0)
         {
-            \Log::info('entro a la consulta de usuarios');
             $users = User::select(
                         "sau_users.id AS id",
                         DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
@@ -946,11 +945,8 @@ class UserController extends Controller
                     ->where('sau_users.active', 'SI')                
                     ->groupBy('id');
 
-                    \Log::info($users->toSql());
                     $users = $users->pluck('id', 'name');
         }
-
-        \Log::info($this->multiSelectFormat($users));
                 
         return $this->multiSelectFormat($users);
     }
