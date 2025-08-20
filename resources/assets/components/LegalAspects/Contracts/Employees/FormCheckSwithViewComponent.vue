@@ -2,26 +2,11 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <div class="col-md-12">
-      <p class="text-center text-big mb-4" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista'] || auth.company_id == 722">
-        ¿Está seguro que desea cambiar el estado del empleado seleccionado?
-      </p>
-      <p class="text-center text-big mb-4" v-else>
+      <p class="text-center text-big mb-4">
         Estado del empleado.
       </p>
-    </div>
-    <div class="col-md-12" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista'] || auth.company_id == 722">
-      <center>
-        <b-form-row v-if="form.state_employee">
-          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de inactivacion" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline">
-                </vue-datepicker>
-        </b-form-row>
-
-        <b-form-row v-if="form.state_employee">
-          <vue-input class="col-md-12" v-model="form.motive_inactivation" label="Motivo de inactivación" type="text" name="motive_inactivation" :error="form.errorsFor('motive_inactivation')" placeholder="Motivo"/>
-        </b-form-row>
-      </center>
     </div>  
-    <div class="col-md-12" v-else>
+    <div class="col-md-12" >
       <center>
         <b-form-row>
           <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de inactivacion" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline" :disabled="true">
@@ -37,8 +22,7 @@
     <div class="col-md-12 pt-10 pr-10">
       <br>
       <center>
-        <b-btn variant="default" @click="refresh()" :disabled="loading">{{ !auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista'] ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-        <b-btn type="submit" :disabled="loading" variant="primary" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista'] || auth.company_id == 722">Finalizar</b-btn>
+        <b-btn variant="default" @click="refresh()" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
       </center>
     </div>
   </b-form>
@@ -93,15 +77,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          if (!this.auth.hasRole['Arrendatario'] && !this.auth.hasRole['Contratista'])
-          {
-            window.location =  "/legalaspects/employees/view/contract/"+this.form.contract_id
-          }
-          else
-          {
-            this.$router.push({ name: "legalaspects-contracts-employees" });
-          }
-          
+          this.$router.push({ name: "legalaspects-contracts-employees" });
         })
         .catch(error => {
           this.loading = false;

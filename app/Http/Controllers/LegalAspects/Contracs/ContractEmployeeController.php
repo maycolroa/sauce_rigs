@@ -125,6 +125,7 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.position AS position',
             'sau_ct_contract_employees.identification AS identification',
             'sau_ct_contract_employees.state as state',
+            'sau_ct_contract_employees.company_id as company_id',
             DB::raw('GROUP_CONCAT(CONCAT(" ", sau_ct_proyects.name) ORDER BY sau_ct_proyects.name ASC) as proyects'),
             DB::raw("case when sau_ct_contract_employees.state_employee is true then 'Activo' else 'Inactivo' end as state_employee"),
             DB::raw("case when sau_ct_contract_employees.liquidated is true then 'SI' else 'NO' end as liquidated")
@@ -154,6 +155,12 @@ class ContractEmployeeController extends Controller
 
         return Vuetable::of($employees)
             ->addColumn('legalaspects-contracts-employees-switchStatus', function ($employee) {
+                if ($employee->company_id == 722)
+                    return true;
+                else
+                    return false;
+            })
+            ->addColumn('legalaspects-contracts-employees-switchStatus-view', function ($employee) {
                 if ($employee->state_employee == 'Inactivo')
                     return true;
                 else

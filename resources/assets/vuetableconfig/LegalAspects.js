@@ -1017,10 +1017,24 @@ export default [
                     color: 'outline-danger',
                     borderless: true,
                     icon: 'fas fa-sync',
-                    title: 'Ver estado'
+                    title: 'Cambiar estado'
                 },
                 data: {
                     routePush: { name: 'legalaspects-contracts-employees-switchStatus' },
+                    //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+                    id: 'id'
+                },
+                permission: 'contracts_r'
+            },
+            {
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver estado'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-employees-switchStatus-view' },
                     //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
                     id: 'id'
                 },
