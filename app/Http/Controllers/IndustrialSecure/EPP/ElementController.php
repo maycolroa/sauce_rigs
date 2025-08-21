@@ -80,6 +80,7 @@ class ElementController extends Controller
      */
     public function store(ElementRequest $request)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -116,11 +117,18 @@ class ElementController extends Controller
             ]
         ])->validate();
 
+        $mark = [];
+        $types = [];
+        $standar_apply = [];
+
         $types = $this->tagsPrepare($request->get('type'));
         $this->tagsSave($types, TagsType::class);
 
-        $mark = $this->tagsPrepare($request->get('mark'));
-        $this->tagsSave($mark, TagsMark::class);
+        if  ($request->has('mark') && !is_array($request->mark[0]['name']))
+        {
+            $mark = $this->tagsPrepare($request->get('mark'));
+            $this->tagsSave($mark, TagsMark::class);
+        }
 
         $standar_apply = $this->tagsPrepare($request->get('applicable_standard'));
         $this->tagsSaveSystemCompany($standar_apply, TagsApplicableStandard::class);
@@ -135,7 +143,7 @@ class ElementController extends Controller
         $element->class_element = $request->class_element;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
-        $element->applicable_standard = $standar_apply->implode(',');
+        $element->applicable_standard = COUNT($standar_apply) > 0 ? $standar_apply->implode(',') : NULL;
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
         $element->identify_each_element = false;
@@ -144,7 +152,7 @@ class ElementController extends Controller
         $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;
         $element->company_id = $this->company;
         $element->type = $types->implode(',');
-        $element->mark = $mark->implode(',');
+        $element->mark = COUNT($mark) > 0 ? $mark->implode(',') : NULL;
         $element->cost = $request->cost;
         
         if(!$element->save())

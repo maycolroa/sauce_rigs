@@ -112,7 +112,9 @@ class FileUploadController extends Controller
           if (isset($filters['contracts']))
             $files->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
 
-          $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
+          if (isset($filters['items']))
+            $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
+          
           $files->betweenCreated($filters["dateCreate"]);
           $files->betweenUpdated($filters["dateUpdate"]);
 
