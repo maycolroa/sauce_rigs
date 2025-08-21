@@ -204,7 +204,7 @@
                                     </b-form-row>
 
                                     <b-form-row>
-                                      <vue-file-simple :disabled="file.id || viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                      <vue-file-simple :disabled="file.edit_document || viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
                                     </b-form-row>
                                   </div>
                                   <div v-if="file.apply_file == 'NO'">
@@ -471,7 +471,8 @@ export default {
 				file: '',
 				required_expiration_date: 'SI',
 				required_date: required,
-        apply_file: 'SI'
+        apply_file: 'SI',
+        edit_document: true
 			}
 
 	      documento.files.push(content);

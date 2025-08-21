@@ -529,6 +529,7 @@ class ContractLesseeController extends Controller
                         $file->reason_rejection = $file->reason_rejection;
                         $file->apply_file = $file->apply_file;
                         $file->apply_motive = $file->apply_motive;
+                        $file->edit_document = false;
 
                         $apply_motive = $file->apply_motive;
                         $apply_file = $file->apply_file;
@@ -1179,7 +1180,7 @@ class ContractLesseeController extends Controller
                 },
             ],
             "items.*.files.*.name" => [
-                function ($attribute, $value, $fail) 
+                function ($attribute, $value, $fail) use ($request)
                 {
                     if ($value && is_string($value))
                     {

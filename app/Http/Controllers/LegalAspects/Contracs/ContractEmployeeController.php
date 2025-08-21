@@ -1134,6 +1134,7 @@ class ContractEmployeeController extends Controller
                         $file->reason_rejection = $file->reason_rejection;
                         $file->apply_file = $file->apply_file;
                         $file->apply_motive = $file->apply_motive;
+                        $file->edit_document = false;
 
                         $apply_motive = $file->apply_motive;
                         $apply_file = $file->apply_file;
