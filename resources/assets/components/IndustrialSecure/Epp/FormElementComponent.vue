@@ -25,7 +25,7 @@
 
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.cost" label="Costo" type="number" name="cost" :error="form.errorsFor('cost')" placeholder="Costo"></vue-input>
-      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" name="description" ::error="form.errorsFor('description')"  placeholder="Descripción"></vue-textarea>
+      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" name="description" :error="form.errorsFor('description')"  placeholder="Descripción"></vue-textarea>
     </b-form-row>
 
     <b-form-row>
