@@ -160,7 +160,7 @@
 												</b-form-row>
 
 				                                  <b-form-row>
-				                                    <vue-file-simple :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" :maxFileSize="20" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.files.${indexFile}.file`)" :disabled="file.edit_document"/>
+				                                    <vue-file-simple :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" :maxFileSize="20" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.files.${indexFile}.file`)" :disabled="!file.edit_document"/>
 				                                  </b-form-row>
 
 				                                </div>
