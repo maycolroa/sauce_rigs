@@ -41,12 +41,12 @@ class ConfigurationController extends Controller
 
         foreach ($request as $key => $value)
         {
-            if ($value && $key != 'multiselect_user_id')
+            if ($value && $key != 'multiselect_90_user_id' && $key != 'multiselect_180_user_id' && $key != 'multiselect_540_user_id' && $key != 'multiselect_user_id')
             {
-                if ($key == 'users_notify_element_expired')
+                if ($key == 'users_notify_element_expired' || $key == 'users_notify_stock_minimun' || $key == 'users_notify_expired_report' || $key == 'users_notify_incapacitated' || $key == 'users_notify_report_license' || $key == 'users_notify_criticality_level_inspections')
                     continue;
                     
-                if ($key == 'users_notify_expired_absenteeism_expired')
+                if ($key == 'users_notify_expired_absenteeism_expired_90' || $key == 'users_notify_expired_absenteeism_expired_180' || $key == 'users_notify_expired_absenteeism_expired_540')
                 {
                     $values = $this->getDataFromMultiselect($value);
 
@@ -84,29 +84,75 @@ class ConfigurationController extends Controller
 
             foreach ($data as $key => $value) 
             {
-                if ($key == 'users_notify_expired_absenteeism_expired')
+                if ($key == 'users_notify_expired_absenteeism_expired_90')
                 {
                     if ($value)
                     {
-                        $users = explode(',', $value);
+                        $users_90 = explode(',', $value);
 
-                        $multiselect = [];
+                        $multiselect_90 = [];
 
-                        foreach ($users as $email) 
+                        foreach ($users_90 as $email) 
                         {
                             $user = User::where('email', $email)->first();
 
                             if ($user)
-                                array_push($multiselect, $user->multiselect());
+                                array_push($multiselect_90, $user->multiselect());
+                        }
+                    }
+                }   
+                else if ($key == 'users_notify_expired_absenteeism_expired_180')
+                {
+                    if ($value)
+                    {
+                        $users_180 = explode(',', $value);
+
+                        $multiselect_180 = [];
+
+                        foreach ($users_180 as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            if ($user)
+                                array_push($multiselect_180, $user->multiselect());
+                        }
+                    }
+                }   
+                else if ($key == 'users_notify_expired_absenteeism_expired_540')
+                {
+                    if ($value)
+                    {
+                        $users_540 = explode(',', $value);
+
+                        $multiselect_540 = [];
+
+                        foreach ($users_540 as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            if ($user)
+                                array_push($multiselect_540, $user->multiselect());
                         }
                     }
                 }   
             }
 
-            if (isset($multiselect) && count($multiselect) > 0)
+            if (isset($multiselect_90) && count($multiselect_90) > 0)
             {
-                $data['users_notify_expired_absenteeism_expired'] = $multiselect;
-                $data['multiselect_user_id'] = $multiselect;
+                $data['users_notify_expired_absenteeism_expired_90'] = $multiselect_90;
+                $data['multiselect_90_user_id'] = $multiselect_90;
+            }
+
+            if (isset($multiselect_180) && count($multiselect_180) > 0)
+            {
+                $data['users_notify_expired_absenteeism_expired_180'] = $multiselect_180;
+                $data['multiselect_180_user_id'] = $multiselect_180;
+            }
+
+            if (isset($multiselect_540) && count($multiselect_540) > 0)
+            {
+                $data['users_notify_expired_absenteeism_expired_540'] = $multiselect_540;
+                $data['multiselect_540_user_id'] = $multiselect_540;
             }
 
             return $this->respondHttp200([

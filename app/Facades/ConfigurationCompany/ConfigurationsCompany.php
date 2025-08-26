@@ -53,10 +53,6 @@ class ConfigurationsCompany
             'expired_elements_asigned' => 'Notificar por vencimiento de elementos asignados',
             'days_alert_expiration_date_elements' => 'Dias de alerta por vencimiento de elementos asignados',
             'users_notify_element_expired' => 'Usuarios a notificar el vencimiento de los elementos asignados',
-            'users_notify_expired_absenteeism_expired' => 'Usuarios a notificar el vencimiento de las incapacidades',
-            'expired_absenteeism' => 'Notificar por vencimiento de reposos ausentismo',
-            'days_alert_expiration_date_absenteeism' => 'Dias de primera alerta por vencimiento de incapacidad',
-            'days_alert_expiration_date_absenteeism_2' => 'Dias de segunda alerta por vencimiento de incapacidad',
             'location_level_form_table_inspectiona' => 'Nivel de localización a mostrar en la tabla de inspecciones',
             'stock_minimun' => 'Notificar por existencia por debajo del stock minimo configurado por elemento',
             'users_notify_stock_minimun' => 'Usuarios a notifica por existencia minima',
@@ -89,7 +85,17 @@ class ConfigurationsCompany
             'legal_matrix_risk_opportunity' => 'Activa la funcionalidad de riesgos y oportunidades en las calificaciones de las leyes',
             'criticality_level_inspections' => 'Muestra nuevo campo en el formulario de inspecciones planeadas para asignar un nivel de criticidad a los items',
             'users_notify_criticality_level_inspections' => 'Uusarios a los cuales notificar la alerta por criticidad de alguno de los items',
-            'contracts_view_responsibles' => 'Permitir que solo los responsables de las contratistas puedan realizar alguna acción sobre ellas y todos los demas usuarios solo podran ver la informació que brinda la tabla'
+            'contracts_view_responsibles' => 'Permitir que solo los responsables de las contratistas puedan realizar alguna acción sobre ellas y todos los demas usuarios solo podran ver la informació que brinda la tabla',
+            'expired_absenteeism' => 'Notificar por vencimiento de reposos ausentismo',
+            'days_alert_expiration_date_absenteeism_90' => 'Primera alerta por vencimiento de incapacidad Ausentismo',
+            'users_notify_expired_absenteeism_expired_90' => 'Usuarios a notificar sobre la primera alerta por el vencimiento de las incapacidades Ausentismo',
+            'days_alert_expiration_date_absenteeism_180' => 'Segunda alerta por vencimiento de incapacidad Ausentismo',
+            'users_notify_expired_absenteeism_expired_180' => 'Usuarios a notificar sobre la segunda alerta por el vencimiento de las incapacidades Ausentismo',
+            'days_alert_expiration_date_absenteeism_540' => 'Tercera alerta por vencimiento de incapacidad Ausentismo',
+            'users_notify_expired_absenteeism_expired_540' => 'Usuarios a notificar sobre la tercera alerta por el vencimiento de las incapacidades Ausentismo',
+            'name_table_absenteeism' => 'Nombre de la tabla a analizar para el calculo de las alertas de ausentismo',
+            'name_column_fec_ini_absenteeism' => 'Nombre de la columna donde se guarda el valor de la fecha inicial de la incapacidad del empleado',
+            'name_column_fec_fin_absenteeism' => 'Nombre de la columna donde se guarda el valor de la fecha final de la incapacidad del empleado',
         ];
     }
 
