@@ -165,7 +165,6 @@ class LetterImport implements ToCollection, WithCalculatedFormulas
             {
                 foreach ($letters as $key => $letter) 
                 {
-                    \Log::info($letter);
                     $letter->update(
                         [
                             'detail' => $data['detail'],
