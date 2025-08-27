@@ -20,6 +20,7 @@ use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
+use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\LetterImportJob;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
 use App\Facades\Mail\Facades\NotificationMail;
@@ -1690,6 +1691,20 @@ class CheckController extends Controller
                     'role_visor' => 'SI'
                 ]
             );
+        }
+    }
+
+    public function importLetter(Request $request)
+    {
+        try
+        {
+            LetterImportJob::dispatch($request->file, $this->company, $this->user);
+        
+            return $this->respondHttp200();
+
+        } catch(Exception $e)
+        {
+            return $this->respondHttp500();
         }
     }
 

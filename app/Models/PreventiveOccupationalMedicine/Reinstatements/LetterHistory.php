@@ -18,7 +18,13 @@ class LetterHistory extends Model
         'to',
         'from',
         'subject',
-        'user_id'
+        'user_id',
+        'detail',
+        'start_recommendations',
+        'end_recommendations',
+        'indefinite_recommendations',
+        'origin_recommendations',
+        'disease_origin',
     ];
 
     public function multiselect()

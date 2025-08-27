@@ -169,6 +169,9 @@ Route::middleware(['auth'])->group(function () {
 
           Route::post('helpers/data', 'PreventiveOccupationalMedicine\Reinstatements\HelperController@data');
           Route::ApiResource('helpers', 'PreventiveOccupationalMedicine\Reinstatements\HelperController');
+
+          
+          Route::post('importLetter', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@importLetter');
           
         });
         
