@@ -95,7 +95,11 @@ class ConfigurationsCompany
             'users_notify_expired_absenteeism_expired_540' => 'Usuarios a notificar sobre la tercera alerta por el vencimiento de las incapacidades Ausentismo',
             'name_table_absenteeism' => 'Nombre de la tabla a analizar para el calculo de las alertas de ausentismo',
             'name_column_fec_ini_absenteeism' => 'Nombre de la columna donde se guarda el valor de la fecha inicial de la incapacidad del empleado',
-            'name_column_fec_fin_absenteeism' => 'Nombre de la columna donde se guarda el valor de la fecha final de la incapacidad del empleado',
+            'name_column_fec_fin_absenteeism' => 'Nombre de la columna donde se guarda el valor de la fecha final de la incapacidad del empleado', 
+            'name_column_employee_name_absenteeism' => 'Nombre de la columna donde se guarda el nombre del empleado incapacitado',
+            'name_column_employee_identification_absenteeism' => 'Nombre de la columna donde se guarda la identificacion del empleado incapacitado',
+            'name_column_cod_diag_absenteeism' => 'Nombre de la columna donde se guarda el valor del codigo CIE de la incapacidad del empleado',
+            'name_column_employee_description_diag_absenteeism' => 'Nombre de la columna donde se guarda el valor de la descripcion del CIE de la incapacidad del empleado',
         ];
     }
 

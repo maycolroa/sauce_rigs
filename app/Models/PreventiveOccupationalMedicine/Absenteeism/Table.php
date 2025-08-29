@@ -26,4 +26,12 @@ class Table extends Model
     protected $casts = [
         'columns' => 'collection'
     ];
+
+    public function multiselect()
+    {
+        return [
+          'name' => $this->name,
+          'value' => $this->id
+        ];
+    }
 }

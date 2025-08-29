@@ -245,4 +245,52 @@ class TableController extends Controller
             'message' => 'Se eliminarón los datos de la tabla'
         ]);
     }
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tables = Table::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tables)
+            ]);
+        }
+        else
+        {
+            $tables = Table::selectRaw("
+                sau_absen_tables.id as id,
+                sau_absen_tables.name as name
+            ")
+            ->orderBy('name')
+            ->pluck('id', 'name');
+
+            return $this->multiSelectFormat($tables);
+        }
+    }
+
+    public function multiselectColumns(Request $request)
+    {
+        $records = collect([]);
+
+        if (is_numeric($request->table))
+        {
+            $table = Table::find($request->table);
+
+            foreach ($table->columns['columns'] as $key => $value) 
+            {
+                $records->push(['name' => $value, 'id' => $value]);
+            }            
+
+            $records = $records->pluck('id', 'name');
+        }
+        
+        return $this->multiSelectFormat($records);
+    }
 }

@@ -396,6 +396,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('absenteeism')->group(function () {
           Route::post('talends', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@multiselect');
+          Route::post('tables', 'PreventiveOccupationalMedicine\Absenteeism\TableController@multiselect');
+          Route::post('tables/columns', 'PreventiveOccupationalMedicine\Absenteeism\TableController@multiselectColumns');
         });
 
         Route::prefix('contracts')->group(function () {

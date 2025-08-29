@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Models\Administrative\Users\User;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\Table;
 
 class ConfigurationController extends Controller
 {
@@ -37,11 +38,12 @@ class ConfigurationController extends Controller
      */
     public function store(ConfigurationRequest $request)
     {
+        \Log::info($request);
         $request = $request->except('_method');
 
         foreach ($request as $key => $value)
         {
-            if ($value && $key != 'multiselect_90_user_id' && $key != 'multiselect_180_user_id' && $key != 'multiselect_540_user_id' && $key != 'multiselect_user_id')
+            if ($value && $key != 'multiselect_90_user_id' && $key != 'multiselect_180_user_id' && $key != 'multiselect_540_user_id' && $key != 'multiselect_user_id' && $key != 'multiselect_table')
             {
                 if ($key == 'users_notify_element_expired' || $key == 'users_notify_stock_minimun' || $key == 'users_notify_expired_report' || $key == 'users_notify_incapacitated' || $key == 'users_notify_report_license' || $key == 'users_notify_criticality_level_inspections')
                     continue;
@@ -84,6 +86,19 @@ class ConfigurationController extends Controller
 
             foreach ($data as $key => $value) 
             {
+                if ($key == 'name_table_absenteeism')
+                {
+                    if ($value)
+                    {
+                        $multiselect_table = [];
+
+                        $table = Table::find($value);
+
+                        if ($table)
+                             array_push($multiselect_table, $table->multiselect());
+                    }
+                }   
+
                 if ($key == 'users_notify_expired_absenteeism_expired_90')
                 {
                     if ($value)
@@ -154,6 +169,14 @@ class ConfigurationController extends Controller
                 $data['users_notify_expired_absenteeism_expired_540'] = $multiselect_540;
                 $data['multiselect_540_user_id'] = $multiselect_540;
             }
+
+            if (isset($multiselect_table) && count($multiselect_table) > 0)
+            {
+                $data['name_table_absenteeism'] = (int) $data['name_table_absenteeism'];
+                $data['multiselect_table'] = $multiselect_table;
+            }
+
+            \Log::info($data);
 
             return $this->respondHttp200([
                 'data' => $data
