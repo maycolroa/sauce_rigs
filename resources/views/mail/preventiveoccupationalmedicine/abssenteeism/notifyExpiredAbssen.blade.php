@@ -20,7 +20,6 @@
                     <th style="width: 15%">Nombre</th>
                     <th style="width: 10%">Codigo Diagnostico</th>
                     <th style="width: 25%">Nombre Diagnostico</th>
-                    <th style="width: 15%">Tipo Ausentismo</th>
                     <th style="width: 15%">Fecha Inicial</th>
                     <th style="width: 5%">Dias</th>
                 </tr>
@@ -32,7 +31,6 @@
                     <td style="text-align: center; width: 15%">{{$item['Nombre']}}</td>
                     <td style="text-align: center; width: 10%">{{$item['Codigo Diagnostico']}}</td>
                     <td style="text-align: center; width: 25%">{{$item['Nombre Diagnostico']}}</td>
-                    <td style="text-align: center; width: 15%">{{$item['Tipo Ausentismo']}}</td>
                     <td style="text-align: center; width: 15%">{{$item['Fecha Inicial']}}</td>
                     <td style="text-align: center; width: 5%">{{$item['Dias']}}</td>
                 </tr>

@@ -9,6 +9,7 @@ use App\Models\PreventiveOccupationalMedicine\Absenteeism\LogNotifyExpired;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\Administrative\Users\User;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\Table;
 use Carbon\Carbon;
 use DB;
 
@@ -72,14 +73,17 @@ class NotifyExpiredAbsenteeism extends Command
 
                 $this->keys_absenteeism = $this->getConfig($company);
 
-                \Log::info($this->keys_absenteeism);
-
                 if (!$this->keys_absenteeism)
                     continue;
                     
                 try
                 {
-                    $name_table = 'sau_absen_'.$company_get->id.'_'.$this->keys_absenteeism['name_table_absenteeism'];
+                    $table_name = Table::withoutGlobalScopes()->find($this->keys_absenteeism['name_table_absenteeism']);
+
+                    if ($table_name)
+                        $name_table = 'sau_absen_'.$company_get->id.'_'.$table_name->name;
+                    else
+                        continue;
 
                     $records =DB::table("$name_table as info_employees")
                     ->get();
@@ -89,88 +93,149 @@ class NotifyExpiredAbsenteeism extends Command
                     continue;
                 }
 
-                /*$expired_email_1_alert = [];
+                $expired_email_1_alert = [];
                 $expired_email_2_alert = [];      
                 $expired_email_3_alert = [];
-                $number_notification = 0;
 
                 foreach ($records as $key => $record) 
                 {
-                    $fecha_max = Carbon::parse($record->$this->keys_absenteeism['name_column_fec_ini_absenteeism'])->format('Y-m-d');
-                    $fecha_ini = Carbon::parse($record->$this->keys_absenteeism['name_column_fec_fin_absenteeism'])->format('Y-m-d');
+                    $column_fech_ini = $this->keys_absenteeism['name_column_fec_ini_absenteeism'];
+                    $column_fech_fin = $this->keys_absenteeism['name_column_fec_fin_absenteeism'];
+                    $column_name = $this->keys_absenteeism['name_column_employee_name_absenteeism'];
+                    $column_identification = $this->keys_absenteeism['name_column_employee_identification_absenteeism'];
+                    $column_cod_diag = $this->keys_absenteeism['name_column_cod_diag_absenteeism'];
+                    $column_desc_diag = $this->keys_absenteeism['name_column_employee_description_diag_absenteeism'];
 
-                    $content = [
-                        'Identificacion' => $record->Identificacion,
-                        'Nombre' => $record->Nombre,
-                        'Codigo Diagnostico' => $record->CodigoDiagnostico,
-                        'Nombre Diagnostico' => $record->NombreDiagnostico,
-                        'Fecha Inicial' => $fecha_ini,
-                        'Dias' => $days
-                    ];
+                    $fecha_ini = Carbon::parse($record->$column_fech_ini);
+                    $fecha_fin = Carbon::parse($record->$column_fech_fin);
+                    $fecha_now = Carbon::now();
 
-                    /*if (COUNT($configDay) == 2)
+                    if ($fecha_fin->gt($fecha_now))
                     {
-                        if ($days >= $configDay[1])
-                            $number_notification = 1;
-                    }
-                    else
-                    {                                        
-                        if ($days >= $configDay[1] && $days < $configDay[2])
+                        $days = $fecha_ini->diffInDays($fecha_now);
+                        \Log::info($days);
+
+                        if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_90'] == 'SI')
                         {
-                            $notify_1_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 1);
+                            \Log::info('entro en la primera');
 
-
-                            if ($notify_1_exist)
+                            if ($days >= 90 && $days < 180)
                             {
-                                array_push($expired_email_1_alert, $content);
+                                $content = [
+                                    'Identificacion' => $record->$column_identification,
+                                    'Nombre' => $record->$column_name,
+                                    'Codigo Diagnostico' => $record->$column_cod_diag,
+                                    'Nombre Diagnostico' => $record->$column_desc_diag,
+                                    'Fecha Inicial' => $fecha_ini->format('Y-m-d'),
+                                    'Dias' => $days
+                                ];
 
-                                $insert_email_record = new LogNotifyExpired;
-                                $insert_email_record->company_id = $company;
-                                $insert_email_record->document = $record->Identificacion;
-                                $insert_email_record->id_consecutivo = $record->id;
-                                $insert_email_record->number_notification = 1;
-                                $insert_email_record->email_send = $responsibles_bbdd;
-                                $insert_email_record->save();
-                            }                                            
-                        }
-                        else if ($days >= $configDay[2])
-                        {
-                            $notify_2_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 2);
+                                $notify_1_exist = $this->checkSend($record->$column_identification, $record->id, $company_get->id, 1);
 
-                            if ($notify_2_exist)
-                            {
-                                array_push($expired_email_2_alert, $content);
+                                if ($notify_1_exist)
+                                {
+                                    $insert_email_record = new LogNotifyExpired;
+                                    $insert_email_record->company_id = $company_get->id;
+                                    $insert_email_record->document = $record->$column_identification;
+                                    $insert_email_record->id_consecutivo = $record->id;
+                                    $insert_email_record->number_notification = 1;
+                                    $insert_email_record->email_send = $this->keys_absenteeism['users_notify_expired_absenteeism_expired_90'];
+                                    $insert_email_record->save();
+                                    
+                                    array_push($expired_email_1_alert, $content);
+                                }       
 
-                                $insert_email_record = new LogNotifyExpired;
-                                $insert_email_record->company_id = $company;
-                                $insert_email_record->document = $record->Identificacion;
-                                $insert_email_record->id_consecutivo = $record->id;
-                                $insert_email_record->number_notification = 2;
-                                $insert_email_record->email_send = $responsibles_bbdd;
-                                $insert_email_record->save();
                             }
+                        }
+                        else if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_180'] == 'SI')
+                        {
+                            \Log::info('entro en la segunda');
 
+                            if ($days >= 180 && $days < 540)
+                            {
+                                $content = [
+                                    'Identificacion' => $record->$column_identification,
+                                    'Nombre' => $record->$column_name,
+                                    'Codigo Diagnostico' => $record->$column_cod_diag,
+                                    'Nombre Diagnostico' => $record->$column_desc_diag,
+                                    'Fecha Inicial' => $fecha_ini->format('Y-m-d'),
+                                    'Dias' => $days
+                                ];
+
+                                $notify_2_exist = $this->checkSend($record->$column_identification, $record->id, $company_get->id, 2);
+
+                                if ($notify_2_exist)
+                                {
+                                    $insert_email_record = new LogNotifyExpired;
+                                    $insert_email_record->company_id = $company_get->id;
+                                    $insert_email_record->document = $record->$column_identification;
+                                    $insert_email_record->id_consecutivo = $record->id;
+                                    $insert_email_record->number_notification = 2;
+                                    $insert_email_record->email_send = $this->keys_absenteeism['users_notify_expired_absenteeism_expired_180'];
+                                    $insert_email_record->save();
+                                    
+                                    array_push($expired_email_2_alert, $content);
+                                } 
+                            }
+                        }
+                        else if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_540'] == 'SI')
+                        {
+                            \Log::info('entro en la tercera');
+
+                            if ($days >= 540)
+                            {
+                                $content = [
+                                    'Identificacion' => $record->$column_identification,
+                                    'Nombre' => $record->$column_name,
+                                    'Codigo Diagnostico' => $record->$column_cod_diag,
+                                    'Nombre Diagnostico' => $record->$column_desc_diag,
+                                    'Fecha Inicial' => $fecha_ini->format('Y-m-d'),
+                                    'Dias' => $days
+                                ];
+
+                                
+                                $notify_3_exist = $this->checkSend($record->$column_identification, $record->id, $company_get->id, 3);
+
+                                if ($notify_3_exist)
+                                {
+                                    $insert_email_record = new LogNotifyExpired;
+                                    $insert_email_record->company_id = $company_get->id;
+                                    $insert_email_record->document = $record->$column_identification;
+                                    $insert_email_record->id_consecutivo = $record->id;
+                                    $insert_email_record->number_notification = 3;
+                                    $insert_email_record->email_send = $this->keys_absenteeism['users_notify_expired_absenteeism_expired_540'];
+                                    $insert_email_record->save();
+                                    
+                                    array_push($expired_email_3_alert, $content);
+                                } 
+                            }
                         }
                     }
                 }     
 
-                /*if (COUNT($expired_email_1_alert) > 0)
+                \Log::info($expired_email_1_alert);
+                \Log::info($expired_email_2_alert);
+                \Log::info($expired_email_3_alert);
+
+                if (COUNT($expired_email_1_alert) > 0)
                 {            
-                    if (count($responsibles) > 0)
+                    $email_alert_1 = explode(',', $this->keys_absenteeism['users_notify_expired_absenteeism_expired_90']);
+
+                    if (count($email_alert_1) > 0)
                     {
-                        foreach ($responsibles as $email)
+                        foreach ($email_alert_1 as $email)
                         {
                             $recipient = new User(["email" => $email]); 
+                            \Log::info($recipient);
 
                             NotificationMail::
                                 subject('Sauce - Primera Alerta Incapacidades')
                                 ->recipients($recipient)
-                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[1]</b> dias.")
+                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>90</b> dias.")
                                 ->module('absenteeism')
                                 ->event('Tarea programada: NotifyExpiredAbsenteeism')
                                 ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
                                 ->with(['data'=>$expired_email_1_alert])
-                                //->table($expired_email_1_alert)
                                 ->company($company)
                                 ->send();
                         }
@@ -178,34 +243,59 @@ class NotifyExpiredAbsenteeism extends Command
                 }
 
                 if (COUNT($expired_email_2_alert) > 0)
-                {            
-                    if (count($responsibles) > 0)
+                {                                
+                    $email_alert_2 = explode(',', $this->keys_absenteeism['users_notify_expired_absenteeism_expired_180']);
+
+                    if (count($email_alert_2) > 0)
                     {
-                        foreach ($responsibles as $email)
+                        foreach ($email_alert_2 as $email)
                         {
                             $recipient = new User(["email" => $email]); 
 
                             NotificationMail::
                                 subject('Sauce - Segunda Alerta Incapacidades')
                                 ->recipients($recipient)
-                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[2]</b> dias.")
+                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>180</b> dias.")
                                 ->module('absenteeism')
                                 ->event('Tarea programada: NotifyExpiredAbsenteeism')
                                 ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
                                 ->with(['data'=>$expired_email_2_alert])
-                                //->table($expired_email_2_alert)
                                 ->company($company)
                                 ->send();
                         }
                     } 
-                }*/
+                }
+
+                if (COUNT($expired_email_3_alert) > 0)
+                {            
+                    $email_alert_3 = explode(',', $this->keys_absenteeism['users_notify_expired_absenteeism_expired_540']);
+
+                    if (count($email_alert_3) > 0)
+                    {
+                        foreach ($email_alert_3 as $email)
+                        {
+                            $recipient = new User(["email" => $email]); 
+
+                            NotificationMail::
+                                subject('Sauce - Tercera Alerta Incapacidades')
+                                ->recipients($recipient)
+                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$540</b> dias.")
+                                ->module('absenteeism')
+                                ->event('Tarea programada: NotifyExpiredAbsenteeism')
+                                ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
+                                ->with(['data'=>$expired_email_3_alert])
+                                ->company($company)
+                                ->send();
+                        }
+                    } 
+                }
             }
 
             \Log::info('Termino tarea ausentismo: '.Carbon::now());
 
-            //DB::commit();
+            DB::commit();
 
-        } catch(Exception $e){
+        } catch(Exception $e) {
             DB::rollback();
             $this->respondHttp500();
         }
@@ -222,7 +312,11 @@ class NotifyExpiredAbsenteeism extends Command
             "users_notify_expired_absenteeism_expired_540" => '',
             'name_table_absenteeism' => '',
             'name_column_fec_ini_absenteeism' => '',
-            'name_column_fec_fin_absenteeism' => ''
+            'name_column_fec_fin_absenteeism' => '',
+            'name_column_employee_name_absenteeism' => '',
+            'name_column_employee_identification_absenteeism' => '',
+            'name_column_cod_diag_absenteeism' => '',
+            'name_column_employee_description_diag_absenteeism' => '',
         ];  
         $key_principal = "expired_absenteeism";
         $keys = [
@@ -234,7 +328,11 @@ class NotifyExpiredAbsenteeism extends Command
             "users_notify_expired_absenteeism_expired_540",
             'name_table_absenteeism',
             'name_column_fec_ini_absenteeism',
-            'name_column_fec_fin_absenteeism'
+            'name_column_fec_fin_absenteeism',
+            'name_column_employee_name_absenteeism',
+            'name_column_employee_identification_absenteeism',
+            'name_column_cod_diag_absenteeism',
+            'name_column_employee_description_diag_absenteeism',
         ];
         
         try
