@@ -63,7 +63,6 @@ class NotifyExpiredAbsenteeism extends Command
 
             foreach ($companies as $key => $company)
             {
-                \Log::info($company);
                 $expired = [];
 
                 $company_get = Company::find($company);
@@ -113,12 +112,9 @@ class NotifyExpiredAbsenteeism extends Command
                     if ($fecha_fin->gt($fecha_now))
                     {
                         $days = $fecha_ini->diffInDays($fecha_now);
-                        \Log::info($days);
 
                         if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_90'] == 'SI')
                         {
-                            \Log::info('entro en la primera');
-
                             if ($days >= 90 && $days < 180)
                             {
                                 $content = [
@@ -149,8 +145,6 @@ class NotifyExpiredAbsenteeism extends Command
                         }
                         else if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_180'] == 'SI')
                         {
-                            \Log::info('entro en la segunda');
-
                             if ($days >= 180 && $days < 540)
                             {
                                 $content = [
@@ -180,8 +174,6 @@ class NotifyExpiredAbsenteeism extends Command
                         }
                         else if ($this->keys_absenteeism['days_alert_expiration_date_absenteeism_540'] == 'SI')
                         {
-                            \Log::info('entro en la tercera');
-
                             if ($days >= 540)
                             {
                                 $content = [
@@ -213,10 +205,6 @@ class NotifyExpiredAbsenteeism extends Command
                     }
                 }     
 
-                \Log::info($expired_email_1_alert);
-                \Log::info($expired_email_2_alert);
-                \Log::info($expired_email_3_alert);
-
                 if (COUNT($expired_email_1_alert) > 0)
                 {            
                     $email_alert_1 = explode(',', $this->keys_absenteeism['users_notify_expired_absenteeism_expired_90']);
@@ -226,7 +214,6 @@ class NotifyExpiredAbsenteeism extends Command
                         foreach ($email_alert_1 as $email)
                         {
                             $recipient = new User(["email" => $email]); 
-                            \Log::info($recipient);
 
                             NotificationMail::
                                 subject('Sauce - Primera Alerta Incapacidades')
