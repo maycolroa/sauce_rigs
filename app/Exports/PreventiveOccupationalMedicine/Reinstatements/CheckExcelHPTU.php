@@ -107,10 +107,18 @@ class CheckExcelHPTU implements FromCollection, WithHeadings, WithMapping, WithC
         $regional,
         ($employee->eps ? $employee->eps->name : ''),
         $data->disease_origin,
-        $data->cie10Code->code,
-        $data->cie10Code->description,
-        $data->cie10Code->system,
-        $data->cie10Code->category,
+
+        $data->use_cie_10,
+        $data->cie10Code ? $data->cie10Code->code : NULL,
+        $data->cie10Code ? $data->cie10Code->description : NULL,
+        $data->cie10Code ? $data->cie10Code->system : NULL,
+        $data->cie10Code ? $data->cie10Code->category : NULL,
+        $data->update_cie_11 ?  $data->update_cie_11 : NULL,
+        $data->cie11Code ? $data->cie11Code->code : NULL,
+        $data->cie11Code ? $data->cie11Code->description : NULL,
+        /*$data->cie11Code ? $data->cie11Code->system : NULL,
+        $data->cie11Code ? $data->cie11Code->category : NULL,*/
+
         $data->laterality,
         $data->has_recommendations,
         $data->start_recommendations,
@@ -160,10 +168,16 @@ class CheckExcelHPTU implements FromCollection, WithHeadings, WithMapping, WithC
         $this->keywords['regional'],
         $this->keywords['eps'],
         $this->keywords['disease_origin'],
+        '¿Se uso Código Cie 10 o Cie 11?',
         'Código CIE10',
         'Descripción CIE10',
-        'Sistema',
-        'Categoría',
+        'Sistema CIE10',
+        'Categoría CIE10',
+        '¿Se actualizo a Código Cie 11?',
+        'Código CIE11',
+        'Descripción CIE11',
+        /*'Sistema CIE11',
+        'Categoría CIE11',*/
         'Lateralidad',
         '¿Tiene recomendaciones?',
         'Fecha Inicio Recomendaciones',
@@ -201,20 +215,20 @@ class CheckExcelHPTU implements FromCollection, WithHeadings, WithMapping, WithC
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'X' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Z' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AM' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AR' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AD' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AF' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AI' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AT' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AY' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:AZ1',
+        'A1:BZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

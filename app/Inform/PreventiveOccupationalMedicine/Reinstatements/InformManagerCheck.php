@@ -40,7 +40,11 @@ class InformManagerCheck
         'cases_per_cie_10_per_EG_pie',
         'cases_per_cie_10_per_EL_pie',
         'cases_per_cie_10_per_AT_pie',
-        'cases_per_cie_10_pie',
+        'cases_per_cie_10_pie',        
+        'cases_per_cie_11_per_EG_pie',
+        'cases_per_cie_11_per_EL_pie',
+        'cases_per_cie_11_per_AT_pie',
+        'cases_per_cie_11_pie',
         'cases_per_relocated_types_pie',
         'employee_active_disease_origin'
     ];
@@ -79,7 +83,7 @@ class InformManagerCheck
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10, $headquarters_filters = [], $processes = [], $areas = [])
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10, $headquarters_filters = [], $processes = [], $areas = [], $cie11)
     {
         $this->identifications = $identifications;
         $this->names = $names;
@@ -96,11 +100,12 @@ class InformManagerCheck
         $this->medicalCertificates = $medicalCertificates;
         $this->relocatedTypes = $relocatedTypes;
         $this->filtersType = $filtersType;
+        $this->cie10 = $cie10->toArray();
+        $this->cie11 = $cie11->toArray();
         $this->formModel = $this->getFormModel('form_check');
         $this->totalChecks = $this->getTotalChecks();
         $this->locationForm = $this->getLocationFormConfModule();
         $this->company = $company_id;
-        $this->cie10 = $cie10->toArray();
     }
 
     /**
@@ -149,6 +154,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
         if (COUNT($this->headquarters_filters))
@@ -189,6 +195,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
         if (COUNT($this->headquarters_filters))
@@ -229,6 +236,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange);
 
 
@@ -272,6 +280,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->whereRaw("YEAR(sau_reinc_checks.created_at) = ".date('Y'). " AND MONTH(sau_reinc_checks.created_at) = ".date('m'));
 
@@ -556,6 +565,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('month');
 
@@ -637,6 +647,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('year');
 
@@ -718,6 +729,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column)
@@ -774,6 +786,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         //->where($column, '<>', '')
         ->groupBy('motive_close')
@@ -858,7 +871,8 @@ class InformManagerCheck
         ")
         ->isOpen()
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', '=', 'sau_reinc_checks.cie11_code_id')
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
@@ -866,6 +880,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie10_codes.category')
         ->orderBy('count_per_cie10_code');
@@ -896,6 +911,93 @@ class InformManagerCheck
             $checksPerCie10Code->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $checksPerCie10Code = $checksPerCie10Code->pluck('count_per_cie10_code', 'cie10_code_category');
+
+        return $this->buildDataChart($checksPerCie10Code);
+    }
+
+    public function cases_per_cie_11_per_EG_pie()
+    {
+        return $this->getReportPerCie11Data('Enfermedad General');
+    }
+
+    /**
+     * Returns the reports of right air pta.
+     * @return collection
+     */
+    public function cases_per_cie_11_per_EL_pie()
+    {
+        return $this->getReportPerCie11Data('Enfermedad Laboral');
+    }
+
+    /**
+     * Returns the reports of right air pta.
+     * @return collection
+     */
+    public function cases_per_cie_11_per_AT_pie()
+    {
+        if ($this->company == 669)
+            return $this->getReportPerCie11Data('Accidente Trabajo');
+        else
+            return $this->getReportPerCie11Data('Accidente de Trabajo');
+    }
+
+    /**
+     * Returns the reports of right air pta.
+     * @return collection
+     */
+    public function cases_per_cie_11_pie()
+    {
+        return $this->getReportPerCie11Data();
+    }
+
+    public function getReportPerCie11Data($disease_origin = null)
+    {
+        $checksPerCie10Code = Check::selectRaw("
+            sau_reinc_cie11_codes.category AS cie11_code_category,
+            COUNT(DISTINCT employee_id) AS count_per_cie11_code
+        ")
+        ->isOpen()
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', '=', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', '=', 'sau_reinc_checks.cie11_code_id')
+        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
+        ->inNames($this->names, $this->filtersType['names'])
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
+        ->betweenDate($this->dateRange)
+        ->groupBy('sau_reinc_cie11_codes.category')
+        ->orderBy('count_per_cie11_code');
+
+
+        if (COUNT($this->headquarters_filters))
+            $checksPerCie10Code->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerCie10Code->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerCie10Code->inAreas($this->areas, $this->filtersType['areas']);
+
+        if ($disease_origin != null)
+            $checksPerCie10Code->where('sau_reinc_checks.disease_origin', $disease_origin);
+
+        if ($this->nextFollowDays)
+            $checksPerCie10Code->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerCie10Code->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerCie10Code->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerCie10Code->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
+
+        $checksPerCie10Code = $checksPerCie10Code->pluck('count_per_cie11_code', 'cie11_code_category');
 
         return $this->buildDataChart($checksPerCie10Code);
     }
@@ -955,6 +1057,7 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->inCodCie11($this->cie11, $this->filtersType['cie11'])
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name')
         ->orderBy('count');

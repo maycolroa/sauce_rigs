@@ -21,6 +21,7 @@ use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\LetterImportJob;
+use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckImportCie11Job;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
 use App\Facades\Mail\Facades\NotificationMail;
@@ -30,6 +31,9 @@ use DB;
 use PDF;
 use Datetime;
 use Validator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
 
 class CheckController extends Controller
 { 
@@ -76,9 +80,12 @@ class CheckController extends Controller
                     'sau_employees_regionals.name AS regional',
                     'sau_reinc_checks.state AS state',
                     'sau_employees.identification AS identification',
-                    'sau_employees.name AS name'
+                    'sau_employees.name AS name',
+                    'sau_reinc_cie11_codes.code AS code11',
+                    'sau_reinc_cie11_codes.description AS code11_description'
                 )
-                ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+                ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+                ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', 'sau_reinc_checks.cie11_code_id')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
                 ->orderBy('sau_reinc_checks.id', 'DESC');
@@ -95,6 +102,12 @@ class CheckController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            if (isset($filters["cie10"]))
+                $checks->inCodCie($this->getValuesForMultiselect($filters["cie10"]), $filters['filtersType']['cie10']);
+
+            if (isset($filters["cie11"]))
+                $checks->inCodCie11($this->getValuesForMultiselect($filters["cie11"]), $filters['filtersType']['cie11']);
+
             if (isset($filters["identifications"]))
                 $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
 
@@ -339,8 +352,19 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
+            $formModel = $formModel ? $formModel : 'default';
 
-        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
+            if ($formModel == 'hptu' || $formModel == 'default')
+            {
+                if ($check->use_cie_10 && $check->use_cie_10 == 'cie 10')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'cie 11')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie11Code->description.' con el ID de caso '.$check->id);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'Ambos')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico para Cie10 '. $check->cie10Code->description.' y para Cie11 '. $check->cie11Code->description.'con el ID de caso '.$check->id);
+            }
+            else
+                $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
 
             DB::commit();
 
@@ -503,8 +527,20 @@ class CheckController extends Controller
                 return $this->respondHttp500();
 
             CheckManager::deleteData($check, $request->get('delete'));
+
+            if ($formModel == 'hptu')
+            {
+                if ($check->use_cie_10 && $check->use_cie_10 == 'cie 10')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+                else if ($check->use_cie_10 && $check->use_cie_10 == 'cie 11')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie11Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+                else if (($check->use_cie_10 && $check->use_cie_10 == 'Ambos') || $check->update_cie_11 == 'SI')
+                    $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico para Cie10 '. $check->cie10Code->description.' y para Cie11 '. $check->cie11Code->description.'con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
+            }
+            else
+                $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id.'. Pertenecia al empleado '.$employee_new);
             
-            $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description . '. Con el id de caso '.$id.'. Pertenecia al empleado '.$employee_new);
+            //$this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description . '. Con el id de caso '.$id.'. Pertenecia al empleado '.$employee_new);
 
             DB::commit();
 
@@ -560,6 +596,7 @@ class CheckController extends Controller
         $check->load([
             'employee',
             'cie10Code',
+            'cie11Code',
             'medicalMonitorings',
             'laborMonitorings',
             'tracings' => function ($query) use ($authUser) {
@@ -603,7 +640,8 @@ class CheckController extends Controller
         $check->old_process_pcl_file = $check->process_pcl_file;
 
         $check->multiselect_employee = $check->employee->multiselect();
-        $check->multiselect_cie10Code = $check->cie10Code->multiselect();
+        $check->multiselect_cie10Code = $check->cie10Code ? $check->cie10Code->multiselect() : NULL;
+        $check->multiselect_cie11Code = $check->cie11_code_id ? $check->cie11Code->multiselect() : NULL;
         $check->multiselect_cie10Code2 = $check->cie10_code_2_id ? $check->cie10Code2->multiselect() : NULL;
         $check->multiselect_cie10Code3 = $check->cie10_code_3_id ? $check->cie10Code3->multiselect() : NULL;
         $check->multiselect_cie10Code4 = $check->cie10_code_4_id ? $check->cie10Code4->multiselect() : NULL;
@@ -819,6 +857,7 @@ class CheckController extends Controller
             sau_employees.identification AS identification,
             sau_employees_positions.name AS position,
             sau_reinc_cie10_codes.description AS diagnosis,
+            sau_reinc_cie11_codes.description AS diagnosisCie11,
             sau_reinc_checks.disease_origin AS disease_origin,
             sau_reinc_checks.start_recommendations AS start_recommendations,
             sau_reinc_checks.end_recommendations AS end_recommendations,
@@ -831,6 +870,7 @@ class CheckController extends Controller
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
         ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', 'sau_reinc_checks.cie11_code_id')
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
@@ -873,6 +913,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.tracingChia', $data);
         }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.tracingHptu', $data);
+        }
 
         return $pdf->stream('seguimiento.pdf');
     }
@@ -884,6 +928,7 @@ class CheckController extends Controller
             sau_employees.identification AS identification,
             sau_employees_positions.name AS position,
             sau_reinc_cie10_codes.description AS diagnosis,
+            sau_reinc_cie11_codes.description AS diagnosisCie11,
             sau_reinc_checks.disease_origin AS disease_origin,
             sau_reinc_checks.start_recommendations AS start_recommendations,
             sau_reinc_checks.end_recommendations AS end_recommendations,
@@ -896,6 +941,7 @@ class CheckController extends Controller
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
         ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_reinc_cie11_codes', 'sau_reinc_cie11_codes.id', 'sau_reinc_checks.cie11_code_id')
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
@@ -937,6 +983,10 @@ class CheckController extends Controller
         else if ($formModel == 'chia')
         {
             $pdf = PDF::loadView('pdf.tracingGlobalChia', $data);
+        }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.tracingGlobalHptu', $data);
         }
 
         return $pdf->stream('seguimientos.pdf');
@@ -1235,6 +1285,7 @@ class CheckController extends Controller
 
     public function downloadPdf($id)
     {
+        
         $check = Check::select('sau_reinc_checks.*')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
@@ -1704,8 +1755,53 @@ class CheckController extends Controller
 
         } catch(Exception $e)
         {
+    public function consultingCie11Chatbot(Request $request)
+    {
+        $parametrosApi = [
+            'prompt' => $request->question
+        ];
+
+        try 
+        {
+            $client = new Client();
+
+            $response = $client->post('https://cie11-chatbot.jollypebble-ce4b443e.brazilsouth.azurecontainerapps.io/gpt/chat_bot', [
+                'json' => $parametrosApi
+            ]);
+
+            if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) 
+            {
+                $apiData = json_decode($response->getBody()->getContents(), true);
+
+                if (isset($apiData['success']) && $apiData['success'] == true)
+                {
+                    $responseData = $apiData['data'];
+                    $answer = $responseData['answer'] ?? 'No se encontró respuesta.';
+
+                    return $answer; // Devuelve la respuesta de la API
+                }
+
+            } else {
+                \Log::info('Error de conexión o inesperado al consultar la API POST: ' . $response->getStatusCode());            
+                return 'Error inesperado en la consulta';
+            }
+
+        } catch (RequestException $e) {
+            \Log::info('Error de conexión o inesperado al consultar la API POST: ' . $e->getMessage());            
             return $this->respondHttp500();
         }
+    }
+
+    public function importCie11(Request $request)
+    {
+      try
+      {
+        CheckImportCie11Job::dispatch($request->file);
+      
+        return $this->respondHttp200();
+      } catch(Exception $e) {
+        return $this->respondHttp500();
+      }
     }
 
 }

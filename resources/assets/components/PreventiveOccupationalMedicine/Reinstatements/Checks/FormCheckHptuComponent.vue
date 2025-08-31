@@ -67,24 +67,67 @@
       </b-col>
     </b-row>
 
+    <b-modal ref="modalConsulting" :hideFooter="true" id="modalConsulting" class="modal-top" size="lg">
+        <div slot="modal-title">
+          Consultas tus dudas sobre el Código CIE 11
+        </div>
+        <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">            
+              <vue-textarea class="col-md-12" v-model="question" label="Pregunta" name="question" placeholder="Escribe la pregunta que quieres consultar"></vue-textarea>              
+
+              <loading-block text="Cargando respuesta" v-if="loadingAnswer"/>
+
+              <vue-textarea v-if="answer" class="col-md-12" v-model="answer" label="Respuesta" name="answer" placeholder="" rows="6"></vue-textarea>
+        </b-card>
+
+        <div class="row float-right pt-12 pr-12y">
+          <b-btn v-if="question" variant="primary" @click="consultingQuestion(question)">Consultar</b-btn>
+          <b-btn variant="default" @click="hideConsulting()">Cerrar</b-btn>
+        </div>
+    </b-modal>
+
     <b-row>
       <b-col>
-        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">          
+          <div id="fixedbutton">
+              <b-btn variant="primary" type="button" @click="showConsulting" title="Consultar">
+                  <i class="ion ion-ios-list"></i>
+              </b-btn>
+          </div>
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
                 </vue-advanced-select>
+          </b-form-row>          
+          <b-form-row v-if="!isEdit && !viewOnly">
+            <vue-radio variant="primary" :checked="form.use_cie_10" class="col-md-6 offset-md-3" v-model="form.use_cie_10" :options="cieCode" name="use_cie_10" label="¿Usara Código CIE 10 o Código CIE 11?"></vue-radio>
           </b-form-row>
-          <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+          <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none" v-if="form.use_cie_10 == 'Cie 10' || form.use_cie_10 == 'Ambos'">
+            <b-form-row>
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+            </b-form-row>
+            <b-form-row>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
+            </b-form-row>
+          </b-card>
+
+          <b-form-row v-if="!form.cie11_code_id && (isEdit || viewOnly)">
+            <vue-radio variant="primary" :disabled="viewOnly" :checked="form.update_cie_11" class="col-md-6 offset-md-3" v-model="form.update_cie_11" :options="siNo" name="update_cie_11" label="¿Desea actualizar a Código CIE 11?"></vue-radio>
           </b-form-row>
-          <b-form-row>
-            <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
-            <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
-          </b-form-row>
-          <b-form-row>
-            <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
-                </vue-advanced-select>
-          </b-form-row>
+
+          <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none" v-if="form.use_cie_10 == 'Cie 11' || form.use_cie_10 == 'Ambos' || form.update_cie_11 == 'SI'">
+            <b-form-row>
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie11_code_id" :error="form.errorsFor('cie11_code_id')" :selected-object="form.multiselect_cie11Code" name="cie11_code_id" label="Código CIE 11" placeholder="Seleccione una opción" :url="cie11CodesDataUrl"> </vue-ajax-advanced-select>
+            </b-form-row>
+            <!--<b-form-row>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
+              <vue-input :disabled="true" class="col-md-6" v-model="cie11CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
+            </b-form-row>-->
+          </b-card>
+
+            <b-form-row>
+              <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
+                  </vue-advanced-select>
+            </b-form-row>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
@@ -473,6 +516,7 @@ export default {
     processesDataUrl: { type: String, default: "" },
     positionsDataUrl: { type: String, default: "" },
     cie10CodesDataUrl: { type: String, default: "" },
+    cie11CodesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
@@ -621,7 +665,10 @@ export default {
           new_labor_notes_relations: [],
           oldLaborNotesRelations: [],
           files: [],
-          refund_classification: ''
+          refund_classification: '',
+          use_cie_10: '',
+          update_cie_11: 'NO',
+          cie11_code_id: ''
         };
       }
     }
@@ -637,6 +684,9 @@ export default {
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
+    },
+    'form.cie11_code_id': function() {
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie11/${this.form.cie11_code_id}`, 'cie11CodeDetail');
     },
     'form.relocated_regional_id'() {
       this.emptySelect('relocated_process_id', 'process')
@@ -694,6 +744,9 @@ export default {
     if (this.form.cie10_code_id)
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
     
+    if (this.form.cie11_code_id)
+      this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie11_code_id}`, 'cie11CodeDetail');
+    
     if (this.form.employee_id)
     {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
@@ -712,6 +765,8 @@ export default {
     }
 
     this.getMessageIncapacitate();
+    
+    this.loadingAnswer = false;
 
     setTimeout(() => {
       this.disableWacth = false
@@ -724,6 +779,7 @@ export default {
       form: Form.makeFrom(this.check, this.method),
       employeeDetail: [],
       cie10CodeDetail: [],
+      cie11CodeDetail: [],
       disabledDates: {
         from: new Date()
       },
@@ -739,7 +795,15 @@ export default {
       email_recommendations_1: '',
       email_recommendations_2: '',
       continue_recommendations: '',
-      validation_mail_send: false
+      validation_mail_send: false,
+      cieCode: [
+        {text: 'Cie 10', value: 'Cie 10'},
+        {text: 'Cie 11', value: 'Cie 11'},
+        {text: 'Ambos', value: 'Ambos'}
+      ],
+      question: '',
+      answer: '',
+      loadingAnswer: false
     };
   },
   methods: {
@@ -910,7 +974,30 @@ export default {
       {
         this.validation_mail_send = true;
       }
-    }
+    },
+    showConsulting() {
+      this.$refs.modalConsulting.show()
+      this.loadingAnswer = false;
+    },
+    hideConsulting() {
+      this.$refs.modalConsulting.hide()
+      this.question = '';
+      this.answer = '';
+      this.loadingAnswer = false;
+    },
+    consultingQuestion(question) {
+      this.loadingAnswer = true;
+      let postData = Object.assign({question: question});
+
+          axios.post('/biologicalmonitoring/reinstatements/check/consultingCie11Chatbot', postData)
+            .then(response => {
+                this.answer = response.data;
+                this.loadingAnswer = false;
+            }).catch(error => {
+                this.loadingAnswer = false;
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+    },
   }
 };
 </script>
@@ -925,6 +1012,11 @@ export default {
     border-radius: 8px;
     margin-bottom: 5px;
     width: 300px;
+}
+#fixedbutton {
+    position: fixed;
+    bottom: 10%;
+    right: 5%; 
 }
 
 </style>

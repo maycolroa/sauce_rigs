@@ -141,7 +141,10 @@ class Check extends Model
         'disease_origin_recomendations_2',
         'disease_origin_recomendations_3',
         'disease_origin_recomendations_4',
-        'disease_origin_recomendations_5'
+        'disease_origin_recomendations_5',
+        'use_cie_10',
+        'update_cie_11',
+        'cie11_code_id'
     ];
 
     /**
@@ -180,6 +183,11 @@ class Check extends Model
     public function cie10Code()
     {
         return $this->belongsTo(Cie10Code::class, 'cie10_code_id');
+    }
+
+    public function cie11Code()
+    {
+        return $this->belongsTo(Cie11Code::class, 'cie11_code_id');
     }
 
     public function cie10Code2()
@@ -642,6 +650,9 @@ class Check extends Model
 
     public function scopeInCodCie($query, $codsCie, $typeSearch = 'IN')
     {
+        if (!is_array($codsCie))
+            $codsCie = $codsCie ? $codsCie->toArray() : [];
+
         if ($codsCie && is_array($codsCie) && COUNT($codsCie) > 0)
         {
             if ($typeSearch == 'IN')
@@ -649,6 +660,23 @@ class Check extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_reinc_checks.cie10_code_id', $codsCie);
+        }
+
+        return $query;
+    }
+
+    public function scopeInCodCie11($query, $codsCie, $typeSearch = 'IN')
+    {
+        if (!is_array($codsCie))
+            $codsCie = $codsCie ? $codsCie->toArray() : [];
+
+        if ($codsCie && is_array($codsCie) && COUNT($codsCie) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.cie11_code_id', $codsCie);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.cie11_code_id', $codsCie);
         }
 
         return $query;

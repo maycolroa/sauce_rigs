@@ -147,23 +147,61 @@
                 @endif
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <th colspan="2">Código CIE 10</th>
-                    
+                    @elseif($check->use_cie_10 == 'Cie 11')      
+                    <th colspan="2">Código CIE 11</th>
+                    @endif
                 </tr>
                 <tr>
                     <td>{{$check->disease_origin}}</td>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <td colspan="2">{{$check->cie10Code->code}} - {{$check->cie10Code->description}}</td>
+                    @elseif($check->use_cie_10 == 'Cie 11')      
+                    <td colspan="2">{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
+                    @endif
+                    
                 </tr>
                 <tr>
-                    <th>Sistema</th>
-                    <th>Categoría</th>
-                    <th>Lateralidad</th>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
+                    <th>Sistema Cie 10</th>
+                    <th>Categoría  Cie 10</th>
+                    @elseif($check->use_cie_10 == 'Cie 11') 
+                    <th>Sistema Cie 11</th>
+                    <th>Categoría  Cie 11</th>
+                    @endif  
+                    <th>Lateralidad</th> 
                 </tr>
                 <tr>
+                    @if($check->use_cie_10 == 'Cie 10' || $check->use_cie_10 == 'Ambos')
                     <td>{{$check->cie10Code->system}}</td>
                     <td>{{$check->cie10Code->category}}</td>
+                    @elseif($check->use_cie_10 == 'Cie 11')  
+                    <td>{{$check->cie11Code->system}}</td>
+                    <td>{{$check->cie11Code->category}}</td>  
+                    @endif  
                     <td>{{$check->laterality}}</td>
                 </tr>   
+                @if(!$check->cie11_code_id)
+                <tr>
+                    <th colspan="3">¿Se actualizo a Código Cie 11?</th>
+                </tr>
+                <tr>
+                    <td colspan="3">{{$check->update_cie_11}}</td>
+                </tr> 
+                @endif
+                @if($check->use_cie_10 == 'Ambos' || $check->update_cie_11 == 'SI')
+                <tr>     
+                    <th colspan="3">Código CIE 11</th>
+                    <!--<th>Sistema CIE 11</th>
+                    <th>Categoría CIE 11</th>-->
+                </tr>
+                <tr>
+                    <td colspan="3">{{$check->cie11Code->code}} - {{$check->cie11Code->description}}</td>
+                    <!--<td>{{$check->cie11Code->system}}</td>
+                    <td>{{$check->cie11Code->category}}</td>  -->
+                </tr>
+                @endif 
             </thead>
         </table>
     </div>

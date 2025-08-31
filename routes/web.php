@@ -127,10 +127,12 @@ Route::middleware(['auth'])->group(function () {
           Route::post('restriction/data', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@data');
           Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
           Route::post('getMessageIncapacitate', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@getMessageIncapacitate');
+          Route::post('check/consultingCie11Chatbot', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@consultingCie11Chatbot');
 
           Route::post('saveLaborRelationsNotes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@saveLaborRelationsNotes');
           Route::post('check/sendEmailRecommendations', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@sendEmailRecommendations');
           Route::post('check/export', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@export');
+          Route::post('check/importCie11', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@importCie11');
           Route::get('check/generateLetter', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@generateLetter')->name('checks.generateLetter');
           Route::get('check/generateLetterTracingGlobal', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@generateTracingGlobal')->name('checks.generateLetterTracingGlobal');
           Route::get('check/generateTracing', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@generateTracing')->name('checks.generateTracing');
@@ -139,6 +141,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('check/data', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@data');
           Route::ApiResource('check', 'PreventiveOccupationalMedicine\Reinstatements\CheckController');
           Route::post('check/informs', 'PreventiveOccupationalMedicine\Reinstatements\CheckInformController@data');
+          Route::post('check/informsTable', 'PreventiveOccupationalMedicine\Reinstatements\CheckInformController@dataReport');
           Route::put('check/switchStatus/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@toggleState');
           Route::post('check/tracingOthers', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@tracingOthers');
           Route::get('check/downloadFile/{file}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadFile');
@@ -150,6 +153,7 @@ Route::middleware(['auth'])->group(function () {
           Route::get('check/generatePdf/{id}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@regenerateLetter');
 
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
+          Route::ApiResource('cie11', 'PreventiveOccupationalMedicine\Reinstatements\Cie11Controller')->only('show');
 
           Route::post('diseaseOrigin/data', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController@data');
           Route::ApiResource('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController');
@@ -277,6 +281,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('afp', 'General\ApplicationController@multiselectAfp');
         Route::post('arl', 'General\ApplicationController@multiselectArl');
         Route::post('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller@multiselect');
+        Route::post('cie11', 'PreventiveOccupationalMedicine\Reinstatements\Cie11Controller@multiselect');
         Route::post('restrictions', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@multiselect');
         Route::post('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectDiseaseOrigin');
         Route::post('nextFollowDays', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectNextFollowDays');

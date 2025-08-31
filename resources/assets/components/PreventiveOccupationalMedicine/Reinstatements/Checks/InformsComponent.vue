@@ -392,6 +392,90 @@
                             </b-card>
                         </div>
                     </b-tab>
+                    <b-tab v-if="form == 'hptu'">
+                        <template slot="title">
+                        <strong>Reportes por categoría Código CIE 11 por EG</strong> 
+                        </template>
+                        <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+                            <b-card border-variant="primary" title="Reportes por categoría Código CIE 11 por EG" class="mb-3 box-shadow-none">
+                                <b-row align-h="end">
+                                    <b-col cols="2">
+                                        <b>Total reportes: {{ cases_per_cie_11_per_EG_pie.datasets.count }} </b>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <chart-bar 
+                                            :chart-data="cases_per_cie_11_per_EG_pie"
+                                            title="Código CIE 11 por EG"
+                                            color-line="red"
+                                            ref="cases_per_cie_11_per_EG_pie"/>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </div>
+                    </b-tab>
+                    <b-tab v-if="form == 'hptu'">
+                        <template slot="title">
+                            <strong>Reportes por categoría Código CIE 11 por EL</strong> 
+                        </template>
+                        <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+                            <b-card border-variant="primary" title="Reportes por categoría Código CIE 11 por EL" class="mb-3 box-shadow-none">
+                                <b-row align-h="end">
+                                    <b-col cols="2">
+                                        <b>Total reportes: {{ cases_per_cie_11_per_EL_pie.datasets.count }} </b>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <chart-bar 
+                                            :chart-data="cases_per_cie_11_per_EL_pie"
+                                            title="Código CIE 11 por EL"
+                                            color-line="red"
+                                            ref="cases_per_cie_11_per_EL_pie"/>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </div>
+                    </b-tab>
+                    <b-tab v-if="form == 'hptu'">
+                        <template slot="title">
+                            <strong>Reportes por categoría Código CIE 11 por AT</strong> 
+                        </template>
+                        <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+                            <b-card border-variant="primary" title="Reportes por categoría Código CIE 11 por AT" class="mb-3 box-shadow-none">
+                                <b-row align-h="end">
+                                    <b-col cols="2">
+                                        <b>Total reportes: {{ cases_per_cie_11_per_AT_pie.datasets.count }} </b>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <chart-bar 
+                                            :chart-data="cases_per_cie_11_per_AT_pie"
+                                            title="Código CIE 11 por AT"
+                                            color-line="red"
+                                            ref="cases_per_cie_11_per_AT_pie"/>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </div>
+                    </b-tab>
+                    <b-tab v-if="form == 'hptu'">
+                        <template slot="title">
+                            <strong>Reportes cambios de Código Cie10 a Código Cie11</strong> 
+                        </template>
+                        <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+                            <b-card border-variant="primary" title="Reportes cambios de Código Cie10 a Código Cie11" class="mb-3 box-shadow-none">
+                                <vue-table
+                                    ref="tableCie10Cie11"
+                                    configName="reinstatements-checks-informs"
+                                    :customColumnsName="true"
+                                    :params="{filters}"
+                                ></vue-table>
+                            </b-card>
+                        </div>
+                    </b-tab>
                 </b-tabs>
             </b-card>
         </b-form-row>
@@ -522,7 +606,23 @@ export default {
                     labels: [],
                     datasets: []
                 }
-            }
+            },            
+            cases_per_cie_11_per_EG_pie: {
+                labels: [],
+                datasets: []
+            },
+            cases_per_cie_11_per_EL_pie: {
+                labels: [],
+                datasets: []
+            },
+            cases_per_cie_11_per_AT_pie: {
+                labels: [],
+                datasets: []
+            },
+            cases_per_cie_11_pie: {
+                labels: [],
+                datasets: []
+            },
         }
     },
     created(){
@@ -533,12 +633,17 @@ export default {
     watch: {
         filters: {
             handler(val){
+                this.$refs.tableCie10Cie11.refresh()
                 this.fetch()
             },
             deep: true
         }
     },
     methods: {
+        setFilters(value)
+        {
+            this.filters = value
+        },
         fetch()
         {
             if (!this.isLoading)

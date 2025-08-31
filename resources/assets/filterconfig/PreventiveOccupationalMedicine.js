@@ -220,7 +220,13 @@ export default [
           url: '/selects/cie10',
           key: 'cie10',
           type: 'select',
-          label: 'Código Cie'
+          label: 'Código Cie 10'
+        }, 
+        {
+          url: '/selects/cie11',
+          key: 'cie11',
+          type: 'select',
+          label: 'Código Cie 11'
         }, 
         {
           key: 'dateRange',

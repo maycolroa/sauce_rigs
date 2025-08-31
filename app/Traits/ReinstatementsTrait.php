@@ -45,7 +45,7 @@ trait ReinstatementsTrait
             'date_controversy_pcl_1'=> 'nullable|date',
             'date_controversy_pcl_2'=> 'nullable|date',
             'punctuation_controversy_plc_1' => "nullable|numeric|min:0|max:100",
-            'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100',
+            'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100'
         ];
         
         if ($formModel == 'vivaAir')
@@ -77,7 +77,17 @@ trait ReinstatementsTrait
         {
             $rules = array_merge($rules, [
                 'disease_origin' => "required",
-                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'cie10_code_id' =>  [
+                    'nullable',
+                    'required_if:use_cie_10,Cie 10,Ambos',   // El campo es requerido si use_cie_10 es "Cie 10" O "Ambos"
+                    'exists:sau_reinc_cie10_codes,id'     
+                ],
+                'cie11_code_id' => [
+                    'nullable',
+                    'required_if:use_cie_10,Cie 11,Ambos',   // El campo es requerido si use_cie_10 es "Cie 11" O "Ambos"
+                    'required_if:update_cie_11,SI',   // O si update_cie_11 es "SI"
+                    'exists:sau_reinc_cie11_codes,id'       
+                ],
                 'laterality' => "nullable",
                 'type_controversy_origin_1' => 'nullable',
                 'type_controversy_origin_2' => 'nullable'
@@ -96,7 +106,17 @@ trait ReinstatementsTrait
         {
             $rules = array_merge($rules, [
                 'disease_origin' => "required",
-                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'cie10_code_id' =>  [
+                    'nullable',
+                    'required_if:use_cie_10,Cie 10,Ambos',   // El campo es requerido si use_cie_10 es "Cie 10" O "Ambos"
+                    'exists:sau_reinc_cie10_codes,id'     
+                ],
+                'cie11_code_id' => [
+                    'nullable',
+                    'required_if:use_cie_10,Cie 11,Ambos',   // El campo es requerido si use_cie_10 es "Cie 11" O "Ambos"
+                    'required_if:update_cie_11,SI',   // O si update_cie_11 es "SI"
+                    'exists:sau_reinc_cie11_codes,id'       
+                ],
                 'laterality' => "nullable"
             ]);
         }
