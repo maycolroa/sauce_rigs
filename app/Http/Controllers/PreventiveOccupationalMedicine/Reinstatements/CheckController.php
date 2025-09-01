@@ -1753,8 +1753,11 @@ class CheckController extends Controller
         
             return $this->respondHttp200();
 
-        } catch(Exception $e)
-        {
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+    
     public function consultingCie11Chatbot(Request $request)
     {
         $parametrosApi = [
