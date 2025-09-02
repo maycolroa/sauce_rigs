@@ -55,8 +55,13 @@ class RiskController extends Controller
      */
     public function store(RiskRequest $request)
     {
-        $category = $this->tagsPrepare($request->get('category'));
-        $this->tagsSave($category, TagsRmCategoryRisk::class);
+        $category = [];
+
+        if ($request->get('category'))
+        {
+            $category = $this->tagsPrepare($request->get('category'));
+            $this->tagsSave($category, TagsRmCategoryRisk::class);
+        }
 
         $risk = new Risk($request->all());
         $risk->company_id = $this->company;
@@ -101,9 +106,14 @@ class RiskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(RiskRequest $request, Risk $risk)
-    {
-        $category = $this->tagsPrepare($request->get('category'));
-        $this->tagsSave($category, TagsRmCategoryRisk::class);
+    {        
+        $category = [];
+
+        if ($request->get('category'))
+        {
+            $category = $this->tagsPrepare($request->get('category'));
+            $this->tagsSave($category, TagsRmCategoryRisk::class);
+        }
 
         $risk->fill($request->all());
         $risk->category = $category->implode(',');

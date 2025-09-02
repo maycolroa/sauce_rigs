@@ -28,10 +28,13 @@ class RiskRequest extends FormRequest
     {
         if ($this->has('category'))
         {
-            foreach ($this->input('category') as $key => $value)
+            if (is_array($this->input('category')))
             {
-                $data['category'][$key] = json_decode($value, true);
-                $this->merge($data);
+                foreach ($this->input('category') as $key => $value)
+                {
+                    $data['category'][$key] = json_decode($value, true);
+                    $this->merge($data);
+                }
             }
         } 
 
