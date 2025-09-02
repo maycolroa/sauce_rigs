@@ -65,7 +65,7 @@ class RiskController extends Controller
 
         $risk = new Risk($request->all());
         $risk->company_id = $this->company;
-        $risk->category = $category->implode(',');
+        $risk->category = COUNT($category) > 0 ? $category->implode(',') : NULL;
         
         if(!$risk->save()){
             return $this->respondHttp500();
@@ -116,7 +116,7 @@ class RiskController extends Controller
         }
 
         $risk->fill($request->all());
-        $risk->category = $category->implode(',');
+        $risk->category = COUNT($category) > 0 ? $category->implode(',') : NULL;
         
         if(!$risk->update()){
           return $this->respondHttp500();
