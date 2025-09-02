@@ -56,7 +56,7 @@ class RiskController extends Controller
     public function store(RiskRequest $request)
     {
         $category = $this->tagsPrepare($request->get('category'));
-        $this->tagsSave($mark, TagsRmCategoryRisk::class);
+        $this->tagsSave($category, TagsRmCategoryRisk::class);
 
         $risk = new Risk($request->all());
         $risk->company_id = $this->company;
