@@ -201,6 +201,9 @@ class RiskMatrixController extends Controller
        // \Log::info($request);
         DB::beginTransaction();
 
+        $confLocation = $this->getLocationFormConfModule();
+        $keywords = $this->user->getKeywords();
+
         $details_log = '';
 
         try
