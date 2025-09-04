@@ -19,6 +19,9 @@
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>
             <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-log-qualification'}" variant="primary" v-b-tooltip.top title="Log Calificaciones"><i class="oi oi-list"></i></b-btn>
             <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-export-masive'}" variant="primary" v-b-tooltip.top title="Exportacion Masiva"><i class="fas fa-download"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximportMassive" target="blank" v-b-tooltip.top title="Generar Plantilla para importación masiva"><i class="fas fa-file-alt"></i></b-btn>
+            <b-btn style="margin-top: 10px;" v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage('massive')" v-b-tooltip.top title="Importar Peligros Masivos"><i class="fas fa-upload"></i></b-btn>
+            <input id="fileInputImportMassive" type="file" style="display:none" v-on:input="importDangerMatrix"/>
           </div>
         </b-card-header>
         <b-card-body>
@@ -56,30 +59,51 @@ export default {
   name: 'dangermatrix',
   metaInfo: {
     title: 'Matriz de Peligros'
+  },  
+  data () {
+    return {
+      type: ''
+    }
   },
   methods: {
     importDangerMatrix(e){
       var formData = new FormData();
       var imagefile = e.target.files;
 
+      if (this.type == 'massive')      
+        var urlImport = '/industrialSecurity/dangersMatrix/importMassive';
+      else
+        var urlImport = '/industrialSecurity/dangersMatrix/import';      
+
       formData.append("file", imagefile[0]);
-      axios.post('/industrialSecurity/dangersMatrix/import', formData, {
+      axios.post(urlImport, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
       })
-      .then(response => {
+      .then(response => {        
+        document.getElementById('fileInputImport').value = ''
+        document.getElementById('fileInputImportMassive').value = ''
         Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
-      }).catch(error => {
+      }).catch(error => {        
+        document.getElementById('fileInputImport').value = ''
+        document.getElementById('fileInputImportMassive').value = ''
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
       });    
     },
-    importMessage() {
+    importMessage(massive) {
       this.toggleModalConfirmationImport(true)
+
+      if (massive && massive == 'massive')
+        this.type = 'massive';
     },
     importConfirmation() {
       this.toggleModalConfirmationImport(false);
-      document.getElementById('fileInputImport').click()
+      if (this.type == 'massive')
+        document.getElementById('fileInputImportMassive').click()
+      else
+        document.getElementById('fileInputImport').click()
+
     },
     toggleModalConfirmationImport(toggle) {
       if (toggle)

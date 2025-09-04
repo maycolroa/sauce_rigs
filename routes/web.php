@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
     Route::get('templates/employeeinactiveimport','Administrative\Employees\EmployeesController@downloadTemplateInactiveImport');   
     Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
+    Route::get('templates/dangermatriximportMassive','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateMassiveImport');
     Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
     Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
     Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');      
@@ -610,6 +611,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/downloadMasive', 'IndustrialSecure\DangerMatrix\DangerMatrixController@downloadMasive');
       Route::post('dangersMatrix/import', 'IndustrialSecure\DangerMatrix\DangerMatrixController@import');
+      Route::post('dangersMatrix/importMassive', 'IndustrialSecure\DangerMatrix\DangerMatrixController@importMassive');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');

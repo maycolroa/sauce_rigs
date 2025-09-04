@@ -58,7 +58,6 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
       $this->user = $user;
       $this->company_id = $company_id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
-      $this->dangerMatrix = DangerMatrix::withoutGlobalScopes()->where('company_id', $this->company_id)->pluck('id');
     }
 
     public function collection(Collection $rows)
@@ -68,22 +67,13 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
             
             try
             {
-                foreach ($this->dangerMatrix as $key2 => $matriz) 
-                {  
-                    foreach ($rows as $key => $row) 
+                foreach ($rows as $key => $row) 
+                {
+                    if ($key > 0) //Saltar cabecera
                     {
-                        if ($key > 0) //Saltar cabecera
+                        if (isset($row[0]) && $row[0])
                         {
-                            if (isset($row[0]) && $row[0])
-                            {
-                                $this->checkDangerMarix($row, $matriz);
-                            }
-                            /*else
-                            {
-                                $this->setError('Formato inválido');
-                                $this->setErrorData($row);
-                            
-                            }*/
+                            $this->checkDangerMarix($row);
                         }
                     }
                 }
@@ -139,7 +129,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
         }
     }
 
-    private function checkDangerMarix($row, $matriz_id)
+    private function checkDangerMarix($row)
     {
         $data = [];
         $saltos = 0;
@@ -179,7 +169,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
 
         $data = array_merge($data,
             [         
-                'participantes' => $row[0 + $saltos],
+                'year' => $row[0 + $saltos],
                 'actividad' => $row[1 + $saltos],
                 'tipo_de_actividad' => trim(strtoupper($row[2 + $saltos])),
                 'peligro' => $row[3 + $saltos],
@@ -217,14 +207,6 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
                 'nr_personas' => $row[29 + $saltos],
                 'nr_económico' => $row[30 + $saltos],
                 'nr_imagen' => $row[31 + $saltos]
-            ]);
-        }
-        else if ($conf->name == 'Tipo 2')
-        {
-            $data = array_merge($data,
-            [
-                'frecuencia' => strtoupper($row[28 + $saltos]),
-                'severidad' => strtoupper($row[29 + $saltos])
             ]);
         }
 
@@ -279,17 +261,6 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
                     ]);
             }
         }
-        else if ($conf->name == 'Tipo 2')
-        {
-            $level = $rulesDm["Frecuencia"];
-            $level2 = $rulesDm["Severidad"];
-
-            $rules = array_merge($rules,
-                [
-                    'frecuencia' => "required|in:".implode(",", $level),
-                    'severidad' => "required|in:".implode(",", $level2)
-                ]);
-        }
 
         $validator = Validator::make($data, $rules);
 
@@ -305,6 +276,35 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
         }
         else 
         {   
+            if ($confLocation['process'] == 'SI')
+                    $macroproceso = $this->tagsPrepareImport($data['macroproceso']);
+            
+            $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
+            $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
+            $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso'], $macroproceso->implode(',')) : null; 
+            $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
+            
+            $matriz_id = DangerMatrix::withoutGlobalScopes()
+                ->where('company_id', $this->company_id)
+                ->where('year', $data['year']);
+
+            if ($confLocation['regional'] == 'SI')
+                $matriz_id->where('employee_regional_id', $regional_id);
+            if ($confLocation['headquarter'] == 'SI')
+                $matriz_id->where('employee_headquarter_id', $headquarter_id);
+            if ($confLocation['process'] == 'SI')
+                $matriz_id->where('employee_process_id', $process_id);
+            if ($confLocation['area'] == 'SI')
+                $matriz_id->where('employee_area_id', $area_id);
+
+            $matriz_id = $matriz_id->first();
+
+            if (!$matriz_id)
+            {                
+                $this->setError('No se encontro la matriz');
+                $this->setErrorData($row);
+            }
+
             //TAGS
             $possible_consequences_danger = $this->tagsPrepareImport($data['posibles_consecuencias']);
             $danger_description = $this->tagsPrepareImport($data['descripción_del_peligro']);
@@ -318,7 +318,6 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
             $intervention_measures_warning_signage = $this->tagsPrepareImport($data['señalización_advertencia_medidas']);
             $intervention_measures_administrative_controls = $this->tagsPrepareImport($data['controles_administrativos_medidas']);
             $intervention_measures_epp = $this->tagsPrepareImport($data['epp_medidas']);
-            $participants = $this->tagsPrepareImport($data['participantes']);
 
             $this->tagsSave($possible_consequences_danger, TagsPossibleConsequencesDanger::class, $this->company_id);
             $this->tagsSave($danger_description, TagsDangerDescription::class, $this->company_id);
@@ -332,7 +331,6 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
             $this->tagsSave($intervention_measures_warning_signage, TagsWarningSignage::class, $this->company_id);
             $this->tagsSave($intervention_measures_administrative_controls, TagsAdministrativeControls::class, $this->company_id);
             $this->tagsSave($intervention_measures_epp, TagsEpp::class, $this->company_id);
-            $this->tagsSave($participants, TagsParticipant::class, $this->company_id);
 
 
             $activity = Activity::query();
@@ -348,8 +346,8 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
             $matrixActivity = DangerMatrixActivity::query();
             $matrixActivity->company_scope = $this->company_id;
             $matrixActivity = $matrixActivity->firstOrCreate(
-                ['danger_matrix_id' => $matriz_id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria'], 
-                ['danger_matrix_id' => $matriz_id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria']
+                ['danger_matrix_id' => $matriz_id->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria'], 
+                ['danger_matrix_id' => $matriz_id->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria']
                 );
 
             $activityDanger = new ActivityDanger();
@@ -427,33 +425,63 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
                     $activityDanger->save();
                 }
             }
-            else if ($conf->name == 'Tipo 2')
-            {
-                $qualification1 = new QualificationDanger();
-                $qualification1->activity_danger_id = $activityDanger->id;
-                $qualification1->type_id = $conf->types()->where('description', 'Frecuencia')->first()->id;
-                $qualification1->value_id = $data["frecuencia"];
-                $qualification1->save();
-                $fre = $data["frecuencia"];
 
-                $qualification2 = new QualificationDanger();
-                $qualification2->activity_danger_id = $activityDanger->id;
-                $qualification2->type_id = $conf->types()->where('description', 'Severidad')->first()->id;
-                $qualification2->value_id = $data["severidad"];
-                $qualification2->save();
-                $sev = $data["severidad"];
-
-                $matriz_calification = $this->getMatrixCalification($conf->name);
-
-                if (isset($matriz_calification[$sev]) && isset($matriz_calification[$sev][$fre]))
-                {
-                    $activityDanger->qualification = $matriz_calification[$sev][$fre]['label'];
-                    $activityDanger->save();
-                }
-            }
+             $matriz_id->histories()->create([
+                        'user_id' => $this->user->id,
+                        'description' => "Se agrego el peligro $danger->name a la actividad $activity->name mediante una actualizacion másiva"
+                    ]);
 
             return true;
         }
+    }
+
+     private function checkArea($headquarter_id, $process_id, $area_name)
+    {        
+        $area = EmployeeRegional::select("sau_employees_areas.id as id")
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
+            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
+            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
+            ->join('sau_process_area', 'sau_process_area.employee_process_id', 'sau_employees_processes.id')
+            ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_process_area.employee_area_id')
+            ->where('sau_employees_areas.name', $area_name)
+            ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name');
+
+        $area->company_scope = $this->company_id;
+        $area = $area->first();
+
+        return $area->id;
+    }
+
+    private function checkRegional($name)
+    {
+        $regional = EmployeeRegional::query();
+        $regional->company_scope = $this->company_id;
+        $regional = $regional->where(['name' => $name]);
+        $regional = $regional->first();
+
+        return $regional->id;
+    }
+
+    private function checkHeadquarter($regional_id, $headquarter)
+    {
+        $headquarter = EmployeeHeadquarter::where(['name' => $headquarter, 'employee_regional_id' => $regional_id])->first();
+
+        return $headquarter->id;
+    }
+
+    private function checkProcess($headquarter_id, $process_name, $macroproceso)
+    {
+        $process = EmployeeRegional::select("sau_employees_processes.id as id")
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
+            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
+            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
+            ->where('sau_employees_processes.name', $process_name)
+            ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name');
+
+        $process->company_scope = $this->company_id;
+        $process = $process->first();
+
+        return $process->id;
     }
 
     private function setError($message)
