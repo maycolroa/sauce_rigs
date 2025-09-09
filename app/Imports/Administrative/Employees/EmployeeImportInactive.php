@@ -102,6 +102,7 @@ class EmployeeImportInactive implements ToCollection
     {
         $data = [
             'identificacion' => $row[0],
+            'fecha_inactivacion' => $row[1]
         ];
 
         $sql = Employee::where('identification', $data['identificacion']);
@@ -136,6 +137,7 @@ class EmployeeImportInactive implements ToCollection
         else 
         {
             $employee->active = 'NO';
+            $employee->date_inactivation = $data['fecha_inactivacion'] ?? date('Y-m-d');
             $employee->update();
 
             return true;

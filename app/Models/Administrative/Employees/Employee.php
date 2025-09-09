@@ -49,7 +49,8 @@ class Employee extends Model
       'extension',
       'age',
       'salary',
-      'active'
+      'active',
+      'date_inactivation'
   ];
 
     public function audiometries(){
