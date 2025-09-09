@@ -101,7 +101,7 @@ class UpdateContractEmployeeStateDocuments extends Command
                             {
                                 if ($file->expirationDate)
                                 {
-                                    if ($file->expirationDate > date('Y-m-d'))
+                                    if ($file->expirationDate >= date('Y-m-d'))
                                     {
                                         if ($file->state == 'ACEPTADO')
                                         {
