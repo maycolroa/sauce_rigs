@@ -50,7 +50,12 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       $this->keywords = $this->getKeywordQueue($this->company_id);
       $this->confLocation = $this->getLocationFormConfModule($this->company_id);
 
-      $this->configLevel = ConfigurationsCompany::company($this->company_id)->findByKey('filter_inspections');
+      try
+      {
+          $this->configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+      } catch (\Exception $e) {
+          $this->configLevel = 'NO';
+      }
     }
 
     public function query()
