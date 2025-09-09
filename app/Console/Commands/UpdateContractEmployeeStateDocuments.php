@@ -59,14 +59,18 @@ class UpdateContractEmployeeStateDocuments extends Command
 
         foreach ($companies as $key => $company)
         {
-            \Log::info('company: '. $company);
-            $contracts = ContractLesseeInformation::select('id')->where('company_id', $company)->withoutGlobalScopes()->isActive()->get();
+            $contracts = ContractLesseeInformation::select('id')
+            ->where('company_id', $company)
+            ->withoutGlobalScopes()
+            ->isActive()
+            ->get();
 
             foreach ($contracts as $key2 => $contract) 
             {
                 \Log::info('contract: '. $contract->id);
                 $employees = ContractEmployee::where('contract_id', $contract->id)
-                ->withoutGlobalScopes()->get();
+                ->withoutGlobalScopes()
+                ->get();
 
                 foreach ($employees as $key3 => $employee) 
                 {
@@ -137,6 +141,12 @@ class UpdateContractEmployeeStateDocuments extends Command
                                             $pendiente = true;
                                             $expired = true;
                                         }
+                                        else if ($file->state == 'ACEPTADO')
+                                        {
+                                            $rejected = false;
+                                            $pendiente = false;
+                                            $expired = true;
+                                        }
                                     }
                                 }
                                 else
@@ -162,12 +172,14 @@ class UpdateContractEmployeeStateDocuments extends Command
                                     }
                                 }
                                 
-                                if ($count_files == ($key+1))
+                                $key1 = $key+1;
+
+                                if ($count_files == $key1)
                                 {
-                                    if ($fileUpload->state == 'ACEPTADO' && $expired)
+                                    if ($file->state == 'ACEPTADO' && $expired)
                                         array_push($files_states, 'PENDIENTE');
                                     else
-                                        array_push($files_states, $fileUpload->state);
+                                        array_push($files_states, $file->state);
                                 }
                             }
 
@@ -213,7 +225,6 @@ class UpdateContractEmployeeStateDocuments extends Command
        }   catch(\Exception $e) {
             DB::rollback();
             \Log::info($e->getMessage());
-            return $this->respondHttp500();
        }
     }
 
