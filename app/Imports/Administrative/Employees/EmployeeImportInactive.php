@@ -104,6 +104,7 @@ class EmployeeImportInactive implements ToCollection
             'identificacion' => $row[0],
             'fecha_inactivacion' => $row[1]
         ];
+        \Log::info($data);
 
         $sql = Employee::where('identification', $data['identificacion']);
         $sql->company_scope = $this->company_id;
