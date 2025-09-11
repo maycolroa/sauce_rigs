@@ -44,7 +44,7 @@ class UpdateStateEmployeeAdministrative extends Command
             {
                 $client = new Client();
 
-                $date = date('Y-m-d');
+                $date = '2025-08-15';//date('Y-m-d');
                 $apiToken = '0x010000006643480A7900D94618AE19E709326F941C6501C5F360502BA379FC7E34248DFA';
 
                 $response = $client->get("https://wikanapi.appta.com.co/cartama/empleados/movimientos?fecha=".$date, [
