@@ -116,9 +116,13 @@ class ContractController extends ApiController
             {
               if ($content[0])
               {
+                \Log::info($content[0]);
                 if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
+                  \Log::info($fecha->gte($now));
+                  \Log::info($fecha);
+                  \Log::info($now);
 
                   if ($fecha->gte($now))
                   {
