@@ -405,10 +405,18 @@
                             </vue-radio>
                         </b-form-row>
                         <b-form-row>
-                          <vue-ajax-advanced-select-tag-unic v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw(index)"></vue-ajax-advanced-select-tag-unic>
+                          <vue-advanced-select  v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_subsystem" :multiple="false" :options="riskSubsystem" :hide-selected="false" name="risk_subsystem" :error="form.errorsFor('risk_subsystem')" label="Subsistema de riesgo" placeholder="Seleccione el subsistema" :searchable="true">
+                          </vue-advanced-select>
                         </b-form-row>
                         <b-form-row>
-                          <vue-textarea @onBlur="riskOpotLaw(index)" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`description`)" rows="3"/>                  
+                          <vue-advanced-select  v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_gestion" :multiple="false" :options="riskGestion" :hide-selected="false" name="risk" :error="form.errorsFor('risk')" label="Año" placeholder="Seleccione el año" :searchable="true">
+                          </vue-advanced-select>
+                        </b-form-row>
+                        <!--<b-form-row>
+                          <vue-ajax-advanced-select-tag-unic v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw(index)"></vue-ajax-advanced-select-tag-unic>
+                        </b-form-row>-->
+                        <b-form-row>
+                          <vue-textarea @onBlur="riskOpotLaw(index)" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.description" label="ID Riesgo" name="description" placeholder="ID Riesgo" :error="form.errorsFor(`description`)" rows="3"/>                  
                         </b-form-row>
                         <b-form-row> 
                           <b-btn v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Oportunidad' || riskOppor.type == 'Riesgo y oportunidad'" @click="showModal(`modalPlanLawRiskOport${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
@@ -538,6 +546,8 @@ export default {
           type_risk: '',
           risk: null,
           risk_oport_description: '',
+          risk_gestion: '',
+          risk_subsystem: '',
           actionPlanRisk: '',
         };
       }
@@ -604,15 +614,37 @@ export default {
           {text: 'SI', value: 'SI'},
           {text: 'NO', value: 'NO'}
       ],
+      typeRiskRadio: [
+          {text: 'Riesgo Nuevo', value: 'Riesgo Nuevo'},
+          {text: 'Riesgo Existente', value: 'Riesgo Existente'}
+      ],
       riskOport: [
           {text: 'Riesgo', value: 'Riesgo'},
           {text: 'Oportunidad', value: 'Oportunidad'},
-          {text: 'Riesgo y oportunidad', value: 'Riesgo y oportunidad'},
           {text: 'No aplica', value: 'No aplica'}
+      ],
+      riskSubsystem: [
+          {name: 'SARLAFT', value: 'SARLAFT'},
+          {name: 'SICOF', value: 'SICOF'},
+          {name: 'RIESGO DE SALUD', value: 'RIESGO DE SALUD'},
+          {name: 'RIESGO OPERACIONAL – SARO', value: 'RIESGO OPERACIONAL – SARO'},
+          {name: 'RIESGO DE GRUPO', value: 'RIESGO DE GRUPO'},
+          {name: 'RIESGO DE LIQUIDEZ', value: 'RIESGO DE LIQUIDEZ'},
+          {name: 'RIESGO DE CRÉDITO', value: 'RIESGO DE CRÉDITO'},
+          {name: 'RIESGO DE MERCADO DE CAPITALES', value: 'RIESGO DE MERCADO DE CAPITALES'},
+          {name: 'RIESGO ACTUARIAL', value: 'RIESGO ACTUARIAL'},
+          {name: 'NO APLICA', value: 'NO APLICA'},
+          {name: 'PENDIENTE', value: 'PENDIENTE'},
+      ],
+      riskGestion: [
+          {name: 'Riesgo clínico', value: 'Riesgo clínico'},
+          {name: 'Riesgos administrativos', value: 'Riesgos administrativos'},
+          {name: 'MIPVRDC', value: 'MIPVRDC'},
+          {name: 'Matriz de aspectos, impactos y riesgos ambientales', value: 'Matriz de aspectos, impactos y riesgos ambientales'},
       ],
       searchArticles: '',
       editDate: false,
-			tagsRiskDataUrl: '/selects/tagsLmRisk',
+			//tagsRiskDataUrl: '/selects/tagsLmRisk',
     };
   },
   mounted() {
