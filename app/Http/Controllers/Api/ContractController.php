@@ -121,10 +121,11 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
                   \Log::info($fecha->gte($now));
+                  \Log::info($fecha->startOfDay()->gte($now->startOfDay()));
                   \Log::info($fecha);
                   \Log::info($now);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $parafis->push($content[0]);
                     $parafiscales = true;
