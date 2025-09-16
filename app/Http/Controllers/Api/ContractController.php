@@ -116,14 +116,9 @@ class ContractController extends ApiController
             {
               if ($content[0])
               {
-                \Log::info($content[0]);
                 if(isset($content[0]->expirationDate) && $content[0]->expirationDate)
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
-                  \Log::info($fecha->gte($now));
-                  \Log::info($fecha->startOfDay()->gte($now->startOfDay()));
-                  \Log::info($fecha);
-                  \Log::info($now);
 
                   if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
@@ -167,7 +162,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $cert->push($content[0]);
                     $certificaciones = true;
@@ -198,7 +193,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content2[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $cert->push($content2[0]);
                     $certificaciones = true;
@@ -238,7 +233,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $curs->push($content[0]);
                     $cursos = true;
@@ -278,7 +273,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $medic->push($content[0]);
                     $induccion = true;
