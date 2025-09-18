@@ -813,18 +813,20 @@ export default {
     },
     builderFilterQualificationOptions() {
       this.filterQualificationOptions.splice(0);
-      this.filterQualificationOptions = this.form.articles
-      .map((f) => {
+        console.log('entro aqui 1')
+      console.log(this.form.articles);
+      this.filterQualificationOptions = this.form.articles.map((f) => {
         if (f.qualify)
           return f.qualify
       })
-      .filter((value, index, self) => value && self.indexOf(value) === index)
-      .map((f) => {
+      .filter((value, index, self) => value && self.indexOf(value) === index).map((f) => {
         return {"name": f, "value": f}
       })
     },
     updateQualify(event, index) {
       if (event) {
+        console.log('entro aqui 2')
+        console.log(this.form.articles);
         this.form.articles[index].qualify = event;
         //this.dateEditQualification(index);
         this.saveArticleQualification(index);
