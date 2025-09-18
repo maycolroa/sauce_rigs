@@ -820,7 +820,8 @@ export default {
       this.filterQualificationOptions.splice(0);
         console.log('entro aqui 1')
       console.log(this.form.articles);
-      this.filterQualificationOptions = this.form.articles.map((f) => {
+      let arrayReal = Object.values(this.form.articles);
+      this.filterQualificationOptions = arrayReal.map((f) => {
         if (f.qualify)
           return f.qualify
       })
