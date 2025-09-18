@@ -624,8 +624,13 @@ export default {
     }, 5000)
   },
   created() {
+    
+    console.log(this.form.articles);
+    console.log('entro1');
     this.builderFilterQualificationOptions();
+    console.log('entro2');
     this.reloadShowArticles();
+    console.log('entro3');
   },
   methods: {
     beforeSubmit()
@@ -825,8 +830,6 @@ export default {
     },
     updateQualify(event, index) {
       if (event) {
-        console.log('entro aqui 2')
-        console.log(this.form.articles);
         this.form.articles[index].qualify = event;
         //this.dateEditQualification(index);
         this.saveArticleQualification(index);
