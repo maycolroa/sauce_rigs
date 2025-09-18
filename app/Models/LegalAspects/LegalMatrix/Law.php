@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 use App\Scopes\SystemApplyScope;
 use Session;
+use DB;
 
 class Law extends Model
 {
@@ -402,14 +403,14 @@ class Law extends Model
         if (COUNT($interests) > 0)
         {
             if ($typeSearch == 'IN')
-                $query ->join('sau_lm_company_interest', function ($join) 
+                $query ->join('sau_lm_company_interest', function ($join) use ($company)
                 {
                   $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$company}"));
                 })
                 ->whereIn('sau_lm_company_interest.interest_id', $interests);
 
             else if ($typeSearch == 'NOT IN')
-                $query ->join('sau_lm_company_interest', function ($join) 
+                $query ->join('sau_lm_company_interest', function ($join) use ($company)
                 {
                   $join->on("sau_lm_company_interest.company_id", "=", DB::raw("{$company}"));
                 })
