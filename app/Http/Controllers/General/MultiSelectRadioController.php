@@ -371,4 +371,56 @@ class MultiSelectRadioController extends Controller
 
         return $this->radioFormat($agents);
     }
+
+    public function typeRiskLm()
+    {
+        $data = [
+          'Riesgo Nuevo' => 'Riesgo Nuevo',
+          'Riesgo Existente' => 'Riesgo Existente'
+        ];
+
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function typeLm()
+    {
+        $data = [
+            'Riesgo' => 'Riesgo',
+            'Oportunidad' => 'Oportunidad',
+            'No aplica' => 'No aplica'
+        ];
+
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function riskSubsystemLm()
+    {
+        $data = [
+            'SARLAFT' => 'SARLAFT',
+            'SICOF' => 'SICOF',
+            'RIESGO DE SALUD' => 'RIESGO DE SALUD',
+            'RIESGO OPERACIONAL – SARO' => 'RIESGO OPERACIONAL – SARO',
+            'RIESGO DE GRUPO' => 'RIESGO DE GRUPO',
+            'RIESGO DE LIQUIDEZ' => 'RIESGO DE LIQUIDEZ',
+            'RIESGO DE CRÉDITO' => 'RIESGO DE CRÉDITO',
+            'RIESGO DE MERCADO DE CAPITALES' => 'RIESGO DE MERCADO DE CAPITALES',
+            'RIESGO ACTUARIAL' => 'RIESGO ACTUARIAL',
+            'NO APLICA' => 'NO APLICA',
+            'PENDIENTE' => 'PENDIENTE',
+        ];
+
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function riskGestionLm()
+    {
+        $data = [
+          'Riesgo clínico' => 'Riesgo clínico',
+          'Riesgos administrativos' => 'Riesgos administrativos',
+          'MIPVRDC' => 'MIPVRDC',
+          'Matriz de aspectos, impactos y riesgos ambientales' => 'Matriz de aspectos, impactos y riesgos ambientales',
+        ];
+
+        return $this->multiSelectFormat(collect($data));
+    }
 }

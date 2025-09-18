@@ -2601,7 +2601,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/legalMatrix/law/reportRiskOpportunities',
             filterColumns: true,            
-            //configNameFilter: 'legalaspects-report-risk-opportunities'
+            configNameFilter: 'legalaspects-report-risk-opportunities'
         }
     },
 ]

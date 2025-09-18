@@ -462,6 +462,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('lawYears', 'LegalAspects\LegalMatrix\LawController@lmLawYears');
           Route::post('lawYearsSystem', 'LegalAspects\LegalMatrix\LawController@lmLawYearsSystem');
           Route::post('lawYearsCompany', 'LegalAspects\LegalMatrix\LawController@lmLawYearsCompany');
+          Route::post('typeRiskLm', 'General\MultiSelectRadioController@typeRiskLm');
+          Route::post('typeLm', 'General\MultiSelectRadioController@typeLm');
+          Route::post('riskSubsystemLm', 'General\MultiSelectRadioController@riskSubsystemLm');
+          Route::post('riskGestionLm', 'General\MultiSelectRadioController@riskGestionLm');
         });
 
         Route::post('ctInformReportMultiselect', 'LegalAspects\Contracs\InformReportController@multiselect');

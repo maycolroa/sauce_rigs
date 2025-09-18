@@ -379,4 +379,40 @@ export default [
         },
       ]
     },
+
+    {
+      name: 'legalaspects-report-risk-opportunities',
+      filters: [        
+        {
+          url: '/selects/legalMatrix/systemApplySystem',
+          key: 'systemApply',
+          type: 'select',
+          label: 'Sistemas'
+        },
+        {
+          url: '/selects/legalMatrix/typeLm',
+          key: 'typeLmRiskOpportunity',
+          type: 'select',
+          label: 'Tipo'
+        },
+        {
+          url: '/selects/legalMatrix/typeRiskLm',
+          key: 'typeRisk',
+          type: 'select',
+          label: 'Tipo de riesgo'
+        },
+        {
+          url: '/selects/legalMatrix/riskSubsystemLm',
+          key: 'subsystemRisk',
+          type: 'select',
+          label: 'Subsistema del riesgo'
+        },
+        {
+          url: '/selects/legalMatrix/riskGestionLm',
+          key: 'applyGestion',
+          type: 'select',
+          label: 'Aplicativo de riesgos para la gestión'
+        },
+      ]
+    },
 ];
