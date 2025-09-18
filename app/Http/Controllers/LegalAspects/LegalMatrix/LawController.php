@@ -599,13 +599,16 @@ class LawController extends Controller
                 $riskOppor->key = (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20);
                 $riskOppor->type_risk = $riskOppor->type ?? 'No aplica';
                 $riskOppor->risk = $riskOppor->risk ?? '';
+                $riskOppor->type_risk = $riskOppor->type_risk ?? '';
+                $riskOppor->risk_subsystem = $riskOppor->risk_subsystem ?? '';
+                $riskOppor->risk_gestion = $riskOppor->risk_gestion ?? '';
                 $riskOppor->risk_oport_description = $riskOppor->description ?? '';
                 $riskOppor->actionPlanRisk = [
                     "activities" => [],
                     "activitiesRemoved" => []
                 ];
 
-                if ($riskOppor->type == 'Riesgo' || $riskOppor->type == 'Oportunidad' || $riskOppor->type == 'Riesgo y oportunidad')
+                if ($riskOppor->type == 'Riesgo' || $riskOppor->type == 'Oportunidad')
                     $riskOppor->actionPlanRisk = ActionPlan::model($riskOppor)->prepareDataComponent();
 
                 return $riskOppor;
@@ -771,6 +774,9 @@ class LawController extends Controller
                                 'law_id' => $law->id, 
                                 'user_id' => $this->user->id,
                                 'type' => $request->type,
+                                'type_risk' => $request->type_risk,
+                                'risk_subsystem' => $request->risk_subsystem,
+                                'risk_gestions' => $request->risk_gestions,
                                 'description' => $request->risk_oport_description == 'null' ? NULL : $request->risk_oport_description, 
                                 'risk' => $risk->implode(','),
                             ]
@@ -1173,6 +1179,28 @@ class LawController extends Controller
             else
                 $risk = [];
 
+            if ($request->type == 'Oportunidad')
+            {
+                $request->type_risk =  NULL;
+                $request->risk_subsystem = NULL;
+                $request->risk_gestion =   NULL;
+                $request->risk_id_text =   NULL;
+                $request->description_no_apply =  NULL;
+            }
+            else if ($request->type == 'Riesgo')
+            {
+                $request->description =  NULL;
+                $request->description_no_apply =  NULL;
+            }
+            else if ($request->type == 'No aplica')
+            {
+                $request->type_risk =  NULL;
+                $request->risk_subsystem = NULL;
+                $request->risk_gestion =   NULL;
+                $request->risk_id_text =   NULL;
+                $request->description =  NULL;
+            }
+
             $risk_oport = LawRiskOpportunity::updateOrCreate(
                 [
                     'id' => $request->id,
@@ -1184,8 +1212,13 @@ class LawController extends Controller
                     'law_id' => $law->id, 
                     'user_id' => $this->user->id,
                     'type' => $request->type,
+                    'type_risk' => $request->type_risk,
+                    'risk_subsystem' => $request->risk_subsystem,
+                    'risk_gestion' => $request->risk_gestion,
+                    'risk_id_text' => $request->risk_id_text,
+                    'description_no_apply' => $request->description_no_apply,
                     'description' => $request->description == 'null' ? NULL : $request->description, 
-                    'risk' => ($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && !is_string($risk_tag) ? (COUNT($risk) > 0 ? $risk->implode(',') : NULL) : (($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && is_string($risk_tag) ? $risk_tag : NULL),
+                    'risk' => $request->type == 'Riesgo' && !is_string($risk_tag) ? (COUNT($risk) > 0 ? $risk->implode(',') : NULL) : ($request->type == 'Riesgo' && is_string($risk_tag) ? $risk_tag : NULL),
                 ]
             );
 
@@ -1196,8 +1229,6 @@ class LawController extends Controller
                 $detail_procedence = 'Mátriz Legal - Norma: ' . $law->name;
 
                 if ($request->type == 'Riesgo' && $risk_oport->risk)
-                    $detail_procedence = $detail_procedence.' - Riesgo: '.$risk_oport->risk.' - '.$risk_oport->description;
-                else if ($request->type == 'Riesgo y oportunidad' && $risk_oport->risk) 
                     $detail_procedence = $detail_procedence.' - Riesgo: '.$risk_oport->risk.' - '.$risk_oport->description;
                 else if ($request->type == 'Oportunidad')
                     $detail_procedence = $detail_procedence.' - '.$risk_oport->description;
