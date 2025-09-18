@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Inform\LegalAspects\LegalMatrix\ReportManagerLaw;
 use App\Jobs\LegalAspects\LegalMatrix\Reports\ReportLawExportJob;
+use App\Models\LegalAspects\LegalMatrix\LawRiskOpportunity;
 use App\Traits\Filtertrait;
+use App\Vuetable\Facades\Vuetable;
 
 class LawReportController extends Controller
 {
@@ -128,5 +130,21 @@ class LawReportController extends Controller
         ];
     
         return $this->multiSelectFormat(collect($select));
+    }
+
+    public function reportRiskOpportunities(Request $request)
+    {
+        $data = LawRiskOpportunity::select(
+            'sau_lm_system_apply.name AS system', 
+            'type_risk', 
+            'risk_subsystem', 
+            'risk_gestion',
+            'sau_lm_law_risk_opportunity.description as opportunity',
+            'sau_lm_law_risk_opportunity.description_no_apply as description_no_apply'
+        )
+        ->join('sau_lm_laws', 'sau_lm_laws.id', 'sau_lm_law_risk_opportunity.law_id')
+        ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id');
+
+        return Vuetable::of($data)->make();
     }
 }

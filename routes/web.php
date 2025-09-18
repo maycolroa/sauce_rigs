@@ -1172,6 +1172,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/report/export', 'LegalAspects\LegalMatrix\LawReportController@export');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
         Route::post('import', 'LegalAspects\LegalMatrix\LawController@import');
+        Route::post('law/reportRiskOpportunities', 'LegalAspects\LegalMatrix\LawReportController@reportRiskOpportunities');
 
         Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
         Route::post('articleFulfillmentHistory/data', 'LegalAspects\LegalMatrix\ArticleFulfillmentHistoryController@data');
