@@ -624,13 +624,8 @@ export default {
     }, 5000)
   },
   created() {
-    
-    console.log(this.form.articles);
-    console.log('entro1');
     this.builderFilterQualificationOptions();
-    console.log('entro2');
     this.reloadShowArticles();
-    console.log('entro3');
   },
   methods: {
     beforeSubmit()
@@ -818,8 +813,6 @@ export default {
     },
     builderFilterQualificationOptions() {
       this.filterQualificationOptions.splice(0);
-        console.log('entro aqui 1')
-      console.log(this.form.articles);
       let arrayReal = Object.values(this.form.articles);
       this.filterQualificationOptions = arrayReal.map((f) => {
         if (f.qualify)
