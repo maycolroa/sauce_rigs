@@ -9,6 +9,9 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\Table;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\TableRequest;
 USE Carbon\Carbon;
+use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
+use App\Facades\Mail\Facades\NotificationMail;
 use DB;
 
 class TableController extends Controller
@@ -115,6 +118,20 @@ class TableController extends Controller
 
             DB::commit();
 
+            $superadmin_notify = (new User(['email'=> 'mroat0@gmail.com']));     
+            $company = Company::find($this->company);     
+            
+            if ($superadmin_notify && $company)
+            {
+                NotificationMail::
+                    subject('Carga de información en tabla ausentismo')
+                    ->message("Se creo una tabla con el nombre {$table->name}, perteneciente a la compañia {$company->name} por el usuario {$this->user->name} - {$this->user->email}")
+                    ->recipients($superadmin_notify)
+                    ->module('absenteeism')
+                    ->company($this->company)
+                    ->send();
+            }
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -185,6 +202,20 @@ class TableController extends Controller
             });
 
             DB::commit();
+
+            $superadmin_notify = (new User(['email'=> 'mroat0@gmail.com']));     
+            $company = Company::find($this->company);     
+            
+            if ($superadmin_notify && $company)
+            {
+                NotificationMail::
+                    subject('Carga de información en tabla ausentismo')
+                    ->message("Se modifico una tabla con el nombre {$table->name}, perteneciente a la compañia {$company->name} por el usuario {$this->user->name} - {$this->user->email}")
+                    ->recipients($superadmin_notify)
+                    ->module('absenteeism')
+                    ->company($this->company)
+                    ->send();
+            }
 
         }
         catch(\Exception $e) {

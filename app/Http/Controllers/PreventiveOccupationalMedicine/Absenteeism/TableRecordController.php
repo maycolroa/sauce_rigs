@@ -13,6 +13,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\PreventiveOccupationalMedicine\Absenteeism\TableRecord\TableRecordExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\Absenteeism\TableRecord\TableRecordImportJob;
 USE Carbon\Carbon;
+use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
+use App\Facades\Mail\Facades\NotificationMail;
 use DB;
 
 class TableRecordController extends Controller
@@ -102,6 +105,20 @@ class TableRecordController extends Controller
             ->updateOrInsert(['id' => $request->id], $data);
 
             DB::commit();
+
+            $superadmin_notify = (new User(['email'=> 'mroat0@gmail.com']));     
+            $company = Company::find($this->company);     
+            
+            if ($superadmin_notify && $company)
+            {
+                NotificationMail::
+                    subject('Carga de información en tabla ausentismo')
+                    ->message("Se han agregado o modificado registros en la tabla {$table->name}, perteneciente a la compañia {$company->name} por el usuario {$this->user->name} - {$this->user->email}")
+                    ->recipients($superadmin_notify)
+                    ->module('absenteeism')
+                    ->company($this->company)
+                    ->send();
+            }
 
         } catch (\Exception $e) {
             DB::rollback();
