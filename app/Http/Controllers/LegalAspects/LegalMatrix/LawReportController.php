@@ -71,6 +71,8 @@ class LawReportController extends Controller
         $responsibles = !$init ? $this->getValuesForMultiselect($request->responsibles) : (isset($filters['responsibles']) ? $this->getValuesForMultiselect($filters['responsibles']) : []);
 
         $interests = !$init ? $this->getValuesForMultiselect($request->interests) : (isset($filters['interests']) ? $this->getValuesForMultiselect($filters['interests']) : []);
+        
+        $riskOpportunity = !$init ? $this->getValuesForMultiselect($request->riskOpportunity) : (isset($filters['riskOpportunity']) ? $this->getValuesForMultiselect($filters['riskOpportunity']) : []);
 
         $states = !$init ? $this->getValuesForMultiselect($request->states) : (isset($filters['states']) ? $this->getValuesForMultiselect($filters['states']) : []);
 
@@ -82,7 +84,7 @@ class LawReportController extends Controller
 
         $category = $request->legalMatrixSelected;
         
-        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates);
+        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates, $riskOpportunity);
         
         return $this->respondHttp200($reportManager->getInformData());
     }
@@ -103,6 +105,7 @@ class LawReportController extends Controller
                 "repealed" => $this->getValuesForMultiselect($request->repealed),
                 "responsibles" => $this->getValuesForMultiselect($request->responsibles),
                 "interests" => $this->getValuesForMultiselect($request->interests),
+                "riskOpportunity" => $this->getValuesForMultiselect($request->riskOpportunity),
                 "states" => $this->getValuesForMultiselect($request->states),
                 "dates" => $this->formatDatetimeToBetweenFilter($request->dateRange),
                 "filtersType" => $request->filtersType

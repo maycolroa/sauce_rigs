@@ -82,6 +82,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       ->inResponsibles($this->filters['responsibles'], $this->filters['filtersType']['responsibles'])
       ->inInterests($this->filters['interests'], $this->filters['filtersType']['interests'])
       ->inState($this->filters['states'], $this->filters['filtersType']['states'])
+      ->inRiskOpportunity($this->filters['riskOpportunity'], $this->filters['filtersType']['riskOpportunity'], $this->company_id)
       ->groupBy('id')
       ->orderBy('law_number');
 
@@ -124,9 +125,13 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
         $data->responsible,
         $data->workplace,
         $risk,
+        $law_risk->type_risk ?? NULL,
+        $law_risk->risk_subsystem ?? NULL,
+        $law_risk->risk_gestion ?? NULL,
         $oppor,
+        $law_risk->description ?? NULL,
         $no_apl,
-        $law_risk ? $law_risk->description : NULL
+        $law_risk->description_no_apply ?? NULL,
       ];
     }
 
@@ -148,7 +153,11 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           'Responsable',
           'Centro de trabajo',
           'Riesgo',
+          'Tipo de riesgo',
+          'Subsistema del riesgo',
+          'Aplicación de la gestión del riesgo',
           'Oportunidad',
+          'Descripcion',
           'No aplica',
           'Descripcion'
         ];
