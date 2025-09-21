@@ -18,6 +18,11 @@ class LawRiskOpportunity extends Model
         'user_id',
         'type',
         'risk',
-        'description'
+        'description',
+        'type_risk',
+        'risk_subsystem',
+        'risk_gestion',
+        'risk_id_text',
+        'description_no_apply'
     ];
 }

@@ -81,12 +81,13 @@ class ReportManagerLaw
     protected $dates;
     protected $company;
     protected $useRiskOppoortunity;
+    protected $riskOpportunity;
 
     /**
      * create an instance and set the attribute class
      * @param array $lawTypes
      */
-    function __construct($lawTypes = [], $riskAspects = [], $entities = [], $sstRisks = [], $systemApply = [], $lawNumbers = [], $lawYears = [], $repealed = [], $responsibles = [], $interests = [], $states = [], $filtersType = [], $category = '', $dates = [])
+    function __construct($lawTypes = [], $riskAspects = [], $entities = [], $sstRisks = [], $systemApply = [], $lawNumbers = [], $lawYears = [], $repealed = [], $responsibles = [], $interests = [], $states = [], $filtersType = [], $category = '', $dates = [], $riskOpportunity = [])
     {
         $this->company = Session::get('company_id');
         $this->lawTypes = $lawTypes;
@@ -99,6 +100,7 @@ class ReportManagerLaw
         $this->repealed = $repealed;
         $this->responsibles = $responsibles;
         $this->interests = $interests;
+        $this->riskOpportunity = $riskOpportunity;
         $this->states = $states;
         $this->filtersType = $filtersType;
         $this->totalLaws = $this->getTotalLaws();
@@ -226,6 +228,7 @@ class ReportManagerLaw
         ->inInterests($this->interests,$this->filtersType['interests'])
         ->inState($this->states,$this->filtersType['states'])
         ->betweenDate($this->dates ? $this->dates : [])
+        ->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
         ->groupBy('system_apply', 'qualify')
         ->get();
 
@@ -297,6 +300,7 @@ class ReportManagerLaw
         ->inInterests($this->interests,$this->filtersType['interests'])
         ->inState($this->states,$this->filtersType['states'])
         ->betweenDate($this->dates ? $this->dates : [])
+        ->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
         ->groupBy('qualify')
         ->get();
 
@@ -399,6 +403,7 @@ class ReportManagerLaw
         ->inInterests($this->interests,$this->filtersType['interests'])
         ->inState($this->states,$this->filtersType['states'])
         ->betweenDate($this->dates ? $this->dates : [])
+        ->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
         ->groupBy('category', 'qualify')
         ->orderBy('category')
         ->get();
@@ -576,6 +581,7 @@ class ReportManagerLaw
         ->inInterests($this->interests,$this->filtersType['interests'])
         ->inState($this->states,$this->filtersType['states'])
         ->betweenDate($this->dates ? $this->dates : [])
+        ->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
         ->first();
 
         return $laws ? $laws->total : 0;

@@ -405,13 +405,31 @@
                             </vue-radio>
                         </b-form-row>
                         <b-form-row>
-                          <vue-ajax-advanced-select-tag-unic v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw(index)"></vue-ajax-advanced-select-tag-unic>
+                          <vue-radio v-if="riskOppor.type == 'Riesgo'" class="col-md-3" v-model="riskOppor.type_risk" :options="typeRiskRadio" :name="`type_risk${index}`"  :checked="riskOppor.type" @input="riskOpotLaw(index)" label="Tipo de riesgo">
+                            </vue-radio>
                         </b-form-row>
                         <b-form-row>
-                          <vue-textarea @onBlur="riskOpotLaw(index)" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`description`)" rows="3"/>                  
+                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_subsystem" :multiple="false" :options="riskSubsystem" :hide-selected="false" name="risk_subsystem" :error="form.errorsFor('risk_subsystem')" label="Subsistema de riesgo" placeholder="Seleccione el subsistema" :searchable="true">
+                          </vue-advanced-select>
+                        </b-form-row>
+                        <b-form-row>
+                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_gestion" :multiple="false" :options="riskGestion" :hide-selected="false" name="risk_gestion" :error="form.errorsFor('risk_gestion')" label="Aplicativo de riesgos para la gestión" placeholder="Seleccione el aplicativo" :searchable="true">
+                          </vue-advanced-select>
+                        </b-form-row>
+                        <!--<b-form-row>
+                          <vue-ajax-advanced-select-tag-unic v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Riesgo y oportunidad'" :disabled="!auth.can['risk_opportunity_u']" class="col-md-12" v-model="riskOppor.risk" name="risk" label="Riesgo" placeholder="Seleccione el riesgo" :url="tagsRiskDataUrl" :multiple="false" :allowEmpty="true" :taggable="true" @input="riskOpotLaw(index)"></vue-ajax-advanced-select-tag-unic>
+                        </b-form-row>-->
+                        <b-form-row>
+                          <vue-textarea @onBlur="riskOpotLaw(index)" v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_id_text" label="ID Riesgo" name="risk_id_text" placeholder="ID Riesgo" :error="form.errorsFor(`risk_id_text`)" rows="3"/>                  
+                        </b-form-row>
+                        <b-form-row>
+                          <vue-textarea @onBlur="riskOpotLaw(index)" v-if="riskOppor.type == 'Oportunidad'" class="col-md-12" v-model="riskOppor.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`description`)" rows="3"/>                  
+                        </b-form-row>                        
+                        <b-form-row>
+                          <vue-textarea @onBlur="riskOpotLaw(index)" v-if="riskOppor.type == 'No aplica'" class="col-md-12" v-model="riskOppor.description_no_apply" label="Descripción" name="description_no_apply" placeholder="Descripción" :error="form.errorsFor(`description_no_apply`)" rows="3"/>                  
                         </b-form-row>
                         <b-form-row> 
-                          <b-btn v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Oportunidad' || riskOppor.type == 'Riesgo y oportunidad'" @click="showModal(`modalPlanLawRiskOport${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                          <b-btn v-if="riskOppor.type == 'Riesgo' || riskOppor.type == 'Oportunidad'" @click="showModal(`modalPlanLawRiskOport${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
                           <b-modal :ref="`modalPlanLawRiskOport${index}`" :hideFooter="true" id="modals-default-law-risk-oport" class="modal-top" size="lg" @hidden="riskOpotLaw(index)">
                             <div slot="modal-title">
@@ -538,7 +556,10 @@ export default {
           type_risk: '',
           risk: null,
           risk_oport_description: '',
+          risk_gestion: '',
+          risk_subsystem: '',
           actionPlanRisk: '',
+          delete: []
         };
       }
     }
@@ -604,15 +625,37 @@ export default {
           {text: 'SI', value: 'SI'},
           {text: 'NO', value: 'NO'}
       ],
+      typeRiskRadio: [
+          {text: 'Riesgo Nuevo', value: 'Riesgo Nuevo'},
+          {text: 'Riesgo Existente', value: 'Riesgo Existente'}
+      ],
       riskOport: [
           {text: 'Riesgo', value: 'Riesgo'},
           {text: 'Oportunidad', value: 'Oportunidad'},
-          {text: 'Riesgo y oportunidad', value: 'Riesgo y oportunidad'},
           {text: 'No aplica', value: 'No aplica'}
+      ],
+      riskSubsystem: [
+          {name: 'SARLAFT', value: 'SARLAFT'},
+          {name: 'SICOF', value: 'SICOF'},
+          {name: 'RIESGO DE SALUD', value: 'RIESGO DE SALUD'},
+          {name: 'RIESGO OPERACIONAL – SARO', value: 'RIESGO OPERACIONAL – SARO'},
+          {name: 'RIESGO DE GRUPO', value: 'RIESGO DE GRUPO'},
+          {name: 'RIESGO DE LIQUIDEZ', value: 'RIESGO DE LIQUIDEZ'},
+          {name: 'RIESGO DE CRÉDITO', value: 'RIESGO DE CRÉDITO'},
+          {name: 'RIESGO DE MERCADO DE CAPITALES', value: 'RIESGO DE MERCADO DE CAPITALES'},
+          {name: 'RIESGO ACTUARIAL', value: 'RIESGO ACTUARIAL'},
+          {name: 'NO APLICA', value: 'NO APLICA'},
+          {name: 'PENDIENTE', value: 'PENDIENTE'},
+      ],
+      riskGestion: [
+          {name: 'Riesgo clínico', value: 'Riesgo clínico'},
+          {name: 'Riesgos administrativos', value: 'Riesgos administrativos'},
+          {name: 'MIPVRDC', value: 'MIPVRDC'},
+          {name: 'Matriz de aspectos, impactos y riesgos ambientales', value: 'Matriz de aspectos, impactos y riesgos ambientales'},
       ],
       searchArticles: '',
       editDate: false,
-			tagsRiskDataUrl: '/selects/tagsLmRisk',
+			//tagsRiskDataUrl: '/selects/tagsLmRisk',
     };
   },
   mounted() {
@@ -905,6 +948,11 @@ export default {
         data.append('law_id', this.form.id);
         data.append('id', riskOpp.id);
         data.append('type', riskOpp.type);
+        data.append('type_risk', riskOpp.type_risk);
+        data.append('risk_subsystem', riskOpp.risk_subsystem);
+        data.append('risk_gestion', riskOpp.risk_gestion);
+        data.append('description_no_apply', riskOpp.description_no_apply);
+        data.append('risk_id_text', riskOpp.risk_id_text);
         data.append('description', riskOpp.description);
         data.append('actionPlanRisk', JSON.stringify(riskOpp.actionPlanRisk));
         data.append('risk', JSON.stringify(riskOpp.risk));
@@ -913,8 +961,6 @@ export default {
           .submit('/legalAspects/legalMatrix/law/saveRiskOportLawComplete', false, data)
           .then(response => {
             _.forIn(response.data.data, (value, key) => {
-              console.log(key)
-              console.log(value)
               riskOpp[key] = value
             })
           }).catch(error => {console.log(error)});
@@ -1043,20 +1089,6 @@ export default {
       if (this.activateEvent && !this.loading)
       {
         let article = this.form.articles[index]
-
-
-        /*if (article.fulfillment_value_id != 3 && article.fulfillment_value_id != 5)//No cumple
-        {
-          if (typeof article.actionPlan !== 'undefined')
-          {
-            article.actionPlan.activities.forEach((action, index2) => {
-              if (action.id != '')
-                article.actionPlan.activitiesRemoved.push(action)
-            });
-
-            article.actionPlan.activities = [];
-          }
-        }*/
         
         let data = new FormData();
         data.append('id', article.id);

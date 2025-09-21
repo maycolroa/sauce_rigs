@@ -27,26 +27,8 @@
                                 <div><b>Número de Artículos:</b> {{resumenFulfillment.total_articles}}</div>
                             </b-col>
                             <b-col>
-                                <div><b>Total de artículos que aplican para el cumplimiento:</b> {{resumenFulfillment.articles_t}}
-
-                                    <!--<div class="float-right" style="padding-right: 10px;">
-                                        <b-btn v-b-popover.hover.focus.left="helps.articles_t.text" :title="helps.articles_t.title" variant="secondary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-                                    </div>
-                                </div>
-                                <div><b># Artículos Cumplimiento:</b> {{resumenFulfillment.articles_c}} 
-                                
-                                    <div class="float-right" style="padding-right: 10px;">
-                                        <b-btn v-b-popover.hover.focus.left="helps.articles_c.text" :title="helps.articles_c.title" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-                                    </div>
-                                </div>
-                                <div><b># Artículos Incumplimiento:</b> {{resumenFulfillment.articles_nc}}
-
-                                    <div class="float-right" style="padding-right: 10px;">
-                                        <b-btn v-b-popover.hover.focus.left="helps.articles_nc.text" :title="helps.articles_nc.title" variant="secondary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-                                    </div>
-                                </div>
-                                <div><b>% Artículos Cumplimiento:</b> {{resumenFulfillment.percentage_c}}</div>
-                                <div><b>% Artículos Incumplimiento:</b> {{resumenFulfillment.percentage_nc}}</div>-->
+                                <div>
+                                    <b>Total de artículos que aplican para el cumplimiento:</b> {{resumenFulfillment.articles_t}}
                                 </div>
                             </b-col>
                         </b-row>
@@ -148,30 +130,12 @@
             <b-row v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v']">
                 <b-col>
                     <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
-                        <b-row>
-                            <div class="col-md-12" style="padding-bottom: 15px;">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center align-middle">Sistema que aplica</th>
-                                                <th class="text-center align-middle">Riesgos</th>
-                                                <th class="text-center align-middle">Oportunidades</th>
-                                                <th class="text-center align-middle">No aplica</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(row, index) in reportTableRisk" :key="`row-${index}`">
-                                                <td class="align-middle">{{ row.category }}</td>
-                                                <td class="text-center align-middle">{{ row["count_risk"] }}</td>
-                                                <td class="text-center align-middle">{{ row["count_opport"] }}</td>
-                                                <td class="text-center align-middle">{{ row["count_n_a"] }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </b-row>
+                        <b-card-body>
+                            <vue-table
+                                v-if="auth.can['risk_opportunity_v']"
+                                configName="legalaspects-report-risk-opportunities"
+                            ></vue-table>
+                        </b-card-body>
                     </b-card>
                 </b-col>
             </b-row>

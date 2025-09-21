@@ -2579,4 +2579,29 @@ export default [
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
+    {
+        name: 'legalaspects-report-risk-opportunities',
+        fields: [
+            { name: 'sau_lm_law_risk_opportunity.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_system_apply.name', data: 'system', title: 'Sistema que aplica', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_law_risk_opportunity.type_risk', data: 'type_risk', title: 'Tipo de riesgo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_law_risk_opportunity.risk_subsystem', data: 'risk_subsystem', title: 'Subsistema del riesgo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_law_risk_opportunity.risk_gestion', data: 'risk_gestion', title: 'Aplicativo de riesgo para gestión', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_law_risk_opportunity.description', data: 'opportunity', title: 'Oportunidad', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_law_risk_opportunity.description_no_apply', data: 'description_no_apply', title: 'No aplica', sortable: true, searchable: true, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/law/reportRiskOpportunities',
+            filterColumns: true,            
+            configNameFilter: 'legalaspects-report-risk-opportunities'
+        }
+    },
 ]

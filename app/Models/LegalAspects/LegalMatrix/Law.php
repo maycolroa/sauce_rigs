@@ -371,34 +371,64 @@ class Law extends Model
         return $query;
     }
 
-    public function scopeInRiskOpportunity($query, $riskOpportunity, $typeSearch = 'IN')
+    public function scopeInRiskOpportunity($query, $riskOpportunity, $typeSearch = 'IN', $company_id = null)
     {
+        $company = $company_id ?? Session::get('company_id');
+
         if (COUNT($riskOpportunity) > 0)
         {
             if ($riskOpportunity[0] == 'SI')
             {
                 if ($typeSearch == 'IN')
-                    $query->whereNotNull('sau_lm_law_risk_opportunity.id');
+                {
+                    $query->whereNotNull('sau_lm_law_risk_opportunity.id')
+                    ->join('sau_lm_law_risk_opportunity', function ($join) use ($company)
+                    {
+                        $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
+                        $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$company}"));
+                    });
+                }
 
                 else if ($typeSearch == 'NOT IN')
-                    $query->whereNull('sau_lm_law_risk_opportunity.id');
+                {
+                    $query->whereNull('sau_lm_law_risk_opportunity.id')
+                    ->join('sau_lm_law_risk_opportunity', function ($join) use ($company)
+                    {
+                        $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
+                        $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$company}"));
+                    });
+                }
             }
             else if ($riskOpportunity[0] == 'NO')
             {
                 if ($typeSearch == 'IN')
-                    $query->whereNull('sau_lm_law_risk_opportunity.id');
+                {
+                    $query->whereNull('sau_lm_law_risk_opportunity.id')
+                    ->join('sau_lm_law_risk_opportunity', function ($join) use ($company) 
+                    {
+                        $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
+                        $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$company}"));
+                    });
+                }
 
                 else if ($typeSearch == 'NOT IN')
-                    $query->whereNotNull('sau_lm_law_risk_opportunity.id');
+                {
+                    $query->whereNotNull('sau_lm_law_risk_opportunity.id')
+                    ->join('sau_lm_law_risk_opportunity', function ($join) use ($company)
+                    {
+                        $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
+                        $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$company}"));
+                    });
+                }
             }
         }
 
         return $query;
     }
 
-    public function scopeInInterestsCompany($query, $interests, $typeSearch = 'IN')
+    public function scopeInInterestsCompany($query, $interests, $typeSearch = 'IN', $company_id = null)
     {
-        $company = Session::get('company_id');
+        $company = $company_id ?? Session::get('company_id');
         
         if (COUNT($interests) > 0)
         {

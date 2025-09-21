@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Inform\LegalAspects\LegalMatrix\ReportManagerLaw;
 use App\Jobs\LegalAspects\LegalMatrix\Reports\ReportLawExportJob;
+use App\Models\LegalAspects\LegalMatrix\LawRiskOpportunity;
 use App\Traits\Filtertrait;
+use App\Vuetable\Facades\Vuetable;
 
 class LawReportController extends Controller
 {
@@ -69,6 +71,8 @@ class LawReportController extends Controller
         $responsibles = !$init ? $this->getValuesForMultiselect($request->responsibles) : (isset($filters['responsibles']) ? $this->getValuesForMultiselect($filters['responsibles']) : []);
 
         $interests = !$init ? $this->getValuesForMultiselect($request->interests) : (isset($filters['interests']) ? $this->getValuesForMultiselect($filters['interests']) : []);
+        
+        $riskOpportunity = !$init ? $this->getValuesForMultiselect($request->riskOpportunity) : (isset($filters['riskOpportunity']) ? $this->getValuesForMultiselect($filters['riskOpportunity']) : []);
 
         $states = !$init ? $this->getValuesForMultiselect($request->states) : (isset($filters['states']) ? $this->getValuesForMultiselect($filters['states']) : []);
 
@@ -80,7 +84,7 @@ class LawReportController extends Controller
 
         $category = $request->legalMatrixSelected;
         
-        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates);
+        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates, $riskOpportunity);
         
         return $this->respondHttp200($reportManager->getInformData());
     }
@@ -101,6 +105,7 @@ class LawReportController extends Controller
                 "repealed" => $this->getValuesForMultiselect($request->repealed),
                 "responsibles" => $this->getValuesForMultiselect($request->responsibles),
                 "interests" => $this->getValuesForMultiselect($request->interests),
+                "riskOpportunity" => $this->getValuesForMultiselect($request->riskOpportunity),
                 "states" => $this->getValuesForMultiselect($request->states),
                 "dates" => $this->formatDatetimeToBetweenFilter($request->dateRange),
                 "filtersType" => $request->filtersType
@@ -128,5 +133,38 @@ class LawReportController extends Controller
         ];
     
         return $this->multiSelectFormat(collect($select));
+    }
+
+    public function reportRiskOpportunities(Request $request)
+    {
+        $data = LawRiskOpportunity::select(
+            'sau_lm_system_apply.name AS system', 
+            'type_risk', 
+            'risk_subsystem', 
+            'risk_gestion',
+            'sau_lm_law_risk_opportunity.description as opportunity',
+            'sau_lm_law_risk_opportunity.description_no_apply as description_no_apply'
+        )
+        ->join('sau_lm_laws', 'sau_lm_laws.id', 'sau_lm_law_risk_opportunity.law_id')
+        ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id');
+
+        $filters = $request->filters;
+
+        if ($filters['systemApply'] && count($filters['systemApply']) > 0)
+            $data->whereIn('sau_lm_system_apply.id', $this->getValuesForMultiselect($filters["systemApply"]));
+        
+        if ($filters['typeLmRiskOpportunity'] && count($filters['typeLmRiskOpportunity']) > 0)
+            $data->whereIn('sau_lm_law_risk_opportunity.type', $this->getValuesForMultiselect($filters["typeLmRiskOpportunity"]));
+        
+        if ($filters['typeRisk'] && count($filters['typeRisk']) > 0)
+            $data->whereIn('sau_lm_law_risk_opportunity.type_risk', $this->getValuesForMultiselect($filters["typeRisk"]));
+        
+        if ($filters['subsystemRisk'] && count($filters['subsystemRisk']) > 0)
+            $data->whereIn('sau_lm_law_risk_opportunity.risk_subsystem', $this->getValuesForMultiselect($filters["subsystemRisk"]));
+        
+        if ($filters['applyGestion'] && count($filters['applyGestion']) > 0)
+            $data->whereIn('sau_lm_law_risk_opportunity.risk_gestion', $this->getValuesForMultiselect($filters["applyGestion"]));
+
+        return Vuetable::of($data)->make();
     }
 }

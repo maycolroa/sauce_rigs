@@ -462,6 +462,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('lawYears', 'LegalAspects\LegalMatrix\LawController@lmLawYears');
           Route::post('lawYearsSystem', 'LegalAspects\LegalMatrix\LawController@lmLawYearsSystem');
           Route::post('lawYearsCompany', 'LegalAspects\LegalMatrix\LawController@lmLawYearsCompany');
+          Route::post('typeRiskLm', 'General\MultiSelectRadioController@typeRiskLm');
+          Route::post('typeLm', 'General\MultiSelectRadioController@typeLm');
+          Route::post('riskSubsystemLm', 'General\MultiSelectRadioController@riskSubsystemLm');
+          Route::post('riskGestionLm', 'General\MultiSelectRadioController@riskGestionLm');
         });
 
         Route::post('ctInformReportMultiselect', 'LegalAspects\Contracs\InformReportController@multiselect');
@@ -1172,6 +1176,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/report/export', 'LegalAspects\LegalMatrix\LawReportController@export');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
         Route::post('import', 'LegalAspects\LegalMatrix\LawController@import');
+        Route::post('law/reportRiskOpportunities', 'LegalAspects\LegalMatrix\LawReportController@reportRiskOpportunities');
 
         Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
         Route::post('articleFulfillmentHistory/data', 'LegalAspects\LegalMatrix\ArticleFulfillmentHistoryController@data');
