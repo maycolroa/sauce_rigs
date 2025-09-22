@@ -4,7 +4,7 @@
       <center>
         <span style="padding-right: 150px;">Desarrollado por</span>
         <br>
-        <img style="width: 300px; height: 100px;" src="~@/images/Rigs-thot-gris.png">
+        <img style="width: 300px; height: 100px;" src="~@/images/Rigs-3.png">
       </center>
     </div>
   </nav>
