@@ -467,17 +467,29 @@ class VuetableColumnManager
             ['name' => 'sau_employees.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees.sex', 'data'=> 'sex', 'title'=> 'Sexo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        if ($formModel != 'haceb')
+        {
+            $colums = array_merge($colums, [
+                ['name' => 'sau_employees.sex', 'data'=> 'sex', 'title'=> 'Sexo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ]);
+        }
+
+        $colums = array_merge($colums, [
             ['name' => 'sau_employees.active', 'data'=> 'active', 'title'=> '¿Activo?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.income_date', 'data'=> 'income_date', 'title'=> 'Fecha de Ingreso', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees_positions.name', 'data'=> 'position', 'title'=> $this->keywords['position'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
-        ];
+        ]);
 
         $colums = array_merge($colums, $this->getColumnsLocations());
-        $colums = array_merge($colums, [
-            ['name' => 'sau_employees_businesses.name', 'data'=> 'business', 'title'=> $this->keywords['businesses'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_eps.name', 'data'=> 'eps', 'title'=> $this->keywords['eps'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
-        ]);
+        if ($formModel != 'haceb')
+        {
+            $colums = array_merge($colums, [
+                ['name' => 'sau_employees_businesses.name', 'data'=> 'business', 'title'=> $this->keywords['businesses'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees_eps.name', 'data'=> 'eps', 'title'=> $this->keywords['eps'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ]);
+        }
         
         if ($formModel == 'vivaAir')
         { 

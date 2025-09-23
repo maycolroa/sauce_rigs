@@ -5,6 +5,7 @@ namespace App\Exports\Administrative\Employees;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\Administrative\Employees\EmployeeImportDataTemplateExcel;
+use App\Exports\Administrative\Employees\EmployeeImportDataHacebTemplateExcel;
 use App\Exports\Administrative\Employees\AfpTemplateExcel;
 use App\Exports\Administrative\Employees\ArlTemplateExcel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportEpsTemplateExcel;
@@ -33,23 +34,30 @@ class EmployeeImportTemplate implements WithMultipleSheets
         
         $sheets = [];
 
-        $sheets[] = new EmployeeImportDataTemplateExcel(collect([]), $formModel, $this->company_id);
-        $sheets[] = new WarningImportTemplate();
-        $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
-        $sheets[] = new AfpTemplateExcel($this->company_id);
+        if ($this->company_id == 703) {
+            $sheets[] = new EmployeeImportDataHacebTemplateExcel(collect([]), $formModel, $this->company_id);
+            $sheets[] = new WarningImportTemplate();
+        } 
+        else 
+        {
+            $sheets[] = new EmployeeImportDataTemplateExcel(collect([]), $formModel, $this->company_id);
+            $sheets[] = new WarningImportTemplate();
+            $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
+            $sheets[] = new AfpTemplateExcel($this->company_id);
 
-        if ($formModel == 'vivaAir' || $formModel == 'manpower')
-        {
-            $sheets[] = new AfpTemplateExcel($this->company_id);
-        }
-        else if ($formModel == 'misionEmpresarial')
-        {
-            $sheets[] = new AfpTemplateExcel($this->company_id);
-            $sheets[] = new ArlTemplateExcel($this->company_id);
-        }
-        else if ($formModel == 'ingeomega')
-        {
-            $sheets[] = new AfpTemplateExcel($this->company_id);
+            if ($formModel == 'vivaAir' || $formModel == 'manpower')
+            {
+                $sheets[] = new AfpTemplateExcel($this->company_id);
+            }
+            else if ($formModel == 'misionEmpresarial')
+            {
+                $sheets[] = new AfpTemplateExcel($this->company_id);
+                $sheets[] = new ArlTemplateExcel($this->company_id);
+            }
+            else if ($formModel == 'ingeomega')
+            {
+                $sheets[] = new AfpTemplateExcel($this->company_id);
+            }
         }
 
         return $sheets;
