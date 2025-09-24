@@ -96,6 +96,9 @@ class EmployeesController extends Controller
 
         if ($employee->last_contract_date)
             $employee->last_contract_date = (Carbon::createFromFormat('D M d Y',$employee->last_contract_date))->format('Ymd');
+        
+        if (!$employee->sex)
+            $employee->sex = 'Sin Sexo';
 
         if(!$employee->save()){
             return $this->respondHttp500();

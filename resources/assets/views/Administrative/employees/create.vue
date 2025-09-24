@@ -12,7 +12,7 @@
         <b-card-body>
             <loading :display="!ready"/>
             <div v-if="ready">
-              <template v-if="form == 'default'">
+              <template v-if="form == 'default' || form == 'haceb'">
                 <form-employee
                   url="/administration/employee"
                   method="POST"
