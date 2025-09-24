@@ -580,9 +580,12 @@ class ReportManagerLaw
         ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
         ->inInterests($this->interests,$this->filtersType['interests'])
         ->inState($this->states,$this->filtersType['states'])
-        ->betweenDate($this->dates ? $this->dates : [])
-        ->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
-        ->first();
+        ->betweenDate($this->dates ? $this->dates : []);
+
+        if (isset($this->filtersType['riskOpportunity']))
+            $laws->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
+
+        $laws= $laws->first();
 
         return $laws ? $laws->total : 0;
     }
