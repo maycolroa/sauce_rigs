@@ -150,19 +150,19 @@ class LawReportController extends Controller
 
         $filters = $request->filters;
 
-        if ($filters['systemApply'] && count($filters['systemApply']) > 0)
+        if (isset($filters['systemApply']) && count($filters['systemApply']) > 0)
             $data->whereIn('sau_lm_system_apply.id', $this->getValuesForMultiselect($filters["systemApply"]));
         
-        if ($filters['typeLmRiskOpportunity'] && count($filters['typeLmRiskOpportunity']) > 0)
+        if (isset($filters['typeLmRiskOpportunity']) && count($filters['typeLmRiskOpportunity']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.type', $this->getValuesForMultiselect($filters["typeLmRiskOpportunity"]));
         
-        if ($filters['typeRisk'] && count($filters['typeRisk']) > 0)
+        if (isset($filters['typeRisk']) && count($filters['typeRisk']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.type_risk', $this->getValuesForMultiselect($filters["typeRisk"]));
         
-        if ($filters['subsystemRisk'] && count($filters['subsystemRisk']) > 0)
+        if (isset($filters['subsystemRisk']) && count($filters['subsystemRisk']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.risk_subsystem', $this->getValuesForMultiselect($filters["subsystemRisk"]));
         
-        if ($filters['applyGestion'] && count($filters['applyGestion']) > 0)
+        if (isset($filters['applyGestion']) && count($filters['applyGestion']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.risk_gestion', $this->getValuesForMultiselect($filters["applyGestion"]));
 
         return Vuetable::of($data)->make();
