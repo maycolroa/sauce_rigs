@@ -12,8 +12,19 @@
         <b-card-body>
             <loading :display="!ready"/>
             <div v-if="ready">
-              <template v-if="form == 'default' || form == 'haceb'">
+              <template v-if="form == 'default'">
                 <form-employee
+                  url="/administration/employee"
+                  method="POST"
+                  :sexs="sexs"
+                  positions-data-url="/selects/positions"
+                  businesses-data-url="/selects/businesses"
+                  eps-data-url="/selects/eps"
+                  afp-data-url="/selects/afp"
+                  :cancel-url="{ name: 'administrative-employees'}"/>
+              </template>
+              <template v-if="form == 'haceb'">
+                <form-employee-haceb
                   url="/administration/employee"
                   method="POST"
                   :sexs="sexs"
@@ -71,6 +82,7 @@ import FormEmployee from '@/components/Administrative/Employees/FormEmployeeComp
 import FormEmployeeVivaAir from '@/components/Administrative/Employees/FormEmployeeVivaAirComponent.vue';
 import FormEmployeeEmpresarial from '@/components/Administrative/Employees/FormEmployeeEmpresarialComponent.vue';
 import FormEmployeeIngeomega from '@/components/Administrative/Employees/FormEmployeeIngeomegaComponent.vue';
+import FormEmployeeHaceb from '@/components/Administrative/Employees/FormEmployeeHacebComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -87,6 +99,7 @@ export default {
     FormEmployeeVivaAir,
     FormEmployeeEmpresarial,
     FormEmployeeIngeomega,
+    FormEmployeeHaceb,
     Loading
   },
   data(){
