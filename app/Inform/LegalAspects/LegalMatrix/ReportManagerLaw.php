@@ -583,7 +583,7 @@ class ReportManagerLaw
         ->betweenDate($this->dates ? $this->dates : []);
 
         if (isset($this->filtersType['riskOpportunity']))
-            $laws->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
+            $laws->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity']);
 
         $laws = $laws->first();
 
