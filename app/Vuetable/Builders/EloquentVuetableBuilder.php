@@ -92,8 +92,7 @@ class EloquentVuetableBuilder
         return $data->where(function ($q) use ($queries, $tables) {
             foreach ($queries as $field => $query) {
                 $field = isset($tables[$field]) ? $tables[$field] : $field;
-                \Log::info($field);
-                \Log::info($query);
+                
                 if ($field == 'date_upload')
                 {
                     $q->whereRaw("date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') LIKE '%{$query}%'");

@@ -585,7 +585,7 @@ class ReportManagerLaw
         if (isset($this->filtersType['riskOpportunity']))
             $laws->inRiskOpportunity($this->riskOpportunity, $this->filtersType['riskOpportunity'])
 
-        $laws= $laws->first();
+        $laws = $laws->first();
 
         return $laws ? $laws->total : 0;
     }
