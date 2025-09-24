@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\Administrative\Employees\EmployeeImport;
+use App\Imports\Administrative\Employees\EmployeeHacebImport;
 use App\Models\General\LogFilesImport;
 
 class EmpployeeImportJob implements ShouldQueue
@@ -47,7 +48,15 @@ class EmpployeeImportJob implements ShouldQueue
      */
     public function handle()
     {
-      Excel::import(new EmployeeImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
-      Storage::disk('public')->delete('import/1/'. $this->nameFile);
+      if ($this->company_id == 703) // Haceb
+      {
+        Excel::import(new EmployeeHacebImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+        Storage::disk('public')->delete('import/1/'. $this->nameFile);
+      }
+      else
+      {
+        Excel::import(new EmployeeImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+        Storage::disk('public')->delete('import/1/'. $this->nameFile);
+      }
     }
 }
