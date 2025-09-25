@@ -215,7 +215,11 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 
                 if ($is_holiday)
                     $day_expiration = $day_expiration->addDay(1);
+                
+                \Log::info('foreach: '.$day_expiration->format('Y-m-d'));
             }
+
+            \Log::info($day_expiration->format('Y-m-d'));
 
             $fileUpload->expirationDate = $day_expiration->format('Y-m-d');   
             $fileUpload->save();     
@@ -302,7 +306,7 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 	 * @param int $month
 	 * @param int $day
 	 */
-	public function moveToMonday($year, $month, $day) {
+	public function moveToMonday2($year, $month, $day) {
 		// Número de días a sumar al día para llegar al siguiente lunes
 		$daysToAdd = array(
 			0 => 1, // Domingo
@@ -325,18 +329,17 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 		
 		return date( "d", mktime( 0, 0, 0, $month, $monday, $year ) ) ;
 	}
-	
-	/*public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false) {
-		
-		$easterMonth = date( "m", \easter_date( $year ) );
-		$easterDay = date( "d", \easter_date( $year ) );
-		
-		$month = date( "m", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
-		$day = date( "d", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
-		
-		if ($toMonday)  return $this->moveToMonday ($year, $month, $day );
-		else return sprintf("%s-%s-%s",  $year, $month, $day );
-	}*/
+
+    public function moveToMonday($year, $month, $day) {
+        // Crea una instancia de Carbon a partir de la fecha
+        $fecha = Carbon::createFromDate($year, $month, $day);
+
+        // Mueve la fecha al siguiente lunes
+        $siguienteLunes = $fecha->next(Carbon::MONDAY);
+        
+        // Devuelve la fecha del lunes en el formato deseado
+        return $siguienteLunes->format('Y-m-d');
+    }
 
     private function calculateEasterSunday(int $year): \DateTime
     {
@@ -399,6 +402,10 @@ class ContractEmployeeImportSocialSecure implements ToCollection
     }
 	
 	public function isHoliday($date) {
+        \Log::info($date);
+        \Log::info('List ini: ');
+        \Log::info($this->list);
+        \Log::info('List fin: ');
 		return in_array($date, $this->list);
 	}
 	
