@@ -215,11 +215,7 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 
                 if ($is_holiday)
                     $day_expiration = $day_expiration->addDay(1);
-                
-                \Log::info('foreach: '.$day_expiration->format('Y-m-d'));
             }
-
-            \Log::info($day_expiration->format('Y-m-d'));
 
             $fileUpload->expirationDate = $day_expiration->format('Y-m-d');   
             $fileUpload->save();     
@@ -402,10 +398,6 @@ class ContractEmployeeImportSocialSecure implements ToCollection
     }
 	
 	public function isHoliday($date) {
-        \Log::info($date);
-        \Log::info('List ini: ');
-        \Log::info($this->list);
-        \Log::info('List fin: ');
 		return in_array($date, $this->list);
 	}
 	
