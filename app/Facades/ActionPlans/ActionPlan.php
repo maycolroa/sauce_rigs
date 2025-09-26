@@ -1038,11 +1038,12 @@ class ActionPlan
         foreach($groupResponsible as $data => $value)
         {
             $responsible = User::active()->find($data);
-
+            \Log::info($responsible);
             if($responsible && $responsible->email != null)
             {
                 if ($responsible->can('actionPlans_receive_notifications', $company_id))
                 {
+                    \Log::info('entro permisos de correos AP');
                     NotificationMail::
                         subject('Nuevas Actividades')
                         ->view('actionplan.activities')
