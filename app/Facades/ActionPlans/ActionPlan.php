@@ -1038,11 +1038,11 @@ class ActionPlan
         foreach($groupResponsible as $data => $value)
         {
             $responsible = User::active()->find($data);
-            \Log::info($responsible);
-            \Log::info($responsible->email);
+
             if($responsible && $responsible->email != null)
                 {
                 \Log::info('entro en responsable');
+                \Log::info($company_id);
                 \Log::info($responsible->can('actionPlans_receive_notifications', $company_id));
                 if ($responsible->can('actionPlans_receive_notifications', $company_id))
                 {
