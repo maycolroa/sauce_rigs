@@ -415,7 +415,6 @@ class ContractEmployeeController extends Controller
                 function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
-                    \Log::info($value);
 
                     $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].required_expiration_date");
 
@@ -464,9 +463,7 @@ class ContractEmployeeController extends Controller
             if($request->has('activities'))
             {
                 $activities = $this->saveActivities($employeeContract, $request->activities);
-            \Log::info(19);
                 $documents_complets = $this->documentscomplets($employeeContract, $request->activities, $activities['files']);
-            \Log::info(10);
             }
 
             $employeeContract->activities()->sync($activities['activities']->values());

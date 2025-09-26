@@ -476,7 +476,7 @@ trait ContractTrait
     {
         $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth());
 
-        $num_days = $contract->social_security_working_day;
+        $num_days = $contract->social_security_working_day ?? NULL;
 
         $this->calculateForYear(date("Y"));
 
