@@ -1041,6 +1041,8 @@ class ActionPlan
             \Log::info($responsible);
             if($responsible && $responsible->email != null)
             {
+            \Log::info('entro en responsable');
+            \Log::info($responsible->can('actionPlans_receive_notifications', $company_id));
                 if ($responsible->can('actionPlans_receive_notifications', $company_id))
                 {
                     \Log::info('entro permisos de correos AP');
