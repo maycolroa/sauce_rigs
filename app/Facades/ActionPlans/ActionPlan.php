@@ -1078,13 +1078,13 @@ class ActionPlan
 
         $this->activitiesReady = collect($this->activitiesReady);
 
-            \Log::info($responsible);
         $groupSupervisor = $this->activitiesReady->groupBy('user_id');
 
         foreach($groupSupervisor as $data => $value)
         {
             $supervisor = User::active()->find($data);
 
+            \Log::info($supervisor);
             if($supervisor && $supervisor->email != null)
             {
                 if ($supervisor->can('actionPlans_receive_notifications', $company_id))
