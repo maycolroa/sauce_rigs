@@ -1098,6 +1098,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('employeeContract/importSocialSecure', 'LegalAspects\Contracs\ContractEmployeeController@importSocialSecure');
       Route::post('employeeContract/consultingDocumentResumen', 'LegalAspects\Contracs\ContractEmployeeController@consultingDocumentResumen');
+      Route::post('employeeContract/getDateExpiredSocialSecurity', 'LegalAspects\Contracs\ContractEmployeeController@getDaySocialSecurityExpired');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
       Route::post('employeeDocument/report', 'LegalAspects\Contracs\ListCheckReportController@employeeDocument');
       Route::post('globalDocument/report', 'LegalAspects\Contracs\ListCheckReportController@globalDocument');      

@@ -415,6 +415,7 @@ class ContractEmployeeController extends Controller
                 function ($attribute, $value, $fail) use ($request)
                 {
                     $index = explode('.', $attribute);
+                    \Log::info($value);
 
                     $apply = $request->input("activities.$index[1].documents.$index[3].files.$index[5].required_expiration_date");
 
@@ -463,7 +464,9 @@ class ContractEmployeeController extends Controller
             if($request->has('activities'))
             {
                 $activities = $this->saveActivities($employeeContract, $request->activities);
+            \Log::info(19);
                 $documents_complets = $this->documentscomplets($employeeContract, $request->activities, $activities['files']);
+            \Log::info(10);
             }
 
             $employeeContract->activities()->sync($activities['activities']->values());
@@ -569,7 +572,7 @@ class ContractEmployeeController extends Controller
 
                                 $fileUpload->file = $nameFile;
                                 $fileUpload->name = $file['name'];
-                                $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+                                $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::parse($file['expirationDate']))->format('Ymd')) : null;
                             }
                             else
                             {
@@ -581,7 +584,7 @@ class ContractEmployeeController extends Controller
                         else
                         {
                             $fileUpload->name = $file['name'];
-                            $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
+                            $fileUpload->expirationDate = isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::parse($file['expirationDate']))->format('Ymd')) : null;
     
                         }
 
@@ -764,7 +767,7 @@ class ContractEmployeeController extends Controller
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
                                 'file' => $nameFile,
-                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null,
+                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::parse($file['expirationDate']))->format('Ymd')) : null,
                             ];
 
                             array_push($class_document_files[$class], $content);
@@ -779,7 +782,7 @@ class ContractEmployeeController extends Controller
                                 'key' => Carbon::now()->timestamp + rand(1,10000),
                                 'name' => $file['name'],
                                 'file' => $file['file'],
-                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null,
+                                'expirationDate' => isset($file['required_expiration_date']) && $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::parse($file['expirationDate']))->format('Ymd')) : null,
                             ];
                             
                             array_push($class_document_files[$class], $content);
@@ -1745,7 +1748,14 @@ class ContractEmployeeController extends Controller
             \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
-        
+    }
 
+    public function getDaySocialSecurityExpired(Request $request)
+    {
+        $contract = ContractLesseeInformation::find($request->contract_id);
+        
+        $dateExpired = $this->calculateDaySocialSecurityExpired($contract);
+
+        return Carbon::createFromFormat('Y-m-d',$dateExpired)->format('D M d Y');
     }
 }

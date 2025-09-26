@@ -12,6 +12,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
+use Carbon\Carbon;
 use Session;
 //use App\Models\LegalAspects\Contracts\LiskCheckResumen;
 
@@ -470,4 +471,172 @@ trait ContractTrait
             $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id, 'list_qualification_id' => $qualification], $totales);
         }
     }
+
+    public function calculateDaySocialSecurityExpired($contract)
+    {
+        $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth());
+
+        $num_days = $contract->social_security_working_day;
+
+        $this->calculateForYear(date("Y"));
+
+        for ($i=0; $i < $num_days; $i++) 
+        { 
+            if ($i == $num_days - 1)
+                $day_expiration = $day_expiration;
+            else
+                $day_expiration = $day_expiration->addDay(1);
+
+            $day_week = $day_expiration->dayOfWeek;
+
+            if ($day_week == 6)
+                $day_expiration = $day_expiration->addDay(2);
+            else if ($day_week == 0)
+                $day_expiration = $day_expiration->addDay(1);
+
+            $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
+
+            if ($is_holiday)
+                $day_expiration = $day_expiration->addDay(1);
+        }
+
+        return $day_expiration->format('Y-m-d');   
+    }
+
+    private function calculateFirstDayOfMonth()
+    {
+        $year = date("Y");
+        $month = date("n")+1;
+
+        $first_day_of_month = mktime(0, 0, 0, $month, 1, $year);
+        $first_day_of_week = date("w", $first_day_of_month);
+
+        if ($first_day_of_week == 6)
+            $first_business_day = mktime(0, 0, 0, $month, 3, $year); 
+        else if ($first_day_of_week == 0) 
+            $first_business_day = mktime(0, 0, 0, $month, 2, $year);
+        else 
+            $first_business_day = $first_day_of_month;
+
+        $first_business_day_formatted = date("Y-m-d", $first_business_day);
+
+        return $first_business_day_formatted;
+    }
+
+    public function calculateForYear($year = 0)
+    {			
+		// Fixed dates
+		$this->list[] = $year."-01-01"; // Año nuevo
+		$this->list[] = $year."-05-01"; // Dia del Trabajo 1 de Mayo
+		$this->list[] = $year."-07-20"; // Independencia 20 de Julio
+		$this->list[] = $year."-08-07"; // Batalla de Boyacá 7 de Agosto
+		$this->list[] = $year."-12-08"; // Inmaculada 8 diciembre
+		$this->list[] = $year."-12-25"; // Navidad 25 de diciembre		
+
+		// These dates are moved to the next monday
+		$this->list[] = $this->moveToMonday($year, 01, 06); // Reyes Magos Enero 6 (01-06)
+		$this->list[] = $this->moveToMonday($year, 03, 19); // Día de san Jose Marzo 19 (03-19)
+		$this->list[] = $this->moveToMonday($year, 06, 29); // San Pedro y San Pablo Junio 29 (06-29)
+		$this->list[] = $this->moveToMonday($year, 8, 15); // Asunción Agosto 15 (08-15)
+		$this->list[] = $this->moveToMonday($year, 10, 12); // Descubrimiento de América Oct 12 (10-12)
+		$this->list[] = $this->moveToMonday($year, 11, 01); // Todos los santos Nov 1 (11-01)
+		$this->list[] = $this->moveToMonday($year, 11, 11); // Independencia de Cartagena Nov 11 (11,11)
+		$this->list[] = $this->moveToMonday($year, 9, 02); 
+
+		// Holidays relative to the easterDate
+		
+		// Fixed
+		$this->list[] = $this->calculateFromEasterDate($year, -03, false ); // jueves santo (3 días antes de pascua)
+		$this->list[] = $this->calculateFromEasterDate($year, -02, false ); // viernes santo (2 días antes de pascua)
+		
+		// Moved to monday
+		$this->list[] = $this->calculateFromEasterDate($year, 36, true ); // Ascensión del Señor (Sexto domingo después de Pascua) - 36 días
+		$this->list[] = $this->calculateFromEasterDate($year, 60, true ); // Corpus Christi (Octavo domingo después de Pascua) - 60 días
+		$this->list[] = $this->calculateFromEasterDate($year, 68, true ); // Sagrado Corazón de Jesús (Noveno domingo después de Pascua) 68 días
+		
+		sort($this->list);
+	}
+
+    public function moveToMonday($year, $month, $day) {
+        // Crea una instancia de Carbon a partir de la fecha
+        $fecha = Carbon::createFromDate($year, $month, $day);
+
+        // Mueve la fecha al siguiente lunes
+        $siguienteLunes = $fecha->next(Carbon::MONDAY);
+        
+        // Devuelve la fecha del lunes en el formato deseado
+        return $siguienteLunes->format('Y-m-d');
+    }
+
+    private function calculateEasterSunday(int $year): \DateTime
+    {
+        // Algoritmo de Meeus/Jones/Butcher
+        $a = $year % 19;
+        $b = floor($year / 100);
+        $c = $year % 100;
+        $d = floor($b / 4);
+        $e = $b % 4;
+        $f = floor(($b + 8) / 25);
+        $g = floor(($b - $f + 1) / 3);
+        $h = (19 * $a + $b - $d - $g + 15) % 30;
+        $i = floor($c / 4);
+        $k = $c % 4;
+        $l = (32 + 2 * $e + 2 * $i - $h - $k) % 7;
+        $m = floor(($a + 11 * $h + 22 * $l) / 451);
+        $p = ($h + $l - 7 * $m + 114) % 31;
+
+        $month = floor(($h + $l - 7 * $m + 114) / 31);
+        $day = $p + 1;
+
+        return new \DateTime("{$year}-{$month}-{$day}");
+    }
+
+    /**
+     * Calcula una fecha basada en el Domingo de Pascua, sumando días.
+     *
+     * @param int $year El año.
+     * @param int $numDays Número de días a sumar al Domingo de Pascua.
+     * @param bool $toMonday Si la fecha final debe moverse al siguiente lunes.
+     * @return string
+     */
+    public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false): string
+    {
+        // 1. Obtén el Domingo de Pascua como un objeto DateTime usando nuestra función personalizada
+        
+        $year = date("Y");
+        $easterSunday = $this->calculateEasterSunday($year);
+
+        // 2. Clona el objeto para evitar modificar la fecha original de Pascua
+        $targetDate = clone $easterSunday;
+
+        // 3. Añade el número de días especificado
+        if ($numDays !== 0) {
+            $targetDate->modify("+{$numDays} days");
+        }
+
+        // 4. Obtén el mes y el día de la fecha resultante
+        $month = $targetDate->format('m');
+        $day = $targetDate->format('d');
+        // El año ya lo tenemos, es $year
+
+        // 5. Aplica la lógica de toMonday o retorna la fecha formateada
+        // Asumiendo que $this->moveToMonday es un método existente en tu clase
+        if ($toMonday) {
+            return $this->moveToMonday($year, $month, $day);
+        } else {
+            return sprintf("%s-%s-%s", $year, $month, $day);
+        }
+    }
+	
+	public function isHoliday($date) {
+		return in_array($date, $this->list);
+	}
+	public function isWeekend($date) {
+		$dayWeek = date("w", strtotime($date));
+		return $dayWeek == 0 || $dayWeek == 6;
+	}
+	
+	public function isHolidayOrWeekend($date) {
+		return $this->isHoliday($date) || $this->isWeekend($date);
+	}
 }
