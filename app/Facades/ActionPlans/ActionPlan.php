@@ -1025,7 +1025,6 @@ class ActionPlan
      */
     private function sendMailNew()
     {
-        \Log::info('sendMailNew');
         if (!empty($this->company))
             $company_id = $this->company;
         else if (Session::get('company_id'))
@@ -1040,13 +1039,9 @@ class ActionPlan
             $responsible = User::active()->find($data);
 
             if($responsible && $responsible->email != null)
-                {
-                \Log::info('entro en responsable');
-                \Log::info($company_id);
-                \Log::info($responsible->can('actionPlans_receive_notifications', $company_id));
+            {
                 if ($responsible->can('actionPlans_receive_notifications', $company_id))
                 {
-                    \Log::info('entro permisos de correos AP');
                     NotificationMail::
                         subject('Nuevas Actividades')
                         ->view('actionplan.activities')
@@ -1073,7 +1068,6 @@ class ActionPlan
      */
     private function sendMailReady()
     {
-        \Log::info('sendMailReady');
         if (!empty($this->company))
             $company_id = $this->company;
         else if (Session::get('company_id'))
@@ -1087,12 +1081,10 @@ class ActionPlan
         {
             $supervisor = User::active()->find($data);
 
-            \Log::info($supervisor);
             if($supervisor && $supervisor->email != null)
             {
                 if ($supervisor->can('actionPlans_receive_notifications', $company_id))
                 {
-                    \Log::info('entro permisos de correos AP');
                     NotificationMail::
                         subject('Actividades Actualizadas')
                         ->view('actionplan.activities')

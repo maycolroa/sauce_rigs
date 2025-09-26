@@ -508,8 +508,6 @@ class NotificationMail
      */
     public function send()
     {
-        \Log::info('se envio correo');
-        \Log::info(date('Y-m-d H:i:s'));
         if (empty($this->recipients) && empty($this->copyHidden))
             throw new \Exception('No valid recipient was entered');
 
