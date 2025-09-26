@@ -1025,6 +1025,7 @@ class ActionPlan
      */
     private function sendMailNew()
     {
+        \Log::info('sendMailNew');
         if (!empty($this->company))
             $company_id = $this->company;
         else if (Session::get('company_id'))
@@ -1068,6 +1069,7 @@ class ActionPlan
      */
     private function sendMailReady()
     {
+        \Log::info('sendMailReady');
         if (!empty($this->company))
             $company_id = $this->company;
         else if (Session::get('company_id'))
