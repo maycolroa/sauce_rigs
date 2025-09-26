@@ -198,13 +198,16 @@
                                       <vue-radio :disabled="viewOnly || file.required_date" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Requiere fecha de vencimiento" :checked="file.required_expiration_date">
                                       </vue-radio>
                                     </b-form-row>
-                                    <b-form-row  v-if="file.required_expiration_date == 'SI'">
+                                    <b-form-row  v-if="file.required_expiration_date == 'SI' && document.class != 'Seguridad social'">
                                       <vue-datepicker v-if="auth.company_id == 712" :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
                                       <vue-datepicker v-else :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
                                     </b-form-row>
+                                    <b-form-row  v-if="file.required_expiration_date == 'SI' && document.class == 'Seguridad social'">
+                                      <vue-datepicker :disabled="true" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
+                                    </b-form-row>
 
                                     <b-form-row>
-                                      <vue-file-simple :disabled="!file.edit_document || viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
+                                      <vue-file-simple :disabled="!file.edit_document || viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : 'El tamaño del archivo no debe ser mayor a 15MB.'" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"  @input="getExpiratonDateFile(index, indexDocument, indexFile)"/>
                                     </b-form-row>
                                   </div>
                                   <div v-if="file.apply_file == 'NO'">
@@ -445,14 +448,6 @@ export default {
         });
       }
     },
-    /*addFile(documento) {
-      documento.files.push({
-        key: new Date().getTime(),
-        name: '',
-        expirationDate: '',
-        file: ''
-      });
-    },*/
     addFile(documento) {
 			let required = false;
 
@@ -474,15 +469,32 @@ export default {
         apply_file: 'SI',
         edit_document: true
 			}
-
 	      documento.files.push(content);
-	    },
+	  },
     removeFile(documento, index) {
       if (documento.files[index].id != undefined)
         this.form.delete.files.push(documento.files[index].id)
         
       documento.files.splice(index, 1);
-    }
+    },
+    getExpiratonDateFile(indexActivity, indexDocument, indexFile)
+    {
+      let document = this.form.activities[indexActivity].documents[indexDocument];
+      let file = document.files[indexFile];
+
+      if (document.class == 'Seguridad social' && !file.expirationDate)
+      {
+        axios.post('/legalAspects/employeeContract/getDateExpiredSocialSecurity',{
+          contract_id: this.form.contract_id
+        })
+        .then(response => {
+            file.expirationDate = response.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+      }
+    },
   }
 };
 </script>
