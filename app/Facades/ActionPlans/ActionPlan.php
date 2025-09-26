@@ -1078,6 +1078,7 @@ class ActionPlan
 
         $this->activitiesReady = collect($this->activitiesReady);
 
+            \Log::info($responsible);
         $groupSupervisor = $this->activitiesReady->groupBy('user_id');
 
         foreach($groupSupervisor as $data => $value)
@@ -1088,6 +1089,7 @@ class ActionPlan
             {
                 if ($supervisor->can('actionPlans_receive_notifications', $company_id))
                 {
+                    \Log::info('entro permisos de correos AP');
                     NotificationMail::
                         subject('Actividades Actualizadas')
                         ->view('actionplan.activities')
