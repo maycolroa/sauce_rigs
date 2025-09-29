@@ -29,6 +29,7 @@ use Validator;
 use Hash;
 use DB;
 use PdfMerger;
+use Session;
 use Illuminate\Support\Facades\File;
 
 class ContractEmployeeController extends Controller
@@ -1749,7 +1750,10 @@ class ContractEmployeeController extends Controller
 
     public function getDaySocialSecurityExpired(Request $request)
     {
-        $contract = ContractLesseeInformation::find($request->contract_id);
+        if ($request->contract_id && $request->contract_id > 0)
+            $contract = ContractLesseeInformation::find($request->contract_id);
+        else
+            $contract = ContractLesseeInformation::find(Session::get('contract_id'));
         
         $dateExpired = $this->calculateDaySocialSecurityExpired($contract);
 
