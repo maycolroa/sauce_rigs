@@ -49,6 +49,7 @@ class EmployeeImport implements ToCollection
       $this->company_id = $company_id;
       $this->eps_data = EmployeeEPS::pluck('id', 'code');
       $this->afp_data = EmployeeAFP::pluck('id', 'code');
+      $this->afp_nit_data = EmployeeAFP::pluck('id', 'code_nit');
       $this->arl_data = EmployeeARL::pluck('id', 'code');
       $this->keywords = $this->getKeywordQueue($this->company_id);
     }
@@ -168,8 +169,15 @@ class EmployeeImport implements ToCollection
         $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
         $data['fecha_ingreso'] = $this->validateDate($data['fecha_ingreso']);
         $data['eps'] = $data['eps'] ? (isset($this->eps_data[$data['eps']]) ? $this->eps_data[$data['eps']] : -1) : null;
-        $data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
+        //$data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
         $data['arl'] = $data['arl'] ? (isset($this->arl_data[$data['arl']]) ? $this->arl_data[$data['arl']] : -1) : null;
+
+        if ($data['afp'] && isset($this->afp_data[$data['afp']]))
+            $data['afp'] = $this->afp_data[$data['afp']];
+        else if ($data['afp'] && isset($this->afp_nit_data[$data['afp']]))
+            $data['afp'] = $this->afp_nit_data[$data['afp']];
+        else if ($data['afp'])
+            $data['afp'] = -1;
 
         $sql = Employee::where('identification', $data['identificacion']);
         $sql->company_scope = $this->company_id;
