@@ -32,6 +32,7 @@ class AfpTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitl
     {
         return [
             $eps->code,
+            $eps->code_nit
             $eps->name
         ];
     }
@@ -40,6 +41,7 @@ class AfpTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitl
     {
         return [
             'Código',
+            'Código NIT',
             'Nombre',
         ];
     }
