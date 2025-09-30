@@ -32,7 +32,7 @@ class AfpTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitl
     {
         return [
             $eps->code,
-            $eps->code_nit
+            $eps->code_nit,
             $eps->name
         ];
     }
