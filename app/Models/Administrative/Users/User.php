@@ -227,7 +227,7 @@ class User extends Authenticatable
         return $query;
     }
 
-     public function scopeActive($query, $active = true, $company_id = null)
+    public function scopeActive($query, $active = true, $company_id = null)
     {
         // Define la condición de existencia en la tabla pivote sau_company_user
         $query->whereExists(function ($subQuery) use ($company_id, $active) {
@@ -260,11 +260,11 @@ class User extends Authenticatable
         });
 
         // Filtros que van directamente en la tabla principal (sau_users)
-        if (!$active && is_null($company_id)) {
+        if ((!$active && is_null($company_id)) || (!$active)) {
             // Esta condición (sau_users.active = NO) estaba en el ELSE original, la movemos aquí
             $query->where('sau_users.active', 'NO');
         }
-        else if ($active && is_null($company_id)) {
+        else if (($active && is_null($company_id)) || ($active)) {
             // Esta condición (sau_users.active = SI) estaba en el IF/ELSE original, la movemos aquí
             $query->where('sau_users.active', 'SI');
         }
