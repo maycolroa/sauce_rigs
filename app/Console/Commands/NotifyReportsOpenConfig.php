@@ -184,7 +184,7 @@ class NotifyReportsOpenConfig extends Command
             ->join('sau_reinc_user_headquarter', 'sau_users.id', 'sau_reinc_user_headquarter.user_id')
             ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_reinc_user_headquarter.employee_headquarter_id')
             ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-            ->where('sau_reinc_user_headquarter.user_id', $user->user_id)
+            ->where('sau_reinc_user_headquarter.user_id', $user->id)
             ->where('sau_employees_regionals.company_id', $company_id)
             ->pluck('sau_employees_headquarters.id')
             ->toArray();
