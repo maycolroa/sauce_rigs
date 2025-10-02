@@ -199,7 +199,8 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 
             for ($i=0; $i < $num_days; $i++) 
             { 
-                if ($i == $num_days - 1)
+                ///Elimine la condicion de que si es el ultimo dia no sume un dia mas if ($i == $num_days - 1)
+                if ($i == $num_days)
                     $day_expiration = $day_expiration;
                 else
                     $day_expiration = $day_expiration->addDay(1);
