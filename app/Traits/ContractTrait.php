@@ -480,7 +480,6 @@ trait ContractTrait
 
         $this->calculateForYear(date("Y"));
 
-        \Log::info($this->list);
 
         for ($i=0; $i < $num_days; $i++) 
         { 
@@ -500,12 +499,8 @@ trait ContractTrait
 
             $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
 
-            \Log::info($is_holiday);
-
             if ($is_holiday)
                 $day_expiration = $day_expiration->addDay(1);
-            
-            \Log::info('fin: '.$day_expiration->format('Y-m-d'));
         }
 
         return $day_expiration->format('Y-m-d');   
