@@ -1755,7 +1755,7 @@ class ContractEmployeeController extends Controller
         else
             $contract = ContractLesseeInformation::find(Session::get('contract_id'));
         
-        $dateExpired = $this->calculateDaySocialSecurityExpired($contract);
+        $dateExpired = $this->calculateDaySocialSecurityExpired($contract, $request->month_pay);
 
         return Carbon::createFromFormat('Y-m-d',$dateExpired)->format('D M d Y');
     }

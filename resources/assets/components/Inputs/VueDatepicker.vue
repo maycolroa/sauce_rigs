@@ -19,6 +19,10 @@
                 <b-form-invalid-feedback v-if="error" :force-show="true">
                    {{error}}
                 </b-form-invalid-feedback>
+                
+          <b-form-text v-if="helpText" style="color: red;">
+              <b>{{ helpText }}</b> 
+          </b-form-text>
     </b-form-group>
 </template>
 <style src="@/vendor/libs/vuejs-datepicker/vuejs-datepicker.scss" lang="scss"></style>
@@ -37,7 +41,8 @@ export default {
     textBlock: {type: String},
     actionBlock: {type: String},
     fullMonthName: {type: Boolean, default: true},
-    disabledDates: {type: Object}
+    disabledDates: {type: Object},
+    helpText: {type: String}
   },
   data () {
     return {

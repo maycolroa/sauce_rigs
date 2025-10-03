@@ -203,7 +203,9 @@
                                       <vue-datepicker v-else :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
                                     </b-form-row>
                                     <b-form-row  v-if="file.required_expiration_date == 'SI' && document.class == 'Seguridad social'">
-                                      <vue-datepicker :disabled="true" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)"/>
+                                      <vue-advanced-select v-if="file.edit_document" class="col-md-6" v-model="file.month_pay" :disabled="false" name="month_pay" label="Mes de pago" placeholder="Seleccione el mes de pago" :options="months" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.month_pay`)" :multiple="false" :allow-empty="false" help-text="El mes es opcional, de no seleccionar ninguno, se tomara el mes actual para realizar el calculo.">
+                                      </vue-advanced-select>
+                                      <vue-datepicker :disabled="true" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.expirationDate`)" help-text="La fecha de vencimiento se calcula con base en el mes de aporte que selecciones. Como el sistema es 'mes vencido', al elegir el período de octubre, se calculará tu fecha límite de pago en noviembre, según tu día de corte"/>
                                     </b-form-row>
 
                                     <b-form-row>
@@ -381,6 +383,20 @@ export default {
           {name: 'Jornada Mixta', value: 'Jornada Mixta'},
           {name: 'Jornada Diurna', value: 'Jornada Diurna'},
         ],
+        months: [
+          {name: 'Enero', value: '1'},
+          {name: 'Febrero', value: '2'},
+          {name: 'Marzo', value: '3'},
+          {name: 'Abril', value: '4'},
+          {name: 'Mayo', value: '5'},
+          {name: 'Junio', value: '6'},
+          {name: 'Julio', value: '7'},
+          {name: 'Agosto', value: '8'},
+          {name: 'Septiembre', value: '9'},
+          {name: 'Octubre', value: '10'},
+          {name: 'Noviembre', value: '11'},
+          {name: 'Diciembre', value: '12'},
+        ]
     };
   },
   methods: {
@@ -467,7 +483,8 @@ export default {
 				required_expiration_date: 'SI',
 				required_date: required,
         apply_file: 'SI',
-        edit_document: true
+        edit_document: true,
+        montth_pay: ''
 			}
 	      documento.files.push(content);
 	  },
@@ -485,7 +502,8 @@ export default {
       if (document.class == 'Seguridad social' && !file.expirationDate)
       {
         axios.post('/legalAspects/employeeContract/getDateExpiredSocialSecurity',{
-          contract_id: this.form.contract_id
+          contract_id: this.form.contract_id,
+          month_pay: file.month_pay
         })
         .then(response => {
             file.expirationDate = response.data;
