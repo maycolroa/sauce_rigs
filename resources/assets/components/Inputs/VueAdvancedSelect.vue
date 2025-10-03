@@ -41,6 +41,9 @@
                 @tag="addTag">
             <span slot="noResult">No se encontraron elementos</span>
         </multiselect>
+        <b-form-text v-if="helpText">
+            {{ helpText }}
+        </b-form-text>
         <b-form-invalid-feedback v-if="error" :force-show="true">
             {{error}}
         </b-form-invalid-feedback>
@@ -80,6 +83,7 @@ export default {
     filterTypeSearch: { type: Boolean, default: false },
     filterTypeSearchValue: { type: String, default: "IN" },
     selectedObject: { type: [Object, Array] },
+    helpText: {type: String}
   },
   components: {
     Multiselect,

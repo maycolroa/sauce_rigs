@@ -472,55 +472,61 @@ trait ContractTrait
         }
     }
 
-    public function calculateDaySocialSecurityExpired($contract)
+    public function calculateDaySocialSecurityExpired($contract, $month = null)
     {
-        $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth());
+        // 1. Inicializa la fecha de partida (el primer día hábil del mes)
+        // Usamos copy() para asegurar que la fecha inicial no mute si es utilizada en otro lugar
+        $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth($month))->copy();
 
-        $num_days = $contract->social_security_working_day;
-
-        $this->calculateForYear(date("Y"));
-
-        for ($i=0; $i < $num_days; $i++) 
-        { 
-            if ($i == $num_days - 1)
-                $day_expiration = $day_expiration;
-            else
-                $day_expiration = $day_expiration->addDay(1);
-
-            $day_week = $day_expiration->dayOfWeek;
-
-            if ($day_week == 6)
-                $day_expiration = $day_expiration->addDay(2);
-            else if ($day_week == 0)
-                $day_expiration = $day_expiration->addDay(1);
-
-            $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
-
-            if ($is_holiday)
-                $day_expiration = $day_expiration->addDay(1);
+        $num_days_required = $contract->social_security_working_day ?? 0;
+        
+        if ($num_days_required <= 0) {
+            return $day_expiration->format('Y-m-d');
         }
 
-        return $day_expiration->format('Y-m-d');   
+        $this->calculateForYear(date("Y")); 
+        
+        $days_counted = 0;
+        
+        // Bucle WHILE: Continúa mientras no se hayan contado los días requeridos
+        while ($days_counted < $num_days_required) 
+        {            
+            // --- Lógica de Detección ---
+            $is_weekend = $day_expiration->isWeekend();
+            $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
+            
+            // 1. Si NO es fin de semana Y NO es feriado, entonces es un día hábil
+            if (!$is_weekend && !$is_holiday) {
+                $days_counted++;
+            }
+            
+            // 2. Si ya contamos todos los días, salimos del bucle.
+            if ($days_counted >= $num_days_required) {
+                break; // Salir con la fecha correcta
+            }
+            
+            // 3. AVANZAR: Siempre avanzamos al día siguiente para la próxima iteración.
+            $day_expiration->addDay(1);
+        }
+        
+        return $day_expiration->format('Y-m-d'); 
     }
 
-    private function calculateFirstDayOfMonth()
+    private function calculateFirstDayOfMonth(int $month = null)
     {
         $year = date("Y");
-        $month = date("n")+1;
-
-        $first_day_of_month = mktime(0, 0, 0, $month, 1, $year);
-        $first_day_of_week = date("w", $first_day_of_month);
-
-        if ($first_day_of_week == 6)
-            $first_business_day = mktime(0, 0, 0, $month, 3, $year); 
-        else if ($first_day_of_week == 0) 
-            $first_business_day = mktime(0, 0, 0, $month, 2, $year);
-        else 
-            $first_business_day = $first_day_of_month;
-
-        $first_business_day_formatted = date("Y-m-d", $first_business_day);
-
-        return $first_business_day_formatted;
+        $month = Carbon::create(null, $month ?? Carbon::now()->month, 1)->addMonth()->month;
+        
+        // 1. Crea una instancia para el día 1 del mes y año dados
+        $date = Carbon::createFromDate($year, $month, 1);
+        
+        // 2. Mueve la fecha al siguiente día hábil si cae en fin de semana
+        if ($date->isWeekend()) {
+            // nextWeekday() lo mueve al Lunes si es Sábado o Domingo
+            $date->nextWeekday();
+        }
+        
+        return $date->toDateString();
     }
 
     public function calculateForYear($year = 0)
@@ -557,15 +563,17 @@ trait ContractTrait
 		sort($this->list);
 	}
 
-    public function moveToMonday($year, $month, $day) {
-        // Crea una instancia de Carbon a partir de la fecha
+    public function moveToMonday($year, $month, $day) 
+    {
         $fecha = Carbon::createFromDate($year, $month, $day);
 
-        // Mueve la fecha al siguiente lunes
-        $siguienteLunes = $fecha->next(Carbon::MONDAY);
-        
-        // Devuelve la fecha del lunes en el formato deseado
-        return $siguienteLunes->format('Y-m-d');
+        // Si ya es lunes, retorna esa misma fecha (si este es el comportamiento deseado)
+        if ($fecha->isMonday()) {
+            return $fecha->format('Y-m-d');
+        }
+
+        // Si no es lunes, salta al próximo lunes
+        return $fecha->next(Carbon::MONDAY)->format('Y-m-d');
     }
 
     private function calculateEasterSunday(int $year): \DateTime
