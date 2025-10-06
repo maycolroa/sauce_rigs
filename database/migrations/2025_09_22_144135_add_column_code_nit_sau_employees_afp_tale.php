@@ -13,9 +13,9 @@ class AddColumnCodeNitSauEmployeesAfpTale extends Migration
      */
     public function up()
     {
-        Schema::table('sau_employees_afp', function (Blueprint $table) {   
+        /*Schema::table('sau_employees_afp', function (Blueprint $table) {   
             $table->string('code_nit')->nullable()->after('code');
-        });
+        });*/
     }
 
     /**
@@ -25,8 +25,8 @@ class AddColumnCodeNitSauEmployeesAfpTale extends Migration
      */
     public function down()
     {
-        Schema::table('sau_employees_afp', function (Blueprint $table) {            
+        /*Schema::table('sau_employees_afp', function (Blueprint $table) {            
             $table->dropColumn('code_nit');      
-        });
+        });*/
     }
 }
