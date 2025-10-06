@@ -140,6 +140,7 @@ class LawReportController extends Controller
     public function reportRiskOpportunities(Request $request)
     {
         $data = LawRiskOpportunity::select(
+            'sau_lm_laws.name AS law_name',
             'sau_lm_system_apply.name AS system', 
             'type_risk', 
             'risk_subsystem', 
