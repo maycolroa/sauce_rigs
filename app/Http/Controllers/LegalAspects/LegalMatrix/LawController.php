@@ -1152,8 +1152,6 @@ class LawController extends Controller
         {       
             $law = Law::find($request->law_id);
 
-            \Log::info($request);
-
             if (($request->type == 'Riesgo' || $request->type == 'Riesgo y oportunidad') && $request->risk) 
             {
                 foreach ($request->get('risk') as $key => $risk_tag) 
@@ -1247,7 +1245,6 @@ class LawController extends Controller
 
             DB::commit();
 
-            \Log::info($risk_oport);
             return $this->respondHttp200([
                 'data' => $risk_oport
             ]);

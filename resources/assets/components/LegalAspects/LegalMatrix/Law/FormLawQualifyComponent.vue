@@ -343,7 +343,7 @@
       @close-modal-history="closeModalHistory"
     />
 
-    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v']" no-body class="mb-2 border-secondary" style="width: 100%;">
+    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v'] && [1, 130, 409].includes(auth.company_id)" no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
           <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
