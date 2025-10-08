@@ -8,7 +8,9 @@
       </b-card-header>
       <b-card-body>
         <b-form-row>
-          <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" rows="1" :error="form.errorsFor('description')"></vue-textarea>
+          <vue-textarea :disabled="false" class="col-md-3" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" rows="2" :error="form.errorsFor('description')"></vue-textarea>
+          <vue-advanced-select class="col-md-6" v-model="form.month_pay" :disabled="false" name="month_pay" label="Mes de pago" placeholder="Seleccione el mes de pago" :options="months" :error="form.errorsFor('month_pay')" :multiple="false" :allow-empty="false" help-text="El mes es opcional, de no seleccionar ninguno, se tomara el mes actual para realizar el calculo.">
+          </vue-advanced-select>
         </b-form-row>
         <b-form-row>
           <vue-file-simple class="col-md-12" v-model="form.file_social_secure" label="Archivo de Seguridad Social" name="file_social_secure" placeholder="Seleccione un archivo" :error="form.errorsFor(`file_social_secure`)" :maxFileSize="20"/>
@@ -35,12 +37,14 @@ import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 
 export default {
   components: {
     PerfectScrollbar,
     VueFileSimple,
-    VueTextarea
+    VueTextarea,
+    VueAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -51,8 +55,8 @@ export default {
         return {
           file_social_secure: '',
           file_employee: '',
-          description: ''
-          //type_element: ''
+          description: '',
+          month_pay: ''
         };
       }
     }
@@ -66,7 +70,21 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.user, this.method)
+      form: Form.makeFrom(this.user, this.method),
+      months: [
+          {name: 'Enero', value: '1'},
+          {name: 'Febrero', value: '2'},
+          {name: 'Marzo', value: '3'},
+          {name: 'Abril', value: '4'},
+          {name: 'Mayo', value: '5'},
+          {name: 'Junio', value: '6'},
+          {name: 'Julio', value: '7'},
+          {name: 'Agosto', value: '8'},
+          {name: 'Septiembre', value: '9'},
+          {name: 'Octubre', value: '10'},
+          {name: 'Noviembre', value: '11'},
+          {name: 'Diciembre', value: '12'},
+        ]
     };
   },
   methods: {

@@ -28,8 +28,9 @@ class ContractEmployeeImportSocialSecure implements ToCollection
     private $list = [];
     private $file_social_secure;
     private $holiday;
+    private $month;
 
-    public function __construct($company_id, $user, $contract, $file_social_secure, $description, $path_file_employee)
+    public function __construct($company_id, $user, $contract, $file_social_secure, $description, $path_file_employee, $month)
     {        
       $this->user = $user;
       $this->contract = $contract;
@@ -37,8 +38,9 @@ class ContractEmployeeImportSocialSecure implements ToCollection
       $this->file_social_secure = $file_social_secure;
       $this->path_file_employee = $path_file_employee;
       $this->description = $description;
+      $this->month = $month;
 
-	  $this->calculateForYear();
+	  $this->calculateForYear(date("Y"));
     }
 
     public function logImport()
@@ -193,29 +195,35 @@ class ContractEmployeeImportSocialSecure implements ToCollection
             $state->date = date('Y-m-d');
             $state->save();
 
-            $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth());
+            $day_expiration = Carbon::parse($this->calculateFirstDayOfMonth($this->month))->copy();
 
-            $num_days = $this->contract->social_security_working_day;
-
-            for ($i=0; $i < $num_days; $i++) 
-            { 
-                if ($i == $num_days - 1)
-                    $day_expiration = $day_expiration;
-                else
-                    $day_expiration = $day_expiration->addDay(1);
-
-                $day_week = $day_expiration->dayOfWeek;
-
-                if ($day_week == 6)
-                    $day_expiration = $day_expiration->addDay(2);
-                else if ($day_week == 0)
-                    $day_expiration = $day_expiration->addDay(1);
-
-                $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
-
-                if ($is_holiday)
-                    $day_expiration = $day_expiration->addDay(1);
+            $num_days = $this->contract->social_security_working_day ?? 0;
+            
+            if ($num_days <= 0) {
+                return $day_expiration->format('Y-m-d');
             }
+
+            $days_counted = 0;
+
+            while ($days_counted < $num_days) 
+        {            
+            // --- Lógica de Detección ---
+            $is_weekend = $day_expiration->isWeekend();
+            $is_holiday = $this->isHoliday($day_expiration->format('Y-m-d'));
+            
+            // 1. Si NO es fin de semana Y NO es feriado, entonces es un día hábil
+            if (!$is_weekend && !$is_holiday) {
+                $days_counted++;
+            }
+            
+            // 2. Si ya contamos todos los días, salimos del bucle.
+            if ($days_counted >= $num_days) {
+                break; // Salir con la fecha correcta
+            }
+            
+            // 3. AVANZAR: Siempre avanzamos al día siguiente para la próxima iteración.
+            $day_expiration->addDay(1);
+        }
 
             $fileUpload->expirationDate = $day_expiration->format('Y-m-d');   
             $fileUpload->save();     
@@ -239,30 +247,28 @@ class ContractEmployeeImportSocialSecure implements ToCollection
         $this->key_row++;
     }
 
-    private function calculateFirstDayOfMonth()
+    private function calculateFirstDayOfMonth($month = NULL)
     {
         $year = date("Y");
-        $month = date("n")+1;
+        //$month = date("n")+1;        
+        $month = Carbon::create(null, $month ?? Carbon::now()->month, 1)->addMonth()->month;
 
-        $first_day_of_month = mktime(0, 0, 0, $month, 1, $year);
-        $first_day_of_week = date("w", $first_day_of_month);
+         // 1. Crea una instancia para el día 1 del mes y año dados
+        $date = Carbon::createFromDate($year, $month, 1);
+        
+        // 2. Mueve la fecha al siguiente día hábil si cae en fin de semana
+        if ($date->isWeekend()) {
+            // nextWeekday() lo mueve al Lunes si es Sábado o Domingo
+            $date->nextWeekday();
+        }
 
-        if ($first_day_of_week == 6)
-            $first_business_day = mktime(0, 0, 0, $month, 3, $year); 
-        else if ($first_day_of_week == 0) 
-            $first_business_day = mktime(0, 0, 0, $month, 2, $year);
-        else 
-            $first_business_day = $first_day_of_month;
-
-        $first_business_day_formatted = date("Y-m-d", $first_business_day);
-
-        return $first_business_day_formatted;
+        return $date->toDateString();
     }
 
     public function calculateForYear($year = 0)
     {
-		if ($year <= 1970 || $fecha>=2037) 
-            $year = intval(date ( 'Y' ));
+		if ($year <= 0) 
+            $year = date ('Y');
 				
 		// Fixed dates
 		$this->list[] = $year."-01-01"; // Año nuevo
@@ -302,41 +308,18 @@ class ContractEmployeeImportSocialSecure implements ToCollection
 	 * @param int $month
 	 * @param int $day
 	 */
-	public function moveToMonday($year, $month, $day) {
-		// Número de días a sumar al día para llegar al siguiente lunes
-		$daysToAdd = array(
-			0 => 1, // Domingo
-			1 => 0, // Lunes
-			2 => 6, // Martes
-			3 => 5, // Miércoles
-			4 => 4, // Jueves
-			5 => 3, // Viernes
-			6 => 2, // Sábado
-		);
-		
-		// Día de la semana original
-		$monday = date( "w", mktime( 0, 0, 0, $month, $day, $year ) );
-		
-		// Lunes siguiente al día original
-		$monday += $daysToAdd[$monday];
-		
-		// Es posible que el mes haya cambiado con la suma de días
-		$month = date( "m", mktime( 0, 0, 0, $month, $monday, $year ) ) ;
-		
-		return date( "d", mktime( 0, 0, 0, $month, $monday, $year ) ) ;
-	}
-	
-	/*public function calculateFromEasterDate($year, $numDays = 0, $toMonday = false) {
-		
-		$easterMonth = date( "m", \easter_date( $year ) );
-		$easterDay = date( "d", \easter_date( $year ) );
-		
-		$month = date( "m", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
-		$day = date( "d", mktime( 0, 0, 0, $easterMonth, $easterDay + $numDays, $year ) );
-		
-		if ($toMonday)  return $this->moveToMonday ($year, $month, $day );
-		else return sprintf("%s-%s-%s",  $year, $month, $day );
-	}*/
+	public function moveToMonday($year, $month, $day) 
+    {
+        $fecha = Carbon::createFromDate($year, $month, $day);
+
+        // Si ya es lunes, retorna esa misma fecha (si este es el comportamiento deseado)
+        if ($fecha->isMonday()) {
+            return $fecha->format('Y-m-d');
+        }
+
+        // Si no es lunes, salta al próximo lunes
+        return $fecha->next(Carbon::MONDAY)->format('Y-m-d');
+    }
 
     private function calculateEasterSunday(int $year): \DateTime
     {
