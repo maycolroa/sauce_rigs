@@ -1439,10 +1439,9 @@ class ContractEmployeeController extends Controller
         $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->getClientOriginalExtension();
         $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
         $file_social_secure = $nameFile;
+        $month_pay = $request->month_pay;
 
-        //$path_file_employee = 
-
-        ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $request->description, $file_social_secure);
+        ContractEmployeeImportSocialSecureJob::dispatch($request->file_employee, $this->company, $this->user, $contract, $request->description, $file_social_secure, $month_pay);
       
         return $this->respondHttp200();
 
