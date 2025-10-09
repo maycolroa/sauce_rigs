@@ -63,6 +63,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       $qualifications = InspectionItemsQualificationAreaLocation::selectRaw("
           sau_ph_inspections.id as insp_id,
           sau_ph_inspections.name as insp_name,
+          sau_ph_inspections.type_id AS type_inspection,
           sau_ph_inspection_sections.name as section_name,
           sau_ph_inspection_section_items.description as description,
           sau_ph_qualifications_inspections.name as qualification_name,
@@ -70,6 +71,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
           sau_users.name as qualifier,
           sau_ph_inspection_items_qualification_area_location.find, 
           sau_ph_inspection_items_qualification_area_location.qualification_date,
+          sau_ph_inspection_items_qualification_area_location.qualify AS qualify_personalizada,
           sau_employees_regionals.name as regionals, 
           sau_employees_headquarters.name as headquarter,
           sau_employees_processes.name as process, 
@@ -196,14 +198,28 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
 
       $values = [$data->insp_name];
 
-      $values = array_merge($values, [
-        $data->section_name,
-        $data->description,
-        $data->qualification_name,
-        $data->qualification_description,
-        $data->qualifier,
-        $data->find
-      ]);
+      if ($data->type_inspection == 3)
+      {
+        $values = array_merge($values, [
+          $data->section_name,
+          $data->description,
+          $data->qualify_personalizada,
+          $data->qualify_personalizada,
+          $data->qualifier,
+          $data->find
+        ]);
+      }
+      else
+      {        
+        $values = array_merge($values, [
+          $data->section_name,
+          $data->description,
+          $data->qualification_name,
+          $data->qualification_description,
+          $data->qualifier,
+          $data->find
+        ]);
+      }
 
       if ($this->confLocation['regional'] == 'SI')
         array_push($values, $data->regionals);
