@@ -179,8 +179,10 @@ class EmployeeImport implements ToCollection
             $data['afp'] = $this->afp_data[$data['afp']];
         else if ($data['afp'] && isset($this->afp_nit_data[$data['afp']]))
             $data['afp'] = $this->afp_nit_data[$data['afp']];
-        else if ($data['afp'])
-            $data['afp'] = -1;
+        else if (!$data['afp'])
+            $data['afp'] = 14;
+        else
+            $data['afp'] = 14;
 
         $sql = Employee::where('identification', $data['identificacion']);
         $sql->company_scope = $this->company_id;
