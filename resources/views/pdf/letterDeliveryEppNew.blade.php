@@ -128,7 +128,15 @@
     <br><br>
     <div style="page-break-inside: avoid;">
         <table class="table-general">
-            <thead>                            
+            <thead>    
+                <tr>
+                    <th>Fecha de entrega</th>
+                    <td>{{$delivery->created_at}}</td>
+                </tr>     
+                <tr>
+                    <th>Nombre de quien realizo la entrega</th>
+                    <td>{{ $delivery->user_name }}</td>
+                </tr>                        
                 <tr>
                     <td colspan='2'><b>Observaciones</b></td>
                 </tr>          
