@@ -61,10 +61,9 @@
         <table id="tabla-sin-cebrado">
             <thead>
                 <tr>
-                    <th><h2 style="font-size: 20px; font-family: sans-serif">{{ $delivery->company_name }}</h2></th>
-                    <th colspan="2">                        
+                    <th colspan="3">                        
                         @if ($delivery->logo)
-                        <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$delivery->logo }}" width="80px" height="80px"/></div>
+                        <div style="text-align: left"><img src="{{ public_path('storage/administrative/logos/').$delivery->logo }}" width="150px" height="80px"/></div>
                         @endif
                     </th>
                 </tr>

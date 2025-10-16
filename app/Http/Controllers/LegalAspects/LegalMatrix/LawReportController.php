@@ -83,8 +83,6 @@ class LawReportController extends Controller
         $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $category = $request->legalMatrixSelected;
-
-         \Log::info($filtersType);
         
         $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category, $dates, $riskOpportunity);
         
