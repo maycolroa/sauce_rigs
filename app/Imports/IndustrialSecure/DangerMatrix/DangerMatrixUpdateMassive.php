@@ -51,6 +51,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
     private $key_row = 2;
     private $keywords;
     private $dangerMatrix;
+    private $row_actual = [];
 
     public function __construct($company_id, $user)
     {
@@ -94,7 +95,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
                     $nameExcel = 'export/1/danger_matrix_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
-                    Excel::store(new DangerMatrixImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    Excel::store(new DangerMatrixImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id, true), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
             
                     NotificationMail::
@@ -283,18 +284,39 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
             $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
             $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso'], $macroproceso->implode(',')) : null; 
             $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
+
+            $validate_text = '';
+
+            if ($confLocation['regional'] == 'SI' && !$regional_id)
+                $validate_text .= 'No se encontro el '.$this->keywords['regional'].'. ';
+
+            if ($confLocation['headquarter'] == 'SI' && !$headquarter_id)
+                $validate_text .= 'No se encontro el '.$this->keywords['headquarter'].'. ';
+
+            if ($confLocation['process'] == 'SI' && !$process_id)
+                $validate_text .= 'No se encontro el '.$this->keywords['process'].'. ';
+
+            if ($confLocation['area'] == 'SI' && !$area_id)
+                $validate_text .= 'No se encontro el '.$this->keywords['area'].'. ';
+
+            if ($validate_text != '')
+            {
+                $this->setError($validate_text);
+                $this->setErrorData($row);
+                return null;
+            }
             
             $matriz_id = DangerMatrix::withoutGlobalScopes()
                 ->where('company_id', $this->company_id)
                 ->where('year', $data['year']);
 
-            if ($confLocation['regional'] == 'SI')
+            if ($confLocation['regional'] == 'SI' && $regional_id)
                 $matriz_id->where('employee_regional_id', $regional_id);
-            if ($confLocation['headquarter'] == 'SI')
+            if ($confLocation['headquarter'] == 'SI' && $headquarter_id)
                 $matriz_id->where('employee_headquarter_id', $headquarter_id);
-            if ($confLocation['process'] == 'SI')
+            if ($confLocation['process'] == 'SI' && $process_id)
                 $matriz_id->where('employee_process_id', $process_id);
-            if ($confLocation['area'] == 'SI')
+            if ($confLocation['area'] == 'SI' && $area_id)
                 $matriz_id->where('employee_area_id', $area_id);
 
             $matriz_id = $matriz_id->first();
@@ -449,6 +471,9 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
         $area->company_scope = $this->company_id;
         $area = $area->first();
 
+        if (!$area)
+            return null;
+
         return $area->id;
     }
 
@@ -458,6 +483,9 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
         $regional->company_scope = $this->company_id;
         $regional = $regional->where(['name' => $name]);
         $regional = $regional->first();
+        
+        if (!$regional)
+            return null;
 
         return $regional->id;
     }
@@ -465,6 +493,9 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
     private function checkHeadquarter($regional_id, $headquarter)
     {
         $headquarter = EmployeeHeadquarter::where(['name' => $headquarter, 'employee_regional_id' => $regional_id])->first();
+
+        if (!$headquarter)
+            return null;
 
         return $headquarter->id;
     }
@@ -480,6 +511,9 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
 
         $process->company_scope = $this->company_id;
         $process = $process->first();
+
+        if (!$process)
+            return null;
 
         return $process->id;
     }
