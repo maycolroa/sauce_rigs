@@ -33,6 +33,8 @@ use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportMasiveJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
 use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportTemplateExcel;
+use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportMassiveTemplateExcel;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixImportMassiveJob;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixImportJob;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Carbon\Carbon;
@@ -927,6 +929,26 @@ class DangerMatrixController extends Controller
       try
       {
         DangerMatrixImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
+    }
+
+    public function downloadTemplateMassiveImport()
+    {
+      return Excel::download(new DangerMatrixImportMassiveTemplateExcel(collect([]), $this->company), 'PlantillaImportacionMatrizPeligroNassiva.xlsx');
+    }
+
+
+    public function importMassive(Request $request)
+    {
+      try
+      {
+        DangerMatrixImportMassiveJob::dispatch($request->file, $this->company, $this->user);
       
         return $this->respondHttp200();
 

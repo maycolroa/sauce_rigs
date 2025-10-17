@@ -14,7 +14,7 @@ use App\Imports\IndustrialSecure\DangerMatrix\DangerMatrixImport;
 use App\Imports\IndustrialSecure\DangerMatrix\DangerMatrixUpdateMassive;
 use App\Models\General\LogFilesImport;
 
-class DangerMatrixImportJob implements ShouldQueue
+class DangerMatrixImportMassiveJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -48,7 +48,7 @@ class DangerMatrixImportJob implements ShouldQueue
      */
     public function handle()
     {
-      Excel::import(new DangerMatrixImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+      Excel::import(new DangerMatrixUpdateMassive($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
       Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }
 }

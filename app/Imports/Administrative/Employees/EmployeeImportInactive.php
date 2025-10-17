@@ -11,6 +11,7 @@ use App\Exports\Administrative\Employees\EmployeeImportInactiveErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use Carbon\Carbon;
 use Exception;
 
 class EmployeeImportInactive implements ToCollection
@@ -102,6 +103,7 @@ class EmployeeImportInactive implements ToCollection
     {
         $data = [
             'identificacion' => $row[0],
+            'fecha_inactivacion' => $row[1]
         ];
 
         $sql = Employee::where('identification', $data['identificacion']);
@@ -136,6 +138,19 @@ class EmployeeImportInactive implements ToCollection
         else 
         {
             $employee->active = 'NO';
+            
+            $unixTimestamp = $data['fecha_inactivacion'] ? ((($data['fecha_inactivacion'] - 25569) + 1) * 86400) : NULL;
+
+            if ($unixTimestamp)
+            {
+                $date_inactivation = Carbon::createFromTimestamp($unixTimestamp);
+                $date_inactivation = $date_inactivation->format('Y-m-d');
+            }
+            else
+                $date_inactivation = NULL;
+
+
+            $employee->date_inactivation = $date_inactivation ?? date('Y-m-d');
             $employee->update();
 
             return true;
