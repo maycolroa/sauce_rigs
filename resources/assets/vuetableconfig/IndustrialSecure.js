@@ -1011,7 +1011,24 @@ export default [
         },
         permission: 'ph_reports_r'
         }],
-    }],
+      },    
+      {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-danger',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar inspección planeada en PDF'
+            },
+            data: {
+              action: '/industrialSecurity/dangerousConditions/report/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'ph_reports_r'
+            }],
+      }],
     configuration: {
         urlData: '/industrialSecurity/dangerousConditions/report/data',
         filterColumns: true,
