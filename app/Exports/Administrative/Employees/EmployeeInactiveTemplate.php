@@ -56,7 +56,8 @@ class EmployeeInactiveTemplate implements FromCollection, WithHeadings, WithMapp
     public function headings(): array
     {
       $columns = [
-        'Identificación del empleado (*)'
+        'Identificación del empleado (*)',
+        'Fecha de inactivación (YYYY-MM-DD, de no colocarse se colocara la fecha en la que se haya cargado esta plantilla)'
       ];
 
       return $columns;
