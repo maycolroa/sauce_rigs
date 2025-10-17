@@ -67,9 +67,12 @@ export default {
         }
     },
     methods: {
-        generate() {
-            
-            window.open(`/biologicalmonitoring/reinstatements/check/generateTracing?check_id=${this.checkId}&tracing_description=${this.tracingDescription.replace(/\r?\n/g, "<br>")}&has_tracing=${this.has_tracing}&new_date_tracing=${this.new_date_tracing}`, '_blank')
+        generate() 
+        {            
+            let description = this.tracingDescription.replace(/\r?\n/g, "<br>");
+            const encodedDescription = encodeURIComponent(description); 
+
+            window.open(`/biologicalmonitoring/reinstatements/check/generateTracing?check_id=${this.checkId}&tracing_description=${encodedDescription}&has_tracing=${this.has_tracing}&new_date_tracing=${this.new_date_tracing}`, '_blank')
 
             this.hideModal()
         },
