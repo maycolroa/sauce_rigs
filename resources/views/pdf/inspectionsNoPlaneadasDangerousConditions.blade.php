@@ -94,9 +94,6 @@
                     <tr>
                         @if ($inspections["process"] && !$inspections["area"])
                             <th>{{ Auth::user()->getKeywords()['process'] }}</th>
-                            @if ($inspections["compliance"])
-                                <th colspan="1">Porcentaje de cumplimiento</th>
-                            @endif
                         @endif
                         @if ($inspections["area"])
                             <th>{{ Auth::user()->getKeywords()['area'] }}</th>
@@ -183,7 +180,6 @@
                     <th colspan="6">Planes de acción</th>
                 </tr>
                 <tr>
-                    <th>Item</th>
                     <th>Descripción</th>
                     <th>Responsable</th>
                     <th>Fecha de vencimiento</th>
