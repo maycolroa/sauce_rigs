@@ -2584,7 +2584,9 @@ export default [
         fields: [
             { name: 'sau_lm_law_risk_opportunity.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_lm_system_apply.name', data: 'system', title: 'Sistema que aplica', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_lm_laws.name', data: 'law_name', title: 'Norma', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws_types.name', data: 'law_type', title: 'Tipo Norma', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_number', data: 'law_number', title: 'Número', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_year', data: 'law_year', title: 'Año', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_law_risk_opportunity.type_risk', data: 'type_risk', title: 'Tipo de riesgo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_law_risk_opportunity.risk_subsystem', data: 'risk_subsystem', title: 'Subsistema del riesgo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_law_risk_opportunity.risk_gestion', data: 'risk_gestion', title: 'Aplicativo de riesgo para gestión', sortable: true, searchable: true, detail: false, key: false },
