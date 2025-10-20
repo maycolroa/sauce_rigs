@@ -80,7 +80,23 @@ class LawReportController extends Controller
 
         $dates = $range ? $range : [];
 
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        $filtersTypeDefault = [
+            'lawTypes' => 'IN',
+            'riskAspects' => 'IN',
+            'entities' => 'IN',
+            'sstRisks' => 'IN',
+            'systemApply' => 'IN',
+            'lawNumbers' => 'IN',
+            'lawYears' => 'IN',
+            'repealed' => 'IN',
+            'responsibles' => 'IN',
+            'interests' => 'IN',
+            'states' => 'IN',
+            'qualifications' => 'IN',
+            'riskOpportunity' => 'IN',
+        ];  
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : $filtersTypeDefault);
 
         $category = $request->legalMatrixSelected;
         
