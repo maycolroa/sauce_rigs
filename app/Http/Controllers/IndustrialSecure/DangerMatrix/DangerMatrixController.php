@@ -481,7 +481,6 @@ class DangerMatrixController extends Controller
      */
     private function saveDangerMatrix($request, $dangerMatrix = null)
     {
-
         $keywords = $this->user->getKeywords();
         $confLocation = $this->getLocationFormConfModule();
         
@@ -517,6 +516,7 @@ class DangerMatrixController extends Controller
 
             $dangerMatrix->name = $request->get('name');
             $dangerMatrix->year = $request->get('year');
+            $dangerMatrix->observations = $request->get('observations');
             $dangerMatrix->user_id = $this->user->id;
 
             $approved = $request->get('approved');

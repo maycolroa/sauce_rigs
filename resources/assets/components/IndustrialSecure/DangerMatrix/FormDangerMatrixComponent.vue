@@ -138,6 +138,10 @@
         </b-card>
       </b-form-row>
 
+      <b-form-row>
+        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.observations" label="Observaciones" name="observations" :error="form.errorsFor('observations')"  placeholder="Observaciones"></vue-textarea>
+      </b-form-row>
+
       <b-form-row v-if="isEdit">
         <vue-ajax-advanced-select class="col-md-12" v-model="form.changeHistory" name="danger_description" :error="form.errorsFor('changeHistory')" label="Detalle de cambios realizados" placeholder="Seleccione los detalles de cambios realizados" :url="tagsHistoryChangeDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select>
       </b-form-row>
@@ -256,6 +260,7 @@ export default {
             name: '',
             approved: '',
             participants: '',
+            observations: '',
             activities: [
               {
                 key: new Date().getTime(),
