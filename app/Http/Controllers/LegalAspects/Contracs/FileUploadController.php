@@ -968,6 +968,22 @@ class FileUploadController extends Controller
           'file_id' =>  NULL
         ];
 
+        if ($request->has('delete'))
+        {
+            $delete = json_decode($request->delete, true);
+
+            foreach ($delete['files'] as $id)
+            {
+                $file_delete = FileUpload::find($id);
+
+                if ($file_delete)
+                {
+                    $path = $file_delete->file;
+                    $file_delete->delete();
+                }
+            }
+        }
+
         $this->updateEmployee($content);
 
         DB::commit();
