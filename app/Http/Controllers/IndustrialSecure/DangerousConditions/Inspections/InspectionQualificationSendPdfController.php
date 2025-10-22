@@ -205,19 +205,19 @@ class InspectionQualificationSendPdfController extends Controller
             $compliance = $this->complianceType1($id);
 
         
-        $regional = EmployeeRegional::query();
+        $regional = EmployeeRegional::where('id', $qualification->employee_regional_id);
         $regional->company_scope = $company_id;
         $regional = $regional->first();
 
-        $sede = EmployeeHeadquarter::query();
+        $sede = EmployeeHeadquarter::where('id', $qualification->employee_headquarter_id);
         $sede->company_scope = $company_id;
         $sede = $sede->first();
 
-        $proceso = EmployeeProcess::query();
+        $proceso = EmployeeProcess::where('id', $qualification->employee_process_id);
         $proceso->company_scope = $company_id;
         $proceso = $proceso->first();
 
-        $area = EmployeeArea::query();
+        $area = EmployeeArea::where('id', $qualification->employee_area_id);
         $area->company_scope = $company_id;
         $area = $area->first();
             

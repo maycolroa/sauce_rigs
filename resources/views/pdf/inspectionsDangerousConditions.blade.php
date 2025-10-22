@@ -109,13 +109,13 @@
                 @if ($inspections["process"])
                     <tr>
                         @if ($inspections["process"] && !$inspections["area"])
-                            <td>{{ $inspections["process"] }}</th>
+                            <td>{{ $inspections["process"] }}</td>
                             @if ($inspections["compliance"])
                                 <td colspan="1">{{$inspections["compliance"]}}%</td>
                             @endif
                         @endif
                         @if ($inspections["area"])
-                            <td colspan=>{{ $inspections["area"] }}</td>
+                            <td>{{ $inspections["area"] }}</td>
                         @endif
                     </tr>
                 @endif
