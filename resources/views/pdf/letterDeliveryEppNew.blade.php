@@ -63,7 +63,7 @@
                 <tr>
                     <th colspan="3">                        
                         @if ($delivery->logo)
-                        <div style="text-align: left"><img src="{{ public_path('storage/administrative/logos/').$delivery->logo }}" width="110px" height="50px"/></div>
+                        <div style="text-align: left"><img src="{{ $delivery->logo }}" width="30%" height="100%"/></div>
                         @endif
                     </th>
                 </tr>
