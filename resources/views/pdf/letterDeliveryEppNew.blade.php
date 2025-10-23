@@ -63,7 +63,7 @@
                 <tr>
                     <th colspan="3">                        
                         @if ($delivery->logo)
-                        <div style="text-align: left"><img src="{{ $delivery->logo }}" width="40%" height="100%"/></div>
+                        <div style="text-align: left"><img src="{{ $delivery->logo }}" width="40%" height="90%"/></div>
                         @endif
                     </th>
                 </tr>
