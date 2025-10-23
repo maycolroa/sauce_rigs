@@ -2396,7 +2396,7 @@ class TransactionController extends Controller
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        if ($this->company == 736 || $this->company == 1)
+        if ($this->company == 736)
             $pdf = PDF::loadView('pdf.letterDeliveryEppNew', ['delivery' => $delivery] );
         else
             $pdf = PDF::loadView('pdf.letterDeliveryEpp', ['delivery' => $delivery] );
@@ -2475,7 +2475,8 @@ class TransactionController extends Controller
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
-        $delivery->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
+        $delivery->logo = $logo ? Storage::disk('public')->url('administrative/logos/'.$logo) : null;
+        //$delivery->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
         $delivery->company_name = $company ? $company->name : '';
 
         $delivery->text_company = $this->getTextLetterEpp($company->name, $typeElement);
