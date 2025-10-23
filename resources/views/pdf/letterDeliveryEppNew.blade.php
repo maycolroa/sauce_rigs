@@ -74,7 +74,7 @@
                 </tr>
                 <tr>
                     <td>Formato</td>
-                    <td>Formato de entrega de elementos, dotación o equipos</td>
+                    <td>Formato entrega de indumentaria</td>
                     <td>4</td>
                 </tr>
                 <tr>
@@ -102,7 +102,7 @@
     </div>
     <br><br>
     <div style="page-break-inside: avoid;">
-        <center><b>ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL</b></center>
+        <center><b>FORMATO ENTREGA DE INDUMENTARIA</b></center>
         <br/><br/>
         <p><b>Nombre empleado: {{ $delivery->employee_name }}</b></p> <p><b>CC: {{$delivery->employee_identification}}</b></p>
         
