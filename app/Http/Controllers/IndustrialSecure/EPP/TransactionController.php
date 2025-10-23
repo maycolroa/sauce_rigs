@@ -2396,7 +2396,7 @@ class TransactionController extends Controller
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        if ($this->company == 736)
+        if ($this->company == 736 || $this->company == 1)
             $pdf = PDF::loadView('pdf.letterDeliveryEppNew', ['delivery' => $delivery] );
         else
             $pdf = PDF::loadView('pdf.letterDeliveryEpp', ['delivery' => $delivery] );
