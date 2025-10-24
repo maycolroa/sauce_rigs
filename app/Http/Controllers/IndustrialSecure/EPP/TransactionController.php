@@ -2475,8 +2475,8 @@ class TransactionController extends Controller
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
-        $delivery->logo = $logo ? Storage::disk('public')->url('administrative/logos/'.$logo) : null;
-        //$delivery->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
+        //$delivery->logo = $logo ? Storage::disk('public')->url('administrative/logos/'.$logo) : null;
+        $delivery->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
         $delivery->company_name = $company ? $company->name : '';
 
         $delivery->text_company = $this->getTextLetterEpp($company->name, $typeElement);
