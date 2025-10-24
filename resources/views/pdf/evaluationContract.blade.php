@@ -37,16 +37,32 @@
             text-align: justify;
         }
 
+        #tabla-sin-cebrado td, th {
+          border: 1px solid #ffffffff;
+          text-align: left;
+          font-size: 8px;  
+          padding: 0px;
+        }
+
     </style>
 </head>
 <body style="margin: 20px; margin-top: 0px;">
-        @if ($evaluations->logo)
-        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ $evaluations->logo }}" width="25%" height="70%"/></div>
-        @endif
-    <div style="page-break-inside: avoid;">
-        <h3> Fecha de Evaluación: {{$evaluations->evaluation_date}}</h3>
-        <h3>Contratista: {{$evaluations->contract->social_reason}}</h3>
-    </div>
+    <table id="tabla-sin-cebrado">
+        <thead>
+            <tr>       
+                <th>
+                    <h3> Fecha de Evaluación: {{$evaluations->evaluation_date}}</h3>
+                    <br>
+                    <h3>Contratista: {{$evaluations->contract->social_reason}}</h3>
+                </th>       
+                @if ($evaluations->logo)
+                    <th rowspan="2">                 
+                        <div style="text-align: right;"><img style="width: 400px; height: 120px" src="{{ $evaluations->logo }}"/></div>
+                    </th>
+                @endif  
+            </tr>
+        </thead>
+    </table>
 
     <br><br>
 

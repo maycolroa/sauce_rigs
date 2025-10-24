@@ -42,7 +42,7 @@
 <body style="margin: 20px; margin-top: 0px;">
     <div style="page-break-inside: avoid;">
         @if ($inform->logo)
-        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inform->logo }}" width="120px" height="120px"/></div>
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ $inform->logo }}" width="400px" height="120px"/></div>
         @endif
         <h3> {{$inform->inform_base->name}}</h3>
         <h3> Fecha de Evaluación: {{$inform->inform_date}}</h3>

@@ -49,7 +49,7 @@
             <thead>
                 <tr>
                     @if ($inspections["logo"])
-                    <th style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="50px" height="50px"/></th>
+                    <th style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ $inspections['logo'] }}" width="50px" height="50px"/></th>
                     @endif
                     <th style='border-right: 1px solid black; padding: 1px; width: 60%'>{{ $inspections["inspection"] }}</th>
                     <th style='padding: 1px; width: 20%'>

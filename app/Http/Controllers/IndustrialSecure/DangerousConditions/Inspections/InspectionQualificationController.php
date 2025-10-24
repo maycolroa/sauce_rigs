@@ -531,6 +531,8 @@ class InspectionQualificationController extends Controller
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
+
         $inspection->put('logo', $logo);
 
         return $inspection;

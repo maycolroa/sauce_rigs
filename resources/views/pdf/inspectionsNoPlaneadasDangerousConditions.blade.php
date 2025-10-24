@@ -43,13 +43,13 @@
 
     </style>
 </head>
-<body style="margin: 50px; margin-top: 120px;">
+<body style="margin: 50px; margin-top: 150px;">
     <div id="header">
         <table class="table-general" style='border: 1px solid black;'>
             <thead>
                 <tr>
                     @if ($inspections["logo"])
-                    <th rowspan="2" style='border-right: 1px solid black; padding: 1px;'><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="50px" height="50px"/></th>
+                    <th rowspan="2" style='border-right: 1px solid black; padding: 1px;'><img src="{{ $inspections['logo'] }}" width="150px" height="80px"/></th>
                     @endif
                     <th colspan="2" style='padding: 1px;'>
                         <p><b>Inspección no planeada</b></p>
