@@ -66,8 +66,8 @@ class LogoController extends Controller
                 $company->logo = $nameFile;
                 $data['logo'] = $nameFile;
                 $data['old_logo'] = $nameFile;
-                $data['logo_path'] = Storage::disk('public')->url('administrative/logos/'.$nameFile);
-                $data['logo_path_s3'] = Storage::disk('s3')->url('administrative/logos/'.$nameFile);
+                //$data['logo_path'] = Storage::disk('public')->url('administrative/logos/'.$nameFile);
+                $data['logo_path'] = Storage::disk('s3')->url('administrative/logos/'.$nameFile);
             }
             else
             {
@@ -98,8 +98,8 @@ class LogoController extends Controller
         {
             $company = Company::select('logo')->find($this->company);
             $company->old_logo = $company->logo;
-            $company->logo_path = Storage::disk('public')->url('administrative/logos/'. $company->logo);
-            //$company->logo_path = Storage::disk('s3')->url('administrative/logos/'.$company->logo);
+            //$company->logo_path = Storage::disk('public')->url('administrative/logos/'. $company->logo);
+            $company->logo_path = Storage::disk('s3')->url('administrative/logos/'.$company->logo);
 
             return $this->respondHttp200([
                 'data' => $company

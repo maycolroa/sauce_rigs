@@ -41,7 +41,7 @@
 </head>
 <body style="margin: 20px; margin-top: 0px;">
         @if ($evaluations->logo)
-        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$evaluations->logo }}" width="120px" height="120px"/></div>
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ $evaluations->logo }}" width="25%" height="70%"/></div>
         @endif
     <div style="page-break-inside: avoid;">
         <h3> Fecha de Evaluación: {{$evaluations->evaluation_date}}</h3>
