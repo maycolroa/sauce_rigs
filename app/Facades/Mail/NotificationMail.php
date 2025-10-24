@@ -519,6 +519,7 @@ class NotificationMail
 
         if (!$this->checkLicense())
         {
+            \Log::info('se envio correo sin licencia');
             $this->restart();
             return false; //No tiene licencia activa para el modulo por lo que se omite el envio del correo
         }

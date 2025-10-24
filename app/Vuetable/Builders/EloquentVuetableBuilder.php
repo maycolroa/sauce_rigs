@@ -92,6 +92,7 @@ class EloquentVuetableBuilder
         return $data->where(function ($q) use ($queries, $tables) {
             foreach ($queries as $field => $query) {
                 $field = isset($tables[$field]) ? $tables[$field] : $field;
+                
                 if ($field == 'date_upload')
                 {
                     $q->whereRaw("date_format(sau_ct_file_upload_contracts_leesse.created_at, '%Y-%m') LIKE '%{$query}%'");
@@ -126,6 +127,12 @@ class EloquentVuetableBuilder
                                 then 'NO'
                                 else 'SI' end
                         else 'NO' end LIKE '%{$query}%'");
+                }
+                else if ($field == 'sau_ct_contract_employees.state_employee')
+                {
+                    $q->whereRaw("case when sau_ct_contract_employees.state_employee is true 
+                        then 'Activo' 
+                        else 'Inactivo' end LIKE '{$query}%'");
                 }
                 else
                 {

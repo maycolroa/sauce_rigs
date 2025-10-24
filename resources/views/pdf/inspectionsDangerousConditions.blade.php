@@ -49,7 +49,7 @@
             <thead>
                 <tr>
                     @if ($inspections["logo"])
-                    <th style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="50px" height="50px"/></th>
+                    <th style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ $inspections['logo'] }}" width="100%" height="100%"/></th>
                     @endif
                     <th style='border-right: 1px solid black; padding: 1px; width: 60%'>{{ $inspections["inspection"] }}</th>
                     <th style='padding: 1px; width: 20%'>
@@ -109,13 +109,13 @@
                 @if ($inspections["process"])
                     <tr>
                         @if ($inspections["process"] && !$inspections["area"])
-                            <td>{{ $inspections["process"] }}</th>
+                            <td>{{ $inspections["process"] }}</td>
                             @if ($inspections["compliance"])
                                 <td colspan="1">{{$inspections["compliance"]}}%</td>
                             @endif
                         @endif
                         @if ($inspections["area"])
-                            <td colspan=>{{ $inspections["area"] }}</td>
+                            <td>{{ $inspections["area"] }}</td>
                         @endif
                     </tr>
                 @endif

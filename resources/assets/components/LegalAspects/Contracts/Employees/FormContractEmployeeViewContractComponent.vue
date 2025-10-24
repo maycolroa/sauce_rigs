@@ -163,6 +163,13 @@
                                       <b-btn href="javascript:void(0)" v-b-toggle="'accordion'+ file.key +'-1'" variant="link">
                                         <span class="collapse-icon"></span>
                                       </b-btn>
+                                      <b-btn @click.prevent="removeFile(document, indexFile)"
+                                        v-if="auth.hasRole['Superadmin']"
+                                        size="sm" 
+                                        variant="secondary icon-btn borderless"
+                                        v-b-tooltip.top title="Eliminar Archivo">
+                                        <span class="ion ion-md-close-circle"></span>
+                                      </b-btn>
                                     </b-button-group>
                                   </div>
                                 </b-col>
@@ -388,6 +395,12 @@ export default {
     removeActivity(index)
     {
       this.form.activities.splice(index, 1)
+    },
+    removeFile(documento, index) {
+      if (documento.files[index].id != undefined)
+        this.form.delete.files.push(documento.files[index].id)
+        
+      documento.files.splice(index, 1);
     },
     updateActivityNameTab(values, index) {
       this.form.activities[index].name = values

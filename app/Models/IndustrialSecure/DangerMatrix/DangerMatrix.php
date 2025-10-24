@@ -20,7 +20,8 @@ class DangerMatrix extends Model
         'employee_area_id',
         'employee_process_id',
         'participants',
-        'year'
+        'year',
+        'observations'
     ];
      
     public function activities()

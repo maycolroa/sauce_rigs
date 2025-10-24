@@ -29,6 +29,7 @@ use Validator;
 use Hash;
 use DB;
 use PdfMerger;
+use Session;
 use Illuminate\Support\Facades\File;
 
 class ContractEmployeeController extends Controller

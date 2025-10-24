@@ -120,7 +120,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $parafis->push($content[0]);
                     $parafiscales = true;
@@ -162,7 +162,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $cert->push($content[0]);
                     $certificaciones = true;
@@ -193,7 +193,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content2[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $cert->push($content2[0]);
                     $certificaciones = true;
@@ -233,7 +233,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $curs->push($content[0]);
                     $cursos = true;
@@ -273,7 +273,7 @@ class ContractController extends ApiController
                 {
                   $fecha = Carbon::parse($content[0]->expirationDate);
 
-                  if ($fecha->gte($now))
+                  if ($fecha->startOfDay()->gte($now->startOfDay()))
                   {
                     $medic->push($content[0]);
                     $induccion = true;

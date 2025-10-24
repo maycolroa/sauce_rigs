@@ -37,7 +37,7 @@
 <body style="margin: 50px; margin-top: 0px;">
     <div style="page-break-inside: avoid;">
         @if ($report["logo"])
-        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$report['logo'] }}" width="120px" height="120px"/></div>
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ $report['logo'] }}" width="120px" height="120px"/></div>
         @endif
         @if ($report["filtros"])
         <div>

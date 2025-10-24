@@ -116,7 +116,6 @@ class LawController extends Controller
                 $join->on("sau_lm_law_risk_opportunity.law_id", 'sau_lm_laws.id');
                 $join->on("sau_lm_law_risk_opportunity.company_id", "=", DB::raw("{$this->company}"));
             })
-            //->leftJoin('sau_companies', 'sau_companies.id', 'sau_lm_laws.company_id')
             ->whereRaw("((sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_laws.company_id = {$this->company}) OR (sau_lm_articles_fulfillment.company_id = {$this->company} and sau_lm_company_interest.company_id = {$this->company}))")
             ->orderBy('sau_lm_laws.id', 'DESC');
 
@@ -945,16 +944,6 @@ class LawController extends Controller
                                     $data['old_file'] = NULL;
                                 }
                             }
-                        }
-                        else
-                        {
-                            /*if ($qualification->file)
-                            {
-                                Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                                $qualification->file = NUlL;
-                                $data['file'] = NULL;
-                                $data['old_file'] = NULL;
-                            }*/
                         }
 
                         $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';

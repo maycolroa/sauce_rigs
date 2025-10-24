@@ -201,7 +201,7 @@ class User extends Authenticatable
         $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
     }
 
-    public function scopeActive($query, $active = true, $company_id = null)
+    public function scopeActive2($query, $active = true, $company_id = null)
     {
         if ($active)
         {
@@ -222,6 +222,51 @@ class User extends Authenticatable
                 ->where('sau_company_user.company_id', Session::get('company_id'))
                 ->where('sau_company_user.active', 'NO')
                 ->where('sau_users.active', 'NO');
+        }
+
+        return $query;
+    }
+
+    public function scopeActive($query, $active = true, $company_id = null)
+    {
+        // Define la condición de existencia en la tabla pivote sau_company_user
+        $query->whereExists(function ($subQuery) use ($company_id, $active) {
+            
+            $subQuery->select(DB::raw(1))
+                    ->from('sau_company_user')
+                    ->whereColumn('sau_company_user.user_id', 'sau_users.id'); // Condición de correlación
+            
+            // --- Lógica del IF ($active) ---
+            if ($active) {
+                
+                // Si se pasa un company_id específico, usamos ese
+                if ($company_id) {
+                    $subQuery->where('sau_company_user.company_id', $company_id);
+                }
+                // Si no se pasa, usamos la de Session y las condiciones de "SI"
+                else {
+                    $subQuery->where('sau_company_user.company_id', Session::get('company_id'))
+                            ->where('sau_company_user.active', 'SI');
+                    // IMPORTANTE: La condición sau_users.active='SI' debe ir en el query principal, NO AQUÍ
+                }
+            }
+            // --- Lógica del ELSE (Inactive) ---
+            else {
+                // Usuarios inactivos
+                $subQuery->where('sau_company_user.company_id', Session::get('company_id'))
+                        ->where('sau_company_user.active', 'NO');
+                // IMPORTANTE: La condición sau_users.active='NO' debe ir en el query principal
+            }
+        });
+
+        // Filtros que van directamente en la tabla principal (sau_users)
+        if ((!$active && is_null($company_id)) || (!$active)) {
+            // Esta condición (sau_users.active = NO) estaba en el ELSE original, la movemos aquí
+            $query->where('sau_users.active', 'NO');
+        }
+        else if (($active && is_null($company_id)) || ($active)) {
+            // Esta condición (sau_users.active = SI) estaba en el IF/ELSE original, la movemos aquí
+            $query->where('sau_users.active', 'SI');
         }
 
         return $query;

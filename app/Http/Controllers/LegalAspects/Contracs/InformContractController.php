@@ -646,7 +646,8 @@ class InformContractController extends Controller
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
-        $informContract->logo = $logo;
+        //$informContract->logo = $logo;
+        $informContract->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
         $informContract->inform_base = $inform_base;
 
         return $informContract;

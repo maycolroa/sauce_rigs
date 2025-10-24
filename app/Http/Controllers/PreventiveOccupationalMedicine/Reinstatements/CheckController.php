@@ -887,13 +887,16 @@ class CheckController extends Controller
             'name' => $this->user->name
         ];
         $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
+        
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
 
         $data = [
             'has_tracing' => $request->has_tracing,
             'new_date_tracing' => $new_date_tracing,
             'tracing_description' => $request->tracing_description,
             'check' => $check,
-            'logo' => ($company && $company->logo) ? $company->logo : null,
+            'logo' => $logo,
             'firm' =>  $firm_path
         ];
 
@@ -960,11 +963,14 @@ class CheckController extends Controller
             'firm' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
             'name' => $this->user->name
         ];
+        
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
 
         $data = [
             'tracings' => $tracings,
             'check' => $check,
-            'logo' => ($company && $company->logo) ? $company->logo : null,
+            'logo' => $logo,
             'firm' =>  $firm_path
         ];
 
@@ -1050,6 +1056,9 @@ class CheckController extends Controller
             $record_letter->user_name = $this->user->name;
         //}
 
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
+
         $data = [
             'to' => $request->to,
             'from' => $request->from,
@@ -1063,7 +1072,7 @@ class CheckController extends Controller
             'firm_user' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
             'observations_recommendatiosn' => $check->Observations_recommendatios,
-            'logo' => ($company && $company->logo) ? $company->logo : null
+            'logo' => $logo
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
@@ -1489,7 +1498,10 @@ class CheckController extends Controller
 
         $date = $record_letter->send_date;
             
-        $company = Company::select('logo')->where('id', $this->company)->first();
+        $company = Company::select('logo')->where('id', $this->company)->first();        
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
 
         $data = [
             'to' => $record_letter->to,
@@ -1501,7 +1513,7 @@ class CheckController extends Controller
             'date' => $record_letter->send_date,
             'income_date' => $check->income_date,
             'observations_recommendatiosn' => $check->Observations_recommendatios,
-            'logo' => ($company && $company->logo) ? $company->logo : null
+            'logo' => $logo
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);

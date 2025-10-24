@@ -11,6 +11,8 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
 use Exception;
 use DB;
 
@@ -98,6 +100,20 @@ class TableRecordImport implements ToCollection, WithChunkReading, WithHeadingRo
                     ->event('Job: TableRecordImportJob')
                     ->company($this->company_id)
                     ->send();
+
+                $superadmin_notify = (new User(['email'=> 'mroat0@gmail.com']));     
+                $company = Company::find($this->company_id);     
+                
+                if ($superadmin_notify && $company)
+                {
+                    NotificationMail::
+                        subject('Carga de información en tabla ausentismo')
+                        ->message("Se han agregado o modificado registros en la tabla {$this->table->name}, perteneciente a la compañia {$company->name} por el usuario {$this->user->name} - {$this->user->email}")
+                        ->recipients($superadmin_notify)
+                        ->module('absenteeism')
+                        ->company($this->company_id)
+                        ->send();
+                }
             }
             else
             {

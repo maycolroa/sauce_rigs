@@ -1097,7 +1097,11 @@ class EvaluationContractController extends Controller
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
-        $evaluationContract->logo = $logo;
+        //$evaluationContract->logo = $logo;
+        
+        // $evaluationContract->logo = $logo ? Storage::disk('public')->url('administrative/logos/'.$logo) : null;
+        $evaluationContract->logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
+        \Log::info($evaluationContract->logo);
 
         return $evaluationContract;
     }

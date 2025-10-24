@@ -157,7 +157,7 @@ class EmployeeImport implements ToCollection
             'centro_costo' => $row[11],
             'negocio' => ($this->formModel == 'default') ? $row[12] : null,
             'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower'|| $this->formModel == 'ingeomega') ? (string) $row[12] : null),
-            'afp' => ($this->formModel == 'default') ? (string) $row[14] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower' || $this->formModel == 'ingeomega') ? (string) $row[13] : null),
+            'afp' => ($this->formModel == 'default') ? (string) $row[14] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower' || $this->formModel == 'ingeomega') ? (string) $row[13] : 0),
             'arl' => ($this->formModel == 'misionEmpresarial') ? (string) $row[14] : null,
             'numero_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[15] : null,
             'fecha_ultimo_contrato' => ($this->formModel == 'misionEmpresarial') ? $this->validateDate($row[16]) : null,
@@ -168,6 +168,9 @@ class EmployeeImport implements ToCollection
 
         $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
         $data['fecha_ingreso'] = $this->validateDate($data['fecha_ingreso']);
+        if ($data['eps'] == 123456789)
+            $data['eps'] = 'Sin EPS';
+
         $data['eps'] = $data['eps'] ? (isset($this->eps_data[$data['eps']]) ? $this->eps_data[$data['eps']] : -1) : null;
         //$data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
         $data['arl'] = $data['arl'] ? (isset($this->arl_data[$data['arl']]) ? $this->arl_data[$data['arl']] : -1) : null;
@@ -176,8 +179,10 @@ class EmployeeImport implements ToCollection
             $data['afp'] = $this->afp_data[$data['afp']];
         else if ($data['afp'] && isset($this->afp_nit_data[$data['afp']]))
             $data['afp'] = $this->afp_nit_data[$data['afp']];
-        else if ($data['afp'])
-            $data['afp'] = -1;
+        else if (!$data['afp'])
+            $data['afp'] = 14;
+        else
+            $data['afp'] = 14;
 
         $sql = Employee::where('identification', $data['identificacion']);
         $sql->company_scope = $this->company_id;

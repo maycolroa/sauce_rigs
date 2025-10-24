@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
 use App\Models\General\Module;
+use App\Models\General\Company;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
@@ -17,6 +18,8 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use Validator;
 use App\Traits\Filtertrait;
 use DB;
+use Carbon\Carbon;
+use PDF;
 
 class ReportController extends Controller
 {
@@ -522,45 +525,56 @@ class ReportController extends Controller
         ]);
     }
 
-    /*public function saveQualification(SaveQualificationRequest $request)
+    public function downloadPdf($id)
     {
-        try
-        {
-            DB::beginTransaction();
+        $inspections = $this->getDataExportPdf($id);
 
-            $data = $request->all();
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-            $report = Report::findOrFail($request->id);
+        $pdf = PDF::loadView('pdf.inspectionsNoPlaneadasDangerousConditions', ['inspections' => $inspections] );
 
-            $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
+        $pdf->setPaper('A4', 'landscape');
 
-            ActionPlan::
-                    user($this->user)
-                ->module('dangerousConditions')
-                ->url(url('/administrative/actionplans'))
-                ->model($report)
-                ->regional($report->regional ? $report->regional->name : null)
-                ->headquarter($report->headquarter ? $report->headquarter->name : null)
-                ->area($report->area ? $report->area->name : null)
-                ->process($report->process ? $report->process->name : null)
-                ->details($details)
-                ->activities($request->actionPlan)
-                ->save();
+        return $pdf->download('inspeccion.pdf');
+    }
 
-            $data['actionPlan'] = ActionPlan::getActivities();
+    public function getDataExportPdf($id)
+    {
+        $inspection = $this->getInformationInspection($id);
 
-            ActionPlan::sendMail();
+        $company = Company::select('logo')->where('id', $this->company)->first();
 
-            DB::commit();
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
 
-            return $this->respondHttp200([
-                'data' => $data
-            ]);
+        $inspection->put('logo', $logo);
 
-        } catch (Exception $e){
-            //\Log::info($e->getMessage());
-            DB::rollback();
-            return $this->respondHttp500();
-        }
-    }*/
+        return $inspection;
+    }
+
+    public function getInformationInspection($id)
+    {        
+        $report = Report::withoutGlobalScopes()->findOrFail($id);
+
+        $data = collect([]);
+        $data->put('regional', $report->regional ? $report->regional->name : '');
+        $data->put('headquarter', $report->headquarter ? $report->headquarter->name : '');
+        $data->put('process', $report->process ? $report->process->name : '');
+        $data->put('area', $report->area ? $report->area->name : '');
+        $data->put('type_condition', $report->condition && $report->condition->conditionType ? $report->condition->conditionType->description : '');
+        $data->put('observation', $report->observation);
+        $data->put('other_condition', $report->other_condition);
+        $data->put('rate', $report->rate);
+        $data->put('state', $report->state);
+        $data->put('created_at', (Carbon::createFromFormat('Y-m-d H:i:s', $report->created_at))->format('Y-m-d H:i:s'));
+        $data->put('condition', $report->condition ? $report->condition->description : '');
+        $data->put('user', $report->user ? $report->user->name : '');
+        $data->put('img_1', $report->path_image('image_1'));
+        $data->put('img_2', $report->path_image('image_2'));
+        $data->put('img_3', $report->path_image('image_3'));
+        $data->put('actionPlan', ActionPlan::model($report)->prepareDataComponent());
+
+        return $data;
+    }
 }

@@ -61,10 +61,9 @@
         <table id="tabla-sin-cebrado">
             <thead>
                 <tr>
-                    <th><h2 style="font-size: 20px; font-family: sans-serif">{{ $delivery->company_name }}</h2></th>
-                    <th colspan="2">                        
+                    <th colspan="3">                        
                         @if ($delivery->logo)
-                        <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$delivery->logo }}" width="80px" height="80px"/></div>
+                        <div style="text-align: left"><img src="{{ $delivery->logo }}" width="35%" height="80%"/></div>
                         @endif
                     </th>
                 </tr>
@@ -75,7 +74,7 @@
                 </tr>
                 <tr>
                     <td>Formato</td>
-                    <td>Formato de entrega de elementos, dotación o equipos</td>
+                    <td>Formato entrega de indumentaria</td>
                     <td>4</td>
                 </tr>
                 <tr>
@@ -103,7 +102,7 @@
     </div>
     <br><br>
     <div style="page-break-inside: avoid;">
-        <center><b>ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL</b></center>
+        <center><b>FORMATO ENTREGA DE INDUMENTARIA</b></center>
         <br/><br/>
         <p><b>Nombre empleado: {{ $delivery->employee_name }}</b></p> <p><b>CC: {{$delivery->employee_identification}}</b></p>
         

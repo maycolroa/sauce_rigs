@@ -9,7 +9,7 @@
       <b-card-body>
         <b-form-row>
           <vue-textarea :disabled="false" class="col-md-3" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" rows="2" :error="form.errorsFor('description')"></vue-textarea>
-          <vue-advanced-select class="col-md-6" v-model="form.month_pay" :disabled="false" name="month_pay" label="Mes de pago" placeholder="Seleccione el mes de pago" :options="months" :error="form.errorsFor('month_pay')" :multiple="false" :allow-empty="false" help-text="El mes es opcional, de no seleccionar ninguno, se tomara el mes actual para realizar el calculo.">
+          <vue-advanced-select v-if="auth.company_id != 159" class="col-md-6" v-model="form.month_pay" :disabled="false" name="month_pay" label="Mes de pago" placeholder="Seleccione el mes de pago" :options="months" :error="form.errorsFor('month_pay')" :multiple="false" :allow-empty="false" help-text="El mes es opcional, de no seleccionar ninguno, se tomara el mes actual para realizar el calculo.">
           </vue-advanced-select>
         </b-form-row>
         <b-form-row>

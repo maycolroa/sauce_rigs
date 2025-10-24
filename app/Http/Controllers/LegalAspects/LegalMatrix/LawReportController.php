@@ -80,7 +80,23 @@ class LawReportController extends Controller
 
         $dates = $range ? $range : [];
 
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        $filtersTypeDefault = [
+            'lawTypes' => 'IN',
+            'riskAspects' => 'IN',
+            'entities' => 'IN',
+            'sstRisks' => 'IN',
+            'systemApply' => 'IN',
+            'lawNumbers' => 'IN',
+            'lawYears' => 'IN',
+            'repealed' => 'IN',
+            'responsibles' => 'IN',
+            'interests' => 'IN',
+            'states' => 'IN',
+            'qualifications' => 'IN',
+            'riskOpportunity' => 'IN',
+        ];  
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : $filtersTypeDefault);
 
         $category = $request->legalMatrixSelected;
         
@@ -138,6 +154,10 @@ class LawReportController extends Controller
     public function reportRiskOpportunities(Request $request)
     {
         $data = LawRiskOpportunity::select(
+            'sau_lm_laws.name AS law_name',            
+            'sau_lm_laws.law_number',
+            'sau_lm_laws_types.name AS law_type',
+            'sau_lm_laws.law_year',
             'sau_lm_system_apply.name AS system', 
             'type_risk', 
             'risk_subsystem', 
@@ -146,23 +166,24 @@ class LawReportController extends Controller
             'sau_lm_law_risk_opportunity.description_no_apply as description_no_apply'
         )
         ->join('sau_lm_laws', 'sau_lm_laws.id', 'sau_lm_law_risk_opportunity.law_id')
+        ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
         ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id');
 
         $filters = $request->filters;
 
-        if ($filters['systemApply'] && count($filters['systemApply']) > 0)
+        if (isset($filters['systemApply']) && count($filters['systemApply']) > 0)
             $data->whereIn('sau_lm_system_apply.id', $this->getValuesForMultiselect($filters["systemApply"]));
         
-        if ($filters['typeLmRiskOpportunity'] && count($filters['typeLmRiskOpportunity']) > 0)
+        if (isset($filters['typeLmRiskOpportunity']) && count($filters['typeLmRiskOpportunity']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.type', $this->getValuesForMultiselect($filters["typeLmRiskOpportunity"]));
         
-        if ($filters['typeRisk'] && count($filters['typeRisk']) > 0)
+        if (isset($filters['typeRisk']) && count($filters['typeRisk']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.type_risk', $this->getValuesForMultiselect($filters["typeRisk"]));
         
-        if ($filters['subsystemRisk'] && count($filters['subsystemRisk']) > 0)
+        if (isset($filters['subsystemRisk']) && count($filters['subsystemRisk']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.risk_subsystem', $this->getValuesForMultiselect($filters["subsystemRisk"]));
         
-        if ($filters['applyGestion'] && count($filters['applyGestion']) > 0)
+        if (isset($filters['applyGestion']) && count($filters['applyGestion']) > 0)
             $data->whereIn('sau_lm_law_risk_opportunity.risk_gestion', $this->getValuesForMultiselect($filters["applyGestion"]));
 
         return Vuetable::of($data)->make();

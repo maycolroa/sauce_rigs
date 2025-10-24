@@ -343,7 +343,7 @@
       @close-modal-history="closeModalHistory"
     />
 
-    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v']" no-body class="mb-2 border-secondary" style="width: 100%;">
+    <b-card v-if="auth.legalMatrixRisk == 'SI' && auth.can['risk_opportunity_v'] && [1, 130, 409].includes(auth.company_id)" no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
           <b-col cols="11" class="d-flex justify-content-between"> Riesgos y oportunidades </b-col>
@@ -409,11 +409,11 @@
                             </vue-radio>
                         </b-form-row>
                         <b-form-row>
-                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_subsystem" :multiple="false" :options="riskSubsystem" :hide-selected="false" name="risk_subsystem" :error="form.errorsFor('risk_subsystem')" label="Subsistema de riesgo" placeholder="Seleccione el subsistema" :searchable="true">
+                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_subsystem" :multiple="false" :options="riskSubsystem" :hide-selected="false" name="risk_subsystem" :error="form.errorsFor('risk_subsystem')" label="Subsistema de riesgo" placeholder="Seleccione el subsistema" :searchable="true" @input="riskOpotLaw(index)">
                           </vue-advanced-select>
                         </b-form-row>
                         <b-form-row>
-                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_gestion" :multiple="false" :options="riskGestion" :hide-selected="false" name="risk_gestion" :error="form.errorsFor('risk_gestion')" label="Aplicativo de riesgos para la gestión" placeholder="Seleccione el aplicativo" :searchable="true">
+                          <vue-advanced-select v-if="riskOppor.type == 'Riesgo'" class="col-md-12" v-model="riskOppor.risk_gestion" :multiple="false" :options="riskGestion" :hide-selected="false" name="risk_gestion" :error="form.errorsFor('risk_gestion')" label="Aplicativo de riesgos para la gestión" placeholder="Seleccione el aplicativo" :searchable="true" @input="riskOpotLaw(index)">
                           </vue-advanced-select>
                         </b-form-row>
                         <!--<b-form-row>
@@ -856,13 +856,12 @@ export default {
     },
     builderFilterQualificationOptions() {
       this.filterQualificationOptions.splice(0);
-      this.filterQualificationOptions = this.form.articles
-      .map((f) => {
+      let arrayReal = Object.values(this.form.articles);
+      this.filterQualificationOptions = arrayReal.map((f) => {
         if (f.qualify)
           return f.qualify
       })
-      .filter((value, index, self) => value && self.indexOf(value) === index)
-      .map((f) => {
+      .filter((value, index, self) => value && self.indexOf(value) === index).map((f) => {
         return {"name": f, "value": f}
       })
     },
@@ -927,6 +926,11 @@ export default {
             description: '',
             type: 'Registro',
             risk: '',
+            type_risk: '',
+            risk_subsystem: '',
+            risk_gestion: '',
+            description_no_apply: '',
+            risk_id_text: '',
             actionPlanRisk: {
               activities: [],
               activitiesRemoved: []
@@ -962,7 +966,10 @@ export default {
           .submit('/legalAspects/legalMatrix/law/saveRiskOportLawComplete', false, data)
           .then(response => {
             _.forIn(response.data.data, (value, key) => {
-              riskOpp[key] = value
+              if (value == 'null')
+                riskOpp[key] = ''
+              else
+                riskOpp[key] = value
             })
           }).catch(error => {console.log(error)});
     },

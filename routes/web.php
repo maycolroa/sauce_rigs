@@ -830,6 +830,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('report/data', 'IndustrialSecure\DangerousConditions\Reports\ReportController@data');
         Route::post('report/saveImage', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveImage');
         Route::post('report/saveQualification', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveQualification');
+        Route::get('report/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Reports\ReportController@downloadPdf');
         Route::get('report/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Reports\ReportController@downloadImage');
         Route::post('report/informs', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@data');
         Route::post('report/conditionHeadquarter', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@locationWithCondition');

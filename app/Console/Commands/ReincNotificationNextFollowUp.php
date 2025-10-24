@@ -48,10 +48,9 @@ class ReincNotificationNextFollowUp extends Command
         foreach ($companies as $company)
         {
             $users = User::select('sau_users.*')
-                        ->active(true, $company->id);
-
-            $users->company_scope = $company->id;
-            $users = $users->get();
+                        ->active(true, $company->id)
+                        ->withoutGlobalScopes()
+                        ->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
                 return $user->can('reinc_receive_notifications', $company->id) && !$user->isSuperAdmin($company->id);

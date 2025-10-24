@@ -450,7 +450,7 @@ class DangerMatrixUpdateMassive implements ToCollection, WithCalculatedFormulas
 
              $matriz_id->histories()->create([
                         'user_id' => $this->user->id,
-                        'description' => "Se agrego el peligro $danger->name a la actividad $activity->name mediante una actualizacion másiva"
+                        'description' => "El peligro $danger->name con la descripción: $activityDanger->danger_description, se agrego a la actividad $activity->name mediante una actualizacion másiva"
                     ]);
 
             return true;

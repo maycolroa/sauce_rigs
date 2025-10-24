@@ -80,21 +80,21 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
         return array_merge($columns, [
           'Negocio',
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
-          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})"
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo o codigo nit de la {$this->keywords['afp']})"
         ]);
       }
       else if ($this->formModel == 'vivaAir' || $this->formModel == 'manpower')
       {
         return array_merge($columns, [
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
-          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})"
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo o codigo nit de la {$this->keywords['afp']})"
         ]);
       }
       else if ($this->formModel == 'misionEmpresarial')
       {
         return array_merge($columns, [
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
-          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})",
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo o codigo nit de la {$this->keywords['afp']})",
           "{$this->keywords['arl']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['arl']}', se debe ingresar el codigo de la {$this->keywords['arl']})",
           'Número de contratos',
           'Fecha de último contrato',
@@ -105,7 +105,7 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
       {
         return array_merge($columns, [
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
-          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})",
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo o codigo nit de la {$this->keywords['afp']})",
           'Edad',
           'Salario',
           'Tipo de contrato'

@@ -128,6 +128,7 @@ class RiskMatrixReportController extends Controller
         $company = Company::select('logo')->where('id', $this->company)->first();
 
         $logo = ($company && $company->logo) ? $company->logo : null;
+        $logo = $logo ? Storage::disk('s3')->url('administrative/logos/'.$logo) : null;
 
         $data = [
             'inherent_report' => RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id, $this->company),

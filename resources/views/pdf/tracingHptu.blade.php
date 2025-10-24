@@ -19,7 +19,7 @@
 <body style="margin: 50px; margin-top: 0px;">
     <!-- Define header and footer blocks before your content -->
     @if ($logo)
-    <div style="text-align: center"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="140px" height="120px"/></div>
+        <div style="text-align: right"><img src="{{ $logo }}" width="200px" height="120px"/></div>
     @endif
     <br>
     <center>FORMATO DE SEGUIMIENTO</center>

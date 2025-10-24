@@ -47,9 +47,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\NotificationSendContract',
         'App\Console\Commands\NotifyNextMaintenanceVehicle',
         'App\Console\Commands\UpdateContractEmployeeStateDocuments',       
-        'App\Console\Commands\DeleteRecordLogEmailCodeLogin',
-        'App\Console\Commands\UpdateContractEmployeeStateDocuments',
-        'App\Console\Commands\UpdateStateEmployeeAdministrative',
+        'App\Console\Commands\DeleteRecordLogEmailCodeLogin'
+        //'App\Console\Commands\UpdateStateEmployeeAdministrative',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
