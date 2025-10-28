@@ -892,6 +892,8 @@ class LawController extends Controller
         try
         {
             $data = $request->except(['article', 'files_binary']); 
+            
+                \Log::info($data);
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
 
@@ -980,7 +982,6 @@ class LawController extends Controller
 
                                     if (!$fileUpload->save())
                                         return $this->respondHttp500();
-
                                     
                                     $file['id'] = $fileUpload->id;
                                 }
@@ -1007,6 +1008,8 @@ class LawController extends Controller
                     $data['fulfillment_value_id'] = (int) $qualification->fulfillment_value_id;
 
                 }, 3);
+
+                \Log::info($data);
 
                 return $this->respondHttp200([
                     'data' => $data
