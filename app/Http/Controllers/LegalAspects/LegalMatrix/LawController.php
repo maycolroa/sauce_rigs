@@ -973,6 +973,7 @@ class LawController extends Controller
                                         $nameFile = base64_encode($this->user->id . now() . rand(1, 10000)) . '.' . $extension;
                                         $uploadedFile->storeAs($path, $nameFile, 's3_MLegal');
                                         $fileUpload->file = $nameFile;
+                                        $file['id'] = $fileUpload->id;
                                         $file['file'] = $nameFile;
                                         $file['old_file'] = $nameFile; 
                                     }
