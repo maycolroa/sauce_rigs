@@ -980,6 +980,9 @@ class LawController extends Controller
 
                                     if (!$fileUpload->save())
                                         return $this->respondHttp500();
+
+                                    
+                                    $file['id'] = $fileUpload->id;
                                 }
                             }
                         }
