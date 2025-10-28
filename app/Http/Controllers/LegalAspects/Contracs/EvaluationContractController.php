@@ -371,10 +371,10 @@ class EvaluationContractController extends Controller
                         }
 
                         //Borrar archivos reemplazados
-                        foreach ($files_names_delete as $keyf => $file)
+                        /*foreach ($files_names_delete as $keyf => $file)
                         {
                             Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
-                        }
+                        }*/
                     }
 
                     $itemEvaluation = EvaluationContractItem::firstOrCreate(

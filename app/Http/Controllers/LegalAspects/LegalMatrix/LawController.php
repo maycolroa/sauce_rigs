@@ -10,6 +10,7 @@ use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentFile;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Models\LegalAspects\LegalMatrix\LawHide;
@@ -671,8 +672,8 @@ class LawController extends Controller
                 $article->qualification_id = $qualifications[$article->id][0]['id'];
                 $article->fulfillment_value_id = $qualifications[$article->id][0]['fulfillment_value_id'];
                 $article->observations = $qualifications[$article->id][0]['observations'];
-                $article->file = $qualifications[$article->id][0]['file'];
-                $article->old_file = $qualifications[$article->id][0]['file'];
+                /*$article->file = $qualifications[$article->id][0]['file'];
+                $article->old_file = $qualifications[$article->id][0]['file'];*/
                 $article->responsible = $qualifications[$article->id][0]['responsible'];
                 $article->workplace = $qualifications[$article->id][0]['workplace'];
                 $article->hide = $qualifications[$article->id][0]['hide'];
@@ -686,6 +687,24 @@ class LawController extends Controller
                 {
                     $article->actionPlan = ActionPlan::model(ArticleFulfillment::find($article->qualification_id))->prepareDataComponent();
                 }
+
+                $article->delete = [];
+
+                $files = ArticleFulfillmentFile::where('fulfillment_id', $article->qualification_id)->get();
+
+                if ($files && $files->count() > 0)
+                {
+                    $files->transform(function($file, $indexFile) {
+                        $file->key = Carbon::now()->timestamp + rand(1,10000);
+                        $file->id = $file->id;
+                        $file->file = $file->file;
+                        $file->old_file = $file->file;
+
+                        return $file;
+                    });
+                }
+
+                $article->files = $files;
 
                 return $article;
             });
@@ -872,7 +891,7 @@ class LawController extends Controller
     {
         try
         {
-            $data = $request->except('articles');
+            $data = $request->except(['article', 'files_binary']); 
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
 
@@ -880,14 +899,15 @@ class LawController extends Controller
             {
                 return $this->respondWithError("Está norma es de Sauce no puede calificarse como 'No vigente'");
             }
+
             if ($request->fulfillment_value_id != 8 && !$qualification->article->law->company_id && $qualification->fulfillment_value_id == 8)
             {
                 return $this->respondWithError("Está norma es de Sauce no puede cambiarse la calificacion 'No vigente'");
             }
             else
             {
-                DB::transaction(function () use (&$data, $request, $qualification) {
-
+                DB::transaction(function () use (&$data, $request, $qualification) 
+                {
                     $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
                     $qualification->observations = $request->observations ? $request->observations : NULL;
                     $qualification->responsible = $request->responsible ? $request->responsible : NULL;
@@ -919,45 +939,61 @@ class LawController extends Controller
 
                         if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
                         {
-                            if ($request->file != $qualification->file)
+                            if ($data['files'] && COUNT($data['files']) > 0)
                             {
-                                if ($request->file)
+                                foreach ($data['files'] as $keyF => &$file) 
                                 {
-                                    $file = $request->file;
+                                    $create_file = true;
 
-                                    if (!$qualification->qualification_masive)
-                                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                    $uploadedFile = null;
 
-                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
-                                    $file->storeAs($path, $nameFile, 's3_MLegal');
-                                    $qualification->file = $nameFile;
-                                    $data['file'] = $nameFile;
-                                    $data['old_file'] = $nameFile;
-                                }
-                                else
-                                {
-                                    if (!$qualification->qualification_masive)
-                                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                                    
-                                    $qualification->file = NUlL;
-                                    $data['file'] = NULL;
-                                    $data['old_file'] = NULL;
+                                    if (isset($file['file']) && $file['file'] instanceof \Illuminate\Http\UploadedFile) 
+                                        $uploadedFile = $file['file'];
+
+                                    if (isset($file['id']))
+                                    {
+                                        $fileUpload = ArticleFulfillmentFile::findOrFail($file['id']);
+
+                                        if ($file['old_file'] == $file['file'])
+                                            $create_file = false;
+                                        else
+                                            array_push($files_names_delete, $file['old_file']);
+                                    }
+                                    else
+                                    {
+                                        $fileUpload = new ArticleFulfillmentFile();
+                                        $fileUpload->fulfillment_id = $qualification->id;
+                                        $fileUpload->article_id = $qualification->article_id;
+                                        $fileUpload->company_id = $qualification->company_id;
+                                    }
+
+                                    if ($create_file)
+                                    {
+                                        $extension = $uploadedFile->getClientOriginalExtension();
+                                        $nameFile = base64_encode($this->user->id . now() . rand(1, 10000)) . '.' . $extension;
+                                        $uploadedFile->storeAs($path, $nameFile, 's3_MLegal');
+                                        $fileUpload->file = $nameFile;
+                                        $file['file'] = $nameFile;
+                                        $file['old_file'] = $nameFile; 
+                                    }
+
+                                    if (!$fileUpload->save())
+                                        return $this->respondHttp500();
                                 }
                             }
                         }
-
-                        $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
-
-                        /**Planes de acción*/
-                        ActionPlan::
-                            model($qualification)
-                            ->detailProcedence($detail_procedence)
-                            ->activities($request->actionPlan)
-                            ->save();
-
-                        $data['actionPlan'] = ActionPlan::getActivities();
-
                     }
+
+                    $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
+
+                    /**Planes de acción*/
+                    ActionPlan::
+                        model($qualification)
+                        ->detailProcedence($detail_procedence)
+                        ->activities($request->actionPlan)
+                        ->save();
+
+                    $data['actionPlan'] = ActionPlan::getActivities();
 
                     if (!$qualification->save())
                         return $this->respondHttp500();
@@ -974,6 +1010,7 @@ class LawController extends Controller
             }
 
         } catch (Exception $e){
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
     }
@@ -997,10 +1034,10 @@ class LawController extends Controller
         }
     }
 
-    public function downloadArticleQualify(ArticleFulfillment $articleFulfillment)
+    public function downloadArticleQualify(ArticleFulfillmentFile $articleFulfillmentFile)
     {
         $path = 'fulfillments/'.$this->company."/";
-        return Storage::disk('s3_MLegal')->download($path.$articleFulfillment->file);
+        return Storage::disk('s3_MLegal')->download($path.$articleFulfillmentFile->file);
     }
 
     public function filterInterestsMultiselect(Request $request)
