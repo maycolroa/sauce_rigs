@@ -468,7 +468,7 @@
                         <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
                             <b-card border-variant="primary" title="Reportes cambios de Código Cie10 a Código Cie11" class="mb-3 box-shadow-none">
                                 <vue-table
-                                    ref="tableCie10Cie11"
+                                    ref="tableCie10ToCie11"
                                     configName="reinstatements-checks-informs"
                                     :customColumnsName="true"
                                     :params="{filters}"
@@ -633,7 +633,11 @@ export default {
     watch: {
         filters: {
             handler(val){
-                this.$refs.tableCie10Cie11.refresh()
+                if (this.form == 'hptu')
+                {
+                    this.$refs.tableCie10ToCie11.refresh()
+                }
+                
                 this.fetch()
             },
             deep: true
