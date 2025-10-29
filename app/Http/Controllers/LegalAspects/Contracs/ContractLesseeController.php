@@ -153,16 +153,6 @@ class ContractLesseeController extends Controller
 
                     return false;
                 })
-                ->addColumn('reactiveUser', function ($contract) use ($isSuper)  {
-                    if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
-                    {
-                        $users = $this->getUserMasterContract($contract, $this->company, true);
-                        if ($users && $users->active == 'NO')
-                            return true;
-                    }
-
-                    return false;
-                })
                 ->addColumn('downloadFile', function ($contract) use ($isSuper)  {
                     if(in_array($this->user->id, explode(',', $contract->responsibles)) || $isSuper)
                     {
@@ -211,13 +201,6 @@ class ContractLesseeController extends Controller
                 ->addColumn('retrySendMail', function ($contract) {
                     $users = $this->getUserMasterContract($contract, $this->company, true);
                     if ($users && $users->active == 'SI')
-                        return true;
-
-                    return false;
-                })
-                ->addColumn('reactiveUser', function ($contract) {
-                    $users = $this->getUserMasterContract($contract, $this->company, true);
-                    if ($users && $users->active == 'NO')
                         return true;
 
                     return false;
@@ -1420,6 +1403,7 @@ class ContractLesseeController extends Controller
 
     public function reactiveUser(ContractLesseeInformation $contract)
     {
+
         $users = $this->getUsersContract($contract->id, $this->company, true);
 
         try
@@ -1436,6 +1420,19 @@ class ContractLesseeController extends Controller
             \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
+    }
+
+    public function toogleState(ContractLesseeInformation $contract)
+    {
+        $data = ['active' => $contract->active == 'SI' ? "NO" : "SI"];
+
+        if (!$contract->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado de la contratista'
+        ]);
     }
 
     /**

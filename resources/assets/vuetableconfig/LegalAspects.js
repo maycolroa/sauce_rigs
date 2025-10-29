@@ -498,17 +498,17 @@ export default [
                     permission: 'contracts_resend_welcome_email'
                 },
                 {
-                    name: 'reactiveUser',
+                    name: 'switchStatus',
                     config: {
                         color: 'outline-danger',
                         borderless: true,
                         icon: 'fas fa-sync',
-                        title: 'Reactivar Usuario del contratista'
+                        title: 'Cambiar estado'
                     },
                     data: {
-                        action: '/legalAspects/contracts/reactiveUser/',
+                        action: '/legalAspects/contracts/switchStatus/',
                         id: 'id',
-                        messageConfirmation: '¿Esta seguro de querer reactivar este usuario y reenviar el correo de bienvenida?'
+                        messageConfirmation: '¿Esta seguro de querer cambiar el estado de la contratista?'
                     },
                     permission: 'contracts_u'
                 },

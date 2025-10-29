@@ -1001,7 +1001,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       Route::post('contractsListCheckHistory/data', 'LegalAspects\Contracs\ListCheckHistoryController@data');
       Route::post('contracts/retrySendMail/{contract}', 'LegalAspects\Contracs\ContractLesseeController@retrySendMail');
-      Route::post('contracts/reactiveUser/{contract}', 'LegalAspects\Contracs\ContractLesseeController@reactiveUser');
+      Route::post('contracts/switchStatus/{contract}', 'LegalAspects\Contracs\ContractLesseeController@toogleState');
       Route::post('contracts/listCheckCopy', 'LegalAspects\Contracs\ContractLesseeController@listCheckCopy');
       Route::post('contracts/export', 'LegalAspects\Contracs\ContractLesseeController@export');
       Route::post('contracts/import', 'LegalAspects\Contracs\ContractLesseeController@import');
