@@ -830,18 +830,41 @@ class LawController extends Controller
                             $law_hide->delete();
                     }
 
-                    if ($request->file)
+                    if ($request->files)
                     {
-                        $file = $request->file;
-                        $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->getClientOriginalExtension();
-                        $file->storeAs($path, $nameFile, 's3_MLegal');
-                        $data['file'] = $nameFile;
-                        $data['old_file'] = $nameFile;
+                        $qualifications_files = ArticleFulfillment::whereIn('id', $ids_depurados)->get();
 
-                        $qualification_file = ArticleFulfillment::whereIn('id', $ids)
-                        ->update([
-                            'file' => $nameFile
-                        ]);
+                        $files_array = $request->input('files') ?? []; 
+
+                        if ($files_array && COUNT($files_array) > 0)
+                        {
+                            foreach ($files_array as $keyF => $file) 
+                            {
+                                $uploadedFile = null;
+
+                                if (isset($file['file']) && $file['file'] instanceof \Illuminate\Http\UploadedFile) 
+                                    $uploadedFile = $file['file'];
+
+                                if ($uploadedFile)
+                                {
+                                    $extension = $uploadedFile->getClientOriginalExtension();
+                                    $nameFile = base64_encode($this->user->id . now() . rand(1, 10000)) . '.' . $extension;
+                                    $uploadedFile->storeAs($path, $nameFile, 's3_MLegal');
+
+                                    foreach ($qualifications_files as $key => $qualification) 
+                                    {                                    
+                                        $fileUpload = new ArticleFulfillmentFile();
+                                        $fileUpload->fulfillment_id = $qualification->id;
+                                        $fileUpload->article_id = $qualification->article_id;
+                                        $fileUpload->company_id = $qualification->company_id;
+                                        $fileUpload->file = $nameFile;
+
+                                        if (!$fileUpload->save())
+                                            return $this->respondHttp500();
+                                    }
+                                }
+                            }
+                        }
                     }
                     
                     if ($request->has('actionPlan') && count($request->actionPlan['activities']) > 0)
@@ -893,8 +916,6 @@ class LawController extends Controller
         {
             $data = $request->except(['article', 'files_binary']); 
             
-                \Log::info($data);
-
             $qualification = ArticleFulfillment::find($request->qualification_id);
 
             if ($request->fulfillment_value_id == 8 && !$qualification->article->law->company_id && $qualification->fulfillment_value_id != 8)

@@ -86,6 +86,35 @@ class SaveArticlesQualificationRequest extends FormRequest
             $this->merge(['files' => $articleData['files']]);
 
         }
+        else 
+        {
+            if ($this->has('actionPlan'))
+            {
+                $this->merge([
+                    'actionPlan' => json_decode($this->input('actionPlan'), true)
+                ]);
+            }
+
+            $files = json_decode($this->input('files_massive'), true);
+
+            if (!is_array($files)) 
+                $files = [];
+
+            // Inyectar los binarios si existen
+            if ($this->has('files_binary') && is_array($this->files_binary)) 
+            {    
+                // Iterar sobre los binarios (claves 0, 1, 2, etc.)
+                foreach ($this->files_binary as $keyFile => $binaryFile) 
+                {
+                    // La verificación es ahora más sencilla, ya que $files es un array.
+                    if (isset($files[$keyFile]) && is_array($files[$keyFile])) 
+                        $files[$keyFile]['file'] = $binaryFile;
+                }
+            }
+            
+            $this->merge(['files' => $files]);
+
+        }
 
         return $this->all();
     }

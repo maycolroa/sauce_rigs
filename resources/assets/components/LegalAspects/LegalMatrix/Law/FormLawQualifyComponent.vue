@@ -96,9 +96,26 @@
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="workplace" label="Centro de trabajo" type="text" name="workplace" placeholder="Centro de trabajo"/>
                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="observations" label="Observaciones" name="observations" placeholder="Observaciones" rows="3"/>
-                </b-form-row>
-                <b-form-row>
-                  <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
+                </b-form-row>                                                          
+                <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                  <template v-for="(file, indexF) in files_massive">
+                    <div :key="file.key">
+                        <b-form-row>
+                          <div class="col-md-12">
+                              <div class="float-right">
+                                  <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFileMassive(indexF)"><span class="ion ion-md-close-circle"></span></b-btn>
+                              </div>
+                          </div>
+                          <vue-file-simple :help-text="file.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${file.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-12" v-model="file.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
+                        </b-form-row>
+                    </div>
+                  </template>
+                </b-card>
+
+                <b-form-row style="padding-bottom: 20px;">
+                  <div class="col-md-12">
+                      <center><b-btn  v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)"  variant="primary" @click.prevent="addFileMassive()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Archivo</b-btn></center>
+                  </div>
                 </b-form-row>
                 <b-form-row>
                     <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10 || (form.action_plan_cumple == 'SI' && fulfillment_value_id == 2)" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
@@ -626,6 +643,8 @@ export default {
       hide: '',
       showActionPlanMasive: '',
       showActionPlanMasiveRisk: '',
+      files_massive: [],
+      files_masive_delete: [],
       type_risk: '',
       risk_oport_description: '',
       risk: '',
@@ -1033,6 +1052,14 @@ export default {
         this.loadingAlternativo = true;        
         let data = new FormData();
         let ids = [];
+        
+        this.form.clearFilesBinary();
+        
+        this.files_massive.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                this.form.addFileBinary(keyFile, fileObject.file); 
+            }
+        });
 
         _.forIn(this.form.articles, (article, key) => {
           if (article.show_article_real)
@@ -1052,7 +1079,15 @@ export default {
         data.append('risk', JSON.stringify(this.risk));
         data.append('actionPlanRisk', JSON.stringify(this.actionPlanMasiveRisk));
         data.append('actionPlan', JSON.stringify(this.actionPlanMasive));
-        data.append('file', this.file_masive);
+        data.append('files_massive', JSON.stringify(this.files_massive) || []);
+
+        const binaryFiles = this.form.files_binary; 
+
+        this.files_massive.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                data.append(`files_binary[${keyFile}]`, fileObject.file); 
+            }
+        });
 
         this.form
           .submit('/legalAspects/legalMatrix/law/saveArticlesQualificationAlls', false, data)
@@ -1160,21 +1195,16 @@ export default {
       if (this.activateEvent && !this.loading)
       {
         let article = this.form.articles[index];
-        this.form.clearFilesBinary(); // CRÍTICO: Limpiar binarios internos de la forma
+        this.form.clearFilesBinary();
 
         let data = new FormData();
         
-        // 1. ADJUNTAR ARCHIVOS BINARIOS A LA LISTA INTERNA DE 'this.form'
-        // Esto crea las entradas files_binary[0], files_binary[1], etc.
         article.files.forEach((fileObject, keyFile) => {
-            // Solo adjuntamos si es un objeto File (nuevo archivo)
             if (fileObject.file instanceof File) { 
-                // Usamos el índice del archivo (keyFile) como clave
                 this.form.addFileBinary(keyFile, fileObject.file); 
             }
         });
 
-        // 2. PREPARAR EL OBJETO COMPLETO DEL ARTÍCULO (METADATOS)
         let articleData = {
             id: article.id,
             qualification_id: article.qualification_id,
@@ -1185,24 +1215,16 @@ export default {
             fulfillment_value_id: article.fulfillment_value_id || '',
             actionPlan: article.actionPlan || null,
             
-            // CAMBIO CLAVE: Incluir el array de metadatos 'files'
             files: article.files || [] 
         };
 
         const binaryFiles = this.form.files_binary; 
 
-        // Adjuntar cada binario al FormData bajo la clave 'files_binary[key]'
         article.files.forEach((fileObject, keyFile) => {
-            // Si 'file.file' es un objeto File (nuevo archivo)
             if (fileObject.file instanceof File) { 
-                // ¡Aquí debe ir el objeto File/Blob puro!
                 data.append(`files_binary[${keyFile}]`, fileObject.file); 
             }
         });
-
-        // 3. ENVIAR EL OBJETO COMPLETO DEL ARTÍCULO COMO JSON
-        // Nota: Si el backend espera un campo 'article' plano, puedes usarlo. 
-        // Si espera 'articles[0]', debes usar el índice como en el ejemplo anterior.
         data.append('article', JSON.stringify(articleData)); 
 
 
@@ -1240,6 +1262,20 @@ export default {
         this.form.articles[index].delete.files.push(this.form.articles[index].files[indexF].id)
 
       this.form.articles[index].files.splice(indexF, 1)
+    },
+    addFileMassive() 
+    {
+      this.files_massive.push({
+          key: new Date().getTime(),
+          file: ''
+      })
+    },
+	  removeFileMassive(index)
+    {
+      if (this.files_massive[index].id != undefined)
+        this.files_massive_delete.push(this.files_massive[index].id)
+
+      this.files_massive.splice(index, 1)
     },
   }
 };
