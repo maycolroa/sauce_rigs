@@ -1214,8 +1214,9 @@ export default {
             hide: article.hide || '',
             fulfillment_value_id: article.fulfillment_value_id || '',
             actionPlan: article.actionPlan || null,
+            delete: article.delete,
             
-            files: article.files || [] 
+            files: article.files || []
         };
 
         const binaryFiles = this.form.files_binary; 
@@ -1259,9 +1260,10 @@ export default {
 	  removeFile(index, indexF)
     {
       if (this.form.articles[index].files[indexF].id != undefined)
-        this.form.articles[index].delete.files.push(this.form.articles[index].files[indexF].id)
+        this.form.articles[index].delete.push(this.form.articles[index].files[indexF].id)
 
       this.form.articles[index].files.splice(indexF, 1)
+      this.saveArticleQualification(index)
     },
     addFileMassive() 
     {

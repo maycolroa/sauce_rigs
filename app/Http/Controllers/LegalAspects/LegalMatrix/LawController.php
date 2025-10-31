@@ -912,6 +912,7 @@ class LawController extends Controller
 
     public function saveArticlesQualification(SaveArticlesQualificationRequest $request)
     {
+        \Log::info($request);
         try
         {
             $data = $request->except(['article', 'files_binary']); 
@@ -964,6 +965,8 @@ class LawController extends Controller
                         {
                             if ($data['files'] && COUNT($data['files']) > 0)
                             {
+                                $files_names_delete = [];
+                                
                                 foreach ($data['files'] as $keyF => &$file) 
                                 {
                                     $create_file = true;
@@ -1007,6 +1010,20 @@ class LawController extends Controller
                                     $file['id'] = $fileUpload->id;
                                 }
                             }
+
+                            foreach ($data['delete'] as $key => $file_id_to_delete) 
+                            {
+                                $delete_file = ArticleFulfillmentFile::find($file_id_to_delete);
+
+                                if ($delete_file)
+                                {
+                                    $delete_file->delete();
+
+                                    $data['files'] = array_filter($data['files'], function ($file) use ($file_id_to_delete) {
+                                        return $file['id'] != $file_id_to_delete;
+                                    });
+                                }
+                            }
                         }
                     }
 
@@ -1029,8 +1046,6 @@ class LawController extends Controller
                     $data['fulfillment_value_id'] = (int) $qualification->fulfillment_value_id;
 
                 }, 3);
-
-                \Log::info($data);
 
                 return $this->respondHttp200([
                     'data' => $data
