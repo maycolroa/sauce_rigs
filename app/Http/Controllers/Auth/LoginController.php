@@ -66,7 +66,7 @@ class LoginController extends Controller
         return $codigo;
     }
 
-    public function login(Request $request)
+    public function login2(Request $request)
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')]))
         {
@@ -407,5 +407,210 @@ class LoginController extends Controller
         {
             return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
         }
+    }
+
+     public function login(Request $request)
+    {
+        if (Auth::attempt(['email' => request('email'), 'password' => request('password')]))
+        {
+            /*if (Auth::user()->active == 'SI')
+            {*/
+                $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
+                $user = Auth::user();
+
+                $canLogin = false;
+
+                if ($companies->count() > 0)
+                {
+                    foreach ($companies as $val)
+                    {
+                        if ($val->pivot->active == 'NO')
+                            continue;
+
+                        $license = DB::table('sau_licenses')
+                                ->whereRaw('company_id = ? 
+                                            AND ? BETWEEN started_at AND ended_at', 
+                                            [$val->pivot->company_id, date('Y-m-d')])
+                                //->where('freeze', DB::raw("'NO'"))
+                                ->get();
+
+                        if (COUNT($license) > 0)
+                        {
+                            Session::put('company_id', $val->pivot->company_id);
+                            $team = Team::where('name', Session::get('company_id'))->first()->id;
+
+                            $canLogin = true;
+
+                            ////////////////////////// Logica de multilogin de contratistas y arrendatarios
+
+                            if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                            {
+                                $contracts = DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->count();
+
+                                if ($contracts > 0)
+                                {
+                                    try
+                                    {
+                                        DB::beginTransaction();
+
+                                        DB::table('sau_user_information_contract_lessee')->where('user_id', Auth::user()->id)->delete();
+                                        DB::table('sau_role_user')->where('user_id', Auth::user()->id)->delete();
+
+                                        $contracts = DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', Auth::user()->id)->get();
+          
+                                        $contractsInsert = [];
+
+                                        foreach ($contracts as $row)
+                                        {
+                                            $contractsInsert[] = [
+                                                'user_id' => $row->user_id,
+                                                'information_id' => $row->information_id
+                                            ];
+                                        }
+
+                                        DB::table('sau_user_information_contract_lessee')->insert($contractsInsert);
+
+                                        $roles = DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->get();
+
+                                        foreach ($roles as $role)
+                                        {
+                                            Auth::user()->attachRole($role->role_id, $role->team_id);
+                                        }
+
+                                        DB::table('sau_user_information_contract_lessee_multilogin')->where('user_id', Auth::user()->id)->delete();
+                                        DB::table('sau_role_user_multilogin')->where('user_id', Auth::user()->id)->delete();
+
+                                        DB::commit();
+
+                                    } catch (\Exception $e) {
+                                        DB::rollback();
+                                        \Log::info($e->getMessage());
+
+                                        return $this->respondHttp500();
+                                    }
+                                }
+                            }
+
+                            ///////////////////////////////////////////////////////////////////////////////
+
+                            if (!$user->code_login)
+                            {
+                                $code = $this->getCodeLogin(6);
+
+                                Auth::user()->update([
+                                    'validate_login' => false,
+                                    'code_login' => $code
+                                ]);
+
+                                NotificationMail::
+                                    subject('Código para inicio de sesión')
+                                    ->message("Usted ha intentado iniciar sesión en nuestro sistema, por favor ingrese el siguiente codigo para completar su inicio de sesión: {$code}")
+                                    ->recipients($user)
+                                    ->module('users')
+                                    ->company(Session::get('company_id'))
+                                    ->send();
+
+                                return $this->respondHttp200([
+                                    'redirectTo' => 'codelogin'
+                                ]);
+                            }
+                            else
+                            {
+                                if ($user->validate_login)
+                                {
+                                    if (!Auth::user()->terms_conditions)
+                                    {
+                                        $this->userActivity();
+                                        
+                                        return $this->respondHttp200([
+                                            'redirectTo' => 'termsconditions'
+                                        ]);
+                                    }
+                                    else
+                                    {
+                                        if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                                        {
+                                            $contract = $this->getContractUserLogin(Auth::user()->id);
+                                            Session::put('contract_id', $contract->id);
+        
+                                            if ($contract->active == 'SI')
+                                            {
+                                                if ($contract->completed_registration == 'NO')
+                                                {
+                                                    Auth::user()->update([
+                                                        'last_login_at' => Carbon::now()->toDateTimeString()
+                                                    ]);
+        
+                                                    $this->userActivity();
+                                                    
+                                                    return $this->respondHttp200([
+                                                        'redirectTo' => 'legalaspects/contracts/information'
+                                                    ]);
+                                                }
+        
+                                                return $this->defaultUrl();
+                                            }
+                                            else 
+                                            {
+                                                Auth::user()->update([
+                                                    'validate_login' => false
+                                                ]);
+
+                                                Auth::logout();
+                                                return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                                            }
+                                        }
+        
+                                        return $this->defaultUrl();
+                                    }
+                                }
+                                else
+                                {
+                                    return $this->respondHttp200([
+                                        'redirectTo' => 'codeLogin'
+                                    ]);
+                                }
+                            }                            
+                        }
+                    }
+
+                    if (!$canLogin)
+                    {
+                        $user->update(['validate_login' => false]);
+                        Auth::logout();
+                        
+                        // Este mensaje cubre tanto si no tiene licencia como si la compañía está inactiva
+                        return $this->respondWithError(['errors'=>['email'=>'Usuario inhabilitado (No tiene compañías activas o licencias vigentes)']], 422);
+                    }
+                    
+                    /*Auth::user()->update([
+                        'validate_login' => false
+                    ]);
+
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);*/
+                }
+                else 
+                {
+                    Auth::user()->update([
+                        'validate_login' => false
+                    ]);
+
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario no posee una compañia activa para poder ingresar al sistema']], 422);
+                }
+            /*}
+            else 
+            {
+                Auth::user()->update([
+                    'validate_login' => false
+                ]);
+
+                Auth::logout();
+                return $this->respondWithError(['errors'=>['email'=>'Usuario inhabilitado']], 422);
+            }*/
+        }
+
+        return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
     }
 }
