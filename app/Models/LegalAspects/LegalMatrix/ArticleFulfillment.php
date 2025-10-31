@@ -43,6 +43,11 @@ class ArticleFulfillment extends Model
         return $this->hasMany(ArticleFulfillmentHistory::class, 'fulfillment_id');
     }
 
+    public function qualificationFiles()
+    {
+        return $this->hasMany(ArticleFulfillmentFile::class, 'fulfillment_id');
+    }
+
     public function scopeBetweenDate($query, $dates)
     {
         if (COUNT($dates) == 2)

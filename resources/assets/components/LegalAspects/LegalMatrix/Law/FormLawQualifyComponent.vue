@@ -96,9 +96,26 @@
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="workplace" label="Centro de trabajo" type="text" name="workplace" placeholder="Centro de trabajo"/>
                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="observations" label="Observaciones" name="observations" placeholder="Observaciones" rows="3"/>
-                </b-form-row>
-                <b-form-row>
-                  <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
+                </b-form-row>                                                          
+                <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                  <template v-for="(file, indexF) in files_massive">
+                    <div :key="file.key">
+                        <b-form-row>
+                          <div class="col-md-12">
+                              <div class="float-right">
+                                  <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFileMassive(indexF)"><span class="ion ion-md-close-circle"></span></b-btn>
+                              </div>
+                          </div>
+                          <vue-file-simple :help-text="file.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${file.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-12" v-model="file.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
+                        </b-form-row>
+                    </div>
+                  </template>
+                </b-card>
+
+                <b-form-row style="padding-bottom: 20px;">
+                  <div class="col-md-12">
+                      <center><b-btn  v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)"  variant="primary" @click.prevent="addFileMassive()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Archivo</b-btn></center>
+                  </div>
                 </b-form-row>
                 <b-form-row>
                     <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5 || fulfillment_value_id == 9 || fulfillment_value_id == 10 || (form.action_plan_cumple == 'SI' && fulfillment_value_id == 2)" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
@@ -276,13 +293,36 @@
                     <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"/>
                   </b-form-row>
 
-                  <b-form-row> 
+                  <!--<b-form-row> 
                     <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial' && article.qualify != 'En Transición' && article.qualify != 'Pendiente reglamentación'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
 
                     <div style="padding-top: 25px;" v-if="isEdit">
                       <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.qualify != 'En Transición' && article.qualify != 'Pendiente reglamentación' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                     </div>
+                    
+                    </b-form-row>-->
+                    <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                      <template v-for="(file, indexF) in article.files">
+                        <div :key="file.key">
+                            <b-form-row>
+                              <div class="col-md-12">
+                                  <div class="float-right">
+                                      <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index, indexF)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                  </div>
+                              </div>
+                              <vue-file-simple :help-text="file.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${file.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-12" @input="saveArticleQualification(index)" v-model="file.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"/>
+                            </b-form-row>
+                        </div>
+                      </template>
+                    </b-card>
 
+                    <b-form-row style="padding-bottom: 20px;">
+                      <div class="col-md-12">
+                          <center><b-btn  v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial' && article.qualify != 'En Transición' && article.qualify != 'Pendiente reglamentación'" variant="primary" @click.prevent="addFile(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Archivo</b-btn></center>
+                      </div>
+                    </b-form-row>
+
+                    <b-form-row> 
                     <!-- NO CUMPLE -->
                     <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial' || article.qualify == 'En Transición' || article.qualify == 'Pendiente reglamentación' || (form.action_plan_cumple == 'SI' && article.qualify == 'Cumple')" @click="showModal(`modalPlan${index}`)" variant="primary" style="height: 50%; margin-top: 3%; margin-left: 5%;"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
@@ -603,6 +643,8 @@ export default {
       hide: '',
       showActionPlanMasive: '',
       showActionPlanMasiveRisk: '',
+      files_massive: [],
+      files_masive_delete: [],
       type_risk: '',
       risk_oport_description: '',
       risk: '',
@@ -1010,6 +1052,14 @@ export default {
         this.loadingAlternativo = true;        
         let data = new FormData();
         let ids = [];
+        
+        this.form.clearFilesBinary();
+        
+        this.files_massive.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                this.form.addFileBinary(keyFile, fileObject.file); 
+            }
+        });
 
         _.forIn(this.form.articles, (article, key) => {
           if (article.show_article_real)
@@ -1029,7 +1079,15 @@ export default {
         data.append('risk', JSON.stringify(this.risk));
         data.append('actionPlanRisk', JSON.stringify(this.actionPlanMasiveRisk));
         data.append('actionPlan', JSON.stringify(this.actionPlanMasive));
-        data.append('file', this.file_masive);
+        data.append('files_massive', JSON.stringify(this.files_massive) || []);
+
+        const binaryFiles = this.form.files_binary; 
+
+        this.files_massive.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                data.append(`files_binary[${keyFile}]`, fileObject.file); 
+            }
+        });
 
         this.form
           .submit('/legalAspects/legalMatrix/law/saveArticlesQualificationAlls', false, data)
@@ -1092,7 +1150,7 @@ export default {
       axios.post('/legalAspects/legalMatrix/law/actionPlanCumple', postData)
         .then(response => {}).catch(error => {});     
     },
-    saveArticleQualification(index)
+    saveArticleQualificationCopy(index)
     {
       if (this.activateEvent && !this.loading)
       {
@@ -1131,7 +1189,94 @@ export default {
           this.resetReloadShowArticles();
         }
       }
-    }
+    },   
+    saveArticleQualification(index)
+    {
+      if (this.activateEvent && !this.loading)
+      {
+        let article = this.form.articles[index];
+        this.form.clearFilesBinary();
+
+        let data = new FormData();
+        
+        article.files.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                this.form.addFileBinary(keyFile, fileObject.file); 
+            }
+        });
+
+        let articleData = {
+            id: article.id,
+            qualification_id: article.qualification_id,
+            observations: article.observations || '',
+            responsible: article.responsible || '',
+            workplace: article.workplace || '',
+            hide: article.hide || '',
+            fulfillment_value_id: article.fulfillment_value_id || '',
+            actionPlan: article.actionPlan || null,
+            
+            files: article.files || [] 
+        };
+
+        const binaryFiles = this.form.files_binary; 
+
+        article.files.forEach((fileObject, keyFile) => {
+            if (fileObject.file instanceof File) { 
+                data.append(`files_binary[${keyFile}]`, fileObject.file); 
+            }
+        });
+        data.append('article', JSON.stringify(articleData)); 
+
+
+        this.form.resetError()
+        this.form
+          .submit('/legalAspects/legalMatrix/law/saveArticlesQualification', false, data)
+          .then(response => {
+            _.forIn(response.data.data, (value, key) => {
+              article[key] = value
+            })
+            this.dateEditQualification(index);
+            //this.currentAxios++;
+          })
+          .catch(error => {
+            //this.currentAxios++;
+            //this.loading = false;
+          });
+
+        if (article.hide == 'SI')
+        {
+          this.resetReloadShowArticles();
+        }
+      }
+    },   
+    addFile(index) 
+    {
+      this.form.articles[index].files.push({
+          key: new Date().getTime(),
+          file: ''
+      })
+    },
+	  removeFile(index, indexF)
+    {
+      if (this.form.articles[index].files[indexF].id != undefined)
+        this.form.articles[index].delete.files.push(this.form.articles[index].files[indexF].id)
+
+      this.form.articles[index].files.splice(indexF, 1)
+    },
+    addFileMassive() 
+    {
+      this.files_massive.push({
+          key: new Date().getTime(),
+          file: ''
+      })
+    },
+	  removeFileMassive(index)
+    {
+      if (this.files_massive[index].id != undefined)
+        this.files_massive_delete.push(this.files_massive[index].id)
+
+      this.files_massive.splice(index, 1)
+    },
   }
 };
 </script>

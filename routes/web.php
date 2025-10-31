@@ -1165,7 +1165,7 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('systemApply', 'LegalAspects\LegalMatrix\SystemApplyController');
 
         
-        Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
+        Route::get('law/downloadArticleQualify/{articleFulfillmentFile}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
         Route::get('law/showFile/{law}', 'LegalAspects\LegalMatrix\LawController@showFile');
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
