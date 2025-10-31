@@ -267,7 +267,8 @@ class PermissionService
                 {
                     $data->put($company->id, [
                         'id'    =>  $company->id, 
-                        'name'  =>  ucwords(strtolower($company->name))
+                        'name'  =>  $company->name
+                        //'name'  =>  ucwords(strtolower($company->name))
                     ]);
                 }
             }
